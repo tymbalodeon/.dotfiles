@@ -844,9 +844,7 @@ $env.config = {
     ]
 }
 
-source ~/.zoxide.nu
-source "~/Library/Application Support/nushell/mise.nu"
-# source "~/Library/Application Support/nushell/thoth.nu"
+# source ~/.zoxide.nu
 
 # Open emacs, starting a client if not already running
 def emacs [
@@ -875,9 +873,21 @@ def --env fcd [
         $env.HOME
     } else {
         $directory
-    }
+    };
 
-    cd (fd --type directory --hidden . $root_directory | fzf --reverse)
+    cd (
+        fd --type directory --hidden . $root_directory 
+        | fzf --reverse
+    )    
+}
+
+def rebuild [
+    host: # The target host configuration
+] {
+    let dotfiles = ($env.HOME | path join ".dotfiles");
+    let target = $"($dotfiles)#($host)";
+
+    sudo nixos-rebuild switch --flake $target
 }
 
 alias cat = bat --style plain --theme gruvbox-dark
