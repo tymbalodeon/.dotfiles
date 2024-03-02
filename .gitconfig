@@ -1,0 +1,52 @@
+[alias]
+    a = add
+    b = branch
+    cm = commit -m
+    ch = checkout
+    cl = clone
+    d = diff
+    l = log --graph --pretty=format:'%C(auto)%h%d %s %C(dim)(%ar)%Creset' -20
+    last = log -1 HEAD --stat
+    p = push
+    pl = pull
+    r = restore
+    rh = reset --hard
+    s = status
+    tg = tag
+    tracked = ls-tree --full-tree --name-only -r HEAD
+    tr = tracked
+
+[core]
+    excludesfile = ~/.gitignore_global
+    pager = delta
+
+[default]
+    push = upstream
+
+[delta]
+    syntax-theme = gruvbox-dark
+
+[diff]
+    colorMoved = default
+
+[github]
+    user = tymbalodeon
+
+[init]
+    defaultBranch = main
+
+[interactive]
+    diffFilter = delta --color-only
+
+[merge]
+    conflictstyle = diff3
+
+[pull]
+    rebase = false
+
+[push]
+    default = current
+
+[user]
+    name = Ben Rosen
+    email = "benjamin.j.rosen@gmail.com"

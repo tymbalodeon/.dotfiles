@@ -34,8 +34,30 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
+    bat
+    # bottom
+    dejavu_fonts
+    delta
+    # dust
+    # emacs
+    eza
+    fd
+    # fh
+    fzf
+    # gh
+    git
+    # gitleaks
+    gitui
+    lilypond-unstable
     helix
     macchina
+    (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
+    nixfmt
+    ripgrep
+    sd
+    tldr
+    yazi
+    zoxide
   ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -51,6 +73,9 @@
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
     # '';
+    ".gitconfig".source = ./.gitconfig; 
+    ".config/helix/config.toml".source = ./helix/config.toml;
+    ".config/helix/languages.toml".source = ./helix/languages.toml;
   };
 
   # Home Manager can also manage your environment variables through
@@ -69,43 +94,60 @@
   #  /etc/profiles/per-user/benrosen/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    EDITOR = "hx";
+    # EDITOR = "hx";
   };
 
   # Let Home Manager install and manage itself.
   programs = {
+    direnv = {
+      enable = true;
+      enableNushellIntegration = true;
+      nix-direnv.enable = true;
+    };
+
     git = {
       enable = true;
       userName = "Ben Rosen";
       userEmail = "benjamin.j.rosen@gmail.com";
     };
 
+    helix = {
+      enable = true;
+      defaultEditor = true;
+    };
+
     home-manager.enable = true;
+
+    nushell = {
+      enable = true;
+      configFile.source = ./nushell/config.nu;
+      envFile.source = ./nushell/env.nu;
+    };
   };
 
   wayland.windowManager.hyprland = {
     enable = true;
-    settings = {
-      "$mod" = "SUPER";
+    # settings = {
+    #   "$mod" = "SUPER";
 
-      bind = [
-        "$mod, F, exec, firefox"
-        "$mod, T, exec, kitty"
-      ]
-      ++ (
-        builtins.concatLists (builtins.genList (
-          x: let
-            ws = let
-              c = (x + 1) / 10;
-            in
-              builtins.toString (x + 1 - (c * 10));
-            in [
-              "$mod, ${ws}, workspace, ${toString (x + 1)}"
-              "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-            ]
-        )
-        10)
-      );
-    };
+    #   bind = [
+    #     "$mod, F, exec, firefox"
+    #     "$mod, T, exec, kitty"
+    #   ]
+    #   ++ (
+    #     builtins.concatLists (builtins.genList (
+    #       x: let
+    #         ws = let
+    #           c = (x + 1) / 10;
+    #         in
+    #           builtins.toString (x + 1 - (c * 10));
+    #         in [
+    #           "$mod, ${ws}, workspace, ${toString (x + 1)}"
+    #           "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+    #         ]
+    #     )
+    #     10)
+    #   );
+    # };
   };
 }

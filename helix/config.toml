@@ -1,0 +1,18 @@
+theme = "gruvbox"
+
+[editor]
+bufferline = "multiple"
+cursorline = true
+mouse = false
+shell = ["nu", "-c"]
+
+[editor.cursor-shape]
+insert = "bar"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+[keys.normal]
+C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
+C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
