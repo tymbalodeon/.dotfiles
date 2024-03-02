@@ -68,6 +68,7 @@
     description = "Ben Rosen";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
+    shell = pkgs.nushell;
   };
 
   # Allow unfree packages
