@@ -73,6 +73,7 @@
       ".config/helix/config.toml".source = ./helix/config.toml;
       ".config/helix/languages.toml".source = ./helix/languages.toml;
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
+      ".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
       ".config/kitty/kitty.conf".source = ./kitty/kitty.conf;
       ".config/kitty/current-theme.conf".source = ./kitty/current-theme.conf;
     };

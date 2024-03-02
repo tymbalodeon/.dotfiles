@@ -81,6 +81,7 @@
     firefox
     git
     helix
+    hyprpaper
     kitty
   ];
 
