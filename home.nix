@@ -51,6 +51,7 @@
       gitui
       lilypond-unstable
       helix
+      hyprland
       macchina
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nixfmt
