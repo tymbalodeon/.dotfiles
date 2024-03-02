@@ -68,7 +68,7 @@
     description = "Ben Rosen";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
-    shell = pkgs.nushell;
+    # shell = pkgs.nushell;
   };
 
   # Allow unfree packages
@@ -110,8 +110,8 @@
       };
 
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet";
-        user = "greeter";
+        command = "${pkgs.greetd.regreet}/bin/regreet";
+        user = "benrosen";
       };
     };
   };
