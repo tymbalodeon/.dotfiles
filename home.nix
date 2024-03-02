@@ -76,6 +76,7 @@
     ".gitconfig".source = ./.gitconfig; 
     ".config/helix/config.toml".source = ./helix/config.toml;
     ".config/helix/languages.toml".source = ./helix/languages.toml;
+    ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
   };
 
   # Home Manager can also manage your environment variables through
@@ -117,6 +118,11 @@
     };
 
     home-manager.enable = true;
+
+    hyprland = {
+      enable = true;
+      
+    };
 
     nushell = {
       enable = true;
