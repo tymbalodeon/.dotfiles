@@ -80,6 +80,7 @@
       ".config/helix/languages.toml".source = ./helix/languages.toml;
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
       ".config/kitty/kitty.conf".source = ./kitty/kitty.conf;
+      ".config/kitty/current-them.conf".source = ./kitty/current-theme.conf;
     };
 
     # Home Manager can also manage your environment variables through
@@ -97,9 +98,7 @@
     #
     #  /etc/profiles/per-user/benrosen/etc/profile.d/hm-session-vars.sh
     #
-    sessionVariables = {
-      # EDITOR = "hx";
-    };
+    sessionVariables = {};
   };
 
   # Let Home Manager install and manage itself.
@@ -128,31 +127,7 @@
       configFile.source = ./nushell/config.nu;
       envFile.source = ./nushell/env.nu;
     };
+
+    # waybar.systemd.enable = true;
   };
-
-  # wayland.windowManager.hyprland = {
-  #   enable = true;
-    # settings = {
-    #   "$mod" = "SUPER";
-
-    #   bind = [
-    #     "$mod, F, exec, firefox"
-    #     "$mod, T, exec, kitty"
-    #   ]
-    #   ++ (
-    #     builtins.concatLists (builtins.genList (
-    #       x: let
-    #         ws = let
-    #           c = (x + 1) / 10;
-    #         in
-    #           builtins.toString (x + 1 - (c * 10));
-    #         in [
-    #           "$mod, ${ws}, workspace, ${toString (x + 1)}"
-    #           "$mod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-    #         ]
-    #     )
-    #     10)
-    #   );
-    # };
-  # };
 }

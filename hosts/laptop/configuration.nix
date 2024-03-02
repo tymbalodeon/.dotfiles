@@ -82,7 +82,9 @@
     git
     # greetd
     helix
+    hyprland
     kitty
+    waybar
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -92,7 +94,7 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
-  programs.hyprland.enable = true;
+  # programs.hyprland.enable = true;
 
   # List services that you want to enable:
 
