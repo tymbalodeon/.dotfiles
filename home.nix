@@ -119,11 +119,6 @@
 
     home-manager.enable = true;
 
-    hyprland = {
-      enable = true;
-      
-    };
-
     nushell = {
       enable = true;
       configFile.source = ./nushell/config.nu;
@@ -131,8 +126,8 @@
     };
   };
 
-  wayland.windowManager.hyprland = {
-    enable = true;
+  # wayland.windowManager.hyprland = {
+  #   enable = true;
     # settings = {
     #   "$mod" = "SUPER";
 
@@ -155,5 +150,5 @@
     #     10)
     #   );
     # };
-  };
+  # };
 }
