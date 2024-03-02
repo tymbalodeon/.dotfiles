@@ -49,7 +49,6 @@
   services.xserver = {
     xkb.layout = "us";
     xkb.variant = "";
-    # displayManager.sddm.wayland.enable = true;
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
