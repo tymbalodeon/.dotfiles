@@ -80,7 +80,6 @@
   #  wget
     firefox
     git
-    # greetd
     helix
     kitty
   ];
@@ -98,20 +97,21 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
-  services.greetd = {
-    enable = true;
-    settings = {
-      initial_session = {
-        command = "${pkgs.hyprland}/bin/Hyprland";
-        user = "benrosen";
-      };
+  # services.greetd = {
+  #   enable = true;
 
-      default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet";
-        user = "greeter";
-      };
-    };
-  };
+  #   settings = {
+  #     initial_session = {
+  #       command = "${pkgs.hyprland}/bin/Hyprland";
+  #       user = "benrosen";
+  #     };
+
+  #     default_session = {
+  #       command = "${pkgs.greetd.tuigreet}/bin/tuigreet";
+  #       user = "benrosen";
+  #     };
+  #   };
+  # };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
