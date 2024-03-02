@@ -81,7 +81,6 @@
   #  wget
     firefox
     git
-    # greetd
     helix
     hyprland
     kitty
@@ -110,7 +109,7 @@
       };
 
       default_session = {
-        command = "${pkgs.greetd.regreet}/bin/regreet";
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet";
         user = "benrosen";
       };
     };
