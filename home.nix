@@ -73,7 +73,15 @@
   };
 
   # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
+  programs = {
+    git = {
+      enable = true;
+      userName = "Ben Rosen";
+      userEmail = "benjamin.j.rosen@gmail.com";
+    };
+
+    home-manager.enable = true;
+  };
 
   wayland.windowManager.hyprland = {
     enable = true;

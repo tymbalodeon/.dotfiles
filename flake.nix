@@ -17,14 +17,22 @@
     in
     {
     
-      nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs; };
 
           modules = [ 
-            ./configuration.nix
+            ./hosts/desktop/configuration.nix
             inputs.home-manager.nixosModules.default
           ];
         };
 
+      nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit inputs; };
+
+          modules = [ 
+            ./hosts/laptop/configuration.nix
+            inputs.home-manager.nixosModules.default
+          ];
+        };
     };
 }
