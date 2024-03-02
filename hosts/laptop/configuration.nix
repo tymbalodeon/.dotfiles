@@ -92,6 +92,7 @@
   #   enableSSHSupport = true;
   # };
   programs.hyprland.enable = true;
+  programs.waybar.enable = true;
 
   # List services that you want to enable:
 
