@@ -131,6 +131,8 @@
   system.stateVersion = "23.11"; # Did you read the comment?
 
   security.rtkit.enable = true;
+
+  sound.enable = false;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
