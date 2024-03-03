@@ -77,6 +77,7 @@
       ".config/hypr/wallpaper".source = ./hypr/wallpaper;
       ".config/kitty/kitty.conf".source = ./kitty/kitty.conf;
       ".config/kitty/current-theme.conf".source = ./kitty/current-theme.conf;
+      ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
     };
 
     # Home Manager can also manage your environment variables through
