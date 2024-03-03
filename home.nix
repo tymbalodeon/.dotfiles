@@ -42,6 +42,7 @@
       fd
       fzf
       git
+      git-grab
       gitui
       lilypond-unstable
       helix
