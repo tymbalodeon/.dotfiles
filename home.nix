@@ -43,6 +43,7 @@
       fzf
       git
       gitui
+      jq
       lilypond-unstable
       helix
       macchina
