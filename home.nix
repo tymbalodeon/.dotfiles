@@ -69,7 +69,7 @@
       #   org.gradle.console=verbose
       #   org.gradle.daemon.idletimeout=3600000
       # '';
-      ".gitconfig".source = ./.gitconfig; 
+      ".gitconfig".source = ./.gitconfig;
       ".config/helix/config.toml".source = ./helix/config.toml;
       ".config/helix/languages.toml".source = ./helix/languages.toml;
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;

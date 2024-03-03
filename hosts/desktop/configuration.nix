@@ -5,11 +5,10 @@
 { config, pkgs, inputs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.default
-    ];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.default
+  ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
@@ -56,15 +55,13 @@
     isNormalUser = true;
     description = "Ben Rosen";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
+    packages = with pkgs; [ ];
   };
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
 
-    users = {
-      "benrosen" = import ./home.nix;
-    };
+    users = { "benrosen" = import ./home.nix; };
   };
 
   # Enable automatic login for the user.
@@ -76,8 +73,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
     firefox
     git
     helix
@@ -128,7 +125,7 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
-  
+
   hardware.bluetooth.enable = true;
 
   xdg.portal.enable = true;

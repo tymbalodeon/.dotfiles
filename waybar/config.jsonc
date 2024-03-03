@@ -1,24 +1,20 @@
 // -*- mode: jsonc -*-
 {
-    "layer": "top", // Waybar at top layer
-    // "position": "bottom", // Waybar position (top|bottom|left|right)
-    // "height": 30, // Waybar height (to be removed for auto height)
-    // "width": 1280, // Waybar width
-    // "spacing": 4, // Gaps between modules (4px)
-    // Choose the order of the modules
+    "layer": "top",
+    "spacing": 4,
     "modules-left": [
     ],
     "modules-center": [
-        "idle_inhibitor",
         "clock",
     ],
     "modules-right": [
+        "idle_inhibitor",
         "network",
         "cpu",
         "memory",
         "temperature",
-        "battery",
         "wireplumber",
+        "battery",
     ],
     "hyprland/workspaces": {
       "format": "<sub>{icon}</sub>",
@@ -114,7 +110,7 @@
     },
     "battery": {
         "states": {
-            "good": 80,
+            "good": 75,
             "warning": 30,
             "critical": 15
         },
@@ -127,9 +123,6 @@
         // "format-full": "",
         "format-icons": ["", "", "", "", ""]
     },
-    // "battery#bat2": {
-    //     "bat": "BAT2"
-    // },
     "network": {
         // "interface": "wlp2*", // (Optional) To force the use of this interface
         "format-wifi": "{essid} ({signalStrength}%) ",

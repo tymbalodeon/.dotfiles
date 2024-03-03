@@ -884,7 +884,7 @@ def --env fcd [
 def rebuild [
     host: # The target host configuration
 ] {
-    let dotfiles = ($env.HOME | path join ".dotfiles");
+    let dotfiles = ($env.HOME | path join "dotfiles");
     let target = $"($dotfiles)#($host)";
 
     sudo nixos-rebuild switch --flake $target
