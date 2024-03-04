@@ -40,6 +40,7 @@
       delta
       eza
       fd
+      fira
       font-awesome
       fzf
       git
@@ -104,6 +105,8 @@
       # EDITOR = "hx";
     };
   };
+
+  fonts.fontconfig.enable = true;
 
   # Let Home Manager install and manage itself.
   programs = {

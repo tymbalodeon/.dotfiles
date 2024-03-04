@@ -1,5 +1,5 @@
 * {
-  font-family: FontAwesome, "DejaVu Sans";
+  font-family: FontAwesome, "Fira Sans";
   font-size: 12px;
 }
 
@@ -31,13 +31,13 @@ window#waybar.chromium {
   border: none;
 }
 
-button {
-  /* Use box-shadow instead of border so the text isn't offset */
-  box-shadow: inset 0 -3px transparent;
-  /* Avoid rounded borders under each button name */
-  border: none;
-  border-radius: 0;
-}
+/* button { */
+/* Use box-shadow instead of border so the text isn't offset */
+/* box-shadow: inset 0 -3px transparent; */
+/* Avoid rounded borders under each button name */
+/* border: none; */
+/* border-radius: 0; */
+/* } */
 
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
@@ -86,9 +86,10 @@ button:hover {
 #scratchpad,
 #window,
 #mpd {
-  padding: 0 10px;
+  padding: 4 12px;
   color: #fbf1c7;
   background-color: #282828;
+  border-radius: 4px;
 }
 
 #window,
@@ -106,11 +107,10 @@ button:hover {
   margin-right: 0;
 }
 
-
 #battery.charging,
 #battery.plugged {
-  color: #ffffff;
-  background-color: #26A65B;
+  color: #fbf1c7;
+  background-color: #8ec07c;
 }
 
 @keyframes blink {
@@ -122,8 +122,8 @@ button:hover {
 
 /* Using steps() instead of linear as a timing function to limit cpu usage */
 #battery.critical:not(.charging) {
-  background-color: #f53c3c;
-  color: #ffffff;
+  background-color: #fb4934;
+  color: #fbf1c7;
   animation-name: blink;
   animation-duration: 0.5s;
   animation-timing-function: steps(12);
