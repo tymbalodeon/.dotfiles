@@ -40,6 +40,7 @@
       delta
       eza
       fd
+      font-awesome
       fzf
       git
       gitui
@@ -54,6 +55,7 @@
       sd
       tldr
       vivid
+      vscode-langservers-extracted
       yazi
       zoxide
     ];
@@ -80,6 +82,7 @@
       ".config/kitty/kitty.conf".source = ./kitty/kitty.conf;
       ".config/kitty/current-theme.conf".source = ./kitty/current-theme.conf;
       ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
+      ".config/waybar/style.css".source = ./waybar/style.css;
     };
 
     # Home Manager can also manage your environment variables through
