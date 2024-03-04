@@ -49,7 +49,7 @@
       macchina
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nixfmt
-      reaper
+      # reaper
       ripgrep
       sd
       tldr

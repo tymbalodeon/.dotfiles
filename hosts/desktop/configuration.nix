@@ -61,7 +61,7 @@
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
 
-    users = { "benrosen" = import ./home.nix; };
+    users = { "benrosen" = import ../../home.nix; };
   };
 
   # Enable automatic login for the user.
