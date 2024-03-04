@@ -14,10 +14,16 @@
         "cpu",
         "memory",
         "network",
+        "backlight",
         "wireplumber",
         "battery",
     ],
 
+    "backlight": {
+        "device": "intel_backlight",
+        "format": "{percent}% {icon}",
+        "format-icons": ["", ""]
+    },
     "battery": {
         "format": "{capacity}% {icon}",
         "format-charging": "{capacity}% ",
