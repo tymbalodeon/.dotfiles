@@ -49,6 +49,7 @@
       lilypond-unstable
       helix
       macchina
+      mako
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nil
       nixfmt
