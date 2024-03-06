@@ -10,28 +10,27 @@
     };
   };
 
-  outputs = { self, nixpkgs, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-
-      nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+  outputs = { self, nixpkgs, ... }@inputs: {
+    nixosConfigurations = 
+      let
+        modules = [ inputs.home-manager.nixosModules.default ];
         specialArgs = { inherit inputs; };
+      in {
+      desktop = nixpkgs.lib.nixosSystem {
+        inherit specialArgs;
 
-        modules = [
+        modules = modules ++ [
           ./hosts/desktop/configuration.nix
-          inputs.home-manager.nixosModules.default
         ];
       };
 
-      nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
+      laptop = nixpkgs.lib.nixosSystem {
+        inherit specialArgs;
 
-        modules = [
+        modules = modules ++ [
           ./hosts/laptop/configuration.nix
-          inputs.home-manager.nixosModules.default
         ];
       };
     };
+  };
 }

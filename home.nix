@@ -50,6 +50,7 @@
       helix
       macchina
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
+      nil
       nixfmt
       # reaper
       ripgrep
