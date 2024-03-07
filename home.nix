@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   home = {
@@ -55,6 +55,7 @@
       nixfmt
       # reaper
       ripgrep
+      rofi-wayland
       sd
       tldr
       vivid
