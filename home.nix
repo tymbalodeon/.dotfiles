@@ -6,6 +6,7 @@
   home = {
     file = {
       ".gitconfig".source = ./.gitconfig;
+      ".hushlogin".source = ./.hushlogin;
       ".config/helix/config.toml".source = ./helix/config.toml;
       ".config/helix/languages.toml".source = ./helix/languages.toml;
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
@@ -17,7 +18,8 @@
       ".config/waybar/style.css".source = ./waybar/style.css;
     };
 
-    homeDirectory = "/home/benrosen";
+    # homeDirectory = "/home/benrosen";
+    homeDirectory = "/Users/benrosen";
 
     packages = with pkgs; [
       bat
@@ -34,12 +36,12 @@
       lilypond-unstable
       helix
       macchina
-      mako
+      # mako
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nil
       nixfmt
       ripgrep
-      rofi-wayland
+      # rofi-wayland
       sd
       tldr
       vivid
@@ -52,7 +54,7 @@
     username = "benrosen";
 
     sessionVariables = {
-      # EDITOR = "hx";
+      EDITOR = "hx";
     };
   };
 
