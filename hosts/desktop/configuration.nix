@@ -1,23 +1,15 @@
 { inputs, pkgs, ... }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-    inputs.home-manager.nixosModules.default
-  ];
+  imports =
+    [ ./hardware-configuration.nix inputs.home-manager.nixosModules.default ];
 
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    firefox
-    git
-    helix
-    hyprpaper
-    kitty
-  ];
+  environment.systemPackages = with pkgs; [ firefox git helix hyprpaper kitty ];
 
   hardware.bluetooth.enable = true;
 
@@ -72,7 +64,7 @@
   };
 
   sound.enable = false;
-  system.stateVersion = "23.11"; 
+  system.stateVersion = "23.11";
   time.timeZone = "America/New_York";
 
   users.users.benrosen = {

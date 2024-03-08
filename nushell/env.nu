@@ -1,7 +1,3 @@
-# Nushell Environment Config File
-#
-# version = "0.87.1"
-
 let bg = "#282828"
 let red = "#cc241d" 
 let green = "#98971a"
@@ -39,14 +35,6 @@ let orange_bright = "#fe8019"
 def create_left_prompt [] {
     let home =  $nu.home-path
 
-    # Perform tilde substitution on dir
-    # To determine if the prefix of the path matches the home dir, we split the current path into
-    # segments, and compare those with the segments of the home dir. In cases where the current dir
-    # is a parent of the home dir (e.g. `/home`, homedir is `/home/user`), this comparison will 
-    # also evaluate to true. Inside the condition, we attempt to str replace `$home` with `~`.
-    # Inside the condition, either:
-    # 1. The home prefix will be replaced
-    # 2. The current dir is a parent of the home dir, so it will be uneffected by the str replace
     let dir = (
         if ($env.PWD | path split | zip ($home | path split) | all { $in.0 == $in.1 }) {
             ($env.PWD | str replace $home "~")
@@ -91,7 +79,6 @@ def create_left_prompt [] {
     }
 }
 
-# Use nushell functions to define your right and left prompt
 $env.PROMPT_COMMAND = {|| create_left_prompt }
 $env.PROMPT_COMMAND_RIGHT = {|| null }
 
@@ -145,9 +132,6 @@ $env.NU_PLUGIN_DIRS = [
     ($nu.default-config-dir | path join 'plugins') # add <nushell-config-dir>/plugins
 ]
 
-# To add entries to PATH (on Windows you might use Path), you can use the following pattern:
-# $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
-
 $env.BAT_THEME = "gruvbox-dark"
 $env.EDITOR = "hx"
 
@@ -163,6 +147,11 @@ $env.PATH = [
     /nix/var/nix/profiles/default/bin
 ] ++ $env.PATH
 
-zoxide init nushell | str replace --all "-- $rest" "-- ...$rest" | str replace --all "def-env" "def --env" | save -f ~/.zoxide.nu
+(
+    zoxide init nushell 
+    | str replace --all "-- $rest" "-- ...$rest" 
+    | str replace --all "def-env" "def --env" 
+    | save -f ~/.zoxide.nu
+)
 
 $env.LS_COLORS = (vivid generate gruvbox-dark)
