@@ -1,6 +1,6 @@
 { pkgs, ... }:
 
-{
+rec {
   fonts.fontconfig.enable = true;
 
   home = {
@@ -12,8 +12,6 @@
       # ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
       # ".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
       # ".config/hypr/wallpaper".source = ./hypr/wallpaper;
-      ".config/kitty/kitty.conf".source = ./kitty/kitty.conf;
-      ".config/kitty/current-theme.conf".source = ./kitty/current-theme.conf;
       # ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
       # ".config/waybar/style.css".source = ./waybar/style.css;
     };
@@ -81,6 +79,19 @@
     };
 
     home-manager.enable = true;
+    kitty = {
+      enable = true;
+
+      settings = {
+        confirm_os_window_close = 0;
+        font_family = "CaskaydiaCove Nerd Font";
+        hide_window_decorations = "yes";
+        macos_quit_when_last_window_closed = "yes";
+        shell = "${home.homeDirectory}/.nix-profile/bin/nu";
+      };
+
+      theme = "Gruvbox Dark";
+    };
 
     nushell = {
       enable = true;
