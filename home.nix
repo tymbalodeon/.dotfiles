@@ -42,6 +42,7 @@
       helix
       macchina
       # mako
+      marksman
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nil
       nixfmt
