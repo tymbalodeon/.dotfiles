@@ -27,6 +27,7 @@
       delta
       eza
       fd
+      fh
       fira
       font-awesome
       fzf
@@ -40,7 +41,9 @@
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nil
       nixfmt
+      pipx
       ripgrep
+      rustup
       # rofi-wayland
       sd
       tldr
