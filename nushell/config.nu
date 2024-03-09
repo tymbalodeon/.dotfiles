@@ -866,28 +866,33 @@ def emacs [
     }
 }
 
-def --env fcd [
+def --env z [
     directory?: # Limit the search to this directory
 ] {
-    let root_directory = if ($directory | is-empty) {
-        $env.HOME
+    if ($directory | is-empty) {
+        cd
     } else {
-        $directory
+        cd (
+            fd --type directory --hidden . $directory 
+            | fzf --reverse
+        )    
     };
-
-    cd (
-        fd --type directory --hidden . $root_directory 
-        | fzf --reverse
-    )    
 }
 
 def rebuild [
-    host: # The target host configuration
+    host?: # The target host configuration
 ] {
     let dotfiles = ($env.HOME | path join ".dotfiles");
-    let target = $"($dotfiles)#($host)";
 
-    sudo nixos-rebuild switch --flake $target
+    if (uname) == "Darwin" {
+        home-manager switch --flake $dotfiles
+    } 
+
+    if ($host | is-empty) {
+        return
+    } else {
+        sudo nixos-rebuild switch --flake $"($dotfiles)#($host)"
+    }
 }
 
 alias cat = bat --style plain --theme gruvbox-dark
