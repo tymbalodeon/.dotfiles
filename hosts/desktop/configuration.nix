@@ -2,7 +2,10 @@
 
 {
   imports =
-    [ ./hardware-configuration.nix inputs.home-manager.nixosModules.default ];
+    [ 
+      ./hardware-configuration.nix 
+      inputs.home-manager.nixosModules.default 
+    ];
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -10,12 +13,11 @@
   };
 
   environment.systemPackages = with pkgs; [ firefox git helix hyprpaper kitty ];
-
   hardware.bluetooth.enable = true;
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
-    users."benrosen" = import ../../home.nix;
+    users."benrosen" = import ../../home/home.nix;
     useGlobalPkgs = true;
   };
 
@@ -71,7 +73,6 @@
     isNormalUser = true;
     description = "Ben Rosen";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ ];
     shell = pkgs.nushell;
   };
 }

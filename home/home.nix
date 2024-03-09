@@ -18,9 +18,6 @@
       ".config/waybar/style.css".source = ./waybar/style.css;
     };
 
-    # homeDirectory = "/home/benrosen";
-    homeDirectory = "/Users/benrosen";
-
     packages = with pkgs; [
       bat
       dejavu_fonts
@@ -36,12 +33,10 @@
       lilypond-unstable
       helix
       macchina
-      # mako
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nil
       nixfmt
       ripgrep
-      # rofi-wayland
       sd
       tldr
       vivid
