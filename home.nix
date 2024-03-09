@@ -16,6 +16,9 @@
       ".config/kitty/current-theme.conf".source = ./kitty/current-theme.conf;
       ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
       ".config/waybar/style.css".source = ./waybar/style.css;
+      ".doom.d/config.el".source = ./emacs/config.el;
+      ".doom.d/init.el".source = ./emacs/init.el;
+      ".doom.d/packages.el".source = ./emacs/packages.el;
     };
 
     # homeDirectory = "/home/benrosen";
@@ -25,6 +28,7 @@
       bat
       dejavu_fonts
       delta
+      emacs
       eza
       fd
       fh
