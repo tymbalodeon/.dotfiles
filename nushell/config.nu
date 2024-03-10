@@ -875,6 +875,10 @@ def --env z [
     )    
 }
 
+def --env Z [] {
+    cd
+}
+
 def rebuild [
     host?: # The target host configuration
 ] {
