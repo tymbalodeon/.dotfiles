@@ -867,14 +867,16 @@ def emacs [
 def --env z [
     directory?: # Limit the search to this directory
 ] {
-    let directories = (
-        fd --type directory --hidden . $env.HOME
-    )
-
     if ($directory | is-empty) {
-        cd ($directories | fzf --exact --reverse)  
+        cd (
+            fd --type directory --hidden . $env.HOME 
+            | fzf --exact --reverse
+        )  
     } else {
-        cd ($directories | fzf --exact --reverse --filter $directory | head -n 1)
+        cd (
+            fd --type directory --hidden . $env.HOME 
+            | fzf --exact --reverse --filter $directory | head -n 1
+        )
     }
 }
 
