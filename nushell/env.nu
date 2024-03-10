@@ -47,15 +47,8 @@ def create_left_prompt [] {
     }
 }
 
-$env.PROMPT_COMMAND = {|| create_left_prompt}
-$env.PROMPT_COMMAND_RIGHT = {|| null}
-$env.PROMPT_INDICATOR_VI_INSERT = {|| $"($prompt_insert_color)> "}
-$env.PROMPT_INDICATOR_VI_NORMAL = {|| 
-    $"($prompt_normal_color)>>($prompt_insert_color) " 
-}
-$env.PROMPT_MULTILINE_INDICATOR = {|| 
-    $"($prompt_multiline_color):::($prompt_insert_color) "
-}
+$env.BAT_THEME = "gruvbox-dark"
+$env.EDITOR = "hx"
 
 $env.ENV_CONVERSIONS = {
     "PATH": {
@@ -68,29 +61,28 @@ $env.ENV_CONVERSIONS = {
     }
 }
 
-$env.NU_LIB_DIRS = [
-    # FIXME: This default is not implemented in rust code as of 2023-09-06.
-    ($nu.default-config-dir | path join 'scripts') # add <nushell-config-dir>/scripts
-]
-
-$env.NU_PLUGIN_DIRS = [
-    # FIXME: This default is not implemented in rust code as of 2023-09-06.
-    ($nu.default-config-dir | path join 'plugins') # add <nushell-config-dir>/plugins
-]
-
-$env.BAT_THEME = "gruvbox-dark"
-$env.EDITOR = "hx"
-
-$env.PATH = [
-    /Users/benrosen/.nix-profile/bin
-    /usr/local/opt/llvm/bin
-    /Users/benrosen/.cargo/bin
-    /Users/benrosen/Library/pnpm
-    /Users/benrosen/.emacs.d/bin
-    /Applications/kitty.app/Contents/MacOS
-    /Users/benrosen/.local/bin
-    /usr/local/bin
-    /nix/var/nix/profiles/default/bin
-] ++ $env.PATH
-
 $env.LS_COLORS = (vivid generate gruvbox-dark)
+$env.NU_LIB_DIRS = [($nu.default-config-dir | path join 'scripts')]
+$env.NU_PLUGIN_DIRS = [($nu.default-config-dir | path join 'plugins')]
+
+$env.PATH = (
+    $env.PATH
+    | split row (char esep) 
+    | append ($env.HOME | path join ".nix-profile/bin") 
+    | append ($env.HOME | path join ".cargo/bin") 
+    | append "/nix/var/nix/profiles/default/bin" 
+    | uniq
+)
+
+$env.PROMPT_COMMAND = {|| create_left_prompt}
+$env.PROMPT_COMMAND_RIGHT = {|| null}
+$env.PROMPT_INDICATOR_VI_INSERT = {|| $"($prompt_insert_color)> "}
+
+$env.PROMPT_INDICATOR_VI_NORMAL = {|| 
+    $"($prompt_normal_color)>>($prompt_insert_color) " 
+}
+
+$env.PROMPT_MULTILINE_INDICATOR = {|| 
+    $"($prompt_multiline_color):::($prompt_insert_color) "
+}
+
