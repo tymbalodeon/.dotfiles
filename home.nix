@@ -29,6 +29,7 @@ rec {
       fira
       font-awesome
       fzf
+      gh
       git
       gitui
       jq
