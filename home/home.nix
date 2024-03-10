@@ -8,6 +8,7 @@
       ".gitconfig".source = ../.gitconfig;
       ".config/helix/config.toml".source = ../helix/config.toml;
       ".config/helix/languages.toml".source = ../helix/languages.toml;
+      ".config/nushell/colors.nu".source = ../nushell/colors.nu;
     };
 
     packages = with pkgs; [
