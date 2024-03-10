@@ -871,7 +871,7 @@ def --env z [
 ] {
     cd (
         fd --type directory --hidden . $env.HOME 
-        | fzf --reverse
+        | fzf --exact --reverse
     )    
 }
 
