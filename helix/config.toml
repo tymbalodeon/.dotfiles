@@ -2,6 +2,7 @@ theme = "gruvbox"
 
 [editor]
 bufferline = "multiple"
+color-modes = true
 cursorline = true
 mouse = false
 shell = ["nu", "-c"]
