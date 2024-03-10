@@ -844,8 +844,6 @@ $env.config = {
     ]
 }
 
-# source ~/.zoxide.nu
-
 # Open emacs, starting a client if not already running
 def emacs [
     file? = "." # File or directory to open

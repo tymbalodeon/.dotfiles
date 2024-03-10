@@ -147,11 +147,4 @@ $env.PATH = [
     /nix/var/nix/profiles/default/bin
 ] ++ $env.PATH
 
-(
-    zoxide init nushell 
-    | str replace --all "-- $rest" "-- ...$rest" 
-    | str replace --all "def-env" "def --env" 
-    | save -f ~/.zoxide.nu
-)
-
 $env.LS_COLORS = (vivid generate gruvbox-dark)
