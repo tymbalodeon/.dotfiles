@@ -33,7 +33,7 @@
     user = tymbalodeon
 
 [init]
-    defaultBranch = main
+    defaultBranch = trunk
 
 [interactive]
     diffFilter = delta --color-only
