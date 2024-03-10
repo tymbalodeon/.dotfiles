@@ -31,10 +31,13 @@
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nil
       nixfmt
+      nodePackages.pyright
       pipx
       ripgrep
+      ruff-lsp
       rustup
       sd
+      taplo
       tldr
       vivid
       vscode-langservers-extracted

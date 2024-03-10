@@ -37,7 +37,7 @@ right = [
   "position",
   "total-line-numbers",
   "position-percentage",
-  "file-encoding"
+  "file-encoding",
 ]
 mode.normal = "NORMAL"
 mode.insert = "INSERT"
@@ -48,4 +48,9 @@ tab = "all"
 
 [keys.normal]
 C-j = ["extend_to_line_bounds", "delete_selection", "paste_after"]
-C-k = ["extend_to_line_bounds", "delete_selection", "move_line_up", "paste_before"]
+C-k = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "move_line_up",
+  "paste_before",
+]
