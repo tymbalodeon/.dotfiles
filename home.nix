@@ -81,6 +81,7 @@ rec {
     home-manager.enable = true;
     kitty = {
       enable = true;
+      extraConfig = "map kitty_mod+enter launch --cwd=current --type=window";
 
       settings = {
         confirm_os_window_close = 0;

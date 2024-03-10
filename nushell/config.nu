@@ -869,14 +869,10 @@ def emacs [
 def --env z [
     directory?: # Limit the search to this directory
 ] {
-    if ($directory | is-empty) {
-        cd
-    } else {
-        cd (
-            fd --type directory --hidden . $directory 
-            | fzf --reverse
-        )    
-    };
+    cd (
+        fd --type directory --hidden . $env.HOME 
+        | fzf --reverse
+    )    
 }
 
 def rebuild [
