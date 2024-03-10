@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  imports = [ ./home.nix ];
+
   home = {
     file = {
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;

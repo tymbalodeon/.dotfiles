@@ -1,6 +1,7 @@
 { ... }:
 
 rec {
+  imports = [ ./home.nix ];
   file = { ".hushlogin".source = ./.hushlogin; };
   home.homeDirectory = "/Users/benrosen";
 

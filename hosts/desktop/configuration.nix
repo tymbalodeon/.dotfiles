@@ -14,7 +14,7 @@
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
-    users."benrosen" = import ../../home/home.nix;
+    users."benrosen" = import ../../home/linux.nix;
     useGlobalPkgs = true;
   };
 
