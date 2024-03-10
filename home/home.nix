@@ -52,6 +52,8 @@
     sessionVariables = { EDITOR = "hx"; };
   };
 
+  news.display = "silent";
+
   programs = {
     direnv = {
       enable = true;
