@@ -6,16 +6,8 @@
   home = {
     file = {
       ".gitconfig".source = ./.gitconfig;
-      ".hushlogin".source = ./.hushlogin;
       ".config/helix/config.toml".source = ./helix/config.toml;
       ".config/helix/languages.toml".source = ./helix/languages.toml;
-      ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
-      ".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
-      ".config/hypr/wallpaper".source = ./hypr/wallpaper;
-      ".config/kitty/kitty.conf".source = ./kitty/kitty.conf;
-      ".config/kitty/current-theme.conf".source = ./kitty/current-theme.conf;
-      ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
-      ".config/waybar/style.css".source = ./waybar/style.css;
     };
 
     packages = with pkgs; [
@@ -24,19 +16,24 @@
       delta
       eza
       fd
+      fh
       fira
       font-awesome
       fzf
+      gh
       git
       gitui
       jq
       lilypond-unstable
       helix
       macchina
+      marksman
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nil
       nixfmt
+      pipx
       ripgrep
+      rustup
       sd
       tldr
       vivid
@@ -48,9 +45,7 @@
     stateVersion = "23.11";
     username = "benrosen";
 
-    sessionVariables = {
-      EDITOR = "hx";
-    };
+    sessionVariables = { EDITOR = "hx"; };
   };
 
   programs = {
@@ -72,6 +67,18 @@
     };
 
     home-manager.enable = true;
+
+    kitty = {
+      enable = true;
+      extraConfig = "map kitty_mod+enter launch --cwd=current --type=window";
+
+      settings = {
+        confirm_os_window_close = 0;
+        font_family = "CaskaydiaCove Nerd Font";
+      };
+
+      theme = "Gruvbox Dark";
+    };
 
     nushell = {
       enable = true;

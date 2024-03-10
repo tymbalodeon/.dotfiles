@@ -2,10 +2,7 @@
 
 {
   imports =
-    [ 
-      ./hardware-configuration.nix 
-      inputs.home-manager.nixosModules.default 
-    ];
+    [ ./hardware-configuration.nix inputs.home-manager.nixosModules.default ];
 
   boot.loader = {
     systemd-boot.enable = true;
