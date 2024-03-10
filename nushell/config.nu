@@ -869,10 +869,15 @@ def emacs [
 def --env z [
     directory?: # Limit the search to this directory
 ] {
-    cd (
-        fd --type directory --hidden . $env.HOME 
-        | fzf --exact --reverse
-    )    
+    let directories = (
+        fd --type directory --hidden . $env.HOME
+    )
+
+    if ($directory | is-empty) {
+        cd ($directories | fzf --exact --reverse)  
+    } else {
+        cd ($directories | fzf --exact --reverse --filter $directory | head -n 1)
+    }
 }
 
 def --env Z [] {
