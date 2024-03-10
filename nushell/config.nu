@@ -34,7 +34,7 @@ let theme = {
     shape_flag: { fg: $blue attr: b }
     shape_float: { fg: $purple attr: b }
     shape_garbage: { fg: $fg1 bg: $red attr: b}
-    shape_globpattern: {fg: $aqua attr: }
+    shape_globpattern: {fg: $aqua attr: b }
     shape_int: { fg: $purple attr: b }
     shape_internalcall: {fg: $aqua attr: b }
     shape_keyword: { fg: $aqua attr: b }
