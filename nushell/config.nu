@@ -1,257 +1,89 @@
-# Nushell Config File
-#
-# version = "0.87.1"
-
-# For more information on defining custom themes, see
-# https://www.nushell.sh/book/coloring_and_theming.html
-# And here is the theme collection
-# https://github.com/nushell/nu_scripts/tree/main/themes
-let dark_theme = {
-    # color for nushell primitives
-    separator: $fg1 # white
-    leading_trailing_space_bg: { attr: n } # no fg, no bg, attr none effectively turns this off
-    header: {
-        # green_bold
-        fg: $green attr: b
-    }
-    empty: $blue # blue
-    # Closures can be used to choose colors for specific values.
-    # The value (in this case, a bool) is piped into the closure.
-    # eg) {|| if $in { 'light_cyan' } else { 'light_gray' } }
-    bool: { || if $in { $aqua } else { $orange_bright } } # light_cyan
-    int: $fg1 # white
-    filesize: $aqua # cyan
-    duration: $fg1 # white
-    date: $purple # purple
-    range: $fg1 # white
-    float: $fg1 # white
-    string: $fg1 # white
-    nothing: $fg1 # white
-    binary: $fg1 # white
-    cell-path: $fg1 # white
-    row_index: {
-        # green_bold
-        fg: $green attr: b
-    }
-    record: $fg1 # white
-    list: $fg1 # white
-    block: $fg1 # white
-    hints: $gray # dark_gray
-    search_result: {
-        bg: $red # red 
-        fg: $fg1 # white
-    }
-    shape_and: {
-        # purplel_bold
-        fg: $purple attr: b
-    }
-    shape_binary: {
-        # purplel_bold
-        fg: $purple attr: b
-    }
-    shape_block: {
-        # blue_bold
-        fg: $blue attr: b
-    }
-    shape_bool: $aqua_bright # light_cyan
-    shape_closure: {
-        # green_bold
-        fg: $green attr: b
-    }
-    shape_custom: $green # green
-    shape_datetime: {
-        # cyan_bold
-        fg: $aqua attr: b
-    }
-    shape_directory: $aqua # cyan
-    shape_external: $aqua # cyan
-    shape_externalarg: {
-        # green_bold
-        fg: $green attr: b
-    }
-    shape_filepath: $aqua # cyan
-    shape_flag: {
-        # blue_bold
-        fg: $blue attr: b
-    }
-    shape_float: {
-        # purplel_bold
-        fg: $purple attr: b
-    }
-    # shapes are used to change the cli syntax highlighting
-    shape_garbage: { 
-        fg: $fg1 # white 
-        bg: $red # red
-        attr: b
-    }
-    shape_globpattern: {
-        # cyan_bold
-        fg: $aqua attr: b
-    }
-    shape_int: {
-        # purplel_bold
-        fg: $purple attr: b
-    }
-    shape_internalcall: {
-        # cyan_bold
-        fg: $aqua attr: b
-    }
-    shape_keyword: {
-        # cyan_bold
-        fg: $aqua attr: b
-    }
-    shape_list: {
-        # cyan_bold
-        fg: $aqua attr: b
-    }
-    shape_literal: $blue # blue
-    shape_match_pattern: $green # green
+let theme = {
+    separator: $fg1 
+    leading_trailing_space_bg: { attr: n } 
+    header: { fg: $green attr: b }
+    empty: $blue 
+    bool: { || if $in { $aqua } else { $orange_bright } } 
+    int: $fg1 
+    filesize: $aqua 
+    duration: $fg1 
+    date: $purple 
+    range: $fg1 
+    float: $fg1 
+    string: $fg1 
+    nothing: $fg1 
+    binary: $fg1 
+    cell-path: $fg1 
+    row_index: { fg: $green attr: b }
+    record: $fg1 
+    list: $fg1 
+    block: $fg1 
+    hints: $gray 
+    search_result: { bg: $red fg: $fg1 }
+    shape_and: { fg: $purple attr: b }
+    shape_binary: { fg: $purple attr: b }
+    shape_block: { fg: $blue attr: b }
+    shape_bool: $aqua_bright 
+    shape_closure: { fg: $green attr: b }
+    shape_custom: $green 
+    shape_datetime: { fg: $aqua attr: b }
+    shape_directory: $aqua 
+    shape_external: $aqua 
+    shape_externalarg: { fg: $green attr: b }
+    shape_filepath: $aqua 
+    shape_flag: { fg: $blue attr: b }
+    shape_float: { fg: $purple attr: b }
+    shape_garbage: { fg: $fg1 bg: $red attr: b}
+    shape_globpattern: {fg: $aqua attr: }
+    shape_int: { fg: $purple attr: b }
+    shape_internalcall: {fg: $aqua attr: b }
+    shape_keyword: { fg: $aqua attr: b }
+    shape_list: { fg: $aqua attr: b }
+    shape_literal: $blue 
+    shape_match_pattern: $green 
     shape_matching_brackets: { attr: u }
-    shape_nothing: $aqua_bright # light_cyan
-    shape_operator: $yellow # yellow
-    shape_or: {
-        # purplel_bold
-        fg: $purple attr: b
-    }
-    shape_pipe: {
-        # purplel_bold
-        fg: $purple attr: b
-    }
-    shape_range: {
-        # yellow_bold
-        fg: $yellow
-        attr: b
-    }
-    shape_record: {
-        # cyan_bold
-        fg: $aqua attr: b
-    }
-    shape_redirection: {
-        # purplel_bold
-        fg: $purple attr: b
-    }
-    shape_signature: {
-        # green_bold
-        fg: $green attr: b
-    }
-    shape_string: $green # green
-    shape_string_interpolation: {
-        # cyan_bold
-        fg: $aqua attr: b
-    }
-    shape_table: {
-        # blue_bold
-        fg: $blue attr: b
-    }
-    shape_variable: $purple # purple
-    shape_vardecl: $purple # purple
+    shape_nothing: $aqua_bright 
+    shape_operator: $yellow 
+    shape_or: { fg: $purple attr: b }
+    shape_pipe: { fg: $purple attr: b }
+    shape_range: { fg: $yellow attr: b }
+    shape_record: { fg: $aqua attr: b }
+    shape_redirection: { fg: $purple attr: b }
+    shape_signature: { fg: $green attr: b }
+    shape_string: $green 
+    shape_string_interpolation: { fg: $aqua attr: b }
+    shape_table: { fg: $blue attr: b }
+    shape_variable: $purple 
+    shape_vardecl: $purple 
 }
 
-let light_theme = {
-    # color for nushell primitives
-    separator: dark_gray
-    leading_trailing_space_bg: { attr: n } # no fg, no bg, attr none effectively turns this off
-    header: green_bold
-    empty: blue
-    # Closures can be used to choose colors for specific values.
-    # The value (in this case, a bool) is piped into the closure.
-    # eg) {|| if $in { 'dark_cyan' } else { 'dark_gray' } }
-    bool: dark_cyan
-    int: dark_gray
-    filesize: cyan_bold
-    duration: dark_gray
-    date: purple
-    range: dark_gray
-    float: dark_gray
-    string: dark_gray
-    nothing: dark_gray
-    binary: dark_gray
-    cell-path: dark_gray
-    row_index: green_bold
-    record: dark_gray
-    list: dark_gray
-    block: dark_gray
-    hints: dark_gray
-    search_result: {fg: white bg: red}
-    shape_and: purple_bold
-    shape_binary: purple_bold
-    shape_block: blue_bold
-    shape_bool: light_cyan
-    shape_closure: green_bold
-    shape_custom: green
-    shape_datetime: cyan_bold
-    shape_directory: cyan
-    shape_external: cyan
-    shape_externalarg: green_bold
-    shape_filepath: cyan
-    shape_flag: blue_bold
-    shape_float: purple_bold
-    # shapes are used to change the cli syntax highlighting
-    shape_garbage: { fg: white bg: red attr: b}
-    shape_globpattern: cyan_bold
-    shape_int: purple_bold
-    shape_internalcall: cyan_bold
-    shape_keyword: cyan_bold
-    shape_list: cyan_bold
-    shape_literal: blue
-    shape_match_pattern: green
-    shape_matching_brackets: { attr: u }
-    shape_nothing: light_cyan
-    shape_operator: yellow
-    shape_or: purple_bold
-    shape_pipe: purple_bold
-    shape_range: yellow_bold
-    shape_record: cyan_bold
-    shape_redirection: purple_bold
-    shape_signature: green_bold
-    shape_string: green
-    shape_string_interpolation: cyan_bold
-    shape_table: blue_bold
-    shape_variable: purple
-    shape_vardecl: purple
-}
-
-# External completer example
-# let carapace_completer = {|spans|
-#     carapace $spans.0 nushell $spans | from json
-# }
-
-# The default config record. This is where much of your global configuration is setup.
 $env.config = {
-    show_banner: false # true or false to enable or disable the welcome banner at startup
+    show_banner: false 
 
     ls: {
-        use_ls_colors: true # use the LS_COLORS environment variable to colorize output
-        clickable_links: true # enable or disable clickable links. Your terminal has to support links.
+        use_ls_colors: true 
+        clickable_links: true 
     }
 
-    rm: {
-        always_trash: false # always act as if -t was given. Can be overridden with -p
-    }
+    rm: { always_trash: false }
 
     table: {
-        mode: rounded # basic, compact, compact_double, light, thin, with_love, rounded, reinforced, heavy, none, other
-        index_mode: always # "always" show indexes, "never" show indexes, "auto" = show indexes when a table has "index" column
-        show_empty: true # show 'empty list' and 'empty record' placeholders for command output
-        padding: { left: 1, right: 1 } # a left right padding of each column in a table
+        mode: rounded 
+        index_mode: always 
+        show_empty: true 
+        padding: { left: 1, right: 1 } 
+
         trim: {
-            methodology: wrapping # wrapping or truncating
-            wrapping_try_keep_words: true # A strategy used by the 'wrapping' methodology
-            truncating_suffix: "..." # A suffix used by the 'truncating' methodology
+            methodology: wrapping 
+            wrapping_try_keep_words: true 
+            truncating_suffix: "..."
         }
-        header_on_separator: false # show header text on separator/border line
-        # abbreviated_row_count: 10 # limit data rows from top and bottom after reaching a set point
+
+        header_on_separator: false 
     }
 
-    error_style: "fancy" # "fancy" or "plain" for screen reader-friendly error messages
-
-    # datetime_format determines what a datetime rendered in the shell would look like.
-    # Behavior without this configuration point will be to "humanize" the datetime display,
-    # showing something like "a day ago."
-    datetime_format: {
-        # normal: '%a, %d %b %Y %H:%M:%S %z'    # shows up in displays of variables or other datetime's outside of tables
-        # table: '%m/%d/%y %I:%M:%S%p'          # generally shows up in tabular outputs such as ls. commenting this out will change it to the default human readable datetime format
-    }
+    error_style: "fancy" 
+    datetime_format: { normal: '%A, %B %d, %Y %H:%M:%S' }
 
     explore: {
         status_bar_background: {fg: "#1D1F21", bg: "#C4C9C6"},
@@ -271,50 +103,50 @@ $env.config = {
     }
 
     history: {
-        max_size: 100_000 # Session has to be reloaded for this to take effect
-        sync_on_enter: true # Enable to share history between multiple sessions, else you have to close the session to write history to file
-        file_format: "plaintext" # "sqlite" or "plaintext"
-        isolation: false # only available with sqlite file_format. true enables history isolation, false disables it. true will allow the history to be isolated to the current session using up/down arrows. false will allow the history to be shared across all sessions.
+        max_size: 100_000 
+        sync_on_enter: true 
+        file_format: "plaintext" 
+        isolation: false 
     }
 
     completions: {
-        case_sensitive: false # set to true to enable case-sensitive completions
-        quick: true    # set this to false to prevent auto-selecting completions when only one remains
-        partial: true    # set this to false to prevent partial filling of the prompt
-        algorithm: "prefix"    # prefix or fuzzy
+        case_sensitive: false 
+        quick: true    
+        partial: true    
+        algorithm: "prefix"    
         external: {
-            enable: true # set to false to prevent nushell looking into $env.PATH to find more suggestions, `false` recommended for WSL users as this look up may be very slow
-            max_results: 100 # setting it lower can improve completion performance at the cost of omitting some options
-            completer: null # check 'carapace_completer' above as an example
+            enable: true 
+            max_results: 100 
+            completer: null 
         }
     }
 
     filesize: {
-        metric: false # true => KB, MB, GB (ISO standard), false => KiB, MiB, GiB (Windows standard)
-        format: "auto" # b, kb, kib, mb, mib, gb, gib, tb, tib, pb, pib, eb, eib, auto
+        metric: false 
+        format: "auto" 
     }
 
     cursor_shape: {
-        emacs: line # block, underscore, line, blink_block, blink_underscore, blink_line, inherit to skip setting cursor shape (line is the default)
-        vi_insert: line # block, underscore, line, blink_block, blink_underscore, blink_line, inherit to skip setting cursor shape (block is the default)
-        vi_normal: block # block, underscore, line, blink_block, blink_underscore, blink_line, inherit to skip setting cursor shape (underscore is the default)
+        emacs: line 
+        vi_insert: line 
+        vi_normal: block 
     }
 
-    color_config: $dark_theme # if you want a more interesting theme, you can replace the empty record with `$dark_theme`, `$light_theme` or another custom record
+    color_config: $theme 
     use_grid_icons: true
-    footer_mode: "25" # always, never, number_of_rows, auto
-    float_precision: 2 # the precision for displaying floats in tables
-    buffer_editor: "" # command that will be used to edit the current line buffer with ctrl+o, if unset fallback to $env.EDITOR and $env.VISUAL
+    footer_mode: "25" 
+    float_precision: 2 
+    buffer_editor: "" 
     use_ansi_coloring: true
-    bracketed_paste: true # enable bracketed paste, currently useless on windows
-    edit_mode: vi # emacs, vi
-    shell_integration: false # enables terminal shell integration. Off by default, as some terminals have issues with this.
-    render_right_prompt_on_last_line: false # true or false to enable or disable right prompt to be rendered on last line of the prompt.
-    use_kitty_protocol: false # enables keyboard enhancement protocol implemented by kitty console, only if your terminal support this
+    bracketed_paste: true 
+    edit_mode: vi 
+    shell_integration: false 
+    render_right_prompt_on_last_line: false 
+    use_kitty_protocol: false 
 
     hooks: {
-        pre_prompt: [{ null }] # run before the prompt is shown
-        pre_execution: [{ null }] # run before the repl input is run
+        pre_prompt: [{ null }] 
+        pre_execution: [{ null }] 
         env_change: {
             PWD: [
                 {|before, after| null }
@@ -325,15 +157,13 @@ $env.config = {
 
                     direnv export json | from json | default {} | load-env
                 }
-            ] # run if the PWD environment is different since the last repl input
+            ] 
         }
-        display_output: "if (term size).columns >= 100 { table -e } else { table }" # run to display the output of a pipeline
-        command_not_found: { null } # return an error message when a command is not found
+        display_output: "if (term size).columns >= 100 { table -e } else { table }" 
+        command_not_found: { null } 
     }
 
     menus: [
-        # Configuration for default nushell menus
-        # Note the lack of source parameter
         {
             name: completion_menu
             only_buffer_difference: false
@@ -341,7 +171,7 @@ $env.config = {
             type: {
                 layout: columnar
                 columns: 4
-                col_width: 20     # Optional value. If missing all the screen width is used to calculate column width
+                col_width: 20    
                 col_padding: 2
             }
             style: {
@@ -371,7 +201,7 @@ $env.config = {
             type: {
                 layout: description
                 columns: 4
-                col_width: 20     # Optional value. If missing all the screen width is used to calculate column width
+                col_width: 20    
                 col_padding: 2
                 selection_rows: 4
                 description_rows: 10
@@ -443,7 +273,7 @@ $env.config = {
             modifier: none
             keycode: escape
             mode: [emacs, vi_normal, vi_insert]
-            event: { send: esc }    # NOTE: does not appear to work
+            event: { send: esc }  
         }
         {
             name: cancel_command
