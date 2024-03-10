@@ -2,8 +2,11 @@
 
 rec {
   imports = [ ./home.nix ];
-  file = { ".hushlogin".source = ./.hushlogin; };
-  home.homeDirectory = "/Users/benrosen";
+
+  home = {
+    file = { ".hushlogin".source = ../.hushlogin; };
+    homeDirectory = "/Users/benrosen";
+  };
 
   programs.kitty.settings = {
     hide_window_decorations = "yes";
