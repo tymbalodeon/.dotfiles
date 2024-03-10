@@ -9,6 +9,7 @@
       ".config/helix/config.toml".source = ../helix/config.toml;
       ".config/helix/languages.toml".source = ../helix/languages.toml;
       ".config/nushell/colors.nu".source = ../nushell/colors.nu;
+      ".config/nushell/theme.nu".source = ../nushell/theme.nu;
     };
 
     packages = with pkgs; [
