@@ -13,7 +13,7 @@
   outputs = { self, nixpkgs, home-manager, ... }@inputs: {
     homeConfigurations."benrosen" = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.x86_64-darwin;
-      modules = [ ./macos.nix ];
+      modules = [ ./macos/macos.nix ];
     };
 
     nixosConfigurations = let
