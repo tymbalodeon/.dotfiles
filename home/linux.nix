@@ -13,6 +13,6 @@
     };
 
     homeDirectory = "/home/benrosen";
-    packages = with pkgs; [ mako rofi-wayland ];
+    packages = with pkgs; [ mako rofi-wayland zathura ];
   };
 }
