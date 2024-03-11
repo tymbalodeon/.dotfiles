@@ -667,7 +667,7 @@ def rebuild [
         home-manager switch --flake $dotfiles
     } 
 
-    let host = if ($host | ist-empty) {
+    let host = if ($host | is-empty) {
         cat /etc/hostname
     } else {
         $host
