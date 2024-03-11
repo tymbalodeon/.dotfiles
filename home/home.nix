@@ -8,8 +8,6 @@
       ".gitconfig".source = ../.gitconfig;
       ".config/helix/config.toml".source = ../helix/config.toml;
       ".config/helix/languages.toml".source = ../helix/languages.toml;
-      ".config/nushell/colors.nu".source = ../nushell/colors.nu;
-      ".config/nushell/theme.nu".source = ../nushell/theme.nu;
     };
 
     packages = with pkgs; [
@@ -82,7 +80,6 @@
         confirm_os_window_close = 0;
         enable_audio_bell = "no";
         font_family = "CaskaydiaCove Nerd Font";
-        font_size = "8.0";
       };
 
       theme = "Gruvbox Dark";
