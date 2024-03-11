@@ -667,11 +667,13 @@ def rebuild [
         home-manager switch --flake $dotfiles
     } 
 
-    if ($host | is-empty) {
-        return
+    let host = if ($host | ist-empty) {
+        cat /etc/hostname
     } else {
-        sudo nixos-rebuild switch --flake $"($dotfiles)#($host)"
+        $host
     }
+
+    sudo nixos-rebuild switch --flake $"($dotfiles)#($host)"
 }
 
 alias cat = bat --style plain --theme gruvbox-dark
