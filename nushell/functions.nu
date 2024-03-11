@@ -25,6 +25,8 @@ def rebuild [
 
     if (uname) == "Darwin" {
         home-manager switch --flake $dotfiles
+
+        return
     } 
 
     let host = if ($host | is-empty) {
