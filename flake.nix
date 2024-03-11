@@ -10,27 +10,38 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
-    homeConfigurations."benrosen" = home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages.x86_64-darwin;
-      modules = [ ./home/macos.nix ];
-    };
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+    # let
+    # mkNixosSystems = hostName:
+    #   nixpkgs.lib.nixosSystem {
+    #     modules = [
+    #       ./configuration.nix
+    #       {
+    #         inherit hostName;
+    #       }
+    #       # home-manager.nixosModules.default
+    #     ];
 
-    nixosConfigurations = let
-      modules = [ home-manager.nixosModules.default ];
-      specialArgs = { inherit inputs; };
-    in {
-      desktop = nixpkgs.lib.nixosSystem {
-        inherit specialArgs;
+    #     specialArgs = { inherit inputs; };
+    #   };
+    # in 
+    {
+      homeConfigurations."benrosen" =
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.x86_64-darwin;
+          modules = [ ./home/macos.nix ];
+        };
 
-        modules = modules ++ [ ./hosts/desktop/configuration.nix ];
+      nixosConfigurations = {
+        bumbirich = nixpkgs.lib.nixosSystem {
+          modules = [ ./configuration.nix { hostName = "bumbirich"; } ];
+          specialArgs = { inherit inputs; };
+        };
+
+        ruzia = nixpkgs.lib.nixosSystem {
+          modules = [ ./configuration.nix { hostName = "ruzia"; } ];
+          specialArgs = { inherit inputs; };
+        };
       };
-
-      laptop = nixpkgs.lib.nixosSystem {
-        inherit specialArgs;
-
-        modules = modules ++ [ ./hosts/laptop/configuration.nix ];
-      };
     };
-  };
 }

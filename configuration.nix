@@ -1,8 +1,10 @@
-{ inputs, pkgs, ... }:
+{ inputs, pkgs, hostName, ... }:
 
 {
-  imports =
-    [ ./hardware-configuration.nix inputs.home-manager.nixosModules.default ];
+  imports = [
+    ./hosts/${hostName}/hardware-configuration.nix
+    inputs.home-manager.nixosModules.default
+  ];
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -35,7 +37,7 @@
   };
 
   networking = {
-    hostName = "nixos";
+    inherit hostName;
     networkmanager.enable = true;
   };
 
