@@ -668,7 +668,7 @@ def rebuild [
     } 
 
     let host = if ($host | is-empty) {
-        cat /etc/hostname
+        cat /etc/hostname | str trim
     } else {
         $host
     }
