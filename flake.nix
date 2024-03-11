@@ -13,7 +13,7 @@
   outputs = { self, nixpkgs, home-manager, ... }@inputs: {
     homeConfigurations."benrosen" = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.x86_64-darwin;
-      modules = [ ./home/macos.nix ];
+      modules = [ ./macos/macos.nix ];
     };
 
     nixosConfigurations = let
@@ -25,7 +25,7 @@
         value = nixpkgs.lib.nixosSystem {
           modules = [
             ./configuration.nix
-            ./hosts/${hostName}/hardware-configuration.nix
+            ./hardware-configurations/${hostName}-hardware-configuration.nix
             { networking.hostName = hostName; }
           ];
 

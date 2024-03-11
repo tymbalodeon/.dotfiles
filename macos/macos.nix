@@ -1,14 +1,14 @@
 { ... }:
 
 rec {
-  imports = [ ./home.nix ];
+  imports = [ ../home.nix ];
 
   home = {
     file = let
       nushell_config_path =
         "${home.homeDirectory}/Library/Application Support/nushell";
     in {
-      ".hushlogin".source = ../.hushlogin;
+      ".hushlogin".source = ./.hushlogin;
       "${nushell_config_path}/colors.nu".source = ../nushell/colors.nu;
       "${nushell_config_path}/prompt.nu".source = ../nushell/prompt.nu;
       "${nushell_config_path}/theme.nu".source = ../nushell/theme.nu;

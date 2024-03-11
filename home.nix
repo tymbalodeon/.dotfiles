@@ -5,9 +5,9 @@
 
   home = {
     file = {
-      ".gitconfig".source = ../.gitconfig;
-      ".config/helix/config.toml".source = ../helix/config.toml;
-      ".config/helix/languages.toml".source = ../helix/languages.toml;
+      ".gitconfig".source = ./.gitconfig;
+      ".config/helix/config.toml".source = ./helix/config.toml;
+      ".config/helix/languages.toml".source = ./helix/languages.toml;
     };
 
     packages = with pkgs; [
@@ -87,8 +87,8 @@
 
     nushell = {
       enable = true;
-      configFile.source = ../nushell/config.nu;
-      envFile.source = ../nushell/env.nu;
+      configFile.source = ./nushell/config.nu;
+      envFile.source = ./nushell/env.nu;
     };
   };
 }
