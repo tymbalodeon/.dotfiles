@@ -26,12 +26,10 @@
           modules = [
             ./configuration.nix
             ./hosts/${hostName}/hardware-configuration.nix
+            { networking.hostName = hostName; }
           ];
 
-          specialArgs = {
-            inherit inputs;
-            networking.hostName = hostName;
-          };
+          specialArgs = { inherit inputs; };
         };
       };
     in builtins.listToAttrs (map (host: mkHost host) hosts);
