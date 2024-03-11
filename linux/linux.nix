@@ -8,6 +8,7 @@
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
       ".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
       ".config/hypr/wallpaper".source = ./hypr/wallpaper;
+      ".config/nushell/aliases.nu".source = ../nushell/aliases.nu;
       ".config/nushell/colors.nu".source = ../nushell/colors.nu;
       ".config/nushell/prompt.nu".source = ../nushell/prompt.nu;
       ".config/nushell/theme.nu".source = ../nushell/theme.nu;

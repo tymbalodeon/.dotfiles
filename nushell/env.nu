@@ -1,5 +1,5 @@
-use ($nu.default-config-dir | path join "colors.nu") *
-use ($nu.default-config-dir | path join "prompt.nu") *
+source ($nu.default-config-dir | path join "colors.nu")
+source ($nu.default-config-dir | path join "prompt.nu")
 
 $env.PATH = (
     $env.PATH

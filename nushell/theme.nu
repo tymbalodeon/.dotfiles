@@ -1,6 +1,6 @@
-use ($nu.default-config-dir | path join "colors.nu") *
+source ($nu.default-config-dir | path join "colors.nu")
 
-export def get_theme [] = {
+def get_theme [] = {
     {
         separator: $fg1 
         leading_trailing_space_bg: { attr: n } 
