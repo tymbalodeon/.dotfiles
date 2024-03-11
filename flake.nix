@@ -10,62 +10,30 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
-    # let
+  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+    homeConfigurations."benrosen" = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-darwin;
+      modules = [ ./home/macos.nix ];
+    };
 
-    # mkNixosSystems = hostName:
-    #   nixpkgs.lib.nixosSystem {
-    #     modules = [
-    #       ./configuration.nix
-    #       {
-    #         inherit hostName;
-    #       }
-    #       # home-manager.nixosModules.default
-    #     ];
+    nixosConfigurations = let
+      hosts = [ "bumbirich" "ruzia" ];
 
-    #     specialArgs = { inherit inputs; };
-    #   };
-    # in 
-    {
-      homeConfigurations."benrosen" =
-        home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-darwin;
-          modules = [ ./home/macos.nix ];
-        };
+      mkHost = hostName: {
+        name = hostName;
 
-      nixosConfigurations = let
-        mkHost = hostName: {
-          name = hostName;
+        value = nixpkgs.lib.nixosSystem {
+          modules = [
+            ./configuration.nix
+            ./hosts/${hostName}/hardware-configuration.nix
+          ];
 
-          value = nixpkgs.lib.nixosSystem {
-            modules = [
-              ./configuration.nix
-              ./hosts/${hostName}/hardware-configuration.nix
-            ];
-
-            specialArgs = {
-              inherit inputs;
-              networking.hostName = hostName;
-            };
+          specialArgs = {
+            inherit inputs;
+            networking.hostName = hostName;
           };
         };
-      in builtins.listToAttrs [ (mkHost "bumbirich") (mkHost "ruzia") ];
-      # {
-      #   bumbirich = nixpkgs.lib.nixosSystem {
-      #     modules = [
-      #       ./configuration.nix
-      #       ./hosts/bumbirich/hardware-configuration.nix
-      #     ];
-      #     specialArgs = {
-      #       inherit inputs;
-      #       networking.hostName = "bumbirich";
-      #     };
-      #   };
-
-      # ruzia = nixpkgs.lib.nixosSystem {
-      #   modules = [ ./configuration.nix { hostName = "ruzia"; } ];
-      #   specialArgs = { inherit inputs; };
-      # };
-      # };
-    };
+      };
+    in builtins.listToAttrs (map (host: mkHost host) hosts);
+  };
 }
