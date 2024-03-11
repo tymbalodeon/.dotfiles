@@ -3,7 +3,7 @@ source ($nu.default-config-dir | path join "functions.nu")
 source ($nu.default-config-dir | path join "theme.nu")
 
 $env.config = {
-    color_config: (get_theme)
+    color_config: $theme
 
     cursor_shape: {
         vi_insert: line        

@@ -10,6 +10,7 @@
       ".config/hypr/wallpaper".source = ./hypr/wallpaper;
       ".config/nushell/aliases.nu".source = ../nushell/aliases.nu;
       ".config/nushell/colors.nu".source = ../nushell/colors.nu;
+      ".config/nushell/functions.nu".source = ../nushell/functions.nu;
       ".config/nushell/prompt.nu".source = ../nushell/prompt.nu;
       ".config/nushell/theme.nu".source = ../nushell/theme.nu;
       ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
