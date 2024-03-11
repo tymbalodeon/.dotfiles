@@ -1,10 +1,7 @@
-{ inputs, pkgs, hostName, ... }:
+{ inputs, pkgs, ... }:
 
 {
-  imports = [
-    ./hosts/${hostName}/hardware-configuration.nix
-    inputs.home-manager.nixosModules.default
-  ];
+  imports = [ inputs.home-manager.nixosModules.default ];
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -16,7 +13,7 @@
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
-    users."benrosen" = import ../../home/linux.nix;
+    users."benrosen" = import ./home/linux.nix;
     useGlobalPkgs = true;
   };
 
@@ -36,10 +33,7 @@
     };
   };
 
-  networking = {
-    inherit hostName;
-    networkmanager.enable = true;
-  };
+  networking = { networkmanager.enable = true; };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;

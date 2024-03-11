@@ -12,6 +12,7 @@
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
     # let
+
     # mkNixosSystems = hostName:
     #   nixpkgs.lib.nixosSystem {
     #     modules = [
@@ -32,16 +33,39 @@
           modules = [ ./home/macos.nix ];
         };
 
-      nixosConfigurations = {
-        bumbirich = nixpkgs.lib.nixosSystem {
-          modules = [ ./configuration.nix { hostName = "bumbirich"; } ];
-          specialArgs = { inherit inputs; };
-        };
+      nixosConfigurations = let
+        mkHost = hostName: {
+          name = hostName;
 
-        ruzia = nixpkgs.lib.nixosSystem {
-          modules = [ ./configuration.nix { hostName = "ruzia"; } ];
-          specialArgs = { inherit inputs; };
+          value = nixpkgs.lib.nixosSystem {
+            modules = [
+              ./configuration.nix
+              ./hosts/${hostName}/hardware-configuration.nix
+            ];
+
+            specialArgs = {
+              inherit inputs;
+              networking.hostName = hostName;
+            };
+          };
         };
-      };
+      in builtins.listToAttrs [ (mkHost "bumbirich") (mkHost "ruzia") ];
+      # {
+      #   bumbirich = nixpkgs.lib.nixosSystem {
+      #     modules = [
+      #       ./configuration.nix
+      #       ./hosts/bumbirich/hardware-configuration.nix
+      #     ];
+      #     specialArgs = {
+      #       inherit inputs;
+      #       networking.hostName = "bumbirich";
+      #     };
+      #   };
+
+      # ruzia = nixpkgs.lib.nixosSystem {
+      #   modules = [ ./configuration.nix { hostName = "ruzia"; } ];
+      #   specialArgs = { inherit inputs; };
+      # };
+      # };
     };
 }
