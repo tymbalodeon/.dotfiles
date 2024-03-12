@@ -44,12 +44,12 @@ def --env z [
     if ($directory | is-empty) {
         cd (
             fd --type directory --hidden . $env.HOME 
-            | fzf --exact --reverse
+            | fzf --exact
         )  
     } else {
         cd (
             fd --type directory --hidden . $env.HOME 
-            | fzf --exact --reverse --filter $directory | head -n 1
+            | fzf --exact --filter $directory | head -n 1
         )
     }
 }
