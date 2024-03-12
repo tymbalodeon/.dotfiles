@@ -29,3 +29,6 @@ $env.config = {
 
     show_banner: false 
 }
+
+source ($nu.default-config-dir | path join "zoxide.nu")
+

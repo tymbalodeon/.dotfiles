@@ -44,6 +44,7 @@
       vivid
       vscode-langservers-extracted
       yazi
+      zoxide
     ];
 
     stateVersion = "23.11";

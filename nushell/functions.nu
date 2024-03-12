@@ -38,7 +38,7 @@ def rebuild [
     sudo nixos-rebuild switch --flake $"($dotfiles)#($host)"
 }
 
-def --env z [
+def --env f [
     directory?: # Limit the search to this directory
 ] {
     if ($directory | is-empty) {
@@ -53,8 +53,3 @@ def --env z [
         )
     }
 }
-
-def --env Z [] {
-    cd
-}
-
