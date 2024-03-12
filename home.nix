@@ -18,6 +18,7 @@
       fd
       fh
       fira
+      flavours
       font-awesome
       fzf
       gh
