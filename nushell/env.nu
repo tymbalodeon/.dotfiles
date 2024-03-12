@@ -7,6 +7,7 @@ $env.PATH = (
     | append ($env.HOME | path join ".nix-profile/bin") 
     | append ($env.HOME | path join ".cargo/bin") 
     | append ($env.HOME | path join ".local/bin")
+    | append "/usr/local/bin"
     | uniq
 )
 
