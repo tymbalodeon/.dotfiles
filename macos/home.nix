@@ -4,9 +4,7 @@ rec {
   imports = [ ../home.nix ];
 
   home = {
-    file = let
-      nushell_config_path =
-        "${home.homeDirectory}/Library/Application Support/nushell";
+    file = let nushell_config_path = "Library/Application Support/nushell";
     in {
       ".hushlogin".source = ./.hushlogin;
       "${nushell_config_path}/aliases.nu".source = ../nushell/aliases.nu;
@@ -14,6 +12,7 @@ rec {
       "${nushell_config_path}/functions.nu".source = ../nushell/functions.nu;
       "${nushell_config_path}/prompt.nu".source = ../nushell/prompt.nu;
       "${nushell_config_path}/theme.nu".source = ../nushell/theme.nu;
+      ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
 
     homeDirectory = "/Users/benrosen";

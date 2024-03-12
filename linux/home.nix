@@ -15,6 +15,7 @@
       ".config/nushell/theme.nu".source = ../nushell/theme.nu;
       ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
       ".config/waybar/style.css".source = ./waybar/style.css;
+      ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
 
     homeDirectory = "/home/benrosen";
