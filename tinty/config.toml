@@ -2,4 +2,4 @@
 path = "https://github.com/kdrag0n/base16-kitty"
 name = "kitty"
 themes-dir = "colors"
-hook = "cp --force %f ~/.config/kitty/current-theme.conf"
+hook = "cp --force %f ~/.dotfiles/kitty/current-theme.conf"
