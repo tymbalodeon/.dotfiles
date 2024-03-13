@@ -1,3 +1,4 @@
+alias bat = bat --theme base16
 alias just = just --unstable
 alias l = ls --long
 alias la = ls --long --all
