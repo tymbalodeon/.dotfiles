@@ -78,14 +78,27 @@ def theme [
         $theme
     }
 
-    let applications = if not ([$helix $kitty] | any {|application| $application}) {
+    let applications = if not (
+        [$helix $kitty] 
+        | any {|application| $application}
+    ) {
         ["shell"]
     } else {
         mut applications = []
+
         if $helix { $applications = ($applications | append "helix") }
         if $kitty { $applications = ($applications | append "kitty") }
         if $shell { $applications = ($applications | append "shell") }
+
         $applications
+    }
+
+    if $shell { 
+        (
+            open ($nu.default-config-dir | path join "tinty.toml") 
+            | upsert theme $theme 
+            | save --force ($env.HOME | path join ".dotfiles/nushell/tinty.toml")
+        )
     }
 
     for application in $applications {

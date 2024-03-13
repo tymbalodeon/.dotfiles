@@ -12,6 +12,7 @@ rec {
       "${nushell_config_path}/functions.nu".source = ../nushell/functions.nu;
       "${nushell_config_path}/prompt.nu".source = ../nushell/prompt.nu;
       "${nushell_config_path}/theme.nu".source = ../nushell/theme.nu;
+      "${nushell_config_path}/tinty.toml".source = ../nushell/tinty.toml;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
 
