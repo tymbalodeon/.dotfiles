@@ -1,9 +1,13 @@
 shell = "nu -c '{}'"
 
 [[items]]
-path = "https://github.com/tinted-theming/base16-helix"
 name = "helix"
+path = "https://github.com/tinted-theming/base16-helix"
 themes-dir = "themes"
 hook = """
-sed -i "" -E 's/theme = \".+\"/theme = \"theme\"/g' ~/.dotfiles/helix/config.toml 
-&& cp --force %f ~/.dotfiles/helix/themes/theme.toml"""
+let helix_dir = ($env.HOME | path join ".dotfiles/helix");
+cp --force %f ($helix_dir | path join "themes/theme.toml");
+let helix_config = ($helix_dir | path join "config.toml");
+open $helix_config | upsert theme "theme" | save --force $helix_config;
+taplo format $helix_config
+"""

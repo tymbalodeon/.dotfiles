@@ -1,7 +1,7 @@
 shell = "nu -c '{}'"
 
 [[items]]
-path = "https://github.com/kdrag0n/base16-kitty"
 name = "kitty"
+path = "https://github.com/kdrag0n/base16-kitty"
 themes-dir = "colors"
 hook = "cp --force %f ~/.dotfiles/kitty/theme.conf"

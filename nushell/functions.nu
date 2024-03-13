@@ -72,7 +72,7 @@ def set-theme [
     }
 
     let theme = if ($theme | is-empty) {
-        tinty list | fzf
+        tinty list | fzf | str trim
     } else {
         $theme
     }
@@ -80,8 +80,8 @@ def set-theme [
     mut applications = []
     let all = not ([$helix $kitty] | any {|application| $application})
 
-    if $all or $helix { $applications = ($applications | append "helix") }
-    if $all or $kitty { $applications = ($applications | append "kitty") }
+    if ($all or $helix) { $applications = ($applications | append "helix") }
+    if ($all or $kitty) { $applications = ($applications | append "kitty") }
 
     for application in $applications {
         apply-theme $application $theme
