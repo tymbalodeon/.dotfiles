@@ -57,11 +57,12 @@ def switch [
 }
 
 # Set theme for various applications. See `--help` for options. When no options
-# are passed, the theme will be applied to all supported applications.
+# are passed, the theme will be temporarily applied to the shell.
 def set-theme [
     theme? # The theme to set
     --helix # Set theme for helix
     --kitty # Set theme for kitty
+    --shell # Set theme for shell (default)
 ] {
     let config_dir = ($env.HOME | path join ".config/tinty")
 
@@ -83,6 +84,7 @@ def set-theme [
         mut applications = []
         if $helix { $applications = ($applications | append "helix") }
         if $kitty { $applications = ($applications | append "kitty") }
+        if $shell { $applications = ($applications | append "shell") }
         $applications
     }
 
