@@ -1,0 +1,9 @@
+shell = "nu -c '{}'"
+
+[[items]]
+path = "https://github.com/tinted-theming/base16-helix"
+name = "helix"
+themes-dir = "themes"
+hook = """
+sed -i "" -E 's/theme = \".+\"/theme = \"theme\"/g' ~/.dotfiles/helix/config.toml 
+&& cp --force %f ~/.dotfiles/helix/themes/theme.toml"""

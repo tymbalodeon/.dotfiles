@@ -9,8 +9,10 @@
       ".config/bat/config".source = ./bat/config;
       ".config/helix/config.toml".source = ./helix/config.toml;
       ".config/helix/languages.toml".source = ./helix/languages.toml;
-      ".config/kitty/current-theme.conf".source = ./kitty/current-theme.conf;
-      ".config/tinty/config.toml".source = ./tinty/config.toml;
+      ".config/helix/themes/theme.toml".source = ./helix/themes/theme.toml;
+      ".config/kitty/theme.conf".source = ./kitty/theme.conf;
+      ".config/tinty/helix.toml".source = ./tinty/helix.toml;
+      ".config/tinty/kitty.toml".source = ./tinty/kitty.toml;
     };
 
     packages = with pkgs; [
@@ -84,7 +86,7 @@
         confirm_os_window_close = 0;
         enable_audio_bell = "no";
         font_family = "CaskaydiaCove Nerd Font";
-        include = "current-theme.conf";
+        include = "theme.conf";
       };
     };
 

@@ -18,6 +18,7 @@ def emacs [
     }
 }
 
+# Interactively search for a directory and cd into it
 def --env f [
     directory?: # Limit the search to this directory
 ] {
@@ -34,7 +35,8 @@ def --env f [
     }
 }
 
-def rebuild [
+# Switch to the current state of ~/.dotfiles
+def switch [
     host?: # The target host configuration
 ] {
     let dotfiles = ($env.HOME | path join ".dotfiles");
@@ -54,8 +56,34 @@ def rebuild [
     sudo nixos-rebuild switch --flake $"($dotfiles)#($host)"
 }
 
-def themes [] {
-    let config_file = ($env.HOME | path join ".config/tinty/config.toml")
-    tinty install --config $config_file
-    tinty apply (tinty list | fzf) --config $config_file
+# Set theme for various applications. See `--help` for options. When no options
+# are passed, the theme will be applied to all supported applications.
+def set-theme [
+    theme? # The theme to set
+    --helix # Set theme for helix
+    --kitty # Set theme for kitty
+] {
+    let config_dir = ($env.HOME | path join ".config/tinty")
+
+    def apply-theme [application theme] {
+        let config_file = ($config_dir | path join $"($application).toml")
+        tinty --config $config_file install
+        tinty --config $config_file apply $theme
+    }
+
+    let theme = if ($theme | is-empty) {
+        tinty list | fzf
+    } else {
+        $theme
+    }
+
+    mut applications = []
+    let all = not ([$helix $kitty] | any {|application| $application})
+
+    if $all or $helix { $applications = ($applications | append "helix") }
+    if $all or $kitty { $applications = ($applications | append "kitty") }
+
+    for application in $applications {
+        apply-theme $application $theme
+    }
 }
