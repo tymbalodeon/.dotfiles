@@ -9,6 +9,8 @@
       ".config/bat/config".source = ./bat/config;
       ".config/helix/config.toml".source = ./helix/config.toml;
       ".config/helix/languages.toml".source = ./helix/languages.toml;
+      ".config/kitty/current-theme.conf".source = ./kitty/current-theme.conf;
+      ".config/tinty/config.toml".source = ./tinty/config.toml;
     };
 
     packages = with pkgs; [
@@ -82,9 +84,8 @@
         confirm_os_window_close = 0;
         enable_audio_bell = "no";
         font_family = "CaskaydiaCove Nerd Font";
+        include = "current-theme.conf";
       };
-
-      theme = "Gruvbox Dark";
     };
 
     nushell = {
