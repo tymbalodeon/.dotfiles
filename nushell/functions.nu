@@ -58,7 +58,7 @@ def switch [
 
 # Set theme for various applications. See `--help` for options. When no options
 # are passed, the theme will be temporarily applied to the shell.
-def set-theme [
+def theme [
     theme? # The theme to set
     --helix # Set theme for helix
     --kitty # Set theme for kitty
