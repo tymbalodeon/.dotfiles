@@ -77,11 +77,14 @@ def set-theme [
         $theme
     }
 
-    mut applications = []
-    let all = not ([$helix $kitty] | any {|application| $application})
-
-    if ($all or $helix) { $applications = ($applications | append "helix") }
-    if ($all or $kitty) { $applications = ($applications | append "kitty") }
+    let applications = if not ([$helix $kitty] | any {|application| $application}) {
+        ["shell"]
+    } else {
+        mut applications = []
+        if $helix { $applications = ($applications | append "helix") }
+        if $kitty { $applications = ($applications | append "kitty") }
+        $applications
+    }
 
     for application in $applications {
         apply-theme $application $theme

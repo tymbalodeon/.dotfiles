@@ -1,0 +1,5 @@
+[[items]]
+name = "shell"
+path = "https://github.com/tinted-theming/base16-shell"
+themes-dir = "scripts"
+hook = "source %f"
