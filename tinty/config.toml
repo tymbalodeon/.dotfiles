@@ -1,3 +1,5 @@
+shell = "nu -c '{}'"
+
 [[items]]
 path = "https://github.com/kdrag0n/base16-kitty"
 name = "kitty"

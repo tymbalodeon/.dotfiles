@@ -18,6 +18,22 @@ def emacs [
     }
 }
 
+def --env f [
+    directory?: # Limit the search to this directory
+] {
+    if ($directory | is-empty) {
+        cd (
+            fd --type directory --hidden . $env.HOME 
+            | fzf --exact
+        )  
+    } else {
+        cd (
+            fd --type directory --hidden . $env.HOME 
+            | fzf --exact --filter $directory | head -n 1
+        )
+    }
+}
+
 def rebuild [
     host?: # The target host configuration
 ] {
@@ -38,18 +54,8 @@ def rebuild [
     sudo nixos-rebuild switch --flake $"($dotfiles)#($host)"
 }
 
-def --env f [
-    directory?: # Limit the search to this directory
-] {
-    if ($directory | is-empty) {
-        cd (
-            fd --type directory --hidden . $env.HOME 
-            | fzf --exact
-        )  
-    } else {
-        cd (
-            fd --type directory --hidden . $env.HOME 
-            | fzf --exact --filter $directory | head -n 1
-        )
-    }
+def themes [] {
+    let config_file = ($env.HOME | path join ".config/tinty/config.toml")
+    tinty install --config $config_file
+    tinty apply (tinty list | fzf) --config $config_file
 }
