@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   fonts.fontconfig.enable = true;
@@ -19,13 +19,13 @@
       fd
       fh
       fira
-      flavours
       font-awesome
       fzf
       gh
       git
       gitui
       jq
+      just
       lilypond-unstable
       helix
       macchina
@@ -47,10 +47,9 @@
       zoxide
     ];
 
+    sessionVariables = { EDITOR = "hx"; };
     stateVersion = "23.11";
     username = "benrosen";
-
-    sessionVariables = { EDITOR = "hx"; };
   };
 
   news.display = "silent";
