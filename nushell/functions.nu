@@ -68,7 +68,7 @@ def theme [
 
     def apply-theme [application theme] {
         let config_file = ($config_dir | path join $"($application).toml")
-        tinty --config $config_file install
+        tinty --config $config_file install out> /dev/null
         tinty --config $config_file apply $theme
     }
 

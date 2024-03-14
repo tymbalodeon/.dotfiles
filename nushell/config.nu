@@ -30,10 +30,11 @@ $env.config = {
     show_banner: false 
 }
 
-command -v tinty out+err> /dev/null; 
-tinty apply (
-    open ($nu.default-config-dir | path join "tinty.toml") 
-    | get theme
-)
+if not (which tinty | is-empty) {
+    tinty apply (
+        open ($nu.default-config-dir | path join "tinty.toml") 
+        | get theme
+    )
+}
 
 source ($nu.default-config-dir | path join "zoxide.nu")
