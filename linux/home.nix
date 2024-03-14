@@ -11,11 +11,14 @@
       ".config/nushell/aliases.nu".source = ../nushell/aliases.nu;
       ".config/nushell/colors.nu".source = ../nushell/colors.nu;
       ".config/nushell/functions.nu".source = ../nushell/functions.nu;
+      ".config/nushell/theme-function.nu".source = ./nushell/theme-function.nu;
       ".config/nushell/prompt.nu".source = ../nushell/prompt.nu;
       ".config/nushell/theme.nu".source = ../nushell/theme.nu;
       ".config/nushell/themes.toml".source = ../nushell/themes.toml;
+      ".config/rofi/config.rasi".source = ./rofi/config.rasi;
       ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
       ".config/waybar/style.css".source = ./waybar/style.css;
+      ".config/tinty/rofi.toml".source = ./tinty/rofi.toml;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
 

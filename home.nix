@@ -14,6 +14,7 @@
       ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
       ".config/tinty/helix.toml".source = ./tinty/helix.toml;
       ".config/tinty/kitty.toml".source = ./tinty/kitty.toml;
+      ".config/tinty/shell.toml".source = ./tinty/shell.toml;
     };
 
     packages = with pkgs; [

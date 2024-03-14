@@ -1,0 +1,7 @@
+shell = "nu -c '{}'"
+
+[[items]]
+name = "rofi"
+path = "https://github.com/tinted-theming/base16-rofi"
+themes-dir = "themes"
+hook = "cp --force %f ~/.dotfiles/linux/rofi/config.rasi"

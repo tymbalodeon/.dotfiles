@@ -1,8 +1,6 @@
 { inputs, pkgs, ... }:
 
 {
-  imports = [ inputs.home-manager.nixosModules.default ];
-
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
@@ -33,8 +31,8 @@
     };
   };
 
+  imports = [ inputs.home-manager.nixosModules.default ];
   networking = { networkmanager.enable = true; };
-
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
 
