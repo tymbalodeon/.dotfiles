@@ -8,6 +8,7 @@
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
       ".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
       ".config/hypr/wallpaper".source = ./hypr/wallpaper;
+      ".config/mako/config".source = ./mako/config;
       ".config/nushell/aliases.nu".source = ../nushell/aliases.nu;
       ".config/nushell/colors.nu".source = ../nushell/colors.nu;
       ".config/nushell/functions.nu".source = ../nushell/functions.nu;
@@ -19,6 +20,7 @@
       ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
       ".config/waybar/style.css".source = ./waybar/style.css;
       ".config/tinty/rofi.toml".source = ./tinty/rofi.toml;
+      ".config/tinty/mako.toml".source = ./tinty/mako.toml;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
 

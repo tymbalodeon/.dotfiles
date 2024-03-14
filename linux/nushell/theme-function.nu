@@ -8,6 +8,7 @@ def theme [
     --fzf # Set theme for fzf
     --helix # Set theme for helix
     --kitty # Set theme for kitty
+    --mako # Set theme for mako
     --rofi # Set theme for rofi
     --shell # Set (persistent) theme for shell
 ] {
@@ -26,7 +27,7 @@ def theme [
     }
 
     let applications = if not (
-        [$fzf $helix $kitty $rofi] 
+        [$fzf $helix $kitty $mako $rofi] 
         | any {|application| $application}
     ) {
         ["shell"]
@@ -36,6 +37,7 @@ def theme [
         if ($all or $fzf) { $applications = ($applications | append "fzf") }
         if ($all or $helix) { $applications = ($applications | append "helix") }
         if ($all or $kitty) { $applications = ($applications | append "kitty") }
+        if ($all or $mako) { $applications = ($applications | append "mako") }
         if ($all or $rofi) { $applications = ($applications | append "rofi") }
         if ($all or $shell) { $applications = ($applications | append "shell") }
 
