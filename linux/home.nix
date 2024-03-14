@@ -13,7 +13,7 @@
       ".config/nushell/functions.nu".source = ../nushell/functions.nu;
       ".config/nushell/prompt.nu".source = ../nushell/prompt.nu;
       ".config/nushell/theme.nu".source = ../nushell/theme.nu;
-      ".config/nushell/tinty.toml".source = ../nushell/tinty.toml;
+      ".config/nushell/themes.toml".source = ../nushell/themes.toml;
       ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
       ".config/waybar/style.css".source = ./waybar/style.css;
       ".rustup/settings.toml".source = ./rustup/settings.toml;

@@ -30,11 +30,12 @@ $env.config = {
     show_banner: false 
 }
 
+let themes = (open ($nu.default-config-dir | path join "themes.toml"))
+$env.FZF_DEFAULT_OPTS = ($themes | get FZF_DEFAULT_OPTS)
+
 if not (which tinty | is-empty) {
-    tinty apply (
-        open ($nu.default-config-dir | path join "tinty.toml") 
-        | get theme
-    )
+    tinty apply ($themes | get shell_theme)
 }
+
 
 source ($nu.default-config-dir | path join "zoxide.nu")

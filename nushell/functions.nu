@@ -60,6 +60,7 @@ def switch [
 # are passed, the theme will be temporarily applied to the shell.
 def theme [
     theme? # The theme to set
+    --fzf # Set theme for fzf
     --helix # Set theme for helix
     --kitty # Set theme for kitty
     --shell # Set theme for shell (default)
@@ -79,13 +80,14 @@ def theme [
     }
 
     let applications = if not (
-        [$helix $kitty] 
+        [$fzf $helix $kitty] 
         | any {|application| $application}
     ) {
         ["shell"]
     } else {
         mut applications = []
 
+        if $fzf { $applications = ($applications | append "fzf") }
         if $helix { $applications = ($applications | append "helix") }
         if $kitty { $applications = ($applications | append "kitty") }
         if $shell { $applications = ($applications | append "shell") }
@@ -95,9 +97,9 @@ def theme [
 
     if $shell { 
         (
-            open ($nu.default-config-dir | path join "tinty.toml") 
+            open ($nu.default-config-dir | path join "themes.toml") 
             | upsert theme $theme 
-            | save --force ($env.HOME | path join ".dotfiles/nushell/tinty.toml")
+            | save --force ($env.HOME | path join ".dotfiles/nushell/themes.toml")
         )
     }
 
