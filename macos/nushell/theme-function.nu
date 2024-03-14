@@ -4,6 +4,7 @@
 # reloaded, and/or services restarted in order for changes to be applied.
 def theme [
     theme?: string # The theme to set
+    --all # Set all themes
     --fzf # Set theme for fzf
     --helix # Set theme for helix
     --kitty # Set theme for kitty
@@ -31,10 +32,10 @@ def theme [
     } else {
         mut applications = []
 
-        if $fzf { $applications = ($applications | append "fzf") }
-        if $helix { $applications = ($applications | append "helix") }
-        if $kitty { $applications = ($applications | append "kitty") }
-        if $shell { $applications = ($applications | append "shell") }
+        if ($all or $fzf) { $applications = ($applications | append "fzf") }
+        if ($all or $helix) { $applications = ($applications | append "helix") }
+        if ($all or $kitty) { $applications = ($applications | append "kitty") }
+        if ($all or $shell) { $applications = ($applications | append "shell") }
 
         $applications
     }
