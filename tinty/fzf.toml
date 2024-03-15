@@ -8,7 +8,7 @@ hook = """
 (
   let themes_file = (
     $env.HOME | path join ".dotfiles/nushell/themes.toml"
-  )
+  );
 
   open $themes_file 
   | upsert FZF_DEFAULT_OPTS (
