@@ -26,6 +26,10 @@ def theme [
         $theme
     }
 
+    if ($theme | is-empty) {
+        return
+    }
+
     let applications = if not (
         [$all $fzf $helix $kitty $mako $rofi] 
         | any {|application| $application}
