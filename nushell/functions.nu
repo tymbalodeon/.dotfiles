@@ -37,7 +37,7 @@ def --env f [
 
 # Rebuild and switch to (or --test) the current configuration
 def rebuild [
-    host?: # The target host configuration (auto-detected if not specified)
+    host?: string # The target host configuration (auto-detected if not specified)
     --test # Apply the configuration without adding it to the boot menu
 ] {
     let dotfiles = ($env.HOME | path join ".dotfiles");
