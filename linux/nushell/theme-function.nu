@@ -44,7 +44,7 @@ def theme [
         $applications
     }
 
-    if $shell { 
+    if ($all or $shell) { 
         (
             open ($nu.default-config-dir | path join "themes.toml") 
             | upsert theme $theme 
