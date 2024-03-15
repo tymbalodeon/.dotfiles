@@ -1,4 +1,4 @@
-export def create_left_prompt [] {
+def create_left_prompt [] {
     let home =  $nu.home-path
 
     let dir = (
@@ -45,16 +45,14 @@ export def create_left_prompt [] {
     }
 }
 
-export-env {
-  $env.PROMPT_COMMAND = {|| create_left_prompt}
-  $env.PROMPT_COMMAND_RIGHT = {|| null}
-  $env.PROMPT_INDICATOR_VI_INSERT = {|| $"($prompt_insert_color)> "}
+$env.PROMPT_COMMAND = {|| create_left_prompt}
+$env.PROMPT_COMMAND_RIGHT = {|| null}
+$env.PROMPT_INDICATOR_VI_INSERT = {|| $"($prompt_insert_color)> "}
 
-  $env.PROMPT_INDICATOR_VI_NORMAL = {|| 
-      $"($prompt_normal_color)>>($prompt_insert_color) " 
-  }
+$env.PROMPT_INDICATOR_VI_NORMAL = {|| 
+  $"($prompt_normal_color)>>($prompt_insert_color) " 
+}
 
-  $env.PROMPT_MULTILINE_INDICATOR = {|| 
-      $"($prompt_multiline_color):::($prompt_insert_color) "
-  }
+$env.PROMPT_MULTILINE_INDICATOR = {|| 
+  $"($prompt_multiline_color):::($prompt_insert_color) "
 }
