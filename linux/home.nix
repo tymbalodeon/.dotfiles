@@ -17,10 +17,12 @@
       ".config/nushell/theme.nu".source = ../nushell/theme.nu;
       ".config/nushell/themes.toml".source = ../nushell/themes.toml;
       ".config/rofi/config.rasi".source = ./rofi/config.rasi;
+      ".config/waybar/colors.css".source = ./waybar/colors.css;
       ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
       ".config/waybar/style.css".source = ./waybar/style.css;
       ".config/tinty/rofi.toml".source = ./tinty/rofi.toml;
       ".config/tinty/mako.toml".source = ./tinty/mako.toml;
+      ".config/tinty/waybar.toml".source = ./tinty/waybar.toml;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
 

@@ -11,6 +11,7 @@ def theme [
     --mako # Set theme for mako
     --rofi # Set theme for rofi
     --shell # Set (persistent) theme for shell
+    --waybar # Set theme for waybar
 ] {
     let config_dir = ($env.HOME | path join ".config/tinty")
 
@@ -31,7 +32,7 @@ def theme [
     }
 
     let applications = if not (
-        [$all $fzf $helix $kitty $mako $rofi] 
+        [$all $fzf $helix $kitty $mako $rofi $waybar] 
         | any {|application| $application}
     ) {
         ["shell"]
@@ -44,6 +45,7 @@ def theme [
         if ($all or $mako) { $applications = ($applications | append "mako") }
         if ($all or $rofi) { $applications = ($applications | append "rofi") }
         if ($all or $shell) { $applications = ($applications | append "shell") }
+        if ($all or $waybar) { $applications = ($applications | append "waybar") }
 
         $applications
     }
