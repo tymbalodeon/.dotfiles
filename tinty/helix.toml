@@ -8,6 +8,5 @@ hook = """
 let helix_dir = ($env.HOME | path join ".dotfiles/helix");
 cp --force %f ($helix_dir | path join "themes/theme.toml");
 let helix_config = ($helix_dir | path join "config.toml");
-open $helix_config | upsert theme "theme" | save --force $helix_config;
-taplo format $helix_config
+open $helix_config | upsert theme "theme" | save --force $helix_config
 """
