@@ -47,7 +47,7 @@ def theme [
     if ($all or $shell) { 
         (
             open ($nu.default-config-dir | path join "themes.toml") 
-            | set theme $theme 
+            | upsert shell_theme $theme 
             | save --force ($env.HOME | path join ".dotfiles/nushell/themes.toml")
         )
     }
