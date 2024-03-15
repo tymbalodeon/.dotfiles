@@ -35,9 +35,10 @@ def --env f [
     }
 }
 
-# Switch to the current state of ~/.dotfiles
-def switch [
-    host?: # The target host configuration
+# Rebuild and switch to (or --test) the current configuration
+def rebuild [
+    host?: # The target host configuration (auto-detected if not specified)
+    --test # Apply the configuration without adding it to the boot menu
 ] {
     let dotfiles = ($env.HOME | path join ".dotfiles");
 
@@ -53,5 +54,9 @@ def switch [
         $host
     }
 
-    sudo nixos-rebuild switch --flake $"($dotfiles)#($host)"
+    if $test {
+        sudo nixos-rebuild test --flake $"($dotfiles)#($host)"
+    } else {
+        sudo nixos-rebuild switch --flake $"($dotfiles)#($host)"
+    }
 }

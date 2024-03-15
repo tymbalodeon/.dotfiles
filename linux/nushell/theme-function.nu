@@ -1,6 +1,6 @@
 # Set theme for various applications. See `--help` for options. When no options
 # are passed, the theme will be temporarily applied to the shell immediately.
-# Otherwise, the configuration must be rebuilt with `switch`, configurations
+# Otherwise, the configuration must be rebuilt with `rebuild`, configurations
 # reloaded, and/or services restarted in order for changes to be applied.
 def theme [
     theme?: string # The theme to set
