@@ -27,7 +27,7 @@ def theme [
     }
 
     let applications = if not (
-        [$fzf $helix $kitty $mako $rofi] 
+        [$all $fzf $helix $kitty $mako $rofi] 
         | any {|application| $application}
     ) {
         ["shell"]
