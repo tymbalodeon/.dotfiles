@@ -14,13 +14,8 @@ def create_left_prompt [] {
         }
     )
 
-    let path_color = (
-        if (is-admin) { $red_bold } else { $blue_bold }
-    )
-
-    let separator_color = (
-        if (is-admin) { $light_red_bold } else { $light_blue_bold }
-    )
+    let path_color = (ansi --escape { fg: $base0d attr: b})
+    let separator_color = (ansi --escape { fg: $base0b attr: b})
 
     let prompt = (
         $"($path_color)($dir)"
@@ -28,6 +23,8 @@ def create_left_prompt [] {
             (char path_sep) 
             $"($separator_color)(char path_sep)($path_color)"
     ) 
+
+    let green_bold = (ansi --escape { fg: $base0b attr: b})
     
     if (
         do --ignore-errors { git rev-parse --abbrev-ref HEAD } 
@@ -39,11 +36,19 @@ def create_left_prompt [] {
         | each {|branch| $branch | str replace "* " ""}
         | get 0
 
-        $"($prompt) ($branch_color)($branch_info)" + $"\n" + $"($green_bold)"   
+        (
+            $"($prompt) (ansi --escape { fg: $base04 })($branch_info)" 
+            + $"\n" 
+            + $"($green_bold)"   
+        )
      } else {
         $prompt + $"\n" + $"($green_bold)"    
     }
 }
+
+let prompt_insert_color = ansi --escape { fg: $base0b }
+let prompt_multiline_color = ansi --escape { fg: $base04 }
+let prompt_normal_color = ansi --escape { fg: $base0a }
 
 $env.PROMPT_COMMAND = {|| create_left_prompt}
 $env.PROMPT_COMMAND_RIGHT = {|| null}
