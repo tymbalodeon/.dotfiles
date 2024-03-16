@@ -9,29 +9,46 @@ def theme [
     --helix # Set theme for helix
     --kitty # Set theme for kitty
     --shell # Set (persistent) theme for shell
+    --update # Update the themes
 ] {
     let config_dir = ($env.HOME | path join ".config/tinty")
 
-    def apply-theme [application theme] {
+    def run-theme [
+        application: string
+        theme?: string
+        --update
+    ] {
         let config_file = ($config_dir | path join $"($application).toml")
         tinty --config $config_file install out> /dev/null
-        tinty --config $config_file apply $theme
-    }
 
-    let theme = if ($theme | is-empty) {
+        if $update {
+            tinty --config $config_file update 
+        } else {
+            tinty --config $config_file apply $theme
+        }
+    }
+    let theme = if ((not $update) and ($theme | is-empty)) {
         tinty list | fzf | str trim
     } else {
         $theme
     }
 
-    if ($theme | is-empty) {
+    if (not $update) and ($theme | is-empty) {
         return
     }
 
-    let applications = if not (
+    let none = not (
         [$all $fzf $helix $kitty] 
         | any {|application| $application}
-    ) {
+    )
+
+    let $all = if $update and $none {
+        true
+    } else {
+        $all
+    }
+
+    let applications = if (not $update) and $none {
         ["shell"]
     } else {
         mut applications = []
@@ -44,7 +61,7 @@ def theme [
         $applications
     }
 
-    if ($all or $shell) { 
+    if (not $update) and ($all or $shell) { 
         let themes_file = (
             $env.HOME | path join ".dotfiles/nushell/themes.toml"
         )
@@ -57,6 +74,10 @@ def theme [
     }
 
     for application in $applications {
-        apply-theme $application $theme
+        if $update {
+            run-theme $application --update
+        } else {
+            run-theme $application $theme 
+        }
     }
 }
