@@ -8,7 +8,7 @@ let theme = {
     date: $base0e 
     duration: $base0e 
     empty: $base0d 
-    filesize: $base0e
+    filesize: $base05
     float: $base08 
     header: { fg: $base0b attr: b }
     hints: $base03 
