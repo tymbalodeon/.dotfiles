@@ -24,7 +24,6 @@
       fastfetch
       fd
       fh
-      fira
       font-awesome
       fzf
       gh
@@ -47,6 +46,7 @@
       sd
       taplo
       tldr
+      ubuntu_font_family
       vivid
       vscode-langservers-extracted
       yazi
