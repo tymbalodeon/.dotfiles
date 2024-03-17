@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   fonts.fontconfig.enable = true;
 
   home = {
@@ -18,6 +16,7 @@
     };
 
     packages = with pkgs; [
+      alejandra
       bat
       dejavu_fonts
       delta
@@ -36,7 +35,7 @@
       lilypond-unstable
       helix
       marksman
-      (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
+      (nerdfonts.override {fonts = ["CascadiaCode"];})
       nil
       nixfmt
       nodePackages.pyright
@@ -54,7 +53,7 @@
       zoxide
     ];
 
-    sessionVariables = { EDITOR = "hx"; };
+    sessionVariables = {EDITOR = "hx";};
     stateVersion = "23.11";
     username = "benrosen";
   };

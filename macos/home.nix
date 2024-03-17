@@ -1,10 +1,9 @@
-{ ... }:
-
-rec {
-  imports = [ ../home.nix ];
+{...}: rec {
+  imports = [../home.nix];
 
   home = {
-    file = let nushell_config_path = "Library/Application Support/nushell";
+    file = let
+      nushell_config_path = "Library/Application Support/nushell";
     in {
       ".hushlogin".source = ./.hushlogin;
       "${nushell_config_path}/aliases.nu".source = ../nushell/aliases.nu;

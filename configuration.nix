@@ -1,16 +1,18 @@
-{ inputs, pkgs, ... }:
-
 {
+  inputs,
+  pkgs,
+  ...
+}: {
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
   };
 
-  environment.systemPackages = with pkgs; [ firefox git helix hyprpaper ];
+  environment.systemPackages = with pkgs; [firefox git helix hyprpaper];
   hardware.bluetooth.enable = true;
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = {inherit inputs;};
     users."benrosen" = import ./linux/home.nix;
     useGlobalPkgs = true;
   };
@@ -31,9 +33,9 @@
     };
   };
 
-  imports = [ inputs.home-manager.nixosModules.default ];
-  networking = { networkmanager.enable = true; };
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  imports = [inputs.home-manager.nixosModules.default];
+  networking = {networkmanager.enable = true;};
+  nix.settings.experimental-features = ["nix-command" "flakes"];
   nixpkgs.config.allowUnfree = true;
 
   programs = {
@@ -63,7 +65,7 @@
   users.users.benrosen = {
     isNormalUser = true;
     description = "Ben Rosen";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.nushell;
   };
 }

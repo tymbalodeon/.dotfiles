@@ -1,7 +1,5 @@
-{ pkgs, ... }:
-
-{
-  imports = [ ../home.nix ];
+{pkgs, ...}: {
+  imports = [../home.nix];
 
   home = {
     file = {
@@ -27,7 +25,7 @@
     };
 
     homeDirectory = "/home/benrosen";
-    packages = with pkgs; [ mako rofi-wayland zathura ];
+    packages = with pkgs; [mako rofi-wayland zathura];
   };
 
   programs.kitty.settings.font_size = "8.0";

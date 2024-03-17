@@ -10,14 +10,19 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, home-manager, nixpkgs, ... }@inputs: {
+  outputs = {
+    self,
+    home-manager,
+    nixpkgs,
+    ...
+  } @ inputs: {
     homeConfigurations.benrosen = home-manager.lib.homeManagerConfiguration {
-      modules = [ ./macos/home.nix ];
+      modules = [./macos/home.nix];
       pkgs = nixpkgs.legacyPackages.x86_64-darwin;
     };
 
     nixosConfigurations = let
-      hosts = [ "bumbirich" "ruzia" ];
+      hosts = ["bumbirich" "ruzia"];
 
       mkHost = hostName: {
         name = hostName;
@@ -26,12 +31,13 @@
           modules = [
             ./configuration.nix
             ./hardware-configurations/${hostName}-hardware-configuration.nix
-            { networking.hostName = hostName; }
+            {networking.hostName = hostName;}
           ];
 
-          specialArgs = { inherit inputs; };
+          specialArgs = {inherit inputs;};
         };
       };
-    in builtins.listToAttrs (map (host: mkHost host) hosts);
+    in
+      builtins.listToAttrs (map (host: mkHost host) hosts);
   };
 }
