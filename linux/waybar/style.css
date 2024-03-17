@@ -27,15 +27,10 @@ window#waybar {
   border-radius: 4px;
 }
 
-#window,
-#workspaces {
-  margin: 0 4px;
-}
-
 #workspaces button {
-  border-radius: 50%;
   color: @base05;
   background-color: @base02;
+  border-radius: 50%;
 }
 
 #workspaces button.active {
