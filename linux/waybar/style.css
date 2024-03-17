@@ -19,7 +19,8 @@ window#waybar {
 #network,
 #wireplumber,
 #idle_inhibitor,
-#window {
+#window,
+#workspaces {
   padding: 4px 12px;
   color: @base05;
   background-color: @base00;
@@ -29,6 +30,16 @@ window#waybar {
 #window,
 #workspaces {
   margin: 0 4px;
+}
+
+#workspaces button {
+  border-radius: 50%;
+  color: @base05;
+  background-color: @base02;
+}
+
+#workspaces button.active {
+  background-color: @base0D;
 }
 
 .modules-left>widget:first-child>#workspaces {

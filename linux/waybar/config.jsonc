@@ -2,6 +2,7 @@
   "layer": "top",
   "spacing": 4,
   "modules-left": [
+    "hyprland/workspaces",
     "hyprland/window"
   ],
   "modules-center": [
@@ -63,6 +64,11 @@
     "rewrite": {
       "(.*) — Mozilla Firefox": "   $1"
     }
+  },
+  "hyprland/workspaces": {
+    "format": "{name}",
+    "on-click": "activate",
+    "sort-by-number": true
   },
   "idle_inhibitor": {
     "format": "{icon}",
