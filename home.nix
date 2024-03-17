@@ -22,6 +22,7 @@
       dejavu_fonts
       delta
       eza
+      fastfetch
       fd
       fh
       fira
@@ -34,13 +35,13 @@
       just
       lilypond-unstable
       helix
-      macchina
       marksman
       (nerdfonts.override { fonts = [ "CascadiaCode" ]; })
       nil
       nixfmt
       nodePackages.pyright
       pipx
+      rclone
       ripgrep
       ruff-lsp
       rustup
