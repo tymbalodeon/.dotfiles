@@ -90,10 +90,3 @@ tooltip {
 #temperature.critical {
   background-color: @base0E;
 }
-
-window#waybar:not(.empty) #window {
-  background-color: @base06;
-  border-radius: 4px;
-  color: @base00;
-  padding: 0px 8px;
-}
