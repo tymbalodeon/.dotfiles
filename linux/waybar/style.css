@@ -52,7 +52,7 @@ tooltip {
 
 #battery.charging,
 #battery.plugged {
-  background-color: @base0B;
+  background-color: @base0D;
   color: @base02;
 }
 
@@ -91,13 +91,9 @@ tooltip {
   background-color: @base0E;
 }
 
-#window {
-  background-color: @base04;
+window#waybar:not(.empty) #window {
+  background-color: @base06;
   border-radius: 4px;
   color: @base00;
   padding: 0px 8px;
-}
-
-window#waybar.empty #window {
-  background-color: @base00;
 }
