@@ -5,9 +5,14 @@
   font-size: 12px;
 }
 
-window#waybar {
-  color: @base05;
+window#waybar,
+tooltip {
   background-color: @base00;
+  color: @base05;
+}
+
+tooltip {
+  border-color: @base05;
 }
 
 #clock,
@@ -18,65 +23,81 @@ window#waybar {
 #backlight,
 #network,
 #wireplumber,
-#idle_inhibitor,
+#idle_inhibitor {
+  padding: 0px 8px;
+}
+
 #window,
 #workspaces {
-  padding: 4px 12px;
-  color: @base05;
-  background-color: @base00;
-  border-radius: 4px;
+  margin: 2px;
 }
 
 #workspaces button {
   color: @base05;
   background-color: @base02;
   border-radius: 50%;
+  margin: 1px;
+  padding: 0px 4px;
+}
+
+#workspaces button:hover {
+  background-color: @base05;
+  color: @base02;
 }
 
 #workspaces button.active {
-  background-color: @base0D;
-}
-
-.modules-left>widget:first-child>#workspaces {
-  margin-left: 0;
+  background-color: @base08;
+  color: @base02;
 }
 
 #battery.charging,
 #battery.plugged {
-  color: @base01;
   background-color: @base0B;
+  color: @base02;
 }
 
 @keyframes blink {
   to {
-    background-color: @base01;
-    color: @base04;
+    background-color: @base05;
+    color: @base0E;
   }
 }
 
 #battery.critical:not(.charging) {
+  animation-direction: alternate;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-name: blink;
+  animation-timing-function: steps(12);
   background-color: @base0E;
   color: @base05;
-  animation-name: blink;
-  animation-duration: 0.5s;
-  animation-timing-function: steps(12);
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
+}
+
+#battery.warning {
+  background-color: @base0A;
+  color: @base02;
+}
+
+#idle_inhibitor.activated {
+  background-color: @base02;
+  color: @base04;
 }
 
 #network.disconnected {
   background-color: @base0E;
 }
 
-#wireplumber.muted {
-  background-color: @base0D;
-}
-
 #temperature.critical {
   background-color: @base0E;
 }
 
-#idle_inhibitor.activated {
-  background-color: @base01;
-  color: @base04;
+#window {
+  background-color: @base04;
+  border-radius: 4px;
+  color: @base00;
+  padding: 0px 8px;
+}
+
+window#waybar.empty #window {
+  background-color: @base00;
 }
