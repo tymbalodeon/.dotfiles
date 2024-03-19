@@ -24,12 +24,12 @@ def --env f [
 ] {
     if ($directory | is-empty) {
         cd (
-            fd --type directory --hidden . $env.HOME 
+            fd --type directory --hidden . $env.HOME
             | fzf --exact
-        )  
+        )
     } else {
         cd (
-            fd --type directory --hidden . $env.HOME 
+            fd --type directory --hidden . $env.HOME
             | fzf --exact --filter $directory | head -n 1
         )
     }
@@ -40,23 +40,31 @@ def rebuild [
     host?: string # The target host configuration (auto-detected if not specified)
     --test # Apply the configuration without adding it to the boot menu
 ] {
+    def get_host [host?: string] {
+        let host = if ($host | is-empty) {
+            if (uname) == "Darwin" {
+                "benrosen"
+            } else {
+                cat /etc/hostname
+            }
+        } else {
+            $host
+        }
+
+        $"($env.HOME)/.dotfiles#($host)"
+    }
+
     let dotfiles = ($env.HOME | path join ".dotfiles");
 
     if (uname) == "Darwin" {
-        home-manager switch --flake $dotfiles
+        home-manager switch --flake (get_host $host)
 
         return
-    } 
-
-    let host = if ($host | is-empty) {
-        cat /etc/hostname | str trim
-    } else {
-        $host
     }
 
     if $test {
-        sudo nixos-rebuild test --flake $"($dotfiles)#($host)"
+        sudo nixos-rebuild test --flake (get_host $host)
     } else {
-        sudo nixos-rebuild switch --flake $"($dotfiles)#($host)"
+        sudo nixos-rebuild switch --flake (get_host $host)
     }
 }

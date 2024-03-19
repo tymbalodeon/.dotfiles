@@ -3,7 +3,6 @@
 
   home = {
     file = {
-      ".gitconfig".source = ./.gitconfig;
       ".config/bat/config".source = ./bat/config;
       ".config/helix/config.toml".source = ./helix/config.toml;
       ".config/helix/languages.toml".source = ./helix/languages.toml;

@@ -15,11 +15,36 @@
     home-manager,
     nixpkgs,
     ...
-  } @ inputs: {
-    homeConfigurations.benrosen = home-manager.lib.homeManagerConfiguration {
-      modules = [./macos/home.nix];
-      pkgs = nixpkgs.legacyPackages.x86_64-darwin;
-    };
+  } @ inputs: let
+    supportedSystems = ["x86_64-darwin" "x86_64-linux"];
+
+    forEachSupportedSystem = f:
+      nixpkgs.lib.genAttrs supportedSystems
+      (system: f {pkgs = import nixpkgs {inherit system;};});
+  in {
+    devShells = forEachSupportedSystem ({pkgs}: {
+      default = pkgs.mkShell {
+        packages = with pkgs; [
+          alejandra
+          pre-commit
+          python312Packages.pre-commit-hooks
+        ];
+      };
+    });
+
+    homeConfigurations = let
+      hosts = ["benrosen" "work"];
+
+      mkHost = hostName: {
+        name = hostName;
+
+        value = home-manager.lib.homeManagerConfiguration {
+          modules = [./macos/${hostName}/home.nix];
+          pkgs = nixpkgs.legacyPackages.x86_64-darwin;
+        };
+      };
+    in
+      builtins.listToAttrs (map (host: mkHost host) hosts);
 
     nixosConfigurations = let
       hosts = ["bumbirich" "ruzia"];

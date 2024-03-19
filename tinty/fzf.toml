@@ -10,14 +10,14 @@ hook = """
     $env.HOME | path join ".dotfiles/nushell/themes.toml"
   );
 
-  open $themes_file 
+  open $themes_file
   | upsert FZF_DEFAULT_OPTS (
-    (bash -c "source %f && env") 
-    | lines 
-    | parse "{key}={value}" 
-    | where key == "FZF_DEFAULT_OPTS" 
-    | get value 
-    | first 
+    (bash -c "source %f && env")
+    | lines
+    | parse "{key}={value}"
+    | where key == "FZF_DEFAULT_OPTS"
+    | get value
+    | first
     | str trim
   ) | save --force $themes_file
 )

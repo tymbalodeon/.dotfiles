@@ -1,4 +1,8 @@
 [[language]]
+name = "markdown"
+soft-wrap = { enable = true, wrap-at-text-width = true }
+
+[[language]]
 name = "nix"
 auto-format = true
 formatter = { command = "alejandra" }

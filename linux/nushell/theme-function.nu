@@ -25,7 +25,7 @@ def theme [
         tinty --config $config_file install out> /dev/null
 
         if $update {
-            tinty --config $config_file update 
+            tinty --config $config_file update
         } else {
             tinty --config $config_file apply $theme
         }
@@ -42,7 +42,7 @@ def theme [
     }
 
     let none = not (
-        [$all $fzf $helix $kitty $mako $rofi $waybar] 
+        [$all $fzf $helix $kitty $mako $rofi $waybar]
         | any {|application| $application}
     )
 
@@ -68,14 +68,14 @@ def theme [
         $applications
     }
 
-    if (not $update) and ($all or $shell) { 
+    if (not $update) and ($all or $shell) {
         let themes_file = (
             $env.HOME | path join ".dotfiles/nushell/themes.toml"
         )
 
         (
-            open $themes_file 
-            | upsert shell_theme $theme 
+            open $themes_file
+            | upsert shell_theme $theme
             | save --force $themes_file
         )
     }
@@ -84,7 +84,7 @@ def theme [
         if $update {
             run-theme $application --update
         } else {
-            run-theme $application $theme 
+            run-theme $application $theme
         }
     }
 }

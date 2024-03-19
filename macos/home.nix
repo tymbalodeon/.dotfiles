@@ -1,6 +1,4 @@
 {...}: rec {
-  imports = [../home.nix];
-
   home = {
     file = let
       nushell_config_path = "Library/Application Support/nushell";
@@ -19,6 +17,8 @@
 
     homeDirectory = "/Users/benrosen";
   };
+
+  imports = [../home.nix];
 
   programs.kitty.settings = {
     font_size = "11.0";
