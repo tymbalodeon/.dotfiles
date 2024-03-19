@@ -20,9 +20,6 @@ render = true
 [editor.lsp]
 display-messages = true
 
-[editor.soft-wrap]
-enable = true
-
 [editor.statusline]
 left = [
   "mode",
