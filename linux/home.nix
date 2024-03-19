@@ -1,6 +1,4 @@
 {pkgs, ...}: {
-  imports = [../home.nix];
-
   home = {
     file = {
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
@@ -21,6 +19,7 @@
       ".config/tinty/rofi.toml".source = ./tinty/rofi.toml;
       ".config/tinty/mako.toml".source = ./tinty/mako.toml;
       ".config/tinty/waybar.toml".source = ./tinty/waybar.toml;
+      ".gitconfig".source = ../.gitconfig;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
 
@@ -28,5 +27,6 @@
     packages = with pkgs; [mako rofi-wayland zathura];
   };
 
+  imports = [../home.nix];
   programs.kitty.settings.font_size = "8.0";
 }

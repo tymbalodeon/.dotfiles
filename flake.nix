@@ -16,10 +16,19 @@
     nixpkgs,
     ...
   } @ inputs: {
-    homeConfigurations.benrosen = home-manager.lib.homeManagerConfiguration {
-      modules = [./macos/home.nix];
-      pkgs = nixpkgs.legacyPackages.x86_64-darwin;
-    };
+    homeConfigurations = let
+      hosts = ["benrosen" "work"];
+
+      mkHost = hostName: {
+        name = hostName;
+
+        value = home-manager.lib.homeManagerConfiguration {
+          modules = [./macos/${hostName}/home.nix];
+          pkgs = nixpkgs.legacyPackages.x86_64-darwin;
+        };
+      };
+    in
+      builtins.listToAttrs (map (host: mkHost host) hosts);
 
     nixosConfigurations = let
       hosts = ["bumbirich" "ruzia"];
