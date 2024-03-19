@@ -3,9 +3,9 @@ source ($nu.default-config-dir | path join "prompt.nu")
 
 $env.PATH = (
     $env.PATH
-    | append "/nix/var/nix/profiles/default/bin" 
-    | append ($env.HOME | path join ".nix-profile/bin") 
-    | append ($env.HOME | path join ".cargo/bin") 
+    | append "/nix/var/nix/profiles/default/bin"
+    | append ($env.HOME | path join ".nix-profile/bin")
+    | append ($env.HOME | path join ".cargo/bin")
     | append ($env.HOME | path join ".local/bin")
     | append "/usr/local/bin"
     | uniq

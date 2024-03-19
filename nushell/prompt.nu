@@ -3,9 +3,9 @@ def create_left_prompt [] {
 
     let dir = (
         if (
-            $env.PWD 
-            | path split 
-            | zip ($home | path split) 
+            $env.PWD
+            | path split
+            | zip ($home | path split)
             | all { $in.0 == $in.1 }
         ) {
             ($env.PWD | str replace $home "~")
@@ -19,15 +19,15 @@ def create_left_prompt [] {
 
     let prompt = (
         $"($path_color)($dir)"
-        | str replace --all 
-            (char path_sep) 
+        | str replace --all
+            (char path_sep)
             $"($separator_color)(char path_sep)($path_color)"
-    ) 
+    )
 
     let green_bold = (ansi --escape { fg: $base0b attr: b})
-    
+
     if (
-        do --ignore-errors { git rev-parse --abbrev-ref HEAD } 
+        do --ignore-errors { git rev-parse --abbrev-ref HEAD }
         | is-empty
     ) == false {
         let branch_info = git branch --list
@@ -37,12 +37,12 @@ def create_left_prompt [] {
         | get 0
 
         (
-            $"($prompt) (ansi --escape { fg: $base04 })($branch_info)" 
-            + $"\n" 
-            + $"($green_bold)"   
+            $"($prompt) (ansi --escape { fg: $base04 })($branch_info)"
+            + $"\n"
+            + $"($green_bold)"
         )
      } else {
-        $prompt + $"\n" + $"($green_bold)"    
+        $prompt + $"\n" + $"($green_bold)"
     }
 }
 
@@ -54,10 +54,10 @@ $env.PROMPT_COMMAND = {|| create_left_prompt}
 $env.PROMPT_COMMAND_RIGHT = {|| null}
 $env.PROMPT_INDICATOR_VI_INSERT = {|| $"($prompt_insert_color)> "}
 
-$env.PROMPT_INDICATOR_VI_NORMAL = {|| 
-  $"($prompt_normal_color)>>($prompt_insert_color) " 
+$env.PROMPT_INDICATOR_VI_NORMAL = {||
+  $"($prompt_normal_color)>>($prompt_insert_color) "
 }
 
-$env.PROMPT_MULTILINE_INDICATOR = {|| 
+$env.PROMPT_MULTILINE_INDICATOR = {||
   $"($prompt_multiline_color):::($prompt_insert_color) "
 }

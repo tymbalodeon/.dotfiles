@@ -27,6 +27,7 @@
         packages = with pkgs; [
           alejandra
           pre-commit
+          python312Packages.pre-commit-hooks
         ];
       };
     });
