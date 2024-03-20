@@ -40,31 +40,28 @@ def rebuild [
     host?: string # The target host configuration (auto-detected if not specified)
     --test # Apply the configuration without adding it to the boot menu
 ] {
-    def get_host [host?: string] {
-        let host = if ($host | is-empty) {
-            if (uname) == "Darwin" {
-                "benrosen"
-            } else {
-                cat /etc/hostname
-            }
+    let host_name = if ($host | is-empty) {
+        if (uname) == "Darwin" {
+            "benrosen"
         } else {
-            $host
+            cat /etc/hostname
         }
-
-        $"($env.HOME)/.dotfiles#($host)"
+    } else {
+        $host
     }
 
-    let dotfiles = ($env.HOME | path join ".dotfiles");
+    let dotfiles = ($env.HOME | path join ".dotfiles")
+    let host = $"($dotfiles)#($host)"
 
     if (uname) == "Darwin" {
-        home-manager switch --flake (get_host $host)
+        home-manager switch --flake $host
 
         return
     }
 
     if $test {
-        sudo nixos-rebuild test --flake (get_host $host)
+        sudo nixos-rebuild test --flake $host
     } else {
-        sudo nixos-rebuild switch --flake (get_host $host)
+        sudo nixos-rebuild switch --flake $host
     }
 }
