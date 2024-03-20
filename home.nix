@@ -12,7 +12,7 @@
       ".config/tinty/helix.toml".source = ./tinty/helix.toml;
       ".config/tinty/kitty.toml".source = ./tinty/kitty.toml;
       ".config/tinty/shell.toml".source = ./tinty/shell.toml;
-      ".config/vivid/themes/theme.yml".source = ./config/vivid/themes/theme.yml;
+      ".config/vivid/themes/theme.yml".source = ./vivid/themes/theme.yml;
     };
 
     packages = with pkgs; [

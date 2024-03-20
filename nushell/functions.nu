@@ -51,7 +51,7 @@ def rebuild [
     }
 
     let dotfiles = ($env.HOME | path join ".dotfiles")
-    let host = $"($dotfiles)#($host)"
+    let host = $"($dotfiles)#($host_name)"
 
     if (uname) == "Darwin" {
         home-manager switch --flake $host
