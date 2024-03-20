@@ -87,6 +87,7 @@
       settings = {
         confirm_os_window_close = 0;
         enable_audio_bell = "no";
+        enabled_layouts = "grid, tall, horizontal, vertical, stack";
         font_family = "CaskaydiaCove Nerd Font";
         include = "theme.conf";
       };
