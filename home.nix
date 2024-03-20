@@ -90,6 +90,7 @@
         enabled_layouts = "grid, tall, horizontal, vertical, stack";
         font_family = "CaskaydiaCove Nerd Font";
         include = "theme.conf";
+        tab_bar_edge = "top";
       };
     };
 
