@@ -2,14 +2,23 @@
 
 ## Installation
 
+Assumes that the repository is cloned to `~/.dotfiles`:
+
+```sh
+git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
+```
+
 ### Initial installation
 
 NixOS:
 
-(To see the available hosts, see the [hardware configurations](./linux/hardware-configurations).)
+(Available hosts can be found in [hardware configurations](./linux/hardware-configurations).)
 
 ```sh
 sudo nixos-rebuild switch --flake ~/.dotfiles#<HOST_NAME>
+
+# For example:
+# sudo nixos-rebuild switch --flake ~/.dotfiles#ruzia
 ```
 
 macOS:
@@ -29,7 +38,7 @@ rebuild
 
 ## Development environment
 
-Requires [direnv](https://direnv.net/) and [nushell](https://www.nushell.sh/), which will be installed when following the [instructions](#installation) above.
+After running the [initial installation](#initial-installation) and opening an interactive [nu](https://www.nushell.sh/) shell, a development environment managed by [direnv](https://direnv.net/) with:
 
 ```nu
 cd ~/.dotfiles;
