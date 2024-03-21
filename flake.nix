@@ -11,7 +11,6 @@
   };
 
   outputs = {
-    self,
     home-manager,
     nixpkgs,
     ...
@@ -26,8 +25,13 @@
       default = pkgs.mkShell {
         packages = with pkgs; [
           alejandra
+          ansible-language-server
+          deadnix
           pre-commit
           python312Packages.pre-commit-hooks
+          statix
+          yaml-language-server
+          yamlfmt
         ];
       };
     });
@@ -44,7 +48,7 @@
         };
       };
     in
-      builtins.listToAttrs (map (host: mkHost host) hosts);
+      builtins.listToAttrs (map mkHost hosts);
 
     nixosConfigurations = let
       hosts = ["bumbirich" "ruzia"];
@@ -55,7 +59,7 @@
         value = nixpkgs.lib.nixosSystem {
           modules = [
             ./configuration.nix
-            ./hardware-configurations/${hostName}-hardware-configuration.nix
+            ./linux/hardware-configurations/${hostName}-hardware-configuration.nix
             {networking.hostName = hostName;}
           ];
 
@@ -63,6 +67,6 @@
         };
       };
     in
-      builtins.listToAttrs (map (host: mkHost host) hosts);
+      builtins.listToAttrs (map mkHost hosts);
   };
 }
