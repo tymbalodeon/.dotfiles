@@ -13,6 +13,7 @@
       ".config/tinty/kitty.toml".source = ./tinty/kitty.toml;
       ".config/tinty/shell.toml".source = ./tinty/shell.toml;
       ".config/vivid/themes/theme.yml".source = ./vivid/themes/theme.yml;
+      ".config/zellij/themes/theme.kdl".source = ./zellij/themes/theme.kdl;
     };
 
     packages = with pkgs; [
