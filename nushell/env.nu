@@ -32,6 +32,10 @@ $env.LS_COLORS = (
 $env.NU_LIB_DIRS = [($nu.default-config-dir | path join 'scripts')]
 $env.NU_PLUGIN_DIRS = [($nu.default-config-dir | path join 'plugins')]
 
+if (uname) == "Darwin" {
+    $env.SHELL = "nu"
+}
+
 (
     zoxide init nushell
     | save --force ($nu.default-config-dir | path join "zoxide.nu")

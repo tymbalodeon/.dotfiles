@@ -52,6 +52,7 @@
       vscode-langservers-extracted
       yazi
       zoxide
+      zellij
     ];
 
     sessionVariables = {EDITOR = "hx";};
