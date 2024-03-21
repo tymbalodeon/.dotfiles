@@ -19,6 +19,7 @@
     packages = with pkgs; [
       alejandra
       bat
+      bat-extras.batman
       dejavu_fonts
       delta
       dust

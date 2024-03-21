@@ -44,7 +44,7 @@ def rebuild [
         if (uname) == "Darwin" {
             "benrosen"
         } else {
-            cat /etc/hostname
+            cat /etc/hostname | str trim
         }
     } else {
         $host
