@@ -24,7 +24,7 @@
     };
 
     homeDirectory = "/home/benrosen";
-    packages = with pkgs; [mako rofi-wayland zathura];
+    packages = with pkgs; [mako rofi-wayland wl-clipboard zathura];
   };
 
   imports = [../home.nix];
