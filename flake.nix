@@ -59,7 +59,7 @@
         value = nixpkgs.lib.nixosSystem {
           modules = [
             ./linux/configuration.nix
-            ./linux/hardware-configurations/${hostName}-hardware-configuration.nix
+            ./linux/hardware-configurations/${hostName}.nix
             {networking.hostName = hostName;}
           ];
 
