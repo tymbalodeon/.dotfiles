@@ -20,6 +20,7 @@
       bat
       dejavu_fonts
       delta
+      dust
       eza
       fastfetch
       fd
