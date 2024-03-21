@@ -92,6 +92,8 @@
         font_family = "CaskaydiaCove Nerd Font";
         include = "theme.conf";
         tab_bar_edge = "top";
+        tab_bar_style = "powerline";
+        tab_powerline_style = "slanted";
       };
     };
 
