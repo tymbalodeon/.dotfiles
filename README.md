@@ -2,7 +2,7 @@
 
 ## Installation
 
-Assumes that the repository is cloned to `~/.dotfiles`:
+The commands below assume that the repository is cloned to `~/.dotfiles`:
 
 ```sh
 git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
