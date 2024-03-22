@@ -1,29 +1,50 @@
 # Mount a remote storage service
 def cloud [
-    remote: string # The name of the remote service
-    path = "" # A remote path to mount
+    remote_name?: string # The name of the remote service (leave blank for all services)
+    path?: string # A remote path to mount
     --mount # Mount the remote
     --unmount # Unmount the remote
 ] {
     let rclone_mount_point = ($env.HOME | path join "rclone")
-    let mount_point = (
-        $rclone_mount_point
-        | path join $remote
-        | path join $path
-    )
+    let all = ($remote_name | is-empty)
 
-    if $mount {
-        mkdir $mount_point
-        rclone mount --daemon $"($remote):($path)" $mount_point
-        echo $"\"($remote)\" mounted to: ($mount_point)"
-    } else if $unmount {
-        fusermount -u $mount_point out+err> /dev/null
+    let remotes = if $all {
+        rclone listremotes | lines
+    } else {
+        [$"($remote_name):"]
+    }
 
-        mut dir = $mount_point
+    for remote in $remotes {
+        let include_path = ((not $all) and not ($path | is-empty))
 
-        while ($dir != $env.HOME) and (ls $dir | is-empty) {
-            rm $dir
-            $dir = ($dir | path dirname)
+        let remote_path = if $include_path {
+            $"($remote)($path)"
+        } else {
+            $remote
+        }
+
+        mut mount_point = (
+            $rclone_mount_point
+            | path join ($remote | str replace ":" "")
+        )
+
+        if $include_path {
+            $mount_point = ($mount_point | path join $path)
+        }
+
+        if $mount {
+            mkdir $mount_point
+            rclone mount --daemon $remote_path $mount_point
+            echo $"\"($remote)\" mounted to: ($mount_point)"
+        } else if $unmount {
+            fusermount -u $mount_point out+err> /dev/null
+
+            mut dir = $mount_point
+
+            while ($dir != $env.HOME) and (ls $dir | is-empty) {
+                rm $dir
+                $dir = ($dir | path dirname)
+            }
         }
     }
 }
