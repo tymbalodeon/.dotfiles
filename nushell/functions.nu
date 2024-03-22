@@ -1,20 +1,23 @@
-# Open emacs, starting a client if not already running
-def emacs [
-    file? = "." # File or directory to open
-    --quit # Stop the client
-    --restart # Stop the client, then start a new one and open
-    --force # Force the client to stop
+# Mount a remote storage service
+def cloud [ 
+    remote: string # The name of the remote service
+    --mount # Mount the remote
+    --unmount # Unmount the remote
 ] {
-    if $quit or $restart {
-        if $force {
-            pkill -f emacs
-        } else {
-            emacsclient -e '(kill-emacs)'
-        }
-    }
+    let rclone_mount_point = ($env.HOME | path join "rclone")
+    let mount_point = ($rclone_mount_point | path join $remote)
 
-    if not $quit {
-        emacsclient -t -a "" $file
+    if $mount {
+        mkdir $mount_point
+        rclone mount --daemon $"($remote):" $mount_point
+        echo $"\"($remote)\" mounted to: ($mount_point)"
+    } else if $unmount {
+        fusermount -u $mount_point out+err> /dev/null
+        rm -rf $mount_point
+
+        if (ls $rclone_mount_point | is-empty) {
+            rm -rf $rclone_mount_point           
+        }
     }
 }
 
