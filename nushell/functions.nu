@@ -1,22 +1,29 @@
 # Mount a remote storage service
-def cloud [ 
+def cloud [
     remote: string # The name of the remote service
+    path = "" # A remote path to mount
     --mount # Mount the remote
     --unmount # Unmount the remote
 ] {
     let rclone_mount_point = ($env.HOME | path join "rclone")
-    let mount_point = ($rclone_mount_point | path join $remote)
+    let mount_point = (
+        $rclone_mount_point
+        | path join $remote
+        | path join $path
+    )
 
     if $mount {
         mkdir $mount_point
-        rclone mount --daemon $"($remote):" $mount_point
+        rclone mount --daemon $"($remote):($path)" $mount_point
         echo $"\"($remote)\" mounted to: ($mount_point)"
     } else if $unmount {
         fusermount -u $mount_point out+err> /dev/null
-        rm -rf $mount_point
 
-        if (ls $rclone_mount_point | is-empty) {
-            rm -rf $rclone_mount_point           
+        mut dir = $mount_point
+
+        while ($dir != $env.HOME) and (ls $dir | is-empty) {
+            rm $dir
+            $dir = ($dir | path dirname)
         }
     }
 }
