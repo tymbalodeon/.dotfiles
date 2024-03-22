@@ -12,7 +12,8 @@ git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
 
 NixOS:
 
-(Available hosts can be found in [hardware configurations](./linux/hardware-configurations).)
+(Available hosts can be found in
+[hardware configurations](./linux/hardware-configurations).)
 
 ```sh
 sudo nixos-rebuild switch --flake ~/.dotfiles#<HOST_NAME>
@@ -38,7 +39,9 @@ rebuild
 
 ## Development environment
 
-After running the [initial installation](#initial-installation) and opening an interactive [nu](https://www.nushell.sh/) shell, a development environment managed by [direnv](https://direnv.net/) with:
+After running the [initial installation](#initial-installation) and opening
+an interactive [nu](https://www.nushell.sh/) shell, a development environment
+managed by [direnv](https://direnv.net/) with:
 
 ```nu
 cd ~/.dotfiles;
