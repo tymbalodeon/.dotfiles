@@ -1,10 +1,41 @@
 # Mount a remote storage service
+#
+# Subcommands:
+#    mount
+#    unmount
 def cloud [
+    subcommand: string # Subcommand to run
     remote_name?: string # The name of the remote service (leave blank for all services)
-    path?: string # A remote path to mount
-    --mount # Mount the remote
-    --unmount # Unmount the remote
+    path = "" # A remote path to mount
 ] {
+    def mount [
+        remote: string
+        mount_point: string
+    ] {
+        mkdir $mount_point
+        rclone mount --daemon $"($remote)($path)" $mount_point
+        echo $"\"($remote)\" mounted to: ($mount_point)"
+    }
+
+    def unmount [
+        remote: string
+        mount_point: path
+    ] {
+        do --ignore-errors {
+            fusermount -u $mount_point out+err> /dev/null
+        }
+
+        mut dir = $mount_point
+
+        while ($dir != $env.HOME) {
+            if ($dir | path exists) and (ls $dir | is-empty) {
+                rm -rf $dir
+            }
+
+            $dir = ($dir | path dirname)
+        }
+    }
+
     let rclone_mount_point = ($env.HOME | path join "rclone")
     let all = ($remote_name | is-empty)
 
@@ -15,36 +46,15 @@ def cloud [
     }
 
     for remote in $remotes {
-        let include_path = ((not $all) and not ($path | is-empty))
-
-        let remote_path = if $include_path {
-            $"($remote)($path)"
-        } else {
-            $remote
-        }
-
         mut mount_point = (
             $rclone_mount_point
             | path join ($remote | str replace ":" "")
+            | path join $path
         )
 
-        if $include_path {
-            $mount_point = ($mount_point | path join $path)
-        }
-
-        if $mount {
-            mkdir $mount_point
-            rclone mount --daemon $remote_path $mount_point
-            echo $"\"($remote)\" mounted to: ($mount_point)"
-        } else if $unmount {
-            fusermount -u $mount_point out+err> /dev/null
-
-            mut dir = $mount_point
-
-            while ($dir != $env.HOME) and (ls $dir | is-empty) {
-                rm $dir
-                $dir = ($dir | path dirname)
-            }
+        match $subcommand {
+            "mount" => { mount $remote $mount_point }
+            "unmount" => { unmount $remote $mount_point }
         }
     }
 }
