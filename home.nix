@@ -53,6 +53,7 @@
       vivid
       vscode-langservers-extracted
       yazi
+      zathura
       zoxide
       zellij
     ];
