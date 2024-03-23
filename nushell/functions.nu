@@ -66,12 +66,13 @@ def --env f [
     if ($directory | is-empty) {
         cd (
             fd --type directory --hidden . $env.HOME
-            | fzf --exact
+            | fzf --exact --scheme path
         )
     } else {
         cd (
             fd --type directory --hidden . $env.HOME
-            | fzf --exact --filter $directory | head -n 1
+            | fzf --exact --filter $directory --scheme path
+            | head -n 1
         )
     }
 }
