@@ -63,7 +63,7 @@
     "format": "{}",
     "rewrite": {
       "(.*) — Mozilla Firefox": "   $1",
-      "(.*)nu": ""
+      "(.*)nu": ""
     }
   },
   "hyprland/workspaces": {
