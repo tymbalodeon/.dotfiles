@@ -8,7 +8,7 @@
     efi.canTouchEfiVariables = true;
   };
 
-  environment.systemPackages = with pkgs; [firefox git helix hyprpaper];
+  environment.systemPackages = with pkgs; [firefox git helix hyprpaper xdg-utils];
   hardware.bluetooth.enable = true;
 
   home-manager = {
