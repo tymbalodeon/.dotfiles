@@ -27,10 +27,15 @@ def theme [
             tinty --config $config_file apply $theme
         }
     }
+
     let theme = if ((not $update) and ($theme | is-empty)) {
         tinty list | fzf | str trim
     } else {
-        $theme
+        if ($theme | find --regex "base\\d{2}-" | is-empty) {
+            $"base16-($theme)"
+        } else {
+            $theme
+        }
     }
 
     if (not $update) and ($theme | is-empty) {
