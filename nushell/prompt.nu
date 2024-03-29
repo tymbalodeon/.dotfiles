@@ -30,11 +30,18 @@ def create_left_prompt [] {
         do --ignore-errors { git rev-parse --abbrev-ref HEAD }
         | is-empty
     ) == false {
-        let branch_info = git branch --list
-        | lines
-        | filter {|branch| $branch | str contains "*" }
-        | each {|branch| $branch | str replace "* " ""}
-        | get 0
+        mut branch_info = (
+            git branch --list
+                | lines
+                | filter {|branch| $branch | str contains "*" }
+                | each {|branch| $branch | str replace "* " ""}
+        )
+
+        $branch_info = if not ($branch_info | is-empty) {
+            $branch_info | get 0
+        } else {
+            ""
+        }
 
         (
             $"($prompt) (ansi --escape { fg: $base04 })($branch_info)"
