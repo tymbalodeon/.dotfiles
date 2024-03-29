@@ -23,6 +23,9 @@
       dejavu_fonts
       delta
       dust
+      elmPackages.elm
+      elmPackages.elm-format
+      elmPackages.elm-land
       eza
       fastfetch
       fd
