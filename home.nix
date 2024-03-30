@@ -27,6 +27,8 @@
       elmPackages.elm-format
       elmPackages.elm-land
       elmPackages.elm-language-server
+      elmPackages.elm-pages
+      elmPackages.lamdera
       eza
       fastfetch
       fd
@@ -68,6 +70,7 @@
   };
 
   news.display = "silent";
+  nixpkgs.config.allowUnfree = true;
 
   programs = {
     direnv = {
