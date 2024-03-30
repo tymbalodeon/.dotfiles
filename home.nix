@@ -26,6 +26,7 @@
       elmPackages.elm
       elmPackages.elm-format
       elmPackages.elm-land
+      elmPackages.elm-language-server
       eza
       fastfetch
       fd
