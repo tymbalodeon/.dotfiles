@@ -1,16 +1,23 @@
-@define-color base00 #2f383e;
-@define-color base01 #374247;
-@define-color base02 #4a555b;
-@define-color base03 #859289;
-@define-color base04 #9da9a0;
-@define-color base05 #d3c6aa;
-@define-color base06 #e4e1cd;
-@define-color base07 #fdf6e3;
-@define-color base08 #7fbbb3;
-@define-color base09 #d699b6;
-@define-color base0A #dbbc7f;
-@define-color base0B #83c092;
-@define-color base0C #e69875;
-@define-color base0D #a7c080;
-@define-color base0E #e67e80;
-@define-color base0F #eaedc8;
+/*
+*
+* Base16 Pico
+* Author: PICO-8 (http://www.lexaloffle.com/pico-8.php)
+*
+*/
+
+@define-color base00 #000000;
+@define-color base01 #1d2b53;
+@define-color base02 #7e2553;
+@define-color base03 #008751;
+@define-color base04 #ab5236;
+@define-color base05 #5f574f;
+@define-color base06 #c2c3c7;
+@define-color base07 #fff1e8;
+@define-color base08 #ff004d;
+@define-color base09 #ffa300;
+@define-color base0A #fff024;
+@define-color base0B #00e756;
+@define-color base0C #29adff;
+@define-color base0D #83769c;
+@define-color base0E #ff77a8;
+@define-color base0F #ffccaa;

@@ -1,13 +1,18 @@
-background-color=#2f383e
-text-color=#d3c6aa
-border-color=#d3c6aa
+## Base16 Pico
+# Author: PICO-8 (http://www.lexaloffle.com/pico-8.php)
+#
+# You can use these variables anywhere in the mako configuration file.
+
+background-color=#000000
+text-color=#5f574f
+border-color=#83769c
 
 [urgency=low]
-background-color=#2f383e
-text-color=#dbbc7f
-border-color=#dbbc7f
+background-color=#000000
+text-color=#fff024
+border-color=#83769c
 
 [urgency=high]
-background-color=#2f383e
-text-color=#e67e80
-border-color=#e67e80
+background-color=#000000
+text-color=#ff004d
+border-color=#83769c

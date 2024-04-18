@@ -8,11 +8,11 @@
 window#waybar,
 tooltip {
   background-color: @base00;
-  color: @base05;
+  color: @base06;
 }
 
 tooltip {
-  border-color: @base05;
+  border-color: @base06;
 }
 
 #clock,
@@ -33,21 +33,21 @@ tooltip {
 }
 
 #workspaces button {
-  color: @base05;
-  background-color: @base02;
+  color: @base06;
+  background-color: @base01;
   border-radius: 50%;
   margin: 1px;
   padding: 0px 4px;
 }
 
 #workspaces button:hover {
-  background-color: @base05;
-  color: @base02;
+  background-color: @base06;
+  color: @base01;
 }
 
 #workspaces button.active {
-  background-color: @base08;
-  color: @base02;
+  background-color: @base0C;
+  color: @base01;
 }
 
 #battery.charging,
@@ -58,7 +58,7 @@ tooltip {
 
 @keyframes blink {
   to {
-    background-color: @base05;
+    background-color: @base06;
     color: @base0E;
   }
 }
@@ -70,7 +70,7 @@ tooltip {
   animation-name: blink;
   animation-timing-function: steps(12);
   background-color: @base0E;
-  color: @base05;
+  color: @base06;
 }
 
 #battery.warning {
