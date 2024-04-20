@@ -8,7 +8,6 @@
       ".config/helix/languages.toml".source = ./helix/languages.toml;
       ".config/helix/themes/theme.toml".source = ./helix/themes/theme.toml;
       ".config/kitty/theme.conf".source = ./kitty/theme.conf;
-      ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
       ".config/tinty/helix.toml".source = ./tinty/helix.toml;
       ".config/tinty/kitty.toml".source = ./tinty/kitty.toml;
       ".config/tinty/shell.toml".source = ./tinty/shell.toml;

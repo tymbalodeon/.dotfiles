@@ -3,6 +3,7 @@
     file = let
       nushell_config_path = "Library/Application Support/nushell";
     in {
+      ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
       ".hushlogin".source = ./.hushlogin;
       "${nushell_config_path}/aliases.nu".source = ../nushell/aliases.nu;
       "${nushell_config_path}/colors.nu".source = ../nushell/colors.nu;

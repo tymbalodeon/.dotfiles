@@ -1,0 +1,24 @@
+shell = "nu -c '{}'"
+
+[[items]]
+name = "fzf"
+path = "https://github.com/tinted-theming/base16-fzf"
+themes-dir = "bash"
+hook = """
+(
+  let themes_file = (
+    $env.HOME | path join ".dotfiles/nushell/themes.toml"
+  );
+
+  open $themes_file
+  | upsert FZF_DEFAULT_OPTS (
+    (bash -c "source %f && env")
+    | lines
+    | parse "{key}={value}"
+    | where key == "FZF_DEFAULT_OPTS"
+    | get value
+    | first
+    | str trim
+  ) | save --force $themes_file
+)
+"""
