@@ -1,18 +1,18 @@
 @import "./colors.css";
 
 * {
-  font-family: FontAwesome, "Ubuntu Sans";
-  font-size: 12px;
+  font-family: FontAwesome, "CaskaydiaCove Nerd Font Propo";
+  font-size: 14px;
 }
 
 window#waybar,
 tooltip {
   background-color: @base00;
-  color: @base06;
+  color: @base05;
 }
 
 tooltip {
-  border-color: @base06;
+  border-color: @base05;
 }
 
 #clock,
@@ -33,7 +33,7 @@ tooltip {
 }
 
 #workspaces button {
-  color: @base06;
+  color: @base05;
   background-color: @base01;
   border-radius: 50%;
   margin: 1px;
@@ -41,7 +41,7 @@ tooltip {
 }
 
 #workspaces button:hover {
-  background-color: @base06;
+  background-color: @base05;
   color: @base01;
 }
 
@@ -58,7 +58,7 @@ tooltip {
 
 @keyframes blink {
   to {
-    background-color: @base06;
+    background-color: @base05;
     color: @base0E;
   }
 }
@@ -70,7 +70,7 @@ tooltip {
   animation-name: blink;
   animation-timing-function: steps(12);
   background-color: @base0E;
-  color: @base06;
+  color: @base05;
 }
 
 #battery.warning {

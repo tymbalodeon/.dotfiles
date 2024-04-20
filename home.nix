@@ -38,10 +38,10 @@
       gh
       git
       gitui
+      helix
       jq
       just
       lilypond-unstable
-      helix
       marksman
       (nerdfonts.override {fonts = ["CascadiaCode"];})
       nil

@@ -1,18 +1,18 @@
-## Base16 Pico
-# Author: PICO-8 (http://www.lexaloffle.com/pico-8.php)
+## Base16 Gruvbox dark, medium
+# Author: Dawid Kurek (dawikur@gmail.com), morhetz (https://github.com/morhetz/gruvbox)
 #
 # You can use these variables anywhere in the mako configuration file.
 
-background-color=#000000
-text-color=#5f574f
-border-color=#83769c
+background-color=#282828
+text-color=#d5c4a1
+border-color=#83a598
 
 [urgency=low]
-background-color=#000000
-text-color=#fff024
-border-color=#83769c
+background-color=#282828
+text-color=#fabd2f
+border-color=#83a598
 
 [urgency=high]
-background-color=#000000
-text-color=#ff004d
-border-color=#83769c
+background-color=#282828
+text-color=#fb4934
+border-color=#83a598
