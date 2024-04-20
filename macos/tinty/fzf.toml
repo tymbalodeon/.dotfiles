@@ -8,16 +8,16 @@ hook = """
 FZF_DEFAULT_OPTS="$( \
   source %f && env \
   | grep FZF_DEFAULT_OPTS \
-  | sed "s/FZF_DEFAULT_OPTS=//g"\
+  | sed "s/FZF_DEFAULT_OPTS=//g" \
 )"; \
 \
 themes_file="${HOME}/.dotfiles/nushell/themes.toml"; \
 \
-sed -i "" "s/FZF_DEFAULT_OPTS = \".*\"//g" "${themes_file}"; \
+sed -i "s/FZF_DEFAULT_OPTS = \\".*\\"//g" "${themes_file}"; \
 \
 echo "FZF_DEFAULT_OPTS = \\"${FZF_DEFAULT_OPTS}\\"" \
   >> "${themes_file}"; \
 \
-nu -c "open ~/.dotfiles/nushell/themes.toml | 
+nu -c "open ~/.dotfiles/nushell/themes.toml |
   save --force ~/.dotfiles/nushell/themes.toml"
 """
