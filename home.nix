@@ -46,6 +46,7 @@
       nil
       nixfmt
       nodePackages.pyright
+      nodePackages.typescript-language-server
       pipx
       rclone
       ripgrep
