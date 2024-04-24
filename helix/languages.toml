@@ -1,4 +1,8 @@
 [[language]]
+name = "javascript"
+auto-format = true
+
+[[language]]
 name = "markdown"
 soft-wrap = { enable = true, wrap-at-text-width = true }
 
