@@ -37,6 +37,7 @@
       gh
       git
       gitui
+      gleam
       helix
       jq
       just
@@ -44,7 +45,6 @@
       marksman
       (nerdfonts.override {fonts = ["CascadiaCode"];})
       nil
-      nixfmt
       nodePackages.pyright
       nodePackages.typescript-language-server
       pipx
