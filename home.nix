@@ -37,7 +37,6 @@
       gh
       git
       gitui
-      gleam
       helix
       jq
       just
