@@ -24,7 +24,7 @@
       elmPackages.elm-land
       elmPackages.elm-language-server
       elmPackages.elm-pages
-      # elmPackages.lamdera
+      elmPackages.lamdera
     ];
   };
 
