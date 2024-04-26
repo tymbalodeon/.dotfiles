@@ -1,4 +1,4 @@
-{...}: rec {
+{pkgs-elm, ...}: rec {
   home = {
     file = let
       nushell_config_path = "Library/Application Support/nushell";
@@ -17,6 +17,17 @@
     };
 
     homeDirectory = "/Users/benrosen";
+
+    packages = with pkgs-elm; [
+      elmPackages.elm
+      elmPackages.elm-format
+      elmPackages.elm-land
+      elmPackages.elm-language-server
+      elmPackages.elm-pages
+      # elmPackages.lamdera
+    ];
+
+    # pkgs-elm.config.allowUnfree = true;
   };
 
   imports = [../home.nix];

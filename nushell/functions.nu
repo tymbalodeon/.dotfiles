@@ -82,8 +82,10 @@ def rebuild [
     host?: string # The target host configuration (auto-detected if not specified)
     --test # Apply the configuration without adding it to the boot menu
 ] {
+    let is_darwin = (uname | get kernel-name) == "Darwin"
+
     let host_name = if ($host | is-empty) {
-        if (uname) == "Darwin" {
+        if $is_darwin {
             "benrosen"
         } else {
             cat /etc/hostname | str trim
@@ -95,7 +97,7 @@ def rebuild [
     let dotfiles = ($env.HOME | path join ".dotfiles")
     let host = $"($dotfiles)#($host_name)"
 
-    if (uname) == "Darwin" {
+    if $is_darwin {
         home-manager switch --flake $host
 
         return

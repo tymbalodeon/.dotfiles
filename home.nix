@@ -22,12 +22,6 @@
       dejavu_fonts
       delta
       dust
-      elmPackages.elm
-      elmPackages.elm-format
-      elmPackages.elm-land
-      elmPackages.elm-language-server
-      elmPackages.elm-pages
-      elmPackages.lamdera
       eza
       fastfetch
       fd

@@ -27,7 +27,7 @@ def create_left_prompt [] {
     let green_bold = (ansi --escape { fg: $base0b attr: b})
 
     if (
-        do --ignore-errors { git rev-parse --abbrev-ref HEAD }
+        do --ignore-errors { git rev-parse --abbrev-ref HEAD err> /dev/null }
         | is-empty
     ) == false {
         mut branch_info = (

@@ -8,11 +8,13 @@
     };
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-elm.url = "github:nixos/nixpkgs/3030f185ba6a4bf4f18b87f345f104e6a6961f34";
   };
 
   outputs = {
     home-manager,
     nixpkgs,
+    nixpkgs-elm,
     ...
   } @ inputs: let
     supportedSystems = ["x86_64-darwin" "x86_64-linux"];
@@ -45,6 +47,7 @@
         value = home-manager.lib.homeManagerConfiguration {
           modules = [./macos/${hostName}/home.nix];
           pkgs = nixpkgs.legacyPackages.x86_64-darwin;
+          extraSpecialArgs = {pkgs-elm = nixpkgs-elm.legacyPackages.x86_64-darwin;};
         };
       };
     in
