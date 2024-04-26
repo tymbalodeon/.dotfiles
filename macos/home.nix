@@ -26,8 +26,6 @@
       elmPackages.elm-pages
       # elmPackages.lamdera
     ];
-
-    # pkgs-elm.config.allowUnfree = true;
   };
 
   imports = [../home.nix];
