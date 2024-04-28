@@ -41,6 +41,7 @@
       nodePackages.pyright
       nodePackages.typescript-language-server
       pipx
+      pup
       rclone
       ripgrep
       ruff-lsp
