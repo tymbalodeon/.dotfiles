@@ -2,7 +2,13 @@
   home = {
     file.".gitconfig".source = ./.gitconfig;
 
-    packages = with pkgs; [python3 yaml-language-server yamlfmt];
+    packages = with pkgs; [
+      python3
+      rufo
+      solargraph
+      yamlfmt
+      yaml-language-server
+    ];
   };
 
   imports = [../home.nix];
