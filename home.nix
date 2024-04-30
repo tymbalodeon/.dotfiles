@@ -38,6 +38,7 @@
       marksman
       (nerdfonts.override {fonts = ["CascadiaCode"];})
       nil
+      nodePackages.bash-language-server
       nodePackages.pyright
       nodePackages.typescript-language-server
       pipx
@@ -47,6 +48,7 @@
       ruff-lsp
       rustup
       sd
+      shfmt
       taplo
       tldr
       ubuntu_font_family
