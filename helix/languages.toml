@@ -19,9 +19,9 @@ formatter = { command = "alejandra" }
 [[language]]
 name = "python"
 auto-format = true
-language-servers = ["ruff-lsp", "pyright"]
+language-servers = ["pyright", "ruff"]
 
-[language-server.ruff-lsp]
+[language-server.ruff]
 command = "ruff-lsp"
 
 [[language]]
