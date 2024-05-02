@@ -2,7 +2,7 @@
 
 ## Installation
 
-The commands below assume that the repository is cloned to `~/.dotfiles`:
+_Note: The commands below assume that the repository is cloned to `~/.dotfiles`:_
 
 ```sh
 git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
@@ -35,6 +35,9 @@ nix run home-manager -- switch --flake ~/.dotfiles
 
 ```sh
 rebuild # <HOST>
+
+# To see available hosts:
+rebuild --hosts
 
 # For example:
 # rebuild
