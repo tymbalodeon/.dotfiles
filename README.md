@@ -31,9 +31,9 @@ nix run home-manager -- switch --flake ~/.dotfiles
 # nix run home-manager -- switch --flake ~/.dotfiles#work
 ```
 
-### Subsequent installations
+### Subsequent builds
 
-```sh
+```nushell
 rebuild # <HOST>
 
 # To see available hosts:
@@ -50,7 +50,7 @@ After running the [initial installation](#initial-installation) and opening
 an interactive [nu](https://www.nushell.sh/) shell, a development environment
 managed automatically by [direnv](https://direnv.net/) can be created with:
 
-```nu
+```nushell
 cd ~/.dotfiles;
 echo "use flake" | save --force .envrc;
 direnv allow
