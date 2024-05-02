@@ -16,7 +16,7 @@ NixOS:
 [hardware configurations](./linux/hardware-configurations).)
 
 ```sh
-sudo nixos-rebuild switch --flake ~/.dotfiles#<HOST_NAME>
+sudo nixos-rebuild switch --flake ~/.dotfiles#<HOST>
 
 # For example:
 # sudo nixos-rebuild switch --flake ~/.dotfiles#ruzia
@@ -34,14 +34,18 @@ nix run home-manager -- switch --flake ~/.dotfiles
 ### Subsequent installations
 
 ```sh
-rebuild
+rebuild # <HOST>
+
+# For example:
+# rebuild
+# rebuild work
 ```
 
 ## Development environment
 
 After running the [initial installation](#initial-installation) and opening
 an interactive [nu](https://www.nushell.sh/) shell, a development environment
-managed by [direnv](https://direnv.net/) with:
+managed automatically by [direnv](https://direnv.net/) can be created with:
 
 ```nu
 cd ~/.dotfiles;

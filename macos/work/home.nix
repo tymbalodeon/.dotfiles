@@ -6,8 +6,6 @@
       python3
       rufo
       solargraph
-      yamlfmt
-      yaml-language-server
     ];
   };
 

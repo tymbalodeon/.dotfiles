@@ -54,6 +54,8 @@
       ubuntu_font_family
       vivid
       vscode-langservers-extracted
+      yamlfmt
+      yaml-language-server
       yazi
       zathura
       zoxide
