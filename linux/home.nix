@@ -25,6 +25,7 @@
     };
 
     homeDirectory = "/home/benrosen";
+
     packages = with pkgs; [
       elmPackages.elm
       elmPackages.elm-format
