@@ -34,7 +34,7 @@
       helix
       jq
       just
-      lilypond-unstable
+      lilypond-unstable-with-fonts
       marksman
       (nerdfonts.override {fonts = ["CascadiaCode"];})
       nil
