@@ -98,9 +98,12 @@ def rebuild [
             "nixosConfigurations"
         }
 
-        nix eval (get_flake_path $attribute) --apply builtins.attrNames
-
-        return
+        return (
+            nix eval (get_flake_path $attribute) --apply builtins.attrNames
+            | str replace --all --regex '\[ | \]|"' ""
+            | split row " "
+            | str join "\n"
+        )
     }
 
     let host_name = if ($host | is-empty) {
