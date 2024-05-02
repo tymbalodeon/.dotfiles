@@ -77,7 +77,7 @@ def --env f [
     }
 }
 
-# Rebuild and switch to (or --test) the current configuration
+# Rebuild and switch to (or --test) a configuration for (--hosts)
 def rebuild [
     host?: string # The target host configuration (auto-detected if not specified)
     --hosts # List available hosts
