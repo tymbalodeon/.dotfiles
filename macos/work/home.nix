@@ -3,6 +3,7 @@
     file.".gitconfig".source = ./.gitconfig;
 
     packages = with pkgs; [
+      nodePackages.pnpm
       python3
       rufo
       solargraph
