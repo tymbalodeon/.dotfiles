@@ -2,7 +2,7 @@
 
 ## Installation
 
-The commands below assume that the repository is cloned to `~/.dotfiles`:
+_Note: The commands below assume that the repository is cloned to `~/.dotfiles`:_
 
 ```sh
 git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
@@ -16,7 +16,7 @@ NixOS:
 [hardware configurations](./linux/hardware-configurations).)
 
 ```sh
-sudo nixos-rebuild switch --flake ~/.dotfiles#<HOST_NAME>
+sudo nixos-rebuild switch --flake ~/.dotfiles#<HOST>
 
 # For example:
 # sudo nixos-rebuild switch --flake ~/.dotfiles#ruzia
@@ -31,19 +31,28 @@ nix run home-manager -- switch --flake ~/.dotfiles
 # nix run home-manager -- switch --flake ~/.dotfiles#work
 ```
 
-### Subsequent installations
+### Subsequent builds
 
-```sh
-rebuild
+```nushell
+rebuild # <HOST>
+
+# For example:
+# rebuild
+# rebuild ruzia
+```
+
+```nushell
+# To see available hosts:
+rebuild --hosts
 ```
 
 ## Development environment
 
 After running the [initial installation](#initial-installation) and opening
 an interactive [nu](https://www.nushell.sh/) shell, a development environment
-managed by [direnv](https://direnv.net/) with:
+managed automatically by [direnv](https://direnv.net/) can be created with:
 
-```nu
+```nushell
 cd ~/.dotfiles;
 echo "use flake" | save --force .envrc;
 direnv allow
