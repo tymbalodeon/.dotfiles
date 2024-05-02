@@ -36,12 +36,14 @@ nix run home-manager -- switch --flake ~/.dotfiles
 ```nushell
 rebuild # <HOST>
 
-# To see available hosts:
-rebuild --hosts
-
 # For example:
 # rebuild
-# rebuild work
+# rebuild ruzia
+```
+
+```nushell
+# To see available hosts:
+rebuild --hosts
 ```
 
 ## Development environment
