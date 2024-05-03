@@ -15,6 +15,7 @@ _help:
             )
     )
 
+
 # Display the source code for a recipe
 source recipe *args="_":
     #!/usr/bin/env nu
@@ -36,6 +37,7 @@ source recipe *args="_":
 
     src {{ recipe }} `{{ args }}`
 
+
 # Search available `just` commands
 [no-exit-message]
 find *regex:
@@ -54,9 +56,20 @@ find *regex:
 
     find {{ regex }}
 
+
+# Update nixpkgs
+@update:
+    nix flake update
+
+
 # Run pre-commit hooks
 check *args:
     #!/usr/bin/env nu
+
+    if (which pre-commit | is-empty) {
+        echo "use flake" | save --force .envrc
+        direnv allow
+    }
 
     # Run pre-commit hook by name, all hooks, or update all hooks
     def check [
