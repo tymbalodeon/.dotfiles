@@ -63,15 +63,24 @@
   security.rtkit.enable = true;
 
   services = {
-    xserver.xkb = {
-      layout = "us";
-      variant = "";
+    greetd = {
+      enable = true;
+
+      settings.default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        user = "greeter";
+      };
     };
 
     pipewire = {
       enable = true;
       alsa.enable = true;
       pulse.enable = true;
+    };
+
+    xserver.xkb = {
+      layout = "us";
+      variant = "";
     };
   };
 
