@@ -1,4 +1,4 @@
-# Mount a remote storage service
+# Mount and unmount remote storage services
 #
 # Subcommands:
 #    mount
@@ -6,7 +6,7 @@
 def cloud [
     subcommand: string # Subcommand to run
     remote_name?: string # The name of the remote service (leave blank for all services)
-    path = "" # A remote path to mount
+    path?: string # A remote path to mount
 ] {
     def mount [
         remote: string
@@ -17,45 +17,57 @@ def cloud [
         echo $"\"($remote)\" mounted to: ($mount_point)"
     }
 
+    let base_mount_point = ($env.HOME | path join "rclone")
+
     def unmount [
-        remote: string
-        mount_point: path
+        remote?: string
+        mount_point?: path
     ] {
-        do --ignore-errors {
-            fusermount -u $mount_point out+err> /dev/null
+        let mount_points = if ($mount_point | is-empty) {
+            ls ~/rclone/**
+            | where {|item| (ls $item.name | where type == "dir" | is-empty)}
+        } else {
+            [$mount_point]
         }
 
-        mut dir = $mount_point
+        for mount_point in $mount_points {
+            mut dir_name = $mount_point.name
 
-        while ($dir != $env.HOME) {
-            if ($dir | path exists) and (ls $dir | is-empty) {
-                rm -rf $dir
+            fusermount -u $dir_name
+            # out+err> /dev/null
+
+            while ($dir_name != $env.HOME) {
+                rm $dir_name
+
+                $dir_name = ($dir_name | path dirname)
             }
-
-            $dir = ($dir | path dirname)
         }
     }
 
-    let rclone_mount_point = ($env.HOME | path join "rclone")
-    let all = ($remote_name | is-empty)
-
-    let remotes = if $all {
-        rclone listremotes | lines
+    let mount_point = if ($remote_name | is-empty) {
+        ""
     } else {
-        [$"($remote_name):"]
+        $base_mount_point
+        | path join $remote_name
+        | path join $path
     }
 
-    for remote in $remotes {
-        mut mount_point = (
-            $rclone_mount_point
-            | path join ($remote | str replace ":" "")
-            | path join $path
-        )
-
-        match $subcommand {
-            "mount" => { mount $remote $mount_point }
-            "unmount" => { unmount $remote $mount_point }
+    match $subcommand {
+        "mount" => {
+            if ($remote_name | is-empty) {
+                print "Must provide remote name. Available remotes are:"
+                print (
+                    rclone listremotes
+                    | lines
+                    | each {|remote| $"    ($remote | str replace ":" "")"}
+                    | str join "\n"
+                )
+            } else {
+                mount $remote_name $mount_point
+            }
         }
+
+        "unmount" => { unmount $remote_name $mount_point }
     }
 }
 
