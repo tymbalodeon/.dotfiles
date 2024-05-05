@@ -2,13 +2,17 @@
 
 ## Installation
 
+macOS:
+
+Install Nix using the [Determinate Systems Nix Installer](https://github.com/DeterminateSystems/nix-installer).
+
 _Note: The commands below assume that the repository is cloned to `~/.dotfiles`:_
 
 ```sh
 git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
 ```
 
-### Initial installation
+### Initial build
 
 NixOS:
 
