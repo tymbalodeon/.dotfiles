@@ -8,39 +8,68 @@ def cloud [
     remote_name?: string # The name of the remote service (leave blank for all services)
     path?: string # A remote path to mount
 ] {
-    def mount [
+    if not ($subcommand | is-empty) and not (
+      $subcommand in ["mount" "unmount"]
+    ) {
+        error make {
+            msg: "Subcommand must be one of {mount, unmount}"
+        }
+    }
+
+    def mount-remote [
         remote: string
         mount_point: string
     ] {
         mkdir $mount_point
-        rclone mount --daemon $"($remote)($path)" $mount_point
+        rclone mount --daemon $"($remote):($path)" $mount_point
         echo $"\"($remote)\" mounted to: ($mount_point)"
     }
 
     let base_mount_point = ($env.HOME | path join "rclone")
 
-    def unmount [
+    def unmount-remote [
         remote?: string
         mount_point?: path
     ] {
-        let mount_points = if ($mount_point | is-empty) {
-            ls ~/rclone/**
-            | where {|item| (ls $item.name | where type == "dir" | is-empty)}
-        } else {
-            [$mount_point]
+        if not ("~/rclone" | path exists) {
+            return
         }
 
-        for mount_point in $mount_points {
-            mut dir_name = $mount_point.name
+        def remove_empty_parents [dir: string] {
+            mut dir = $dir
 
-            fusermount -u $dir_name
-            # out+err> /dev/null
+            while ($dir != $env.HOME) {
+                rm $dir
 
-            while ($dir_name != $env.HOME) {
-                rm $dir_name
-
-                $dir_name = ($dir_name | path dirname)
+                $dir = ($dir | path dirname)
             }
+        }
+
+        if ($mount_point | is-empty) {
+            let mount_points = (
+                ls ~/rclone/
+                | where type == "dir"
+                | each {|remote| $remote | get name}
+            )
+
+            for mount_point in $mount_points {
+                let mount_records = (mount | grep $mount_point)
+
+                let path = if not ($mount_records | is-empty) {
+                    $mount_records | split row " " | get 2
+                } else {
+                    ""
+                }
+
+                fusermount -u $path
+                remove_empty_parents $path
+            }
+        } else {
+            do --ignore-errors {
+                fusermount -u $mount_point
+            }
+
+            remove_empty_parents $mount_point
         }
     }
 
@@ -63,11 +92,11 @@ def cloud [
                     | str join "\n"
                 )
             } else {
-                mount $remote_name $mount_point
+                mount-remote $remote_name $mount_point
             }
         }
 
-        "unmount" => { unmount $remote_name $mount_point }
+        "unmount" => { unmount-remote $remote_name $mount_point }
     }
 }
 
