@@ -1,5 +1,7 @@
+source ($nu.default-config-dir | path join "cloud.nu")
 source ($nu.default-config-dir | path join "aliases.nu")
-source ($nu.default-config-dir | path join "functions.nu")
+source ($nu.default-config-dir | path join "f.nu")
+source ($nu.default-config-dir | path join "rebuild.nu")
 source ($nu.default-config-dir | path join "theme-function.nu")
 source ($nu.default-config-dir | path join "theme.nu")
 

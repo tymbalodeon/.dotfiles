@@ -6,25 +6,27 @@
       ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
       ".hushlogin".source = ./.hushlogin;
       "${nushell_config_path}/aliases.nu".source = ../nushell/aliases.nu;
+      "${nushell_config_path}/cloud.nu".source = ../nushell/cloud.nu;
       "${nushell_config_path}/colors.nu".source = ../nushell/colors.nu;
-      "${nushell_config_path}/functions.nu".source = ../nushell/functions.nu;
+      "${nushell_config_path}/f.nu".source = ../nushell/f.nu;
+      "${nushell_config_path}/prompt.nu".source = ../nushell/prompt.nu;
+      "${nushell_config_path}/rebuild.nu".source = ./nushell/rebuild.nu;
+      "${nushell_config_path}/theme.nu".source = ../nushell/theme.nu;
       "${nushell_config_path}/theme-function.nu".source =
         ./nushell/theme-function.nu;
-      "${nushell_config_path}/prompt.nu".source = ../nushell/prompt.nu;
-      "${nushell_config_path}/theme.nu".source = ../nushell/theme.nu;
       "${nushell_config_path}/themes.toml".source = ../nushell/themes.toml;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
 
     homeDirectory = "/Users/benrosen";
 
-    packages = with pkgs-elm; [
-      elmPackages.elm
-      elmPackages.elm-format
-      elmPackages.elm-land
-      elmPackages.elm-language-server
-      elmPackages.elm-pages
-      elmPackages.lamdera
+    packages = with pkgs-elm.elmPackages; [
+      elm
+      elm-format
+      elm-land
+      elm-language-server
+      elm-pages
+      lamdera
     ];
   };
 
