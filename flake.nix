@@ -31,6 +31,7 @@
         packages = with pkgs; [
           alejandra
           ansible-language-server
+          csslint
           deadnix
           pre-commit
           python312Packages.pre-commit-hooks
