@@ -35,6 +35,7 @@
       jq
       just
       lilypond-unstable-with-fonts
+      markdown-oxide
       marksman
       (nerdfonts.override {fonts = ["CascadiaCode"];})
       nil
