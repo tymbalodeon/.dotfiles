@@ -40,6 +40,7 @@
       (nerdfonts.override {fonts = ["CascadiaCode"];})
       nil
       nodePackages.bash-language-server
+      nodePackages.prettier
       nodePackages.pyright
       nodePackages.typescript-language-server
       pipx

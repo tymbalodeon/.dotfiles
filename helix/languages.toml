@@ -4,6 +4,10 @@ auto-format = true
 formatter = { command = "shfmt" }
 
 [[language]]
+name = "css"
+formatter = { command = "prettier", args = ["--parser", "css"] }
+
+[[language]]
 name = "javascript"
 auto-format = true
 

@@ -35,6 +35,7 @@
           pre-commit
           python312Packages.pre-commit-hooks
           statix
+          tokei
           yaml-language-server
           yamlfmt
         ];
