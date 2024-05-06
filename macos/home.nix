@@ -1,4 +1,8 @@
-{pkgs-elm, ...}: rec {
+{
+  pkgs,
+  pkgs-elm,
+  ...
+}: rec {
   home = {
     file = let
       nushell_config_path = "Library/Application Support/nushell";
@@ -32,10 +36,18 @@
 
   imports = [../home.nix];
 
-  programs.kitty.settings = {
-    font_size = "11.0";
-    hide_window_decorations = "yes";
-    macos_quit_when_last_window_closed = "yes";
-    shell = "${home.homeDirectory}/.nix-profile/bin/nu";
+  programs = {
+    kitty.settings = {
+      font_size = "11.0";
+      hide_window_decorations = "yes";
+      macos_quit_when_last_window_closed = "yes";
+      shell = "${home.homeDirectory}/.nix-profile/bin/nu";
+    };
+
+    nushell.extraEnv = ''
+      $env.FONTCONFIG_FILE = "${
+        pkgs.makeFontsConf {fontDirectories = [pkgs.freefont_ttf];}
+      }"
+    '';
   };
 }
