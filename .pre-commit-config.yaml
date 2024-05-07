@@ -15,10 +15,14 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  # - repo: https://github.com/pre-commit/mirrors-csslint
-  #   rev: v1.0.5
+  # - repo: https://github.com/thibaudcolas/pre-commit-stylelint
+  #   rev: v14.4.0
   #   hooks:
-  #     - id: csslint
+  #     - id: stylelint
+  #       additional_dependencies:
+  #         - stylelint@14.4.0
+  #         - stylelint-config-standard-scss@3.0.0
+  #       args: [--fix]
   - repo: https://github.com/kamadorueda/alejandra
     rev: 3.0.0
     hooks:
