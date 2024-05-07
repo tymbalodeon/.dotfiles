@@ -79,7 +79,7 @@ check *args:
     ] {
         if $list {
             print (
-                grep id .pre-commit-config.yaml
+                grep '\- id:' .pre-commit-config.yaml
                 | str replace --all "- id:" ""
                 | lines
                 | str trim
