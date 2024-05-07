@@ -2,15 +2,15 @@
 
 ## Installation
 
-macOS:
-
-Install Nix using the [Determinate Systems Nix Installer](https://github.com/DeterminateSystems/nix-installer).
-
 _Note: The commands below assume that the repository is cloned to `~/.dotfiles`:_
 
 ```sh
 git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
 ```
+
+macOS:
+
+Install Nix using the [Determinate Systems Nix Installer](https://github.com/DeterminateSystems/nix-installer).
 
 ### Initial build
 
@@ -52,9 +52,9 @@ rebuild --hosts
 
 ## Development environment
 
-After running the [initial installation](#initial-installation) and opening
-an interactive [nu](https://www.nushell.sh/) shell, a development environment
-managed automatically by [direnv](https://direnv.net/) can be created with:
+After running the [](README#Installation) and opening an interactive
+[nu](https://www.nushell.sh/) shell, a development environment managed
+automatically by [direnv](https://direnv.net/) can be created with:
 
 ```nushell
 cd ~/.dotfiles;
