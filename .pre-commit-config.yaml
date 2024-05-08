@@ -32,12 +32,20 @@ repos:
           - stylelint-config-standard-scss@3.0.0
         args:
           - --fix
+  - repo: local
+    hooks:
+      - id: jsonlint
+        name: jsonlint
+        entry: jsonlint --sort-keys --in-place
+        language: system
+        files: \.json(c*)$
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.1.0
     hooks:
       - id: prettier
         types:
           - css
+          - json
   - repo: https://github.com/kamadorueda/alejandra
     rev: 3.0.0
     hooks:

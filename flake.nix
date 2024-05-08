@@ -32,6 +32,7 @@
           alejandra
           ansible-language-server
           deadnix
+          nodePackages.jsonlint
           pre-commit
           python312Packages.pre-commit-hooks
           statix
