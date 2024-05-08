@@ -17,14 +17,12 @@ repos:
       - id: end-of-file-fixer
       - id: pretty-format-json
       - id: trailing-whitespace
-  - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.17
-    hooks:
-      - id: mdformat
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.13.0
     hooks:
       - id: markdownlint-cli2
+        args:
+          - --fix
   - repo: https://github.com/thibaudcolas/pre-commit-stylelint
     rev: v16.5.0
     hooks:
@@ -41,6 +39,7 @@ repos:
         types:
           - css
           - json
+          - markdown
   - repo: https://github.com/kamadorueda/alejandra
     rev: 3.0.0
     hooks:

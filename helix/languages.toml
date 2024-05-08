@@ -23,6 +23,8 @@ formatter = { command = "prettier", args = ["--parser", "jsonc"] }
 
 [[language]]
 name = "markdown"
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "markdown"] }
 soft-wrap = { enable = true, wrap-at-text-width = true }
 
 [[language]]
