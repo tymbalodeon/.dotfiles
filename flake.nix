@@ -38,6 +38,7 @@
           python312Packages.pre-commit-hooks
           statix
           stylelint
+          taplo
           tokei
           yaml-language-server
           yamlfmt
