@@ -50,6 +50,20 @@ repos:
       - id: deadnix
         args:
           - --edit
+  - repo: local
+    hooks:
+      - id: statix
+        name: statix
+        entry: statix fix
+        language: system
+        pass_filenames: false
+  - repo: local
+    hooks:
+      - id: flake-checker
+        name: flake-checker
+        entry: flake-checker
+        language: system
+        pass_filenames: false
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v3.2.0
     hooks:

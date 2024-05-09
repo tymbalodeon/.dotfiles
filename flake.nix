@@ -32,6 +32,7 @@
           alejandra
           ansible-language-server
           deadnix
+          flake-checker
           nodePackages.prettier
           pre-commit
           python312Packages.pre-commit-hooks
