@@ -33,6 +33,7 @@
           ansible-language-server
           deadnix
           flake-checker
+          lychee
           nodePackages.prettier
           pre-commit
           python312Packages.pre-commit-hooks

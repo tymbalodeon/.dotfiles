@@ -52,7 +52,7 @@ rebuild --hosts
 
 ## Development environment
 
-After running the [](README#Installation) and opening an interactive
+After running the [](#installation) and opening an interactive
 [nu](https://www.nushell.sh/) shell, a development environment managed
 automatically by [direnv](https://direnv.net/) can be created with:
 
