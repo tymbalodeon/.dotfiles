@@ -16,6 +16,7 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: pretty-format-json
+      - id: sort-simple-yaml
       - id: trailing-whitespace
   - repo: https://github.com/DavidAnson/markdownlint-cli2
     rev: v0.13.0
@@ -67,6 +68,11 @@ repos:
         name: taplo
         entry: taplo format
         language: system
+      - id: yamlfmt
+        name: yamlfmt
+        entry: yamlfmt
+        language: system
+        pass_filenames: false
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v3.2.0
     hooks:
