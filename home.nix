@@ -19,6 +19,7 @@
       alejandra
       bat
       bat-extras.batman
+      chuck
       dejavu_fonts
       delta
       dust
