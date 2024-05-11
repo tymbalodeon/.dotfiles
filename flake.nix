@@ -33,8 +33,10 @@
           ansible-language-server
           deadnix
           flake-checker
+          just
           lychee
           nodePackages.prettier
+          nushell
           pre-commit
           python312Packages.pre-commit-hooks
           statix
