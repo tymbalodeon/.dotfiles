@@ -54,16 +54,6 @@ find *regex:
 
     find {{ regex }}
 
-dependencies:
-    #!/usr/bin/env nu
-
-    (
-        nix eval .#homeConfigurations.benrosen.config.home.packages
-            --apply "builtins.map (p: \"${p.name}\")"
-    ) | str replace --all --regex '\[ | \]|"' ""
-    | split row " "
-    | str join "\n"
-
 # Update nixpkgs
 @update:
     nix flake update
