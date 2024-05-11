@@ -59,6 +59,11 @@ repos:
         entry: flake-checker
         language: system
         pass_filenames: false
+      - id: justfile
+        name: justfile
+        entry: just --fmt --unstable
+        language: system
+        pass_filenames: false
       - id: statix
         name: statix
         entry: statix fix

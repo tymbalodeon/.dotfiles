@@ -15,7 +15,6 @@ _help:
             )
     )
 
-
 # Display the source code for a recipe
 source recipe *args="_":
     #!/usr/bin/env nu
@@ -37,7 +36,6 @@ source recipe *args="_":
 
     src {{ recipe }} `{{ args }}`
 
-
 # Search available `just` commands
 [no-exit-message]
 find *regex:
@@ -56,7 +54,6 @@ find *regex:
 
     find {{ regex }}
 
-
 dependencies:
     #!/usr/bin/env nu
 
@@ -67,11 +64,9 @@ dependencies:
     | split row " "
     | str join "\n"
 
-
 # Update nixpkgs
 @update:
     nix flake update
-
 
 # Run pre-commit hooks
 check *args:
