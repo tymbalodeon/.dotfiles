@@ -8,9 +8,7 @@ _Note: The commands below assume that the repository is cloned to `~/.dotfiles`:
 git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
 ```
 
-macOS:
-
-Install Nix using the [Determinate Systems Nix Installer](https://github.com/DeterminateSystems/nix-installer).
+_(On non-NixOS systems only:)_ Install Nix using the [Determinate Systems Nix Installer](https://github.com/DeterminateSystems/nix-installer).
 
 ### Initial build
 
