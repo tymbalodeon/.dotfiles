@@ -19,6 +19,7 @@
       alejandra
       bat
       bat-extras.batman
+      coreutils
       chuck
       dejavu_fonts
       delta
