@@ -33,6 +33,7 @@
       gh
       git
       gitui
+      gyre-fonts
       helix
       jq
       just
