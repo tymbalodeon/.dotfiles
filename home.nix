@@ -56,6 +56,9 @@
       shfmt
       taplo
       tldr
+      typst
+      typst-lsp
+      typstyle
       ubuntu_font_family
       vivid
       vscode-langservers-extracted
