@@ -11,7 +11,6 @@ $env.PATH = (
     | uniq
 )
 
-$env.BAT_THEME = "gruvbox-dark"
 $env.EDITOR = "hx"
 
 $env.ENV_CONVERSIONS = {

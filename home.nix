@@ -4,6 +4,16 @@
   home = {
     file = {
       ".config/bat/config".source = ./bat/config;
+
+      ".config/bat/syntaxes/nushell.sublime-syntax".source =
+        pkgs.fetchFromGitHub {
+          owner = "stevenxxiu";
+          repo = "sublime_text_nushell";
+          rev = "master";
+          sha256 = "sha256-paayZP6P+tzGnla7k+HrF+dcTKUyU806MTtUeurhvdg=";
+        }
+        + "/nushell.sublime-syntax";
+
       ".config/helix/config.toml".source = ./helix/config.toml;
       ".config/helix/languages.toml".source = ./helix/languages.toml;
       ".config/helix/themes/theme.toml".source = ./helix/themes/theme.toml;

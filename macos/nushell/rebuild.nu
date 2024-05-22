@@ -27,4 +27,6 @@ def rebuild [
     let host = get_flake_path $host_name
 
     home-manager switch --flake $host
+
+    bat cache --build
 }

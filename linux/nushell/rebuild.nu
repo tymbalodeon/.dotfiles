@@ -32,4 +32,6 @@ def rebuild [
     } else {
         sudo nixos-rebuild switch --flake $host
     }
+
+    bat cache --build
 }

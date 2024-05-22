@@ -1,4 +1,3 @@
-alias bat = bat --theme ansi
 alias just = just --unstable
 alias l = ls --long
 alias la = ls --long --all
