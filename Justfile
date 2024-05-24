@@ -27,3 +27,9 @@ check *hooks:
     #!/usr/bin/env nu
     source {{ justfile_directory() }}/scripts/check.nu
     check {{ hooks }}
+
+# Open Nix REPL with flake loaded
+shell *args:
+    #!/usr/bin/env nu
+    source {{ justfile_directory() }}/scripts/shell.nu
+    shell {{ args }}
