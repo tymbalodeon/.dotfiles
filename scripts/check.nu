@@ -1,5 +1,5 @@
 # Run pre-commit hook by name, all hooks, or update all hooks
-def check [
+export def main [
     ...hooks: string  # The hook to run
     --list # List all hook ids
     --update # Update all pre-commit hooks

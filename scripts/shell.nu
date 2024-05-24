@@ -7,7 +7,7 @@ def get_hosts [configuration] {
 }
 
 # Open Nix REPL with flake loaded
-def shell [
+export def main [
     host?: string # The target host configuration (auto-detected if not specified)
     --hosts # List available hosts
 ] {
@@ -16,7 +16,7 @@ def shell [
     | wrap Darwin
     | merge (
         (get_hosts "nixosConfigurations")
-        | wrap NixOS
+        | wrap Linux
     )
   )
 
@@ -24,23 +24,23 @@ def shell [
     return ($available_hosts | table --index false)
   }
 
-  let is_darwin = (uname | get operating-system) == "Darwin"
+  let is_darwin = (uname | get kernel-name) == "Darwin"
 
   let base_configurations = {
     Darwin: "homeConfigurations",
-    NixOS: "nixosConfigurations"
+    Linux: "nixosConfigurations"
   }
 
   let base = if ($host | is-empty) {
     $base_configurations
-    | get (uname | get operating-system)
+    | get (uname | get kernel-name)
   } else {
     if $host in ($available_hosts | get Darwin) {
       $base_configurations
       | get Darwin
-    } else if $host in ($available_hosts | get NixOS) {
+    } else if $host in ($available_hosts | get Linux) {
       $base_configurations
-      | get NixOS
+      | get Linux
     } else {
       error make {msg: "Invalid host name."}
     }

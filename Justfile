@@ -3,33 +3,33 @@ set shell := ["nu", "-c"]
 @_help:
     nu ./scripts/help.nu
 
-# Display the source code for a recipe
-source recipe:
+# View the source code for a recipe
+view-source recipe:
     #!/usr/bin/env nu
-    source {{ justfile_directory() }}/scripts/source.nu
-    src {{ recipe }}
+    use {{ justfile_directory() }}/scripts/view-source.nu
+    view-source {{ recipe }}
 
-# Search available `just` commands
+# Search available `just` recipes
 [no-exit-message]
-find *search_term:
+find-recipe *search_term:
     #!/usr/bin/env nu
-    source {{ justfile_directory() }}/scripts/find.nu
-    find {{ search_term }}
+    use {{ justfile_directory() }}/scripts/find-recipe.nu
+    find-recipe {{ search_term }}
 
 # Update dependencies
 update *args:
     #!/usr/bin/env nu
-    source {{ justfile_directory() }}/scripts/update.nu
+    use {{ justfile_directory() }}/scripts/update-dependencies.nu
     update-dependencies {{ args }}
 
 # Run pre-commit hooks
-check *hooks:
+check *args:
     #!/usr/bin/env nu
-    source {{ justfile_directory() }}/scripts/check.nu
-    check {{ hooks }}
+    use {{ justfile_directory() }}/scripts/check.nu
+    check {{ args }}
 
 # Open Nix REPL with flake loaded
 shell *args:
     #!/usr/bin/env nu
-    source {{ justfile_directory() }}/scripts/shell.nu
+    use {{ justfile_directory() }}/scripts/shell.nu
     shell {{ args }}

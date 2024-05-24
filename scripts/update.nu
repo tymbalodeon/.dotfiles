@@ -1,3 +1,4 @@
-def update-dependencies [] {
+# Update dependencies
+export def main [] {
     nix flake update
 }
