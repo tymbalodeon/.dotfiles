@@ -12,8 +12,8 @@ def shell [
     --hosts # List available hosts
 ] {
   let available_hosts = (
-    (get_hosts "homeConfigurations") 
-    | wrap Darwin 
+    (get_hosts "homeConfigurations")
+    | wrap Darwin
     | merge (
         (get_hosts "nixosConfigurations")
         | wrap NixOS
@@ -27,19 +27,19 @@ def shell [
   let is_darwin = (uname | get operating-system) == "Darwin"
 
   let base_configurations = {
-    Darwin: "homeConfigurations", 
+    Darwin: "homeConfigurations",
     NixOS: "nixosConfigurations"
   }
 
   let base = if ($host | is-empty) {
-    $base_configurations 
+    $base_configurations
     | get (uname | get operating-system)
   } else {
     if $host in ($available_hosts | get Darwin) {
-      $base_configurations 
+      $base_configurations
       | get Darwin
     } else if $host in ($available_hosts | get NixOS) {
-      $base_configurations 
+      $base_configurations
       | get NixOS
     } else {
       error make {msg: "Invalid host name."}

@@ -11,7 +11,7 @@ def rebuild [
 
     if $hosts {
         return (
-            nix eval (get_flake_path "homeConfigurations") 
+            nix eval (get_flake_path "homeConfigurations")
                 --apply builtins.attrNames
                 err> /dev/null
             | str replace --all --regex '\[ | \]|"' ""

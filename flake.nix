@@ -47,6 +47,8 @@
           yaml-language-server
           yamlfmt
         ];
+
+        shellHook = "pre-commit install --hook-type commit-msg";
       };
     });
 
