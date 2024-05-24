@@ -16,6 +16,12 @@ find-recipe *search_term:
     use {{ justfile_directory() }}/scripts/find-recipe.nu
     find-recipe {{ search_term }}
 
+# Initialize direnv environment
+init *args:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/init.nu
+    init {{ args }}
+
 # Update dependencies
 update *args:
     #!/usr/bin/env nu
