@@ -1,14 +1,12 @@
+def get_flake_path [attribute] {
+    return $"($env.HOME | path join ".dotfiles")#($attribute)"
+}
+
 # Rebuild and switch to (or --test) a configuration for (--hosts)
-def rebuild [
+export def main [
     host?: string # The target host configuration (auto-detected if not specified)
     --hosts # List available hosts
 ] {
-    def get_flake_path [attribute] {
-        let dotfiles = ($env.HOME | path join ".dotfiles")
-
-        $"($dotfiles)#($attribute)"
-    }
-
     if $hosts {
         return (
             nix eval (get_flake_path "homeConfigurations")

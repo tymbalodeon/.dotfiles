@@ -1,8 +1,27 @@
+def run-theme [
+    application: string
+    theme?: string
+    --update
+] {
+    let config_file = (
+        ($env.HOME | path join ".config/tinty") 
+        | path join $"($application).toml"
+    )
+
+    tinty --config $config_file install out> /dev/null
+
+    if $update {
+        tinty --config $config_file update
+    } else {
+        tinty --config $config_file apply $theme
+    }
+}
+
 # Set theme for various applications. See `--help` for options. When no options
 # are passed, the theme will be temporarily applied to the shell immediately.
 # Otherwise, the configuration must be rebuilt with `rebuild`, configurations
 # reloaded, and/or services restarted in order for changes to be applied.
-def theme [
+export def main [
     theme?: string # The theme to set
     --all # Set all themes
     --fzf # Set theme for fzf
@@ -11,23 +30,6 @@ def theme [
     --shell # Set (persistent) theme for shell
     --update # Update the themes
 ] {
-    let config_dir = ($env.HOME | path join ".config/tinty")
-
-    def run-theme [
-        application: string
-        theme?: string
-        --update
-    ] {
-        let config_file = ($config_dir | path join $"($application).toml")
-        tinty --config $config_file install out> /dev/null
-
-        if $update {
-            tinty --config $config_file update
-        } else {
-            tinty --config $config_file apply $theme
-        }
-    }
-
     let theme = if ((not $update) and ($theme | is-empty)) {
         tinty list | fzf | str trim
     } else {

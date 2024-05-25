@@ -1,5 +1,5 @@
 # Interactively search for a directory and cd into it
-def --env f [
+export def --env main [
     directory?: # Limit the search to this directory
 ] {
     if ($directory | is-empty) {
