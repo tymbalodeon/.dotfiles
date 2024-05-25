@@ -37,6 +37,7 @@
       elmPackages.lamdera
       mako
       rofi-wayland
+      wev
       wl-clipboard
     ];
 

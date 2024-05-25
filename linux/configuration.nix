@@ -99,7 +99,6 @@
     };
   };
 
-  sound.enable = false;
   system.stateVersion = "23.11";
   time.timeZone = "America/New_York";
 
