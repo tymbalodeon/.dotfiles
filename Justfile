@@ -69,3 +69,9 @@ stats *help:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/stats.nu
     stats {{ help }}
+
+# Search project history
+history *search_term:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/history.nu
+    history {{ search_term }}
