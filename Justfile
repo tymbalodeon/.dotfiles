@@ -29,10 +29,10 @@ hosts *help:
     hosts {{ help }}
 
 # List dependencies
-dependencies *host:
+dependencies *args:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/list-dependencies.nu
-    list-dependencies {{ host }}
+    list-dependencies {{ args }}
 
 # Update dependencies
 update *help:

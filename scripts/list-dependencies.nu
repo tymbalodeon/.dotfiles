@@ -3,18 +3,31 @@ use ./hosts.nu get_configuration
 # List dependencies
 export def main [
   host?: string # The target host configuration (auto-detected if not specified)
+  --find: string # Search for a dependency
 ] {
   let configuration = (get_configuration $host --with-packages-path)
 
-  nix eval $configuration --apply "builtins.map (p: p.name)"
-  | split row " "
-  | filter {|line| not ($line in ["[" "]"])}
-  | each {
-      |line|
+  let dependencies = (
+    nix eval $configuration --apply "builtins.map (p: p.name)"
+    | split row " "
+    | filter {|line| not ($line in ["[" "]"])}
+    | each {
+        |line|
 
-      $line
-      | str replace --all '"' ""
-    }
-  | sort
-  | str join "\n"
+        $line
+        | str replace --all '"' ""
+      }
+    | sort
+    | str join "\n"
+  )
+
+  if ($find | is-empty) {
+    return $dependencies
+  } else {
+    return (
+      $dependencies 
+      | find $find
+      | str join "\n"
+    ) 
+  }
 }
