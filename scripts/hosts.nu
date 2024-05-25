@@ -17,8 +17,8 @@ def get_available_hosts [] {
   )
 }
 
-export def get_configuration [host?: string] {
-  let is_darwin = (uname | get kernel-name) == "Darwin"
+export def get_configuration [host?: string, --with-packages-path] {
+  let kernel_name = (uname | get kernel-name)
 
   let base_configurations = {
     Darwin: "homeConfigurations",
@@ -29,7 +29,7 @@ export def get_configuration [host?: string] {
 
   let base = if ($host | is-empty) {
     $base_configurations
-    | get (uname | get kernel-name)
+    | get $kernel_name
   } else {
     if $host in ($available_hosts | get Darwin) {
       $base_configurations
@@ -43,7 +43,7 @@ export def get_configuration [host?: string] {
   }
 
   let host = if ($host | is-empty) {
-    if $is_darwin {
+    if $kernel_name == "Darwin" {
       "benrosen"
     } else {
       cat /etc/hostname | str trim
@@ -52,7 +52,29 @@ export def get_configuration [host?: string] {
     $host
   }
 
-  return $".#($base).($host)"
+  let paths = {
+    Darwin: ".config.home.packages",
+    Linux: ".config.home-manager.users.benrosen.home.packages"
+  }
+
+  let packages_path = if $with_packages_path {
+    if ($host | is-empty) {
+      $paths
+      | get $kernel_name
+    } else {
+      if $host in ($available_hosts | get Darwin) {
+        $paths | get Darwin
+      } else if $host in ($available_hosts | get Linux) {
+        $paths | get Linux
+      } else {
+        error make {msg: "Invalid host name."}
+      }
+    }
+  } else {
+    ""
+  }
+
+  return $".#($base).($host)($packages_path)"
 }
 
 # Show available hosts
