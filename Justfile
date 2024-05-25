@@ -17,16 +17,28 @@ find-recipe *search_term:
     find-recipe {{ search_term }}
 
 # Initialize direnv environment
-init *args:
+init *help:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/init.nu
-    init {{ args }}
+    init {{ help }}
+
+# List available hosts
+hosts *help:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/hosts.nu
+    hosts {{ help }}
+
+# List dependencies
+dependencies *host:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/list-dependencies.nu
+    list-dependencies {{ host }}
 
 # Update dependencies
-update *args:
+update *help:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/update-dependencies.nu
-    update-dependencies {{ args }}
+    update-dependencies {{ help }}
 
 # Run pre-commit hooks
 check *args:
@@ -35,7 +47,7 @@ check *args:
     check {{ args }}
 
 # Open Nix REPL with flake loaded
-shell *args:
+shell *host:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/shell.nu
-    shell {{ args }}
+    shell {{ host }}
