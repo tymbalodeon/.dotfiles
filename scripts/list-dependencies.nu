@@ -25,9 +25,9 @@ export def main [
     return $dependencies
   } else {
     return (
-      $dependencies 
+      $dependencies
       | find $find
       | str join "\n"
-    ) 
+    )
   }
 }
