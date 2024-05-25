@@ -31,11 +31,16 @@
         packages = with pkgs; [
           alejandra
           ansible-language-server
+          bat
           deadnix
           flake-checker
+          fzf
           gh
           just
           lychee
+          markdown-oxide
+          marksman
+          nil
           nodePackages.prettier
           nushell
           pre-commit
@@ -45,6 +50,7 @@
           stylelint
           taplo
           tokei
+          vscode-langservers-extracted
           yaml-language-server
           yamlfmt
         ];
