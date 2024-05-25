@@ -57,3 +57,15 @@ remote *browser:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/remote.nu
     remote {{ browser }}
+
+# View issues
+issue *args:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/issue.nu
+    issue {{ args }}
+
+# View repository analytics
+stats *help:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/stats.nu
+    stats {{ help }}
