@@ -7,18 +7,17 @@ export def main [
   let configuration = (get_configuration $host)
 
   (
-    nix eval 
-      $"($configuration).config.home.packages" 
-      --apply "builtins.map (p: p.name)" 
-  ) | split row " " 
-  | filter {|line| not ($line in ["[" "]"])} 
+    nix eval
+      $"($configuration).config.home.packages"
+      --apply "builtins.map (p: p.name)"
+  ) | split row " "
+  | filter {|line| not ($line in ["[" "]"])}
   | each {
-      |line| 
+      |line|
 
-      $line 
+      $line
       | str replace --all '"' ""
-    } 
-  | sort 
+    }
+  | sort
   | str join "\n"
 }
-
