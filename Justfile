@@ -51,3 +51,9 @@ shell *host:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/shell.nu
     shell {{ host }}
+
+# View remote repository
+remote *browser:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/remote.nu
+    remote {{ browser }}

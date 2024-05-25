@@ -33,6 +33,7 @@
           ansible-language-server
           deadnix
           flake-checker
+          gh
           just
           lychee
           nodePackages.prettier
