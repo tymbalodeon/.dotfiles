@@ -37,8 +37,8 @@ dependencies *host:
 # Update dependencies
 update *help:
     #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/update-dependencies.nu
-    update-dependencies {{ help }}
+    use {{ justfile_directory() }}/scripts/update.nu
+    update {{ help }}
 
 # Run pre-commit hooks
 check *args:
