@@ -10,12 +10,10 @@ check *args:
     check {{ args }}
 
 # List dependencies
-dependencies *args:
+deps *args:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/list-dependencies.nu
     list-dependencies {{ args }}
-
-alias deps := dependencies
 
 # Search available `just` recipes
 [no-exit-message]
@@ -37,12 +35,10 @@ hosts *help:
     hosts {{ help }}
 
 # Initialize direnv environment
-initialize *help:
+init *help:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/initialize.nu
     initialize {{ help }}
-
-alias init := initialize
 
 # View issues
 issue *args:
