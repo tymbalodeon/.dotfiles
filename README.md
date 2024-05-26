@@ -20,7 +20,7 @@ _(On non-NixOS systems only:)_ Install Nix using the [Determinate Systems Nix In
 NixOS:
 
 (Available hosts can be found in
-[hardware configurations](./linux/hardware-configurations).)
+[hardware configurations](./nixos/hardware-configurations).)
 
 ```sh
 sudo nixos-rebuild switch --flake ~/.dotfiles#<HOST>

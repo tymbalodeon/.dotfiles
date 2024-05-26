@@ -88,8 +88,8 @@
 
         value = nixpkgs.lib.nixosSystem {
           modules = [
-            ./linux/configuration.nix
-            ./linux/hardware-configurations/${hostName}.nix
+            ./nixos/configuration.nix
+            ./nixos/hardware-configurations/${hostName}.nix
             {networking.hostName = hostName;}
           ];
 
