@@ -34,7 +34,7 @@ export def main [
 
   let host = $".#($host)"
 
-  git add *.nix
+  git add .
 
   if $is_nixos {
     if $test {

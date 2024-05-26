@@ -66,7 +66,7 @@
         name = hostName;
 
         value = home-manager.lib.homeManagerConfiguration {
-          modules = [./macos/${hostName}/home.nix];
+          modules = [./darwin/${hostName}/home.nix];
           pkgs = nixpkgs.legacyPackages.x86_64-darwin;
 
           extraSpecialArgs = {
