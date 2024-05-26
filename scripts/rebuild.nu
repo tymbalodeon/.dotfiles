@@ -1,12 +1,18 @@
 use ./hosts.nu get_available_hosts
 use ./hosts.nu is_nixos
+use ./update.nu
 
 # Rebuild and switch to (or --test) a configuration
 export def main [
     host?: string # The target host configuration (auto-detected if not specified)
     --hosts # The available hosts on the current system
     --test # Apply the configuration without adding it to the boot menu
+    --update # Update the flake lock before rebuilding
 ] {
+  if $update {
+    update
+  }
+
   let is_nixos = (is_nixos)
 
   if $hosts {
