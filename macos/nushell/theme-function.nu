@@ -4,7 +4,7 @@ def run-theme [
     --update
 ] {
     let config_file = (
-        ($env.HOME | path join ".config/tinty") 
+        ($env.HOME | path join ".config/tinty")
         | path join $"($application).toml"
     )
 

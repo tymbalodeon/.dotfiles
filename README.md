@@ -2,7 +2,7 @@
 
 Personal "dotfile" configurations, managed with
 [Nix](https://nixos.org/manual/nix/stable/installation/installing-binary).
-Supports [NixOS](https://nixos.org/ manual/nixos/stable/) and
+Supports [NixOS](<https://nixos.org/> manual/nixos/stable/) and
 [Darwin (macOS)](https://www.apple.com/macos/).
 
 ## Installation
