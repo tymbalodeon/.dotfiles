@@ -47,4 +47,8 @@ export def main [
   }
 
   bat cache --build
+
+  if not (git status --short | is-empty) {
+    git status
+  }
 }
