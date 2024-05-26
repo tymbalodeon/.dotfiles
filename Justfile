@@ -17,16 +17,20 @@ find-recipe *search_term:
     find-recipe {{ search_term }}
 
 # Initialize direnv environment
-init *help:
+initialize *help:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/init.nu
     init {{ help }}
+
+alias init := initialize
 
 # List dependencies
 dependencies *args:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/list-dependencies.nu
     list-dependencies {{ args }}
+
+alias deps := dependencies
 
 # Update dependencies
 update *help:
