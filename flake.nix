@@ -20,7 +20,10 @@
     nixpkgs-elm,
     ...
   } @ inputs: let
-    supportedSystems = ["x86_64-darwin" "x86_64-linux"];
+    supportedSystems = [
+      "x86_64-darwin"
+      "x86_64-linux"
+    ];
 
     forEachSupportedSystem = f:
       nixpkgs.lib.genAttrs supportedSystems
