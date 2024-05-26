@@ -22,12 +22,6 @@ init *help:
     use {{ justfile_directory() }}/scripts/init.nu
     init {{ help }}
 
-# List available hosts
-hosts *help:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/hosts.nu
-    hosts {{ help }}
-
 # List dependencies
 dependencies *args:
     #!/usr/bin/env nu
@@ -40,17 +34,29 @@ update *help:
     use {{ justfile_directory() }}/scripts/update.nu
     update {{ help }}
 
+# Open Nix REPL with flake loaded
+shell *host:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/shell.nu
+    shell {{ host }}
+
 # Run pre-commit hooks
 check *args:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/check.nu
     check {{ args }}
 
-# Open Nix REPL with flake loaded
-shell *host:
+# List available hosts
+hosts *help:
     #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/shell.nu
-    shell {{ host }}
+    use {{ justfile_directory() }}/scripts/hosts.nu
+    hosts {{ help }}
+
+# Rebuild and switch to (or --test) a configuration
+rebuild *args:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/rebuild.nu
+    rebuild {{ args }}
 
 # View remote repository
 remote *browser:

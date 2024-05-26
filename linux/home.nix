@@ -10,7 +10,6 @@
       ".config/nushell/colors.nu".source = ../nushell/colors.nu;
       ".config/nushell/f.nu".source = ../nushell/f.nu;
       ".config/nushell/prompt.nu".source = ../nushell/prompt.nu;
-      ".config/nushell/rebuild.nu".source = ./nushell/rebuild.nu;
       ".config/nushell/theme.nu".source = ../nushell/theme.nu;
       ".config/nushell/theme-function.nu".source = ./nushell/theme-function.nu;
       ".config/nushell/themes.toml".source = ../nushell/themes.toml;

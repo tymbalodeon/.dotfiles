@@ -31,7 +31,7 @@ $env.LS_COLORS = (
 $env.NU_LIB_DIRS = [($nu.default-config-dir | path join 'scripts')]
 $env.NU_PLUGIN_DIRS = [($nu.default-config-dir | path join 'plugins')]
 
-if (uname) == "Darwin" {
+if (uname | get kernel-name) == "Darwin" {
     $env.SHELL = "nu"
 }
 

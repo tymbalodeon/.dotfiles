@@ -1,5 +1,10 @@
 # Dotfiles
 
+Personal "dotfile" configurations, managed with
+[Nix](https://nixos.org/manual/nix/stable/installation/installing-binary).
+Supports [NixOS](https://nixos.org/ manual/nixos/stable/) and
+[Darwin (macOS)](https://www.apple.com/macos/).
+
 ## Installation
 
 _Note: The commands below assume that the repository is cloned to `~/.dotfiles`:_
@@ -35,17 +40,20 @@ nix run home-manager -- switch --flake ~/.dotfiles
 
 ### Subsequent builds
 
+Subsequent builds can be handled with a [just](https://just.systems/man/en/)
+recipe from the included `Justfile`:
+
 ```nushell
-rebuild # <HOST>
+just rebuild # <HOST>
 
 # For example:
-# rebuild
-# rebuild ruzia
+# just rebuild
+# just rebuild ruzia
 ```
 
 ```nushell
-# To see available hosts:
-rebuild --hosts
+# To see available hosts on the current system:
+just rebuild --hosts
 ```
 
 ## Development environment

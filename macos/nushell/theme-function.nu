@@ -19,8 +19,8 @@ def run-theme [
 
 # Set theme for various applications. See `--help` for options. When no options
 # are passed, the theme will be temporarily applied to the shell immediately.
-# Otherwise, the configuration must be rebuilt with `rebuild`, configurations
-# reloaded, and/or services restarted in order for changes to be applied.
+# Otherwise, the configuration must be rebuilt, configurations reloaded, and/or
+# services restarted in order for changes to be applied.
 export def main [
     theme?: string # The theme to set
     --all # Set all themes

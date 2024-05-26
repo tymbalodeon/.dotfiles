@@ -1,28 +1,17 @@
-def get_hosts [configuration] {
-  return (
-      nix eval $".#($configuration)" --apply builtins.attrNames err> /dev/null
-      | str replace --all --regex '\[ | \]|"' ""
-      | split row " "
-  )
-}
-
-def get_available_hosts [] {
-  return (
-    (get_hosts "homeConfigurations")
-    | wrap Darwin
-    | merge (
-        (get_hosts "nixosConfigurations")
-        | wrap Linux
-    )
-  )
+export def is_nixos [] {
+  return ("NixOS" in (uname | get kernel-version))
 }
 
 export def get_configuration [host?: string, --with-packages-path] {
-  let kernel_name = (uname | get kernel-name)
+  let kernel_name = if (is_nixos) {
+    "NixOS"
+  } else {
+    "Darwin"
+  }
 
   let base_configurations = {
     Darwin: "homeConfigurations",
-    Linux: "nixosConfigurations"
+    NixOS: "nixosConfigurations"
   }
 
   let available_hosts = (get_available_hosts)
@@ -34,9 +23,9 @@ export def get_configuration [host?: string, --with-packages-path] {
     if $host in ($available_hosts | get Darwin) {
       $base_configurations
       | get Darwin
-    } else if $host in ($available_hosts | get Linux) {
+    } else if $host in ($available_hosts | get NixOS) {
       $base_configurations
-      | get Linux
+      | get NixOS
     } else {
       error make {msg: "Invalid host name."}
     }
@@ -54,7 +43,7 @@ export def get_configuration [host?: string, --with-packages-path] {
 
   let paths = {
     Darwin: ".config.home.packages",
-    Linux: ".config.home-manager.users.benrosen.home.packages"
+    NixOS: ".config.home-manager.users.benrosen.home.packages"
   }
 
   let packages_path = if $with_packages_path {
@@ -64,8 +53,8 @@ export def get_configuration [host?: string, --with-packages-path] {
     } else {
       if $host in ($available_hosts | get Darwin) {
         $paths | get Darwin
-      } else if $host in ($available_hosts | get Linux) {
-        $paths | get Linux
+      } else if $host in ($available_hosts | get NixOS) {
+        $paths | get NixOS
       } else {
         error make {msg: "Invalid host name."}
       }
@@ -75,6 +64,26 @@ export def get_configuration [host?: string, --with-packages-path] {
   }
 
   return $".#($base).($host)($packages_path)"
+}
+
+def get_hosts [configuration] {
+  return (
+      nix eval $".#($configuration)" --apply builtins.attrNames err> /dev/null
+      | str replace --all --regex '\[ | \]|"' ""
+      | split row " "
+  )
+}
+
+
+export def get_available_hosts [] {
+  return (
+    (get_hosts "homeConfigurations")
+    | wrap Darwin
+    | merge (
+        (get_hosts "nixosConfigurations")
+        | wrap NixOS
+    )
+  )
 }
 
 # Show available hosts

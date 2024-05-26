@@ -14,7 +14,6 @@
       "${nushell_config_path}/colors.nu".source = ../nushell/colors.nu;
       "${nushell_config_path}/f.nu".source = ../nushell/f.nu;
       "${nushell_config_path}/prompt.nu".source = ../nushell/prompt.nu;
-      "${nushell_config_path}/rebuild.nu".source = ./nushell/rebuild.nu;
       "${nushell_config_path}/theme.nu".source = ../nushell/theme.nu;
       "${nushell_config_path}/theme-function.nu".source =
         ./nushell/theme-function.nu;
