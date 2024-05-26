@@ -1,3 +1,4 @@
+# Initialize direnv environment
 export def main [] {
   if (which direnv | is-empty) {
     print "Direnv (https://direnv.net/) is not installed."

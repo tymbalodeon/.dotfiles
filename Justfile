@@ -19,8 +19,8 @@ find-recipe *search_term:
 # Initialize direnv environment
 initialize *help:
     #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/init.nu
-    init {{ help }}
+    use {{ justfile_directory() }}/scripts/initialize.nu
+    initialize {{ help }}
 
 alias init := initialize
 
