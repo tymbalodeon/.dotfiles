@@ -1,6 +1,6 @@
 use ./hosts.nu get_available_hosts
 use ./hosts.nu is_nixos
-use ./update.nu
+use ./update-deps.nu
 
 # Rebuild and switch to (or --test) a configuration
 export def main [
@@ -10,7 +10,7 @@ export def main [
     --update # Update the flake lock before rebuilding
 ] {
   if $update {
-    update
+    update-deps
   }
 
   let is_nixos = (is_nixos)
