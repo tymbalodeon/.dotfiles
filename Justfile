@@ -12,8 +12,8 @@ check *args:
 # List dependencies
 deps *args:
     #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/list-dependencies.nu
-    list-dependencies {{ args }}
+    use {{ justfile_directory() }}/scripts/deps.nu
+    deps {{ args }}
 
 # Search available `just` recipes
 [no-exit-message]
@@ -71,10 +71,10 @@ stats *help:
     stats {{ help }}
 
 # Update dependencies
-update *help:
+update-deps *help:
     #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/update.nu
-    update {{ help }}
+    use {{ justfile_directory() }}/scripts/update-deps.nu
+    update-deps {{ help }}
 
 # View the source code for a recipe
 view-source recipe:
