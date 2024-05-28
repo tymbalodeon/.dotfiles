@@ -86,7 +86,7 @@ export def get_available_hosts [] {
   )
 }
 
-# Show available hosts
+# View available hosts
 export def main [] {
   return (get_available_hosts | table --index false)
 }
