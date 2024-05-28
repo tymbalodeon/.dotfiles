@@ -22,6 +22,12 @@ find-recipe *search_term:
     use {{ justfile_directory() }}/scripts/find-recipe.nu
     find-recipe {{ search_term }}
 
+# View generations
+generations *help:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/generations.nu
+    generations {{ help }}
+
 # Search project history
 history *search_term:
     #!/usr/bin/env nu
@@ -57,6 +63,12 @@ remote *browser:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/remote.nu
     remote {{ browser }}
+
+# Rollback to a previous generation
+rollback *generation-id:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/rollback.nu
+    rollback {{ generation-id }}
 
 # Open Nix REPL with flake loaded
 shell *host:
