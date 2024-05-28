@@ -83,10 +83,10 @@ stats *help:
     stats {{ help }}
 
 # Update dependencies
-update-deps *help:
+update *help:
     #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/update-deps.nu
-    update-deps {{ help }}
+    use {{ justfile_directory() }}/scripts/update.nu
+    update {{ help }}
 
 # View the source code for a recipe
 view-source recipe:
