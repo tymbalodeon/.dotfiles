@@ -40,7 +40,6 @@
       fh
       font-awesome
       fzf
-      gforth
       gh
       git
       gitui
