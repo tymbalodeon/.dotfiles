@@ -16,10 +16,13 @@ export def main [
   let is_nixos = (is_nixos)
 
   if $hosts {
-    if $is_nixos {
-      return (get_available_hosts | get NixOS)
+    let hosts = if $is_nixos {
+      get_available_hosts | get NixOS
     } else {
-      return (get_available_hosts | get Darwin) }
+      get_available_hosts | get Darwin 
+    }
+
+    return ($hosts | str join "\n")
   }
 
   let host = if ($host | is-empty) {
