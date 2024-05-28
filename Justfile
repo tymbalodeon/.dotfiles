@@ -43,8 +43,8 @@ hosts *help:
 # Initialize direnv environment
 init *help:
     #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/initialize.nu
-    initialize {{ help }}
+    use {{ justfile_directory() }}/scripts/init.nu
+    init {{ help }}
 
 # View issues
 issue *args:
