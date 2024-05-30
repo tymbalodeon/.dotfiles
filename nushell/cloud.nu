@@ -59,7 +59,7 @@ def unmount-remote [
 # Subcommands:
     #    mount
     #    unmount
-export def main [
+def cloud [
     subcommand: string # Subcommand to run
     remote_name?: string # The name of the remote service (leave blank for all services)
     path?: string # A remote path to mount

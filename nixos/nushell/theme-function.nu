@@ -21,7 +21,7 @@ def run-theme [
 # are passed, the theme will be temporarily applied to the shell immediately.
 # Otherwise, the configuration must be rebuilt, configurations reloaded, and/or
 # services restarted in order for changes to be applied.
-export def main [
+def theme [
     theme?: string # The theme to set
     --all # Set all themes
     --fzf # Set theme for fzf
