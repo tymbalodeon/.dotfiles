@@ -1,7 +1,7 @@
 source ($nu.default-config-dir | path join "aliases.nu")
-use ($nu.default-config-dir | path join "cloud.nu")
-use ($nu.default-config-dir | path join "f.nu")
-use ($nu.default-config-dir | path join "theme-function.nu")
+source ($nu.default-config-dir | path join "cloud.nu")
+source ($nu.default-config-dir | path join "f.nu")
+source ($nu.default-config-dir | path join "theme-function.nu")
 source ($nu.default-config-dir | path join "theme.nu")
 
 $env.config = {
