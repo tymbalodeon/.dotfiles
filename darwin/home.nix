@@ -27,7 +27,7 @@
       (with pkgs; [
         pforth
       ])
-      + (with pkgs-elm.elmPackages; [
+      ++ (with pkgs-elm.elmPackages; [
         elm
         elm-format
         elm-land
