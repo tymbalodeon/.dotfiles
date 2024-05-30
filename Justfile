@@ -59,10 +59,10 @@ rebuild *args:
     rebuild {{ args }}
 
 # View remote repository
-remote *browser:
+remote *web:
     #!/usr/bin/env nu
     use {{ justfile_directory() }}/scripts/remote.nu
-    remote {{ browser }}
+    remote {{ web }}
 
 # Rollback to a previous generation
 rollback *generation-id:
