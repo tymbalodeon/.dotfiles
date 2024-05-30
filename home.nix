@@ -57,7 +57,6 @@
       nodePackages.prettier
       nodePackages.pyright
       nodePackages.typescript-language-server
-      pforth
       pipx
       pup
       rclone

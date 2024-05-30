@@ -34,6 +34,7 @@
       elmPackages.elm-language-server
       elmPackages.elm-pages
       elmPackages.lamdera
+      gforth
       mako
       rofi-wayland
       wev

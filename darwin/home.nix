@@ -23,14 +23,18 @@
 
     homeDirectory = "/Users/benrosen";
 
-    packages = with pkgs-elm.elmPackages; [
-      elm
-      elm-format
-      elm-land
-      elm-language-server
-      elm-pages
-      lamdera
-    ];
+    packages =
+      (with pkgs; [
+        pforth
+      ])
+      + (with pkgs-elm.elmPackages; [
+        elm
+        elm-format
+        elm-land
+        elm-language-server
+        elm-pages
+        lamdera
+      ]);
   };
 
   imports = [../home.nix];
