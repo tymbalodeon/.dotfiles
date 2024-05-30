@@ -91,7 +91,7 @@ def cloud [
                     rclone listremotes
                     | lines
                     | each {|remote| $"    ($remote | str replace ":" "")"}
-                    | str join "\n"
+                    | to text
                 )
             } else {
                 mount-remote $remote_name $path $mount_point

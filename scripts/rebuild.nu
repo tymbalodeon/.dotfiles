@@ -19,10 +19,10 @@ export def main [
     let hosts = if $is_nixos {
       get_available_hosts | get NixOS
     } else {
-      get_available_hosts | get Darwin 
+      get_available_hosts | get Darwin
     }
 
-    return ($hosts | str join "\n")
+    return ($hosts | to text)
   }
 
   let host = if ($host | is-empty) {

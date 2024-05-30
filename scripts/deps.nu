@@ -12,7 +12,7 @@ export def main [
       exit 1
     }
 
-    return (home-manager packages)    
+    return (home-manager packages)
   }
 
   let configuration = (get_configuration $host --with-packages-path)
@@ -28,7 +28,7 @@ export def main [
         | str replace --all '"' ""
       }
     | sort
-    | str join "\n"
+    | to text
   )
 
   if ($find | is-empty) {
@@ -37,7 +37,7 @@ export def main [
     return (
       $dependencies
       | find $find
-      | str join "\n"
+      | to text
     )
   }
 }
