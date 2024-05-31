@@ -76,7 +76,6 @@ def get_hosts [configuration] {
   )
 }
 
-
 export def get_available_hosts [] {
   return (
     (get_hosts "homeConfigurations")
