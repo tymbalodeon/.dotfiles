@@ -38,6 +38,10 @@
 @prune *older_than:
     ./scripts/prune.nu {{ older_than }}
 
+# Update README command output
+@readme *help:
+    ./scripts/readme.nu {{ help }}
+
 # Rebuild and switch to (or --test) a configuration
 @rebuild *args:
     ./scripts/rebuild.nu {{ args }}
@@ -63,5 +67,5 @@
     ./scripts/update-deps.nu {{ help }}
 
 # View the source code for a recipe
-@view-source recipe:
+@view-source *recipe:
     ./scripts/view-source.nu {{ recipe }}

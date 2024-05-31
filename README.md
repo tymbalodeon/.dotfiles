@@ -68,3 +68,27 @@ just init
 
 Run `just` to see available "recipes," and `just <recipe> --help/-h` to get more
 information about a particular recipe.
+
+<!-- `just` start -->
+```nushell
+Available recipes:
+(run `just <recipe> --help/-h` for more info)
+    check *args              # Run pre-commit hooks
+    deps *args               # List dependencies
+    find-recipe *search_term # Search available `just` recipes
+    generations *help        # View generations
+    history *search_term     # Search project history
+    hosts *help              # List available hosts
+    init *help               # Initialize direnv environment
+    issue *args              # View issues
+    prune *older_than        # Collect garbage and remove old generations
+    readme *help             # Update README command output
+    rebuild *args            # Rebuild and switch to (or --test) a configuration
+    remote *web              # View remote repository
+    rollback *generation-id  # Rollback to a previous generation
+    shell *host              # Open Nix REPL with flake loaded
+    stats *help              # View repository analytics
+    update *help             # Update dependencies
+    view-source *recipe      # View the source code for a recipe
+```
+<!-- `just` end -->
