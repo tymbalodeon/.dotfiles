@@ -20,7 +20,7 @@ export def main [
   let configuration = (get_configuration $host --with-packages-path)
 
   let dependencies = (
-    nix eval $configuration --apply "builtins.map (p: p.name)"
+    nix eval $configuration --apply "builtins.map (package: package.name)"
     | split row " "
     | filter {|line| not ($line in ["[" "]"])}
     | each {
