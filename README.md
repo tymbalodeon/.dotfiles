@@ -12,8 +12,6 @@ _Note: The commands below assume that the repository is cloned to `~/.dotfiles`:
 git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
 ```
 
-_(On non-NixOS systems only:)_ Install Nix using the [Determinate Systems Nix Installer](https://github.com/DeterminateSystems/nix-installer).
-
 ### Initial build
 
 NixOS:
@@ -28,7 +26,10 @@ sudo nixos-rebuild switch --flake ~/.dotfiles#<HOST>
 # sudo nixos-rebuild switch --flake ~/.dotfiles#ruzia
 ```
 
-macOS:
+Darwin:
+
+Install Nix using the Determinate Systems
+[Nix Installer](https://github.com/DeterminateSystems/nix-installer).
 
 ```sh
 nix run home-manager -- switch --flake ~/.dotfiles
@@ -82,10 +83,9 @@ Available recipes:
     init *help               # Initialize direnv environment
     issue *args              # View issues
     prune *older_than        # Collect garbage and remove old generations
-    readme *help             # Update README command output
     rebuild *args            # Rebuild and switch to (or --test) a configuration
     remote *web              # View remote repository
-    rollback *generation-id  # Rollback to a previous generation
+    rollback *id             # Rollback to a previous generation
     shell *host              # Open Nix REPL with flake loaded
     stats *help              # View repository analytics
     update *help             # Update dependencies

@@ -39,7 +39,7 @@
     ./scripts/prune.nu {{ older_than }}
 
 # Update README command output
-@readme *help:
+@_readme *help:
     ./scripts/readme.nu {{ help }}
 
 # Rebuild and switch to (or --test) a configuration
@@ -51,8 +51,8 @@
     ./scripts/remote.nu  {{ web }}
 
 # Rollback to a previous generation
-@rollback *generation-id:
-    ./scripts/rollback.nu {{ generation-id }}
+@rollback *id:
+    ./scripts/rollback.nu {{ id }}
 
 # Open Nix REPL with flake loaded
 @shell *host:

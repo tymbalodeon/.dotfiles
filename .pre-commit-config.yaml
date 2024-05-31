@@ -68,7 +68,7 @@ repos:
         pass_filenames: false
       - id: readme
         name: readme
-        entry: just readme
+        entry: just _readme
         language: system
         pass_filenames: false
       - id: statix
