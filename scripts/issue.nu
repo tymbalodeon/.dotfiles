@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 # View issues
 export def main [
   issue_number?: number # The number of the issue to view

@@ -1,101 +1,67 @@
-set shell := ["nu", "-c"]
-
 @_help:
-    nu ./scripts/help.nu
+    ./scripts/help.nu
 
 # Run pre-commit hooks
-check *args:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/check.nu
-    check {{ args }}
+@check *args:
+    ./scripts/check.nu {{ args }}
 
 # List dependencies
-deps *args:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/deps.nu
-    deps {{ args }}
+@deps *args:
+    ./scripts/deps.nu {{ args }}
 
 # Search available `just` recipes
 [no-exit-message]
-find-recipe *search_term:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/find-recipe.nu
-    find-recipe {{ search_term }}
+@find-recipe *search_term:
+    ./scripts/find-recipe.nu {{ search_term }}
 
 # View generations
-generations *help:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/generations.nu
-    generations {{ help }}
+@generations *help:
+    ./scripts/generations.nu {{ help }}
 
 # Search project history
-history *search_term:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/history.nu
-    history {{ search_term }}
+@history *search_term:
+    ./scripts/history.nu {{ search_term }}
 
 # List available hosts
-hosts *help:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/hosts.nu
-    hosts {{ help }}
+@hosts *help:
+    ./scripts/hosts.nu {{ help }}
 
 # Initialize direnv environment
-init *help:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/init.nu
-    init {{ help }}
+@init *help:
+    ./scripts/init.nu {{ help }}
 
 # View issues
-issue *args:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/issue.nu
-    issue {{ args }}
+@issue *args:
+    ./scripts/issue.nu {{ args }}
 
 # Collect garbage and remove old generations
-prune *older_than:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/prune.nu
-    prune {{ older_than }}
+@prune *older_than:
+    ./scripts/prune.nu {{ older_than }}
 
 # Rebuild and switch to (or --test) a configuration
-rebuild *args:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/rebuild.nu
-    rebuild {{ args }}
+@rebuild *args:
+    ./scripts/rebuild.nu {{ args }}
 
 # View remote repository
-remote *web:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/remote.nu
-    remote {{ web }}
+@remote *web:
+    ./scripts/remote.nu  {{ web }}
 
 # Rollback to a previous generation
-rollback *generation-id:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/rollback.nu
-    rollback {{ generation-id }}
+@rollback *generation-id:
+    ./scripts/rollback.nu {{ generation-id }}
 
 # Open Nix REPL with flake loaded
-shell *host:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/shell.nu
-    shell {{ host }}
+@shell *host:
+    ./scripts/shell.nu {{ host }}
 
 # View repository analytics
-stats *help:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/stats.nu
-    stats {{ help }}
+@stats *help:
+    ./scripts/stats.nu {{ help }}
 
 # Update dependencies
-update *help:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/update-deps.nu
-    update-deps {{ help }}
+@update *help:
+    ./scripts/update-deps.nu {{ help }}
 
 # View the source code for a recipe
-view-source recipe:
-    #!/usr/bin/env nu
-    use {{ justfile_directory() }}/scripts/view-source.nu
-    view-source {{ recipe }}
+@view-source recipe:
+    ./scripts/view-source.nu {{ recipe }}

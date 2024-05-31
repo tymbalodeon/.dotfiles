@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 use ./hosts.nu is_nixos
 
 # Rollback to a previous generation

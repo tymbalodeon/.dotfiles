@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 use ./hosts.nu get_available_hosts
 use ./hosts.nu is_nixos
 use ./update-deps.nu

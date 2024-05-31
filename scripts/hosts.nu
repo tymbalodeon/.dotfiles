@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 export def is_nixos [] {
   return ("NixOS" in (uname | get kernel-version))
 }

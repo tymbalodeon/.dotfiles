@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 use ./hosts.nu get_configuration
 
 # Open Nix REPL with flake loaded

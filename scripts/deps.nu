@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 use ./hosts.nu get_configuration
 use ./hosts.nu is_nixos
 

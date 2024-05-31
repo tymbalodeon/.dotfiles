@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 # Collect garbage and remove old generations
 export def main [
   --older-than: string # Remove generations older than this amount
