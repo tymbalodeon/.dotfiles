@@ -52,6 +52,12 @@ issue *args:
     use {{ justfile_directory() }}/scripts/issue.nu
     issue {{ args }}
 
+# Collect garbage and remove old generations
+prune *older_than:
+    #!/usr/bin/env nu
+    use {{ justfile_directory() }}/scripts/prune.nu
+    prune {{ older_than }}
+
 # Rebuild and switch to (or --test) a configuration
 rebuild *args:
     #!/usr/bin/env nu
