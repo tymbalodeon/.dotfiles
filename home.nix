@@ -120,6 +120,7 @@
         enable_audio_bell = "no";
         enabled_layouts = "grid, stack, vertical, horizontal, tall";
         font_family = "CaskaydiaCove Nerd Font";
+        inactive_text_alpha = "0.5";
         include = "theme.conf";
         tab_bar_edge = "top";
         tab_bar_style = "powerline";
