@@ -29,6 +29,7 @@
       alejandra
       bat
       bat-extras.batman
+      chicken
       coreutils
       chuck
       dejavu_fonts
