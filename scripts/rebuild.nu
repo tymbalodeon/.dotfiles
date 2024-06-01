@@ -2,6 +2,7 @@
 
 use ./hosts.nu get_available_hosts
 use ./hosts.nu is_nixos
+use ./prune.nu
 use ./update-deps.nu
 
 # Rebuild and switch to (or --test) a configuration
@@ -40,6 +41,8 @@ export def main [
   let host = $".#($host)"
 
   git add .
+
+  prune
 
   if $is_nixos {
     if $test {
