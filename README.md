@@ -71,6 +71,7 @@ Run `just` to see available "recipes," and `just <recipe> --help/-h` to get more
 information about a particular recipe.
 
 <!-- `just` start -->
+
 ```nushell
 Available recipes:
 (run `just <recipe> --help/-h` for more info)
@@ -91,4 +92,5 @@ Available recipes:
     update *help             # Update dependencies
     view-source *recipe      # View the source code for a recipe
 ```
+
 <!-- `just` end -->
