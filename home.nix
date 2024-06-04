@@ -26,6 +26,7 @@
     };
 
     packages = with pkgs; [
+      ansible-language-server
       alejandra
       bat
       bat-extras.batman
