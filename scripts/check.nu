@@ -1,11 +1,16 @@
 #!/usr/bin/env nu
 
-# Run pre-commit hook by name, all hooks, or update all hooks
+# Check flake and run pre-commit hooks
 export def main [
-    ...hooks: string  # The hooks to run
-    --list # List all hook ids
+    ...hooks: string # The hooks to run
+    --flake # Run `nix flake check` before pre-commit hooks
+    --list # List hook ids
     --update # Update all pre-commit hooks
 ] {
+    if $flake {
+        nix flake check
+    }
+
     if $list {
         print (
             rg '\- id:' .pre-commit-config.yaml

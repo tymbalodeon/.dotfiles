@@ -75,7 +75,7 @@ information about a particular recipe.
 ```nushell
 Available recipes:
 (run `just <recipe> --help/-h` for more info)
-    check *args              # Run pre-commit hooks
+    check *args              # Check flake and run pre-commit hooks
     deps *args               # List dependencies
     find-recipe *search_term # Search available `just` recipes
     generations *help        # View generations

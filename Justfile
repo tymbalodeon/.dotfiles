@@ -1,7 +1,7 @@
 @_help:
     ./scripts/help.nu
 
-# Run pre-commit hooks
+# Check flake and run pre-commit hooks
 @check *args:
     ./scripts/check.nu {{ args }}
 
