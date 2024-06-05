@@ -19,7 +19,11 @@
   hardware.bluetooth.enable = true;
 
   home-manager = {
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = rec {
+      inherit inputs;
+      inherit (inputs) nushell-syntax;
+    };
+
     users."benrosen" = import ./home.nix;
     useGlobalPkgs = true;
   };

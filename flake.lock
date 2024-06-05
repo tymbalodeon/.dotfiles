@@ -2,7 +2,9 @@
   "nodes": {
     "home-manager": {
       "inputs": {
-        "nixpkgs": ["nixpkgs"]
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1717097707,
@@ -50,11 +52,28 @@
         "type": "github"
       }
     },
+    "nushell-syntax": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1692935709,
+        "narHash": "sha256-paayZP6P+tzGnla7k+HrF+dcTKUyU806MTtUeurhvdg=",
+        "owner": "stevenxxiu",
+        "repo": "sublime_text_nushell",
+        "rev": "66b00ff639dc8cecb688a0e1d81d13613b772f66",
+        "type": "github"
+      },
+      "original": {
+        "owner": "stevenxxiu",
+        "repo": "sublime_text_nushell",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-elm": "nixpkgs-elm"
+        "nixpkgs-elm": "nixpkgs-elm",
+        "nushell-syntax": "nushell-syntax"
       }
     }
   },
