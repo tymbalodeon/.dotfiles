@@ -8,7 +8,7 @@ export def main [
         nix flake update
     } else {
         for input in $inputs {
-            nix flake lock --update-input $input
+            nix flake update $input
         }
     }
 }
