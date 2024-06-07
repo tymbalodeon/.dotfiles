@@ -77,6 +77,7 @@ Available recipes:
 (run `just <recipe> --help/-h` for more info)
     check *args              # Check flake and run pre-commit hooks
     deps *args               # List dependencies
+    diff *args               # View the diff between hosts
     find-recipe *search_term # Search available `just` recipes
     generations *help        # View generations
     history *search_term     # Search project history
