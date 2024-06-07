@@ -8,6 +8,7 @@
     };
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nixpkgs-elm = {
       url = "github:nixos/nixpkgs/3030f185ba6a4bf4f18b87f345f104e6a6961f34";
@@ -24,6 +25,7 @@
   outputs = {
     home-manager,
     nixpkgs,
+    nixpkgs-darwin,
     nixpkgs-elm,
     nushell-syntax,
     ...
@@ -35,7 +37,13 @@
 
     forEachSupportedSystem = f:
       nixpkgs.lib.genAttrs supportedSystems
-      (system: f {pkgs = import nixpkgs {inherit system;};});
+      (system:
+        f {
+          pkgs =
+            if system == "x86_64-darwin"
+            then import nixpkgs-darwin {inherit system;}
+            else import nixpkgs {inherit system;};
+        });
   in {
     devShells = forEachSupportedSystem ({pkgs}: {
       default = pkgs.mkShell {
@@ -78,7 +86,7 @@
 
         value = home-manager.lib.homeManagerConfiguration {
           modules = [./darwin/${hostName}/home.nix];
-          pkgs = nixpkgs.legacyPackages.x86_64-darwin;
+          pkgs = nixpkgs-darwin.legacyPackages.x86_64-darwin;
 
           extraSpecialArgs = {
             inherit nushell-syntax;
