@@ -7,13 +7,13 @@ export def main [
 ] {
     if $list_inputs {
         return (
-            nix flake metadata --json 
-            | from json 
-            | get locks 
-            | get nodes 
-            | get root 
-            | get inputs 
-            | values        
+            nix flake metadata --json
+            | from json
+            | get locks
+            | get nodes
+            | get root
+            | get inputs
+            | values
             | to text
         )
     }
