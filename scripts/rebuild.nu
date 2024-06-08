@@ -9,6 +9,7 @@ use ./update-deps.nu
 export def main [
     host?: string # The target host configuration (auto-detected if not specified)
     --hosts # The available hosts on the current system
+    --no-prune # Skip running `just prune` before rebuilding
     --test # Apply the configuration without adding it to the boot menu
     --update # Update the flake lock before rebuilding
 ] {
@@ -42,7 +43,9 @@ export def main [
 
   git add .
 
-  prune
+  if not $no_prune {
+    prune
+  }
 
   if $is_nixos {
     if $test {
