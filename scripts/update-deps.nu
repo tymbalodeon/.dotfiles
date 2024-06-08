@@ -2,6 +2,21 @@
 
 use ./hosts.nu is_nixos
 
+def get_input_status [system: string input: string] {
+    let global_inputs = ["home-manager" "nushell-syntax"]
+
+    let system_inputs = {
+        "darwin": ($global_inputs ++ ["nixpkgs-darwin" "nixpkgs-elm"])
+        "nixos": ($global_inputs ++ ["nixpkgs"])
+    }
+
+    if ($input in ($system_inputs | get $system)) {
+        return "✓"
+    } else {
+        return "✗"
+    }
+}
+
 # Update dependencies
 export def main [
     ...inputs: string # Inputs to update
@@ -16,9 +31,22 @@ export def main [
             | get nodes
             | get root
             | get inputs
-            | values
-            | to text
-        )
+            | transpose input darwin
+            | each {
+                |input| 
+
+                $input 
+                | update darwin (get_input_status "darwin" $input.input)
+            }
+            | insert nixos ""
+            | each {
+                |input| 
+
+                $input 
+                | update nixos (get_input_status "nixos" $input.input)
+            }
+            | table --index false
+        ) 
     }
 
     if $all {
