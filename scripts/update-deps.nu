@@ -10,10 +10,29 @@ def get_input_status [system: string input: string] {
         "nixos": ($global_inputs ++ ["nixpkgs"])
     }
 
-    if ($input in ($system_inputs | get $system)) {
-        return "✓"
+    let is_nixos = (is_nixos)
+
+    let is_system_match = (
+        ($is_nixos and $system == "nixos")
+        or (not $is_nixos and $system == "darwin")
+    )
+
+    let green = if $is_system_match {
+        (ansi lgb)
     } else {
-        return "✗"
+        (ansi gd)
+    }
+
+    let red = if $is_system_match {
+        (ansi lrb)
+    } else {
+        (ansi rd)
+    }
+
+    if ($input in ($system_inputs | get $system)) {
+        return $"($green)✓(ansi reset)"
+    } else {
+        return $"($red)✗(ansi reset)"
     }
 }
 
