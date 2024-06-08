@@ -24,6 +24,7 @@
     push = upstream
 
 [delta]
+    navigate = true
     syntax-theme = gruvbox-dark
 
 [diff]
