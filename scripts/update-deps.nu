@@ -65,7 +65,7 @@ export def main [
         }
 
         for input in $inputs {
-            nix flake update $input
+            nix flake lock --update-input $input
         }
     }
 }
