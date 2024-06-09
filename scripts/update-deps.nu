@@ -85,9 +85,9 @@ export def main [
     } else {
         mut inputs = if ($inputs | is-empty) {
             if (is_nixos) {
-                get_darwin_inputs
-            } else {
                 get_nixos_inputs
+            } else {
+                get_darwin_inputs
             }
         } else {
             $inputs
