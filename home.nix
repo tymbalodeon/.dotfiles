@@ -79,7 +79,6 @@
       zathura
       zoxide
       zellij
-      zig
     ];
 
     sessionVariables = {EDITOR = "hx";};

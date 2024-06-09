@@ -5,12 +5,15 @@
     ch = checkout
     cl = clone
     d = diff
+    ds = diff --staged
     l = log --graph --pretty=format:'%C(auto)%h%d %s %C(dim)(%ar)%Creset' -20
     last = log -1 HEAD --stat
+    m = merge
     p = push
     pl = pull
     r = restore
     rh = reset --hard
+    rs = restore --staged
     s = status
     tg = tag
     tracked = ls-tree --full-tree --name-only -r HEAD
