@@ -55,10 +55,10 @@
       nil
       nodePackages.bash-language-server
       nodePackages.prettier
-      nodePackages.pyright
       nodePackages.typescript-language-server
       pipx
       pup
+      pyright
       rclone
       ripgrep
       ruff-lsp
