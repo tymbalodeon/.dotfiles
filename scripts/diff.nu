@@ -28,6 +28,28 @@ def get_common_files [source_files: list<table> target_files: list<table>] {
   )
 }
 
+def get_shared_configuration_files [] {
+  (
+    fd 
+      --exclude "Justfile"
+      --exclude "README.md"
+      --exclude "darwin"
+      --exclude "flake.lock"
+      --exclude "nixos"
+      --exclude "scripts"
+      --type "file"
+      ""
+  )
+}
+
+def combine_files [files: string additional_files: string] {
+  return (
+    ($files | lines) ++ ($additional_files | lines)
+    | sort
+    | to text
+  )
+}
+
 # View the diff between configurations
 export def main [
   source: string # Host or system name
@@ -36,8 +58,10 @@ export def main [
   --files # View files unique to a host
 ] {
   if $files {
+    let shared_files = (get_shared_configuration_files)
+
     if ($source in ["darwin" "nixos"]) {
-      return (fd --type file "" $source)
+      return (combine_files $shared_files (fd --type file "" $source))
     } else {
       let system_directory = if $source in ["benrosen" "work"] {
         "darwin"
@@ -60,7 +84,9 @@ export def main [
       )
       
       return (
-        fd --exclude $exclude_pattern --type file "" $system_directory
+        combine_files $shared_files (
+          fd --exclude $"*($exclude_pattern)*" --type file "" $system_directory
+        )
       )
     }
   }
