@@ -44,7 +44,7 @@ def get_shared_configuration_files [] {
   )
 }
 
-def include_shared_files [files: string] {
+def format_files [files: string include_shared: bool] {
   let files = (
     $files 
     | lines
@@ -73,8 +73,14 @@ def include_shared_files [files: string] {
     }
   )
 
-  return (
+  let files = if $include_shared {
     (get_shared_configuration_files | lines) ++ $files
+  } else {
+    $files
+  }
+
+  return (
+    $files
     | sort
     | each {
         |line| 
@@ -113,31 +119,9 @@ def include_shared_files [files: string] {
 }
 
 def get_files [files: string unique_files: bool] {
-  if $unique_files {
-    return $files
-  } else {
-    return (include_shared_files $files)
-  }
-}
+  let include_shared = not $unique_files
 
-def get_unique_files [
-  configuration: string 
-  excludae_pattern: string 
-  system_directory: string
-] {
-  let exclude_pattern = (
-    {
-      benrosen: "work"      
-      bumbirich: "ruzia"      
-      ruzia: "bumbirich"      
-      work: "benrosen"      
-    } 
-    | get $configuration
-  )
-  
-  return (
-    fd --exclude $"*($exclude_pattern)*" --type file "" $system_directory
-  )
+  return (format_files $files $include_shared)
 }
 
 # View the diff between configurations
