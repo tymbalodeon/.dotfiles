@@ -78,9 +78,32 @@ def include_shared_files [files: string] {
     | sort
     | each {
         |line| 
-        
+
         if "[" in $line {
-          $"(ansi gb)($line)(ansi reset)"
+          let configuration = if "bumbirich" in $line {
+            "bumbirich"
+          } else if "ruzia" in $line {
+            "ruzia"
+          } else (
+            $line
+            | rg '\[.+\]' --only-matching
+            | str replace "[" ""
+            | str replace "]" ""
+            | split row "/"
+            | filter {|directory| not ($directory | is-empty)}
+            | last
+          )
+
+          let color = {
+            "benrosen": "gb"
+            "bumbirich": "cb"
+            "darwin": "ub"
+            "nixos": "pb"
+            "ruzia": "yb"
+            "work": "dgrb"
+          } | get $configuration
+
+          $"(ansi $color)($line)(ansi reset)"
         } else { 
           $line 
         }
@@ -97,6 +120,26 @@ def get_files [files: string unique_files: bool] {
   }
 }
 
+def get_unique_files [
+  configuration: string 
+  excludae_pattern: string 
+  system_directory: string
+] {
+  let exclude_pattern = (
+    {
+      benrosen: "work"      
+      bumbirich: "ruzia"      
+      ruzia: "bumbirich"      
+      work: "benrosen"      
+    } 
+    | get $configuration
+  )
+  
+  return (
+    fd --exclude $"*($exclude_pattern)*" --type file "" $system_directory
+  )
+}
+
 # View the diff between configurations
 export def main [
   source?: string # Host or system name
@@ -111,35 +154,53 @@ export def main [
   }
 
   if $files or $unique_files {
-    let source_files = if ($source in ["darwin" "nixos"]) {
-      fd --type file "" $source
+    let configurations = if ($source | is-empty) {
+      ["benrosen" "bumbirich" "darwin" "nixos" "ruzia" "work"]      
     } else {
-      let system_directory = if $source in ["benrosen" "work"] {
-        "darwin"
-      } else if $source in ["bumbirich" "ruzia"] {
-        "nixos"
-      } else {
-        print $"Unrecognized host or system name: `($source)`\n"
-        print "Please specify a valid host or system name:"
-        print (hosts)
-
-        exit 1
-      }
-
-      let exclude_pattern = (
-        {
-          benrosen: "work"      
-          bumbirich: "ruzia"      
-          ruzia: "bumbirich"      
-          work: "benrosen"      
-        } 
-        | get $source
-      )
-      
-      fd --exclude $"*($exclude_pattern)*" --type file "" $system_directory
+      [$source]
     }
 
-    return (get_files $source_files $unique_files)
+    let configuration_files = (
+      $configurations 
+      | each {
+          |configuration|
+
+          if ($configuration in ["darwin" "nixos"]) {
+            fd --type file "" $configuration
+            | lines
+          } else {
+            let system_directory = if $configuration in ["benrosen" "work"] {
+              "darwin"
+            } else if $configuration in ["bumbirich" "ruzia"] {
+              "nixos"
+            } else {
+              print $"Unrecognized host or system name: `($configuration)`\n"
+              print "Please specify a valid host or system name:"
+              print (hosts)
+
+              exit 1
+            }
+
+            let exclude_pattern = (
+              {
+                benrosen: "work"      
+                bumbirich: "ruzia"      
+                ruzia: "bumbirich"      
+                work: "benrosen"      
+              } 
+              | get $configuration
+            )
+      
+            fd --exclude $"*($exclude_pattern)*" --type file "" $system_directory
+            | lines
+          }
+      }
+    )
+    | flatten
+    | uniq
+    | to text
+
+    return (get_files $configuration_files $unique_files)
   }
   
   let darwin_files = (get_file_info "darwin")
