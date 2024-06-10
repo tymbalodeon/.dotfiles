@@ -45,9 +45,46 @@ def get_shared_configuration_files [] {
 }
 
 def include_shared_files [files: string] {
+  let files = (
+    $files 
+    | lines
+    | each {
+        |line| 
+        
+        let directories = (
+          $line 
+          | path split 
+        )
+
+        let $base = ($directories | first)
+
+        let configuration = if (
+          $directories | get 1
+        ) in ["benrosen" "work"] {
+          $base | path join ($directories | get 1)
+        } else {
+          $base
+        }
+
+        (
+          $line 
+          | str replace $"($configuration)/" ""
+        ) + $" [($configuration)/]"
+    }
+  )
+
   return (
-    (get_shared_configuration_files | lines) ++ ($files | lines)
+    (get_shared_configuration_files | lines) ++ $files
     | sort
+    | each {
+        |line| 
+        
+        if "[" in $line {
+          $"(ansi gb)($line)(ansi reset)"
+        } else { 
+          $line 
+        }
+    }
     | to text
   )
 }
