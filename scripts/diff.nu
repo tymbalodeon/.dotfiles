@@ -1,5 +1,7 @@
 #!/usr/bin/env nu
 
+use ./hosts.nu
+
 def get_file_info [host: string] {
   return (
     fd "" $host
@@ -60,7 +62,7 @@ def get_files [files: string unique_files: bool] {
 
 # View the diff between configurations
 export def main [
-  source: string # Host or system name
+  source?: string # Host or system name
   target?: string # Host or system to compare to
   --file_name: string # View the diff for a specific filename
   --files # View files relevant to a host or system configuration
@@ -80,7 +82,9 @@ export def main [
       } else if $source in ["bumbirich" "ruzia"] {
         "nixos"
       } else {
-        print $"Unrecognized host or system name: `($source)`"
+        print $"Unrecognized host or system name: `($source)`\n"
+        print "Please specify a valid host or system name:"
+        print (hosts)
 
         exit 1
       }
