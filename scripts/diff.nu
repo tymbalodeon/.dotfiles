@@ -100,14 +100,28 @@ def format_files [files: string include_shared: bool] {
             | last
           )
 
-          let color = {
-            "benrosen": "gb"
-            "bumbirich": "cb"
-            "darwin": "ub"
-            "nixos": "pb"
-            "ruzia": "yb"
-            "work": "dgrb"
-          } | get $configuration
+          let color = if $include_shared {
+            {
+              "benrosen": "gb"
+              "bumbirich": "cb"
+              "darwin": "ub"
+              "nixos": "pb"
+              "ruzia": "yb"
+              "work": "dgrb"
+            } | get $configuration
+          } else {
+            mut color = "n"
+
+            for host in ["benrosen" "bumbirich" "ruzia" "work"] {
+              if $host in $line {
+                $color = "gb"
+
+                break
+              }
+            }
+
+            $color
+          }
 
           $"(ansi $color)($line)(ansi reset)"
         } else { 
