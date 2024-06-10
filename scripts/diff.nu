@@ -42,12 +42,20 @@ def get_shared_configuration_files [] {
   )
 }
 
-def combine_files [files: string additional_files: string] {
+def include_shared_files [files: string] {
   return (
-    ($files | lines) ++ ($additional_files | lines)
+    (get_shared_configuration_files | lines) ++ ($files | lines)
     | sort
     | to text
   )
+}
+
+def get_files [files: string unique_files: bool] {
+  if $unique_files {
+    return $files
+  } else {
+    return (include_shared_files $files)
+  }
 }
 
 # View the diff between configurations
@@ -55,13 +63,17 @@ export def main [
   source: string # Host or system name
   target?: string # Host or system to compare to
   --file_name: string # View the diff for a specific filename
-  --files # View files unique to a host
+  --files # View files relevant to a host or system configuration
+  --shared-files # View only files shared across all configurations
+  --unique-files # View only files unique to a host or system configuration
 ] {
-  if $files {
-    let shared_files = (get_shared_configuration_files)
+  if $shared_files {
+    return (get_shared_configuration_files)
+  }
 
-    if ($source in ["darwin" "nixos"]) {
-      return (combine_files $shared_files (fd --type file "" $source))
+  if $files or $unique_files {
+    let source_files = if ($source in ["darwin" "nixos"]) {
+      fd --type file "" $source
     } else {
       let system_directory = if $source in ["benrosen" "work"] {
         "darwin"
@@ -83,12 +95,10 @@ export def main [
         | get $source
       )
       
-      return (
-        combine_files $shared_files (
-          fd --exclude $"*($exclude_pattern)*" --type file "" $system_directory
-        )
-      )
+      fd --exclude $"*($exclude_pattern)*" --type file "" $system_directory
     }
+
+    return (get_files $source_files $unique_files)
   }
   
   let darwin_files = (get_file_info "darwin")
