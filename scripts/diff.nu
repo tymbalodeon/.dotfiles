@@ -31,18 +31,57 @@ def get_common_files [source_files: list<table> target_files: list<table>] {
   )
 }
 
-def get_shared_configuration_files [] {
-  (
-    fd 
-      --exclude "Justfile"
-      --exclude "README.md"
-      --exclude "darwin"
-      --exclude "flake.lock"
-      --exclude "nixos"
-      --exclude "scripts"
-      --type "file"
-      ""
-  )
+def get_shared_configuration_files [configuration?: string] {
+  if ($configuration | is-empty) {
+    (
+      fd 
+        --exclude "Justfile"
+        --exclude "README.md"
+        --exclude "darwin"
+        --exclude "flake.lock"
+        --exclude "nixos"
+        --exclude "scripts"
+        --type "file"
+        ""
+    )
+  } else {
+    let excludes = {
+      benrosen: ["nixos" "work"]
+      bumbirich: ["darwin" "ruzia"]
+      darwin: ["benrosen" "nixos" "work"]
+      nixos: ["bumbirich" "darwin" "ruzia"]
+      ruzia: ["bumbirich" "darwin"]
+      work: ["benrosen" "nixos"]
+    } | get $configuration
+
+    return (
+      (
+        fd 
+          --exclude "Justfile"
+          --exclude "README.md"
+          --exclude "flake.lock"
+          --exclude "scripts"
+          --type "file"
+          ""
+      )
+      | lines
+      | filter {
+          |line|
+
+          mut keep = true
+
+          for exclude in $excludes {
+            if $exclude in $line {
+              $keep = false
+              break
+            }            
+          }
+
+          $keep
+      }
+      | to text
+    )
+  }
 }
 
 def format_files [
@@ -192,6 +231,15 @@ def get_files [configuration: string files: string unique_files: bool] {
   )
 }
 
+def raise_configuration_error [configuration: string] {
+  print $"Unrecognized host or system name: `($configuration)`\n"
+  print "Please specify a valid host or system name:"
+  print (hosts)
+
+  exit 1
+  
+}
+
 # View the diff between configurations
 export def main [
   source?: string # Host or system name
@@ -201,8 +249,17 @@ export def main [
   --shared-files # View only files shared across all configurations
   --unique-files # View only files unique to a host or system configuration
 ] {
+  if not ($source | is-empty) and not (
+      $source in (
+        (get_available_hosts | values | flatten) 
+        ++ (get_available_hosts | columns | str downcase)
+      )
+  ) {
+    raise_configuration_error $source
+  }
+
   if $shared_files {
-    return (get_shared_configuration_files)
+    return (get_shared_configuration_files $source)
   }
 
   if $files or $unique_files {
@@ -232,11 +289,7 @@ export def main [
             } else if $configuration in ["bumbirich" "ruzia"] {
               "nixos"
             } else {
-              print $"Unrecognized host or system name: `($configuration)`\n"
-              print "Please specify a valid host or system name:"
-              print (hosts)
-
-              exit 1
+              raise_configuration_error $configuration
             }
 
             let exclude_pattern = (
