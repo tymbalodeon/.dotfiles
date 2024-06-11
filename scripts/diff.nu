@@ -45,7 +45,12 @@ def get_shared_configuration_files [] {
   )
 }
 
-def format_files [configuration: string files: string include_shared: bool] {
+def format_files [
+  configuration: string 
+  files: string 
+  include_shared: bool
+  unique_files: bool
+] {
   let files = (
     $files 
     | lines
@@ -101,7 +106,7 @@ def format_files [configuration: string files: string include_shared: bool] {
             | last
           )
 
-          let color = if $include_shared {
+          let color = if $include_shared or $unique_files {
             let is_darwin_configuration = (
               $configuration in ["benrosen" "darwin" "work"]
             )
@@ -110,7 +115,15 @@ def format_files [configuration: string files: string include_shared: bool] {
               $configuration in ["bumbirich" "nixos" "ruzia"]
             )
 
-            let neutral_bold = "ub"
+            let is_host_configuration = (
+              $configuration in ["bumbirich" "benrosen" "ruzia" "work"]
+            )
+
+            let host_color = if $is_host_configuration {
+              "n"
+            } else {
+              "ub"
+            }
 
             let darwin_color = if $is_darwin_configuration {
               "n"
@@ -121,17 +134,17 @@ def format_files [configuration: string files: string include_shared: bool] {
             let nixos_color = if $is_nixos_configuration {
               "n"
             } else {
-              "pb"
+              "ub"
             }
 
             let darwin_host_color = if $is_darwin_configuration {
-              $neutral_bold
+              $host_color
             } else {
               "yb"
             }
 
             let nixos_host_color = if $is_nixos_configuration {
-              $neutral_bold
+              $host_color
             } else {
               "cb"
             }
@@ -170,7 +183,13 @@ def format_files [configuration: string files: string include_shared: bool] {
 def get_files [configuration: string files: string unique_files: bool] {
   let include_shared = not $unique_files
 
-  return (format_files $configuration $files $include_shared)
+  return (
+    format_files 
+      $configuration 
+      $files 
+      $include_shared 
+      $unique_files
+  )
 }
 
 # View the diff between configurations
