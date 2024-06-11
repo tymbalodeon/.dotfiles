@@ -1,6 +1,7 @@
 #!/usr/bin/env nu
 
-use ./hosts.nu
+use ./hosts.nu 
+use ./hosts.nu get_available_hosts
 
 def get_file_info [host: string] {
   return (
@@ -44,7 +45,7 @@ def get_shared_configuration_files [] {
   )
 }
 
-def format_files [files: string include_shared: bool] {
+def format_files [configuration: string files: string include_shared: bool] {
   let files = (
     $files 
     | lines
@@ -58,7 +59,7 @@ def format_files [files: string include_shared: bool] {
 
         let $base = ($directories | first)
 
-        let configuration = if (
+        let file_configuration = if (
           $directories | get 1
         ) in ["benrosen" "work"] {
           $base | path join ($directories | get 1)
@@ -68,8 +69,8 @@ def format_files [files: string include_shared: bool] {
 
         (
           $line 
-          | str replace $"($configuration)/" ""
-        ) + $" [($configuration)/]"
+          | str replace $"($file_configuration)/" ""
+        ) + $" [($file_configuration)/]"
     }
   )
 
@@ -86,7 +87,7 @@ def format_files [files: string include_shared: bool] {
         |line| 
 
         if "[" in $line {
-          let configuration = if "bumbirich" in $line {
+          let file_configuration = if "bumbirich" in $line {
             "bumbirich"
           } else if "ruzia" in $line {
             "ruzia"
@@ -101,20 +102,54 @@ def format_files [files: string include_shared: bool] {
           )
 
           let color = if $include_shared {
+            let is_darwin_configuration = (
+              $configuration in ["benrosen" "darwin" "work"]
+            )
+
+            let is_nixos_configuration = (
+              $configuration in ["bumbirich" "nixos" "ruzia"]
+            )
+
+            let neutral_bold = "ub"
+
+            let darwin_color = if $is_darwin_configuration {
+              "n"
+            } else {
+              "pb"
+            }
+
+            let nixos_color = if $is_nixos_configuration {
+              "n"
+            } else {
+              "pb"
+            }
+
+            let darwin_host_color = if $is_darwin_configuration {
+              $neutral_bold
+            } else {
+              "yb"
+            }
+
+            let nixos_host_color = if $is_nixos_configuration {
+              $neutral_bold
+            } else {
+              "cb"
+            }
+
             {
-              "benrosen": "gb"
-              "bumbirich": "cb"
-              "darwin": "ub"
-              "nixos": "pb"
-              "ruzia": "yb"
-              "work": "dgrb"
-            } | get $configuration
+              "benrosen": $darwin_host_color
+              "bumbirich": $nixos_host_color
+              "darwin": $darwin_color
+              "nixos": $nixos_color
+              "ruzia": $nixos_host_color
+              "work": $darwin_host_color
+            } | get $file_configuration
           } else {
             mut color = "n"
 
             for host in ["benrosen" "bumbirich" "ruzia" "work"] {
               if $host in $line {
-                $color = "gb"
+                $color = "cb"
 
                 break
               }
@@ -132,10 +167,10 @@ def format_files [files: string include_shared: bool] {
   )
 }
 
-def get_files [files: string unique_files: bool] {
+def get_files [configuration: string files: string unique_files: bool] {
   let include_shared = not $unique_files
 
-  return (format_files $files $include_shared)
+  return (format_files $configuration $files $include_shared)
 }
 
 # View the diff between configurations
@@ -152,6 +187,12 @@ export def main [
   }
 
   if $files or $unique_files {
+    let source = if not ($source | is-empty) {
+      $source | str downcase
+    } else {
+      $source
+    }
+
     let configurations = if ($source | is-empty) {
       ["benrosen" "bumbirich" "darwin" "nixos" "ruzia" "work"]      
     } else {
@@ -198,7 +239,13 @@ export def main [
     | uniq
     | to text
 
-    return (get_files $configuration_files $unique_files)
+    let configuration = if ($source | is-empty) {
+      ""
+    } else {
+      $source
+    }
+
+    return (get_files $configuration $configuration_files $unique_files)
   }
   
   let darwin_files = (get_file_info "darwin")
