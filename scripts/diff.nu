@@ -2,32 +2,35 @@
 
 use ./hosts.nu 
 use ./hosts.nu get_available_hosts
+use ./hosts.nu get_built_host_name
 
-def get_file_info [host: string] {
-  return (
-    fd "" $host
-    | lines
-    | each {|file| $file | path parse}
-    | update parent {|row| $row.parent | path basename}
-  )
+def raise_configuration_error [configuration: string] {
+  print $"Unrecognized host or system name: `($configuration)`\n"
+  print "Please specify a valid host or system name:"
+  print (hosts)
+
+  exit 1
+  
 }
 
-def get_common_files [source_files: list<table> target_files: list<table>] {
-  return (
-    $source_files 
-    | each {
-        |file|
+def validate_configuration [configuration?: string] {
+   if (
+    not ($configuration | is-empty) and not (
+      $configuration in (
+        (get_available_hosts | values | flatten) 
+        ++ (get_available_hosts | columns | str downcase)
+      )
+    )
+  ) {
+    raise_configuration_error $configuration
+  }
 
-        (
-          $target_files 
-          | where 
-              parent == $file.parent
-              and stem == $file.stem
-              and extension == $file.extension
-          | path join
-          | to text
-        ) 
-    } | filter {|row| not ($row | is-empty)}
+  return (
+    if not ($configuration | is-empty) {
+      $configuration | str downcase
+    } else {
+      $configuration
+    }
   )
 }
 
@@ -231,13 +234,40 @@ def get_files [configuration: string files: string unique_files: bool] {
   )
 }
 
-def raise_configuration_error [configuration: string] {
-  print $"Unrecognized host or system name: `($configuration)`\n"
-  print "Please specify a valid host or system name:"
-  print (hosts)
+def get_file_info [host: string] {
+  return (
+    fd "" $host
+    | lines
+    | each {|file| $file | path parse}
+    | update parent {|row| $row.parent | path basename}
+  )
+}
 
-  exit 1
-  
+def get_common_files [source_files: list<table> target_files: list<table>] {
+  return (
+    $source_files 
+    | each {
+        |file|
+
+        (
+          $target_files 
+          | where 
+              parent == $file.parent
+              and stem == $file.stem
+              and extension == $file.extension
+          | path join
+          | to text
+        ) 
+    } | filter {|row| not ($row | is-empty)}
+  )
+}
+
+def get_configuration_directory [configuration: string] {
+  if $configuration in ["benrosen" "darwin" "work"] {
+    return "darwin"
+  } else {
+    return "nixos"
+  }
 }
 
 # View the diff between configurations
@@ -249,26 +279,14 @@ export def main [
   --shared-files # View only files shared across all configurations
   --unique-files # View only files unique to a host or system configuration
 ] {
-  if not ($source | is-empty) and not (
-      $source in (
-        (get_available_hosts | values | flatten) 
-        ++ (get_available_hosts | columns | str downcase)
-      )
-  ) {
-    raise_configuration_error $source
-  }
+  let source = validate_configuration $source
+  let target = validate_configuration $target
 
   if $shared_files {
     return (get_shared_configuration_files $source)
   }
 
   if $files or $unique_files {
-    let source = if not ($source | is-empty) {
-      $source | str downcase
-    } else {
-      $source
-    }
-
     let configurations = if ($source | is-empty) {
       ["benrosen" "bumbirich" "darwin" "nixos" "ruzia" "work"]      
     } else {
@@ -319,7 +337,7 @@ export def main [
 
     return (get_files $configuration $configuration_files $unique_files)
   }
-  
+
   let darwin_files = (get_file_info "darwin")
   let nixos_files = (get_file_info "nixos")
 
@@ -328,9 +346,29 @@ export def main [
 
   $common_files =  ($common_files | uniq)
 
+  let is_darwin_host = ((get_built_host_name) in ["benrosen" "work"])
+
+  let source_directory = if ($target | is-empty) {
+    if $is_darwin_host {
+      "darwin"
+    } else {
+      "nixos"
+    }
+  } else {
+    get_configuration_directory $source    
+  } 
+
+  let target = if ($target | is-empty) {
+    $source
+  } else {
+    $target
+  }
+
+  let target_directory = (get_configuration_directory $target)
+
   for file in $common_files {
     do --ignore-errors {
-      delta $"darwin/($file)" $"nixos/($file)"
-    } 
+      delta $"($source_directory)/($file)" $"($target_directory)/($file)"
+    }
   }
 }

@@ -87,6 +87,18 @@ export def get_available_hosts [] {
   )
 }
 
+export def get_built_host_name [] {
+  if (is_nixos) {
+    return (cat /etc/hostname | str trim)
+  } else {
+    if (rg (git config user.email) darwin/work/.gitconfig | is-empty) {
+      "benrosen"
+    } else {
+      "work"
+    }
+  }
+}
+
 # View available hosts
 export def main [] {
   return (get_available_hosts | table --index false)
