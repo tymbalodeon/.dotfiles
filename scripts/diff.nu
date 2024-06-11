@@ -38,12 +38,17 @@ def get_shared_configuration_files [configuration?: string] {
   if ($configuration | is-empty) {
     (
       fd 
+        --exclude ".git"
+        --exclude ".gitignore"
+        --exclude ".pre-commit-config.yaml"
+        --exclude ".stylelintrc.json"
         --exclude "Justfile"
         --exclude "README.md"
         --exclude "darwin"
         --exclude "flake.lock"
         --exclude "nixos"
         --exclude "scripts"
+        --hidden
         --type "file"
         ""
     )
@@ -60,10 +65,15 @@ def get_shared_configuration_files [configuration?: string] {
     return (
       (
         fd 
+          --exclude ".git"
+          --exclude ".gitignore"
+          --exclude ".pre-commit-config.yaml"
+          --exclude ".stylelintrc.json"
           --exclude "Justfile"
           --exclude "README.md"
           --exclude "flake.lock"
           --exclude "scripts"
+          --hidden
           --type "file"
           ""
       )
@@ -236,7 +246,7 @@ def get_files [configuration: string files: string unique_files: bool] {
 
 def get_file_info [host: string] {
   return (
-    fd "" $host
+    fd --hidden "" $host
     | lines
     | each {|file| $file | path parse}
     | update parent {|row| $row.parent | path basename}
@@ -299,7 +309,7 @@ export def main [
           |configuration|
 
           if ($configuration in ["darwin" "nixos"]) {
-            fd --type file "" $configuration
+            fd --hidden --type file "" $configuration
             | lines
           } else {
             let system_directory = if $configuration in ["benrosen" "work"] {
@@ -320,7 +330,7 @@ export def main [
               | get $configuration
             )
       
-            fd --exclude $"*($exclude_pattern)*" --type file "" $system_directory
+            fd --exclude $"*($exclude_pattern)*" --hidden --type file "" $system_directory
             | lines
           }
       }
