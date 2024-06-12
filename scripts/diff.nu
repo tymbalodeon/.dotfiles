@@ -244,40 +244,112 @@ def get_files [configuration: string files: string unique_files: bool] {
   )
 }
 
-def get_file_info [host: string] {
+def split_paths [paths: list<string>] {
   return (
-    fd --hidden "" $host
-    | lines
+    $paths
     | each {|file| $file | path parse}
     | update parent {|row| $row.parent | path basename}
   )
 }
 
-def get_common_files [source_files: list<table> target_files: list<table>] {
+def get_host_files [host: string] {
   return (
-      $source_files 
-      | each {
-          |file|
-
-          (
-            $target_files 
-            | where 
-                parent == $file.parent
-                and stem == $file.stem
-                and extension == $file.extension
-            | path join
-            | to text
-          ) 
-      } | filter {|row| not ($row | is-empty)}
-      | uniq
+    split_paths (
+      fd --hidden "" $host
+      | lines
+    )
   )
 }
 
+def get_source_files [host: string] {
+  return (
+    (get_host_files $host)
+    ++ (
+      split_paths (
+        get_shared_configuration_files 
+        | lines
+      )
+    )
+  )
+}
+
+def get_common_files [
+  target: string 
+  source_files: list<table> 
+  target_files: list<table>
+] {
+  let systems = (
+    get_available_hosts | columns | str downcase
+  ) 
+
+  let common_files = (
+    $target_files 
+    | each {
+        |target_file|
+
+        $source_files 
+        | filter {
+            |source_file| 
+
+            let parent = $source_file.parent
+
+            if $parent in $systems or ($parent | is-empty) {
+              (
+                $source_file.stem == $target_file.stem
+                and $source_file.extension == $target_file.extension
+              )
+            } else {
+              (
+                $parent == $target_file.parent
+                and $source_file.stem == $target_file.stem
+                and $source_file.extension == $target_file.extension
+              )
+            }
+          }
+      } 
+    | flatten
+  )
+
+  let source_files = (
+    $common_files
+    | filter {
+        |file| 
+
+        let parent = $file.parent
+
+        ($parent | is-empty) or not (
+          $target 
+          | str contains $file.parent
+        )
+      }
+    | path join
+  )
+
+  let target_files = (
+    $common_files
+    | filter {
+        |file| 
+
+        let parent = $file.parent
+
+        not ($parent | is-empty) and (
+          $target 
+          | str contains $file.parent
+        )
+      }
+    | path join
+  )
+
+  return ($source_files | zip $target_files)
+}
+
 def get_configuration_directory [configuration: string] {
-  if $configuration in ["benrosen" "darwin" "work"] {
-    return "darwin"
-  } else {
+  if $configuration in ["benrosen" "work"] {
+    return $"darwin/($configuration)"
+  } else if $configuration in ["bumbirich" "ruzia"] {
     return "nixos"
+  } else {
+    return $configuration
   }
 }
 
@@ -291,11 +363,12 @@ export def main [
   --unique-files # View only files unique to a host or system configuration
 ] {
   let source = validate_configuration $source
-  let target = validate_configuration $target
 
   if $shared_files {
     return (get_shared_configuration_files $source)
   }
+
+  let target = validate_configuration $target
 
   if $files or $unique_files {
     let configurations = if ($source | is-empty) {
@@ -349,9 +422,6 @@ export def main [
     return (get_files $configuration $configuration_files $unique_files)
   }
 
-  let darwin_files = (get_file_info "darwin")
-  let nixos_files = (get_file_info "nixos")
-  let common_files = (get_common_files $darwin_files $nixos_files)
   let is_darwin_host = ((get_built_host_name) in ["benrosen" "work"])
 
   let source_directory = if ($target | is-empty) {
@@ -364,25 +434,41 @@ export def main [
     get_configuration_directory $source    
   } 
 
-  let target = if ($target | is-empty) {
-    if ($source | is-empty) {
-      if $is_darwin_host {
-        "nixos"
+  let target_directory = get_configuration_directory (
+    if ($target | is-empty) {
+      if ($source | is-empty) {
+        if $is_darwin_host {
+          "nixos"
+        } else {
+          "darwin"
+        }
       } else {
-        "darwin"
+        get_configuration_directory $source
       }
     } else {
-      $source
+      $target
     }
-  } else {
-    $target
-  }
+  )
 
-  let target_directory = (get_configuration_directory $target)
+  let source_files = (get_source_files $source_directory)
+  let target_files = (get_host_files $target_directory)
+  let common_files = (get_common_files $source $source_files $target_files)
 
-  for file in $common_files {
+  for files in $common_files {
+    let source_file = ($files | first) 
+
+    let target_file = (
+      $files 
+      | last 
+      | path split 
+      | drop nth 0 
+      | path join
+    )
+
+    let target_file = $"($target_directory)/($target_file)"
+
     do --ignore-errors {
-      delta $"($source_directory)/($file)" $"($target_directory)/($file)"
+      delta $source_file $target_directory
     }
   }
 }
