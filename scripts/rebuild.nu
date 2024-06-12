@@ -1,6 +1,7 @@
 #!/usr/bin/env nu
 
 use ./hosts.nu get_available_hosts
+use ./hosts.nu get_built_host_name
 use ./hosts.nu is_nixos
 use ./prune.nu
 use ./update-deps.nu
@@ -30,11 +31,7 @@ export def main [
   }
 
   let host = if ($host | is-empty) {
-    if $is_nixos {
-      cat /etc/hostname | str trim
-    } else {
-      "benrosen"
-    }
+    get_built_host_name
   } else {
     $host
   }

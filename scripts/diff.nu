@@ -36,7 +36,7 @@ def validate_configuration [configuration?: string] {
 
 def get_shared_configuration_files [configuration?: string] {
   if ($configuration | is-empty) {
-    (
+    return (
       fd 
         --exclude ".git"
         --exclude ".gitignore"
@@ -369,7 +369,15 @@ export def main [
   } 
 
   let target = if ($target | is-empty) {
-    $source
+    if ($source | is-empty) {
+      if $is_darwin_host {
+        "nixos"
+      } else {
+        "darwin"
+      }
+    } else {
+      $source
+    }
   } else {
     $target
   }
