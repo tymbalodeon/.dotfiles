@@ -4,6 +4,7 @@
     cm = commit -m
     ch = checkout
     cl = clone
+    d = diff
     ds = diff --staged
     l = log --graph --pretty=format:'%C(auto)%h%d %s %C(dim)(%ar)%Creset' -20
     last = log -1 HEAD --stat
