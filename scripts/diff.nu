@@ -3,6 +3,7 @@
 use ./hosts.nu 
 use ./hosts.nu get_available_hosts
 use ./hosts.nu get_built_host_name
+use ./hosts.nu get_systems
 
 def raise_configuration_error [configuration: string] {
   print $"Unrecognized host or system name: `($configuration)`\n"
@@ -18,7 +19,7 @@ def validate_configuration [configuration?: string] {
     not ($configuration | is-empty) and not (
       $configuration in (
         (get_available_hosts | values | flatten) 
-        ++ (get_available_hosts | columns | str downcase)
+        ++ (get_systems)
       )
     )
   ) {
@@ -245,9 +246,25 @@ def get_files [configuration: string files: string unique_files: bool] {
 }
 
 def split_paths [paths: list<string>] {
+  let systems = (get_systems)
+
   return (
     $paths
     | each {|file| $file | path parse}
+    | insert system {
+        |row| 
+        
+        let dirname = (
+          $row.parent 
+          | path dirname
+        )
+
+        if $dirname in $systems {
+          $dirname
+        } else {
+          null
+        }
+      }
     | update parent {|row| $row.parent | path basename}
   )
 }
@@ -255,7 +272,7 @@ def split_paths [paths: list<string>] {
 def get_host_files [host: string] {
   return (
     split_paths (
-      fd --hidden "" $host
+      fd --hidden --type "file" "" $host
       | lines
     )
   )
@@ -273,14 +290,23 @@ def get_source_files [host: string] {
   )
 }
 
+def get_file_and_system [row: record] {
+  return {
+    file: (
+      ($row | reject system) 
+      | path join
+    )
+
+    system: $row.system
+  }
+}
+
 def get_common_files [
   target: string 
-  source_files: list<table> 
-  target_files: list<table>
+  source_files: list
+  target_files: list
 ] {
-  let systems = (
-    get_available_hosts | columns | str downcase
-  ) 
+  let systems = (get_systems) 
 
   let common_files = (
     $target_files 
@@ -322,7 +348,7 @@ def get_common_files [
           | str contains $file.parent
         )
       }
-    | path join
+    | each {|file| (get_file_and_system $file)}
   )
 
   let target_files = (
@@ -337,10 +363,17 @@ def get_common_files [
           | str contains $file.parent
         )
       }
-    | path join
+    | each {|file| (get_file_and_system $file)}
   )
 
-  return ($source_files | zip $target_files)
+  return (
+    $source_files 
+    | wrap source
+    | merge (
+        $target_files
+        | wrap target
+      )
+  )
 }
 
 def get_configuration_directory [configuration: string] {
@@ -350,6 +383,14 @@ def get_configuration_directory [configuration: string] {
     return "nixos"
   } else {
     return $configuration
+  }
+}
+
+def get_full_path [file: string system?: string] {
+  if ($system | is-empty) {
+    $file
+  } else {
+    $system | path join $file
   }
 }
 
@@ -452,23 +493,39 @@ export def main [
 
   let source_files = (get_source_files $source_directory)
   let target_files = (get_host_files $target_directory)
-  let common_files = (get_common_files $source $source_files $target_files)
+
+  let common_files = (
+    get_common_files 
+      (
+        if ($source | is-empty) {
+          $source_directory      
+        } else {
+          $source
+        }
+      ) 
+      $source_files $target_files
+  )
 
   for files in $common_files {
-    let source_file = ($files | first) 
+    let source = ($files | get source)
 
-    let target_file = (
-      $files 
-      | last 
-      | path split 
-      | drop nth 0 
-      | path join
+    let source_file = (
+      get_full_path ($source | get file) ($source | get system)
     )
 
-    let target_file = $"($target_directory)/($target_file)"
+    let target_file = if "target" in ($files | columns) {
+      let target = ($files | get target)
+
+      (
+        get_full_path ($target | get file) ($target | get system)
+      )
+
+    } else {
+      $"($target_directory)/($source | get file)"
+    }
 
     do --ignore-errors {
-      delta $source_file $target_directory
+      delta --paging never $source_file $target_file
     }
   }
 }

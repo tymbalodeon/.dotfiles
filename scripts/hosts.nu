@@ -99,6 +99,10 @@ export def get_built_host_name [] {
   }
 }
 
+export def get_systems [] {
+  return ["darwin" "nixos"]
+}
+
 # View available hosts
 export def main [] {
   return (get_available_hosts | table --index false)
