@@ -15,6 +15,9 @@
     rh = reset --hard
     rs = restore --staged
     s = status
+    sh = stash
+    sl = stash list
+    sp = stash pop
     tg = tag
     tracked = ls-tree --full-tree --name-only -r HEAD
     tr = tracked
