@@ -1,8 +1,11 @@
 #!/usr/bin/env nu
 
 use ./hosts.nu 
+use ./hosts.nu get_available_host_names
 use ./hosts.nu get_available_hosts
 use ./hosts.nu get_built_host_name
+use ./hosts.nu get_darwin_hosts
+use ./hosts.nu get_nixos_hosts
 use ./hosts.nu get_systems
 use ./hosts.nu is_nixos
 
@@ -18,11 +21,7 @@ def raise_configuration_error [configuration: string] {
 def validate_configuration [configuration: string] {
   let configuration = ($configuration | str downcase)
 
-  if not (
-    $configuration in (
-      (get_available_hosts | values | flatten) ++ (get_systems)
-    )
-  ) {
+  if not ($configuration in (get_available_host_names)) {
     raise_configuration_error $configuration
   }
 
@@ -124,11 +123,12 @@ def get_shared_configuration_files [configuration?: string] {
 }
 
 def format_files [
-  configuration: string 
   files: string 
-  include_shared: bool
   unique_files: bool
+  configuration?: string 
 ] {
+  let include_shared = not $unique_files
+
   let files = (
     $files 
     | lines
@@ -144,7 +144,7 @@ def format_files [
 
         let file_configuration = if (
           $directories | get 1
-        ) in ["benrosen" "work"] {
+        ) in (get_darwin_hosts) {
           $base | path join ($directories | get 1)
         } else {
           $base
@@ -185,16 +185,22 @@ def format_files [
           )
 
           let color = if $include_shared or $unique_files {
+            let $configuration = if ($configuration | is-empty) {
+              ""
+            } else {
+              $configuration
+            }
+
             let is_darwin_configuration = (
-              $configuration in ["benrosen" "darwin" "work"]
+              $configuration in (get_darwin_hosts --with-system)
             )
 
             let is_nixos_configuration = (
-              $configuration in ["bumbirich" "nixos" "ruzia"]
+              $configuration in (get_nixos_hosts --with-system)
             )
 
             let is_host_configuration = (
-              $configuration in ["bumbirich" "benrosen" "ruzia" "work"]
+              $configuration in (get_available_hosts --list)
             )
 
             let host_color = if $is_host_configuration {
@@ -238,7 +244,7 @@ def format_files [
           } else {
             mut color = "n"
 
-            for host in ["benrosen" "bumbirich" "ruzia" "work"] {
+            for host in (get_available_hosts --list) {
               if $host in $line {
                 $color = "cb"
 
@@ -255,18 +261,6 @@ def format_files [
         }
     }
     | to text
-  )
-}
-
-def get_files [configuration: string files: string unique_files: bool] {
-  let include_shared = not $unique_files
-
-  return (
-    format_files 
-      $configuration 
-      $files 
-      $include_shared 
-      $unique_files
   )
 }
 
@@ -429,6 +423,53 @@ def get_full_path [file: string system?: string] {
   }
 }
 
+def list_files [unique_files: bool configuration?: string] {
+  let configurations = if ($configuration | is-empty) {
+    get_available_host_names
+  } else {
+    [$configuration]
+  }
+
+  let configuration_files = (
+    $configurations 
+    | each {
+        |configuration|
+
+        if ($configuration in (get_systems)) {
+          fd --hidden --type file "" $configuration
+          | lines
+        } else {
+          let system_directory = if $configuration in (get_darwin_hosts) {
+            "darwin"
+          } else if $configuration in (get_nixos_hosts) {
+            "nixos"
+          } else {
+            raise_configuration_error $configuration
+          }
+
+          let exclude_pattern = (
+            {
+              benrosen: "work"      
+              bumbirich: "ruzia"      
+              ruzia: "bumbirich"      
+              work: "benrosen"      
+            } 
+            | get $configuration
+          )
+    
+          fd --exclude $"*($exclude_pattern)*" --hidden --type file "" $system_directory
+          | lines
+        }
+    }
+  )
+  | flatten
+  | uniq
+  | to text
+
+  return (format_files $configuration_files $unique_files $configuration)
+  
+}
+
 # View the diff between configurations
 export def main [
   source?: string # Host or system name
@@ -439,8 +480,14 @@ export def main [
   --side-by-side # View the diff in side-by-side layout
   --unique-files # View only files unique to a host or system configuration
 ] {
-  if $shared_files and ($source | is-empty) {
-    return (get_shared_configuration_files)
+  if ($source | is-empty) {
+    if $shared_files {
+      return (get_shared_configuration_files)
+    }
+    
+    if $files or $unique_files {
+      return (list_files $unique_files)
+    }
   }
 
   let validated_args = (validate_source_and_target $source $target)
@@ -452,58 +499,10 @@ export def main [
   }
 
   if $files or $unique_files {
-    let configurations = if ($source | is-empty) {
-      ["benrosen" "bumbirich" "darwin" "nixos" "ruzia" "work"]      
-    } else {
-      [$source]
-    }
-
-    let configuration_files = (
-      $configurations 
-      | each {
-          |configuration|
-
-          if ($configuration in ["darwin" "nixos"]) {
-            fd --hidden --type file "" $configuration
-            | lines
-          } else {
-            let system_directory = if $configuration in ["benrosen" "work"] {
-              "darwin"
-            } else if $configuration in ["bumbirich" "ruzia"] {
-              "nixos"
-            } else {
-              raise_configuration_error $configuration
-            }
-
-            let exclude_pattern = (
-              {
-                benrosen: "work"      
-                bumbirich: "ruzia"      
-                ruzia: "bumbirich"      
-                work: "benrosen"      
-              } 
-              | get $configuration
-            )
-      
-            fd --exclude $"*($exclude_pattern)*" --hidden --type file "" $system_directory
-            | lines
-          }
-      }
-    )
-    | flatten
-    | uniq
-    | to text
-
-    let configuration = if ($source | is-empty) {
-      ""
-    } else {
-      $source
-    }
-
-    return (get_files $configuration $configuration_files $unique_files)
+    return (list_files $unique_files $target)
   }
 
-  let is_darwin_host = ((get_built_host_name) in ["benrosen" "work"])
+  let is_darwin_host = ((get_built_host_name) in (get_darwin_hosts))
 
   let source_directory = if ($target | is-empty) {
     if $is_darwin_host {

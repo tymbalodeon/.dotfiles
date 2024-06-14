@@ -76,14 +76,55 @@ def get_hosts [configuration] {
   )
 }
 
-export def get_available_hosts [] {
+export def get_available_hosts [--list] {
+  let darwin_hosts = (get_hosts "homeConfigurations")
+  let nixos_hosts = (get_hosts "nixosConfigurations")
+
   return (
-    (get_hosts "homeConfigurations")
-    | wrap Darwin
-    | merge (
-        (get_hosts "nixosConfigurations")
-        | wrap NixOS
-    )
+    if $list {
+      $darwin_hosts ++ $nixos_hosts
+    } else {
+      $darwin_hosts
+      | wrap Darwin
+      | merge (
+          $nixos_hosts
+          | wrap NixOS
+      )
+    }
+  )
+}
+
+export def get_systems [] {
+  return ["darwin" "nixos"]
+}
+
+export def get_available_host_names [] {
+  return (      
+    (get_available_hosts | values | flatten) ++ (get_systems)
+  )
+}
+
+export def get_darwin_hosts [--with-system] {
+  let hosts = (get_available_hosts | get Darwin)
+
+  return (
+    if $with_system {
+      ($hosts | append "darwin")
+    } else {
+      $hosts 
+    }
+  )
+}
+
+export def get_nixos_hosts [--with-system] {
+  let hosts = (get_available_hosts | get NixOs)
+
+  return (
+    if $with_system {
+      ($hosts | append "nixos")
+    } else {
+      $hosts 
+    }
   )
 }
 
@@ -97,10 +138,6 @@ export def get_built_host_name [] {
       "work"
     }
   }
-}
-
-export def get_systems [] {
-  return ["darwin" "nixos"]
 }
 
 # View available hosts
