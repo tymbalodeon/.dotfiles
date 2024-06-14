@@ -4,6 +4,7 @@ use ./hosts.nu
 use ./hosts.nu get_available_hosts
 use ./hosts.nu get_built_host_name
 use ./hosts.nu get_systems
+use ./hosts.nu is_nixos
 
 def raise_configuration_error [configuration: string] {
   print $"Unrecognized host or system name: `($configuration)`\n"
@@ -14,23 +15,47 @@ def raise_configuration_error [configuration: string] {
   
 }
 
-def validate_configuration [configuration?: string] {
-   if (
-    not ($configuration | is-empty) and not (
-      $configuration in (
-        (get_available_hosts | values | flatten) 
-        ++ (get_systems)
-      )
+def validate_configuration [configuration: string] {
+  let configuration = ($configuration | str downcase)
+
+  if not (
+    $configuration in (
+      (get_available_hosts | values | flatten) ++ (get_systems)
     )
   ) {
     raise_configuration_error $configuration
   }
 
-  return (
-    if not ($configuration | is-empty) {
-      $configuration | str downcase
+  return $configuration
+}
+
+def validate_source_and_target [source?: string target?: string] {
+  let validated_source = if (
+    ($source | is-empty) or ($target | is-empty)
+  ) {
+    get_built_host_name
+  } else {
+    validate_configuration $source
+  }
+
+  let validated_target = if ($target | is-empty) {
+    if ($source | is-empty) {
+      if (is_nixos) {
+        "darwin"
+      } else {
+        "nixos"
+      }
     } else {
-      $configuration
+      validate_configuration $source
+    }
+  } else {
+    validate_configuration $target
+  }
+
+  return (
+    {
+      source: $validated_source
+      target: $validated_target
     }
   )
 }
@@ -309,15 +334,15 @@ def get_common_files [
   let systems = (get_systems) 
 
   let common_files = (
-    $target_files 
+    $source_files 
     | each {
-        |target_file|
+        |source_file|
 
-        $source_files 
+        $target_files 
         | filter {
-            |source_file| 
+            |target_file| 
 
-            let parent = $source_file.parent
+            let parent = $target_file.parent
 
             if $parent in $systems or ($parent | is-empty) {
               (
@@ -326,7 +351,7 @@ def get_common_files [
               )
             } else {
               (
-                $parent == $target_file.parent
+                $parent == $source_file.parent
                 and $source_file.stem == $target_file.stem
                 and $source_file.extension == $target_file.extension
               )
@@ -334,9 +359,14 @@ def get_common_files [
           }
       } 
     | flatten
+    | uniq
   )
 
-  let source_files = (
+  # print $source_files
+  # print $target_files
+  # print $common_files
+
+  let target_files = (
     $common_files
     | filter {
         |file| 
@@ -349,9 +379,10 @@ def get_common_files [
         )
       }
     | each {|file| (get_file_and_system $file)}
+    | uniq
   )
 
-  let target_files = (
+  let source_files = (
     $common_files
     | filter {
         |file| 
@@ -364,13 +395,17 @@ def get_common_files [
         )
       }
     | each {|file| (get_file_and_system $file)}
+    | uniq
   )
 
+  # print $source_files
+  # print $target_files
+
   return (
-    $source_files 
+    $target_files 
     | wrap source
     | merge (
-        $target_files
+        $source_files
         | wrap target
       )
   )
@@ -401,15 +436,20 @@ export def main [
   --file_name: string # View the diff for a specific filename
   --files # View files relevant to a host or system configuration
   --shared-files # View only files shared across all configurations
+  --side-by-side # View the diff in side-by-side layout
   --unique-files # View only files unique to a host or system configuration
 ] {
-  let source = validate_configuration $source
-
-  if $shared_files {
-    return (get_shared_configuration_files $source)
+  if $shared_files and ($source | is-empty) {
+    return (get_shared_configuration_files)
   }
 
-  let target = validate_configuration $target
+  let validated_args = (validate_source_and_target $source $target)
+  let source = ($validated_args | get source)
+  let target = ($validated_args | get target)
+
+  if $shared_files {
+    return (get_shared_configuration_files $target)
+  }
 
   if $files or $unique_files {
     let configurations = if ($source | is-empty) {
@@ -496,13 +536,14 @@ export def main [
 
   let common_files = (
     get_common_files 
-      (
-        if ($source | is-empty) {
-          $source_directory      
-        } else {
-          $source
-        }
-      ) 
+      # (
+      #   if ($source | is-empty) {
+      #     $source_directory      
+      #   } else {
+      #     $source
+      #   }
+      # ) 
+      $target_directory
       $source_files $target_files
   )
 
@@ -524,8 +565,12 @@ export def main [
       $"($target_directory)/($source | get file)"
     }
 
-    do --ignore-errors {
-      delta --paging never $source_file $target_file
-    }
+    # do --ignore-errors {
+    #   if $side_by_side {
+    #     delta --paging never --side-by-side $source_file $target_file
+    #   } else {
+    #     delta --paging never $source_file $target_file
+    #   }
+    # }
   }
 }
