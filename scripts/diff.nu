@@ -128,6 +128,7 @@ def format_files [
   configuration?: string 
 ] {
   let include_shared = not $unique_files
+  let darwin_hosts = (get_darwin_hosts)
 
   let files = (
     $files 
@@ -144,7 +145,7 @@ def format_files [
 
         let file_configuration = if (
           $directories | get 1
-        ) in (get_darwin_hosts) {
+        ) in $darwin_hosts {
           $base | path join ($directories | get 1)
         } else {
           $base
@@ -162,6 +163,10 @@ def format_files [
   } else {
     $files
   }
+
+  let darwin_hosts = (get_darwin_hosts --with-system)
+  let nixos_hosts = (get_nixos_hosts --with-system)
+  let hosts = (get_available_hosts --list)
 
   return (
     $files
@@ -191,17 +196,9 @@ def format_files [
               $configuration
             }
 
-            let is_darwin_configuration = (
-              $configuration in (get_darwin_hosts --with-system)
-            )
-
-            let is_nixos_configuration = (
-              $configuration in (get_nixos_hosts --with-system)
-            )
-
-            let is_host_configuration = (
-              $configuration in (get_available_hosts --list)
-            )
+            let is_darwin_configuration = ($configuration in $darwin_hosts)
+            let is_nixos_configuration = ($configuration in $nixos_hosts)
+            let is_host_configuration = ($configuration in $hosts)
 
             let host_color = if $is_host_configuration {
               "n"
@@ -244,7 +241,7 @@ def format_files [
           } else {
             mut color = "n"
 
-            for host in (get_available_hosts --list) {
+            for host in $hosts {
               if $host in $line {
                 $color = "cb"
 
@@ -455,18 +452,22 @@ def list_files [unique_files: bool configuration?: string] {
     [$configuration]
   }
 
+  let systems = (get_systems)
+  let darwin_hosts = (get_darwin_hosts)
+  let nixos_hosts = (get_nixos_hosts)
+
   let configuration_files = (
     $configurations 
     | each {
         |configuration|
 
-        if ($configuration in (get_systems)) {
+        if ($configuration in $systems) {
           fd --hidden --type file "" $configuration
           | lines
         } else {
-          let system_directory = if $configuration in (get_darwin_hosts) {
+          let system_directory = if $configuration in $darwin_hosts {
             "darwin"
-          } else if $configuration in (get_nixos_hosts) {
+          } else if $configuration in $nixos_hosts {
             "nixos"
           } else {
             raise_configuration_error $configuration
@@ -491,7 +492,6 @@ def list_files [unique_files: bool configuration?: string] {
   | to text
 
   return (format_files $configuration_files $unique_files $configuration)
-  
 }
 
 # View the diff between configurations

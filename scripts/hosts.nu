@@ -4,6 +4,24 @@ export def is_nixos [] {
   return ("NixOS" in (uname | get kernel-version))
 }
 
+export def get_available_hosts [--list] {
+  let darwin_hosts = (get_hosts "homeConfigurations")
+  let nixos_hosts = (get_hosts "nixosConfigurations")
+
+  return (
+    if $list {
+      $darwin_hosts ++ $nixos_hosts
+    } else {
+      $darwin_hosts
+      | wrap Darwin
+      | merge (
+          $nixos_hosts
+          | wrap NixOS
+      )
+    }
+  )
+}
+
 export def get_configuration [host?: string, --with-packages-path] {
   let kernel_name = if (is_nixos) {
     "NixOS"
@@ -76,32 +94,13 @@ def get_hosts [configuration] {
   )
 }
 
-export def get_available_hosts [--list] {
-  let darwin_hosts = (get_hosts "homeConfigurations")
-  let nixos_hosts = (get_hosts "nixosConfigurations")
-
-  return (
-    if $list {
-      $darwin_hosts ++ $nixos_hosts
-    } else {
-      $darwin_hosts
-      | wrap Darwin
-      | merge (
-          $nixos_hosts
-          | wrap NixOS
-      )
-    }
-  )
-}
 
 export def get_systems [] {
   return ["darwin" "nixos"]
 }
 
 export def get_available_host_names [] {
-  return (      
-    (get_available_hosts | values | flatten) ++ (get_systems)
-  )
+  return ((get_available_hosts --list) ++ (get_systems))
 }
 
 export def get_darwin_hosts [--with-system] {
