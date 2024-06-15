@@ -516,7 +516,8 @@ def get_matching_files [files: string file: string] {
           | first
         )
 
-        $"($parent)($file)"
+        $"($parent)($file)" 
+        | ansi strip
     }
   )
 }
@@ -561,11 +562,14 @@ export def main [
     let matching_source_files = (get_matching_files $source_files $file)
     let matching_target_files = (get_matching_files $target_files $file)
 
-    for source_file in $matching_source_files {
-      let source_file = ($source_file | ansi strip)
+    print $matching_source_files
+    print $matching_target_files
 
+    for source_file in $matching_source_files {
       for target_file in $matching_target_files {
-        let target_file = ($target_file | ansi strip)
+        if $target_file in $matching_source_files {
+          continue
+        }
 
         delta $source_file $target_file $side_by_side
       }
