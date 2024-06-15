@@ -288,24 +288,71 @@ def split_paths [paths: list<string>] {
   )
 }
 
-def get_host_files [host: string] {
+def get_excluded_paths_pattern [name: string] {
   return (
-    split_paths (
-      fd --hidden --type "file" "" $host
-      | lines
-    )
+    {
+      benrosen: "work"      
+      bumbirich: "ruzia"      
+      ruzia: "bumbirich"      
+      work: "benrosen"      
+    } 
+    | get $name
   )
+  
 }
 
-def get_source_files [host: string] {
-  return (
-    (get_host_files $host)
-    ++ (
-      split_paths (
-        get_shared_configuration_files 
-        | lines
+def get_host_files [host_directory: string --with-shared] {
+  let nested_path = ("/" in $host_directory)
+
+  let system_directory = if $nested_path {
+    $host_directory | path dirname
+  } else {
+    $host_directory
+  }
+
+  let host_name = if $nested_path {
+    $host_directory | path basename
+  } else {
+    $host_directory
+  }
+
+  let files = (
+    if $nested_path {
+      let exclude_pattern = (get_excluded_paths_pattern $host_name)
+
+      (
+        fd 
+          --exclude $"*($exclude_pattern)*" 
+          --hidden 
+          --type "file" 
+          "" 
+          $system_directory
       )
-    )
+    } else {
+      (
+        fd 
+          --hidden 
+          --type "file" 
+          "" 
+          $system_directory
+      )
+    }
+    | lines
+  )
+
+  let host_files = (split_paths $files)
+
+  return (
+    if $with_shared {
+      $host_files ++ (
+        split_paths (
+          get_shared_configuration_files 
+          | lines
+        )
+      )
+    } else {
+      $host_files  
+    }
   )
 }
 
@@ -320,6 +367,18 @@ def get_file_and_system [row: record] {
   }
 }
 
+def get_full_path [file: record] {
+  let path = ($file | reject system | path join)
+
+  return (
+    if ($file.system | is-empty) {
+      $path
+    } else {
+      $file.system | path join $path
+    }
+  )
+}
+
 def get_common_files [
   target: string 
   source_files: list
@@ -327,99 +386,65 @@ def get_common_files [
 ] {
   let systems = (get_systems) 
 
-  let common_files = (
-    $source_files 
-    | each {
-        |source_file|
-
-        $target_files 
-        | filter {
-            |target_file| 
-
-            let parent = $target_file.parent
-
-            if $parent in $systems or ($parent | is-empty) {
-              (
-                $source_file.stem == $target_file.stem
-                and $source_file.extension == $target_file.extension
-              )
-            } else {
-              (
-                $parent == $source_file.parent
-                and $source_file.stem == $target_file.stem
-                and $source_file.extension == $target_file.extension
-              )
-            }
-          }
-      } 
-    | flatten
-    | uniq
+  let available_hosts = (
+    (get_available_host_names) 
+    | append ""
   )
 
-  # print $source_files
-  # print $target_files
-  # print $common_files
+  mut $common_files = {
+    source: []
+    target: []
+  }
 
-  let target_files = (
-    $common_files
-    | filter {
-        |file| 
+  for source_file in $source_files {
+    let matching_files = (
+      $target_files 
+      | filter {
+          |target_file|
 
-        let parent = $file.parent
+          (
+            $target_file.stem == $source_file.stem 
+            and (
+              $target_file.parent == $source_file.parent
+              or $target_file.parent in $available_hosts
+            )
+          )
+        }
+    )
 
-        ($parent | is-empty) or not (
-          $target 
-          | str contains $file.parent
-        )
-      }
-    | each {|file| (get_file_and_system $file)}
-    | uniq
-  )
+    $common_files.target = (
+      $common_files.target
+      | append $matching_files
+    )
 
-  let source_files = (
-    $common_files
-    | filter {
-        |file| 
-
-        let parent = $file.parent
-
-        not ($parent | is-empty) and (
-          $target 
-          | str contains $file.parent
-        )
-      }
-    | each {|file| (get_file_and_system $file)}
-    | uniq
-  )
-
-  # print $source_files
-  # print $target_files
-
-  return (
-    $target_files 
-    | wrap source
-    | merge (
-        $source_files
-        | wrap target
+    if not ($matching_files | is-empty) {
+      $common_files.source = (
+        $common_files.source
+        | append $source_file
       )
+    }
+  }
+
+  $common_files.source = (
+    $common_files.source
+    | each {|file| (get_full_path $file)}
   )
+
+  $common_files.target = (
+    $common_files.target
+    | each {|file| (get_full_path $file)}
+  )
+
+  return $common_files
 }
 
 def get_configuration_directory [configuration: string] {
-  if $configuration in ["benrosen" "work"] {
+  if $configuration in (get_darwin_hosts) {
     return $"darwin/($configuration)"
-  } else if $configuration in ["bumbirich" "ruzia"] {
+  } else if $configuration in (get_nixos_hosts) {
     return "nixos"
   } else {
     return $configuration
-  }
-}
-
-def get_full_path [file: string system?: string] {
-  if ($system | is-empty) {
-    $file
-  } else {
-    $system | path join $file
   }
 }
 
@@ -447,17 +472,16 @@ def list_files [unique_files: bool configuration?: string] {
             raise_configuration_error $configuration
           }
 
-          let exclude_pattern = (
-            {
-              benrosen: "work"      
-              bumbirich: "ruzia"      
-              ruzia: "bumbirich"      
-              work: "benrosen"      
-            } 
-            | get $configuration
-          )
+          let exclude_pattern = (get_excluded_paths_pattern $configuration)
     
-          fd --exclude $"*($exclude_pattern)*" --hidden --type file "" $system_directory
+          (
+            fd 
+              --exclude $"*($exclude_pattern)*" 
+              --hidden 
+              --type file 
+              "" 
+              $system_directory
+          )
           | lines
         }
     }
@@ -502,74 +526,31 @@ export def main [
     return (list_files $unique_files $target)
   }
 
-  let is_darwin_host = ((get_built_host_name) in (get_darwin_hosts))
-
-  let source_directory = if ($target | is-empty) {
-    if $is_darwin_host {
-      "darwin"
-    } else {
-      "nixos"
-    }
-  } else {
-    get_configuration_directory $source    
-  } 
-
-  let target_directory = get_configuration_directory (
-    if ($target | is-empty) {
-      if ($source | is-empty) {
-        if $is_darwin_host {
-          "nixos"
-        } else {
-          "darwin"
-        }
-      } else {
-        get_configuration_directory $source
-      }
-    } else {
-      $target
-    }
-  )
-
-  let source_files = (get_source_files $source_directory)
+  let source_directory = (get_configuration_directory $source)
+  let target_directory = (get_configuration_directory $target)
+  let source_files = (get_host_files $source_directory --with-shared)
   let target_files = (get_host_files $target_directory)
 
   let common_files = (
     get_common_files 
-      # (
-      #   if ($source | is-empty) {
-      #     $source_directory      
-      #   } else {
-      #     $source
-      #   }
-      # ) 
-      $target_directory
-      $source_files $target_files
+      $target
+      $source_files 
+      $target_files
   )
 
-  for files in $common_files {
-    let source = ($files | get source)
+  let source_files = ($common_files | get source)
+  let target_files = ($common_files | get target)
 
-    let source_file = (
-      get_full_path ($source | get file) ($source | get system)
-    )
+  for files in ($source_files | zip $target_files) {
+    let source = ($files | get 0)
+    let target = ($files | get 1)
 
-    let target_file = if "target" in ($files | columns) {
-      let target = ($files | get target)
-
-      (
-        get_full_path ($target | get file) ($target | get system)
-      )
-
-    } else {
-      $"($target_directory)/($source | get file)"
+    do --ignore-errors {
+      if $side_by_side {
+        delta --paging never --side-by-side $source $target
+      } else {
+        delta --paging never $source $target
+      }
     }
-
-    # do --ignore-errors {
-    #   if $side_by_side {
-    #     delta --paging never --side-by-side $source_file $target_file
-    #   } else {
-    #     delta --paging never $source_file $target_file
-    #   }
-    # }
   }
 }
