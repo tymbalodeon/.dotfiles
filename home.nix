@@ -43,8 +43,10 @@
       gh
       git
       gitui
+      google-java-format
       gyre-fonts
       helix
+      jdt-language-server
       jq
       just
       liberation_ttf
@@ -56,6 +58,7 @@
       nodePackages.bash-language-server
       nodePackages.prettier
       nodePackages.typescript-language-server
+      openjdk
       pipx
       pup
       pyright

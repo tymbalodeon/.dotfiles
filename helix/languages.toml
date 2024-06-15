@@ -8,6 +8,10 @@ name = "css"
 formatter = { command = "prettier", args = ["--parser", "css"] }
 
 [[language]]
+name = "java"
+auto-format = true
+
+[[language]]
 name = "javascript"
 auto-format = true
 
