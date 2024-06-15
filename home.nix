@@ -62,6 +62,7 @@
       pipx
       pup
       pyright
+      python311
       rclone
       ripgrep
       ruff-lsp
