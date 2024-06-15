@@ -494,23 +494,60 @@ def list_files [unique_files: bool configuration?: string] {
   return (format_files $configuration_files $unique_files $configuration)
 }
 
+def get_matching_files [files: string file: string] {
+  return (
+    $files 
+    | rg $file
+    | lines
+    | each {
+        |line|
+
+        let parent = (
+          $line 
+          | split row " "
+          | last
+          | str replace "[" ""
+          | str replace "]" ""
+        )
+
+        let file = (
+          $line 
+          | split row " "
+          | first
+        )
+
+        $"($parent)($file)"
+    }
+  )
+}
+
+def delta [source: string target: string side_by_side: bool] {
+  do --ignore-errors {
+    if $side_by_side {
+      ^delta --paging never --side-by-side $source $target
+    } else {
+      ^delta --paging never $source $target
+    }
+  }
+}
+
 # View the diff between configurations
 export def main [
   source?: string # Host or system name
   target?: string # Host or system to compare to
-  --file_name: string # View the diff for a specific filename
+  --file: string # View the diff for a specific file
   --files # View files relevant to a host or system configuration
   --shared-files # View only files shared across all configurations
   --side-by-side # View the diff in side-by-side layout
   --unique-files # View only files unique to a host or system configuration
 ] {
   if ($source | is-empty) {
-    if $shared_files {
-      return (get_shared_configuration_files)
-    }
-    
     if $files or $unique_files {
       return (list_files $unique_files)
+    }
+
+    if $shared_files {
+      return (get_shared_configuration_files)
     }
   }
 
@@ -518,12 +555,31 @@ export def main [
   let source = ($validated_args | get source)
   let target = ($validated_args | get target)
 
-  if $shared_files {
-    return (get_shared_configuration_files $target)
+  if not ($file | is-empty) {
+    let target_files = (list_files true $target)
+    let source_files = (list_files true $source)
+    let matching_source_files = (get_matching_files $source_files $file)
+    let matching_target_files = (get_matching_files $target_files $file)
+
+    for source_file in $matching_source_files {
+      let source_file = ($source_file | ansi strip)
+
+      for target_file in $matching_target_files {
+        let target_file = ($target_file | ansi strip)
+
+        delta $source_file $target_file $side_by_side
+      }
+    }
+
+    return
   }
 
   if $files or $unique_files {
     return (list_files $unique_files $target)
+  }
+
+  if $shared_files {
+    return (get_shared_configuration_files $target)
   }
 
   let source_directory = (get_configuration_directory $source)
@@ -545,12 +601,6 @@ export def main [
     let source = ($files | get 0)
     let target = ($files | get 1)
 
-    do --ignore-errors {
-      if $side_by_side {
-        delta --paging never --side-by-side $source $target
-      } else {
-        delta --paging never $source $target
-      }
-    }
+    delta $source $target $side_by_side
   }
 }
