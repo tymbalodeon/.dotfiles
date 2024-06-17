@@ -83,8 +83,10 @@ export def main [
     if $all {
         nix flake update
     } else {
+        let is_nixos = (is_nixos)
+
         mut inputs = if ($inputs | is-empty) {
-            if (is_nixos) {
+            if $is_nixos {
                 get_nixos_inputs
             } else {
                 get_darwin_inputs
@@ -93,8 +95,14 @@ export def main [
             $inputs
         }
 
-        for input in $inputs {
-            nix flake update $input
+        if $is_nixos {
+            for input in $inputs {
+                nix flake lock --update-input $input
+            }
+        } else {
+            for input in $inputs {
+                nix flake update $input
+            }
         }
     }
 }
