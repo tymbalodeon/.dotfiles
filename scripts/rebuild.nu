@@ -10,7 +10,7 @@ use ./update-deps.nu
 export def main [
     host?: string # The target host configuration (auto-detected if not specified)
     --hosts # The available hosts on the current system
-    --no-prune # Skip running `just prune` before rebuilding
+    --no-prune # Skip running `just prune` after rebuilding
     --test # Apply the configuration without adding it to the boot menu
     --update # Update the flake lock before rebuilding
 ] {
@@ -40,10 +40,6 @@ export def main [
 
   git add .
 
-  if not $no_prune {
-    prune
-  }
-
   if $is_nixos {
     if $test {
         sudo nixos-rebuild test --flake $host
@@ -55,6 +51,10 @@ export def main [
   }
 
   bat cache --build
+
+  if not $no_prune {
+    prune
+  }
 
   if not (git status --short | is-empty) {
     git status
