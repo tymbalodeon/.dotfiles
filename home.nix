@@ -69,6 +69,7 @@
       rustup
       sd
       shfmt
+      swiProlog
       taplo
       tldr
       typst
