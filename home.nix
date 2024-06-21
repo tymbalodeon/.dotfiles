@@ -46,6 +46,7 @@
       google-java-format
       gyre-fonts
       helix
+      inconsolata
       janet
       jdt-language-server
       jq
