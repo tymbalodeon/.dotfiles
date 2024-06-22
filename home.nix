@@ -31,6 +31,7 @@
       chicken
       coreutils
       chuck
+      clang
       dejavu_fonts
       delta
       dust
@@ -53,6 +54,7 @@
       just
       liberation_ttf
       lilypond-unstable-with-fonts
+      lldb
       markdown-oxide
       marksman
       (nerdfonts.override {fonts = ["CascadiaCode"];})
