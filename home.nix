@@ -32,6 +32,7 @@
       coreutils
       chuck
       clang
+      clang-tools
       dejavu_fonts
       delta
       dust
