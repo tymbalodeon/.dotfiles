@@ -3,11 +3,15 @@
 use ./hosts.nu is_nixos
 
 def get_global_inputs [] {
-    return ["home-manager" "nushell-syntax"]
+    return ["nushell-syntax"]
 }
 
 def get_darwin_inputs [] {
-    return ((get_global_inputs) ++ ["nixpkgs-darwin" "nixpkgs-elm"])
+    return (
+        (get_global_inputs) ++ [
+            "home-manager" "nixpkgs-darwin" "nixpkgs-elm"
+        ]
+    )
 }
 
 def get_nixos_inputs [] {
