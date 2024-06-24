@@ -7,10 +7,12 @@ export def main [
   generation_id: int
 ] {
   if (is_nixos) {
+    print "Feature not available on NixOS."
+
     exit 1
   }
 
-  let path = (
+  let paths = (
     home-manager generations
     | lines
     | each {
@@ -23,8 +25,13 @@ export def main [
         {id: $id, path: $path}
     } | where id == ($generation_id | into string)
     | get path
-    | first
   )
 
-  ^$"($path)/activate"
+  if not ($paths | is-empty) {
+    ^$"($paths | first)/activate"
+  } else {
+    print $"Generation ($generation_id) not found."
+
+    exit 1
+  }
 }
