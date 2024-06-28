@@ -50,6 +50,8 @@ export def main [
     home-manager switch --flake $host
   }
 
+  rustup update
+
   bat cache --build
 
   if not $no_prune {
