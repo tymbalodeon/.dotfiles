@@ -79,6 +79,7 @@ def theme [
             return (
                 $themes_and_bases
                 | transpose theme bases
+                | sort-by theme
                 | table --index false
             )
         }
