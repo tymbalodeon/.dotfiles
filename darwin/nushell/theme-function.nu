@@ -37,6 +37,7 @@ def theme [
     --all # Set all themes
     --base16 # Select only base-16 theme(s)
     --base24 # Select only base-24 theme(s)
+    --colors # View colors for $theme
     --fzf # Set theme for fzf
     --helix # Set theme for helix
     --kitty # Set theme for kitty
@@ -94,6 +95,10 @@ def theme [
 
     if (not $update) and ($theme | is-empty) {
         return
+    }
+
+    if $colors {
+        return (tinty info $theme)
     }
 
     let none = not (
