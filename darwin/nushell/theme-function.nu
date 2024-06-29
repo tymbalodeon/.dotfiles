@@ -17,6 +17,17 @@ def run-theme [
     }
 }
 
+def filter_themes [themes: string type: number] {
+    let base = $"base($type)"
+    return (
+        $themes
+        | lines
+        | filter {|theme| $base in $theme}
+        | each {|theme| $theme | str replace $"($base)-" ""}
+        | to text
+    )
+}
+
 # Set theme for various applications. See `--help` for options. When no options
 # are passed, the theme will be temporarily applied to the shell immediately.
 # Otherwise, the configuration must be rebuilt, configurations reloaded, and/or
@@ -24,12 +35,52 @@ def run-theme [
 def theme [
     theme?: string # The theme to set
     --all # Set all themes
+    --base16 # Select only base-16 theme(s)
+    --base24 # Select only base-24 theme(s)
     --fzf # Set theme for fzf
     --helix # Set theme for helix
     --kitty # Set theme for kitty
+    --list # List available themes
     --shell # Set (persistent) theme for shell
     --update # Update the themes
 ] {
+    if $list {
+        let themes = (tinty list)
+
+        if $base16 {
+            return (filter_themes $themes 16)            
+        } else if $base24 {
+            return (filter_themes $themes 24)            
+        } else {
+            mut themes_and_bases = {}
+
+            for theme in ($themes | lines) {
+                let base = ($theme | split row "-" | first)
+                let theme = ($theme | str replace $"($base)-" "")
+
+                if $theme in ($themes_and_bases | columns) {
+                    let bases = (
+                        $themes_and_bases 
+                        | get $theme 
+                        | append $base 
+                        | sort 
+                        | str join ", "
+                    )
+
+                    $themes_and_bases = ($themes_and_bases | upsert $theme $bases)
+                } else {
+                    $themes_and_bases = ($themes_and_bases | insert $theme $base)
+                }
+            }
+
+            return (
+                $themes_and_bases
+                | transpose theme bases
+                | table --index false
+            )
+        }
+    }
+
     let theme = if ((not $update) and ($theme | is-empty)) {
         tinty list | fzf | str trim
     } else {
