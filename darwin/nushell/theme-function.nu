@@ -83,6 +83,10 @@ def theme [
         }
     }
 
+    if ($theme | is-empty) and $colors {
+        return (tinty list | fzf --preview 'tinty info {}')
+    }
+
     let theme = if ((not $update) and ($theme | is-empty)) {
         tinty list | fzf | str trim
     } else {
