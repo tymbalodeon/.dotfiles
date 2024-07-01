@@ -37,11 +37,11 @@ def theme [
     --all # Set all themes
     --base16 # Select only base-16 theme(s)
     --base24 # Select only base-24 theme(s)
-    --colors # View colors for $theme
     --fzf # Set theme for fzf
     --helix # Set theme for helix
     --kitty # Set theme for kitty
     --list # List available themes
+    --preview # View colors for $theme
     --shell # Set (persistent) theme for shell
     --update # Update the themes
 ] {
@@ -83,8 +83,18 @@ def theme [
         }
     }
 
-    if ($theme | is-empty) and $colors {
-        return (tinty list | fzf --preview 'tinty info {}')
+    if ($theme | is-empty) and $preview {
+        let themes = (tinty list)
+
+        let themes = if $base16 {
+            $themes | rg base16
+        } else if $base24 {
+            $themes | rg base24
+        } else {
+            $themes
+        }
+
+        return ($themes | fzf --preview 'tinty info {}')
     }
 
     let theme = if ((not $update) and ($theme | is-empty)) {
@@ -101,7 +111,7 @@ def theme [
         return
     }
 
-    if $colors {
+    if $preview {
         return (tinty info $theme)
     }
 
