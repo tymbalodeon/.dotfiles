@@ -49,9 +49,9 @@ def theme [
         let themes = (tinty list)
 
         if $base16 {
-            return (filter_themes $themes 16)            
+            return (filter_themes $themes 16)
         } else if $base24 {
-            return (filter_themes $themes 24)            
+            return (filter_themes $themes 24)
         } else {
             mut themes_and_bases = {}
 
@@ -61,10 +61,10 @@ def theme [
 
                 if $theme in ($themes_and_bases | columns) {
                     let bases = (
-                        $themes_and_bases 
-                        | get $theme 
-                        | append $base 
-                        | sort 
+                        $themes_and_bases
+                        | get $theme
+                        | append $base
+                        | sort
                         | str join ", "
                     )
 
