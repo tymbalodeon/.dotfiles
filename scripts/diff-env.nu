@@ -26,7 +26,7 @@ def get_diff [type: string local_file: record file?: string accept = false] {
       )
 
       let diff = (
-        bash -c 
+        bash -c
           $"delta \\
             --paging never \\
             ($local_file.name) \\
