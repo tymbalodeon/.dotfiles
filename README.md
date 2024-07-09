@@ -78,6 +78,7 @@ Available recipes:
     check *args              # Check flake and run pre-commit hooks
     deps *args               # List dependencies
     diff *args               # View the diff between hosts
+    diff-env *args           # View the diff between environments
     find-recipe *search_term # Search available `just` recipes
     generations *help        # View generations
     history *search_term     # Search project history
@@ -90,7 +91,7 @@ Available recipes:
     rollback *id             # Rollback to a previous generation
     shell *host              # Open Nix REPL with flake loaded
     stats *help              # View repository analytics
-    update *help             # Update dependencies
+    update-deps *help        # Update dependencies
     view-source *recipe      # View the source code for a recipe
 ```
 

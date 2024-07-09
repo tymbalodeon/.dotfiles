@@ -13,6 +13,10 @@
 @diff *args:
     ./scripts/diff.nu {{ args }}
 
+# View the diff between environments
+@diff-env *args:
+    ./scripts/diff-env.nu {{ args }}
+
 # Search available `just` recipes
 [no-exit-message]
 @find-recipe *search_term:
@@ -67,7 +71,7 @@
     ./scripts/stats.nu {{ help }}
 
 # Update dependencies
-@update *help:
+@update-deps *help:
     ./scripts/update-deps.nu {{ help }}
 
 # View the source code for a recipe
