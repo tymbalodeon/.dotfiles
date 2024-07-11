@@ -24,8 +24,9 @@
     };
 
     packages = with pkgs; [
-      ansible-language-server
       alejandra
+      ansible-language-server
+      antlr
       bat
       bat-extras.batman
       chicken
