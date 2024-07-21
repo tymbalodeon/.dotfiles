@@ -69,6 +69,7 @@
       pup
       pyright
       python311
+      racket-minimal
       rclone
       ripgrep
       ruff-lsp
