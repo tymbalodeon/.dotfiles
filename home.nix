@@ -69,13 +69,6 @@
       pup
       pyright
       python311
-      (racket-minimal.overrideAttrs (finalAttrs: previousAttrs: {
-        configureFlags = [
-          "--enable-${previousAttrs.shared}"
-          "--enable-lt=${pkgs.libtool}/bin/libtool"
-          "--enable-macprefix"
-        ];
-      }))
       rclone
       ripgrep
       ruff-lsp
