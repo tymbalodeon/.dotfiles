@@ -49,7 +49,9 @@
       google-java-format
       gyre-fonts
       helix
+      ibm-plex
       inconsolata
+      iosevka
       janet
       jdt-language-server
       jq
