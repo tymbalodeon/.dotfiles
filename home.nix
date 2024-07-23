@@ -88,6 +88,7 @@
       ubuntu_font_family
       vivid
       vscode-langservers-extracted
+      w3m
       yamlfmt
       yaml-language-server
       yazi
