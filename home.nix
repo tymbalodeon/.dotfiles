@@ -61,6 +61,7 @@
       lldb
       markdown-oxide
       marksman
+      nb
       (nerdfonts.override {fonts = ["CascadiaCode"];})
       nil
       nodePackages.bash-language-server
