@@ -68,6 +68,7 @@
       nodePackages.prettier
       nodePackages.typescript-language-server
       openjdk
+      pandoc
       pipx
       pup
       pyright
