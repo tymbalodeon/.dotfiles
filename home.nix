@@ -94,8 +94,9 @@
       yaml-language-server
       yazi
       zathura
-      zoxide
       zellij
+      zola
+      zoxide
     ];
 
     sessionVariables = {EDITOR = "hx";};
