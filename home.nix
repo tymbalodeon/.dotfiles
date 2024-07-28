@@ -82,6 +82,7 @@
       shfmt
       swiProlog
       taplo
+      tinymist
       tldr
       typst
       typst-lsp
