@@ -15,6 +15,7 @@ def get_parent [path: string] {
 
 def cloud [
     path?: string # A remote path to mount
+    --download # Download file from remote
     --edit # Edit file on remote
     --list # List files on remote
     --remote = "dropbox" # The name of the remote service
@@ -30,19 +31,20 @@ def cloud [
         return (rclone lsf $remote_path)
     }
 
+    let local_path = (
+        $env.HOME 
+        | path join "rclone" 
+        | path join $remote
+        | path join $path
+    )
+
+    let local_path_parent = (get_parent $local_path)
+    let remote_path_parent = (get_parent $remote_path)
+
+    mkdir $local_path_parent
+    rclone sync $remote_path $local_path_parent
+
     if $edit {
-        let local_path = (
-            $env.HOME 
-            | path join "rclone" 
-            | path join $remote
-            | path join $path
-        )
-
-        let local_path_parent = (get_parent $local_path)
-        let remote_path_parent = (get_parent $remote_path)
-
-        mkdir $local_path_parent
-        rclone sync $remote_path $local_path_parent
         hx $local_path
         rclone copy $local_path $remote_path
     }
