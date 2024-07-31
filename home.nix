@@ -64,6 +64,7 @@
       nb
       (nerdfonts.override {fonts = ["CascadiaCode"];})
       nil
+      nix-search-cli
       nodePackages.bash-language-server
       nodePackages.prettier
       nodePackages.typescript-language-server
