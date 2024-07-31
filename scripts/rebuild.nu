@@ -4,13 +4,16 @@ use ./hosts.nu get_available_hosts
 use ./hosts.nu get_built_host_name
 use ./hosts.nu is_nixos
 use ./prune.nu
+use ./optimise.nu
 use ./update-deps.nu
 
 # Rebuild and switch to (or --test) a configuration
 export def main [
     host?: string # The target host configuration (auto-detected if not specified)
+    --clean # Run `just prune` and `just optimise` after rebuilding
     --hosts # The available hosts on the current system
-    --no-prune # Skip running `just prune` after rebuilding
+    --optimise # Run `just optimise` after rebuilding
+    --prune # Run `just prune` after rebuilding
     --test # Apply the configuration without adding it to the boot menu
     --update # Update the flake lock before rebuilding
 ] {
@@ -54,7 +57,11 @@ export def main [
 
   bat cache --build
 
-  if not $no_prune {
+  if $clean or $optimise {
+    optimise
+  }
+
+  if $clean or $prune {
     prune
   }
 

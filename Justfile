@@ -5,6 +5,10 @@
 @check *args:
     ./scripts/check.nu {{ args }}
 
+# Run `prune` and `optimise`
+@clean *all:
+    ./scripts/clean.nu {{ all }}
+
 # List dependencies
 @deps *args:
     ./scripts/deps.nu {{ args }}
@@ -42,9 +46,13 @@
 @issue *args:
     ./scripts/issue.nu {{ args }}
 
+# Replace identical files in the Nix store by hard links
+@optimise *help:
+    ./scripts/optimise.nu {{ help }}
+
 # Collect garbage and remove old generations
-@prune *older_than:
-    ./scripts/prune.nu {{ older_than }}
+@prune *args:
+    ./scripts/prune.nu {{ args }}
 
 # Update README command output
 @_readme *help:

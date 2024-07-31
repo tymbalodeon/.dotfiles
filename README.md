@@ -76,6 +76,7 @@ information about a particular recipe.
 Available recipes:
 (run `just <recipe> --help/-h` for more info)
     check *args              # Check flake and run pre-commit hooks
+    clean *all               # Run `prune` and `optimise`
     deps *args               # List dependencies
     diff *args               # View the diff between hosts
     diff-env *args           # View the diff between environments
@@ -85,7 +86,8 @@ Available recipes:
     hosts *help              # List available hosts
     init *help               # Initialize direnv environment
     issue *args              # View issues
-    prune *older_than        # Collect garbage and remove old generations
+    optimise *help           # Replace identical files in the Nix store by hard links
+    prune *args              # Collect garbage and remove old generations
     rebuild *args            # Rebuild and switch to (or --test) a configuration
     remote *web              # View remote repository
     rollback *id             # Rollback to a previous generation
