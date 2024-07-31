@@ -57,12 +57,12 @@ export def main [
 
   bat cache --build
 
-  if $clean or $optimise {
-    optimise
-  }
-
   if $clean or $prune {
     prune
+  }
+
+  if $clean or $optimise {
+    optimise
   }
 
   if not (git status --short | is-empty) {
