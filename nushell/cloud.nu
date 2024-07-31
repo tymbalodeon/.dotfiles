@@ -13,13 +13,15 @@ def get_parent [path: string] {
     }
 }
 
+# View, edit, and upload files to/from remote storage
 def cloud [
-    path?: string # A remote path to mount
+    path?: string # A path relative to <remote>:
     --download # Download file from remote
     --edit # Edit file on remote
     --list # List files on remote
     --remote = "dropbox" # The name of the remote service
     --remotes # List available remotes
+    --upload # Upload file to remote
 ] {
     if $remotes or ($path | is-empty) {
         return (rclone listremotes)
@@ -41,11 +43,18 @@ def cloud [
     let local_path_parent = (get_parent $local_path)
     let remote_path_parent = (get_parent $remote_path)
 
-    mkdir $local_path_parent
-    rclone sync $remote_path $local_path_parent
+    if $download or $edit {
+        return (rclone sync $remote_path $local_path_parent)
+    }
 
     if $edit {
         hx $local_path
-        rclone copy $local_path $remote_path
     }
+
+    if $upload and not ($local_path | path exists) {
+        print ($path | path expand | path exists)
+        return $"File not found: \"($path)\""
+    }
+
+    rclone copy $local_path $remote_path_parent
 }
