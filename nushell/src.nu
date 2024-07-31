@@ -74,7 +74,12 @@ def src [
         )
       }
 
-      print $"Synced ($repo)."
+      let repo_name = (
+        $repo 
+        | str replace $"($src_directory)/" ""
+      )
+
+      print $"Synced ($repo_name)."
     }
 
     cd -
