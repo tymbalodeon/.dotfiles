@@ -11,8 +11,8 @@ def src [
       $clone
       | str starts-with "git@"
     ) {
-      $clone 
-      | split row "@" 
+      $clone
+      | split row "@"
       | split row ":"
       | split row "/"
       | drop nth 0
@@ -20,8 +20,8 @@ def src [
       $clone
       | str starts-with "http"
     ) {
-      $clone 
-      | split row "://" 
+      $clone
+      | split row "://"
       | split row "/"
       | drop nth 0
     } else {
@@ -35,12 +35,12 @@ def src [
       ) | path join (
         $values | get 1
       ) | path join (
-        $values | last | str replace ".git" ""    
+        $values | last | str replace ".git" ""
       )
-    ) 
+    )
 
     if not ($target | path exists) {
-      git clone $clone $target 
+      git clone $clone $target
     }
 
     return
@@ -49,7 +49,7 @@ def src [
   let repos = (
     ls ($src_directory ++ "/**" | into glob)
     | filter {
-        |item| 
+        |item|
 
         ($item.type == "dir") and (
           $item.name | path join ".git" | path exists
@@ -68,14 +68,14 @@ def src [
 
       if $result.exit_code != 0 {
         (
-          print 
-            --stderr 
+          print
+            --stderr
             $"\nThere was a problem syncing \"($repo)\":\n\n($result.stderr)"
         )
       }
 
       let repo_name = (
-        $repo 
+        $repo
         | str replace $"($src_directory)/" ""
       )
 

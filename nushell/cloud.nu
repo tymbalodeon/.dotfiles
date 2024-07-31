@@ -1,11 +1,11 @@
 def get_parent [path: string] {
     if (
-        $path 
-        | rg '\.[a-zA-Z]+$' 
+        $path
+        | rg '\.[a-zA-Z]+$'
         | complete
     ).exit_code == 0 {
         return (
-            $path 
+            $path
             | path dirname
         )
     } else {
@@ -25,7 +25,7 @@ def cloud [
 ] {
     if $remotes or ($path | is-empty) {
         return (rclone listremotes)
-    } 
+    }
 
     let remote_path = $"($remote):($path)"
 
@@ -34,8 +34,8 @@ def cloud [
     }
 
     let local_path = (
-        $env.HOME 
-        | path join "rclone" 
+        $env.HOME
+        | path join "rclone"
         | path join $remote
         | path join $path
     )
