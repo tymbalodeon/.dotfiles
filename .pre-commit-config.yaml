@@ -27,7 +27,7 @@ repos:
         args:
         -   --fix
 -   repo: https://github.com/thibaudcolas/pre-commit-stylelint
-    rev: v16.7.0
+    rev: v16.8.1
     hooks:
     -   id: stylelint
         additional_dependencies:
