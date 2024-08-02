@@ -1,6 +1,9 @@
-def src [
+def --env src [
+  destination?: string # Where to download a development environment with `--init`
   --clone: string # Clone repo at URL
+  --init: string # Initialize the specified development environment at `destination` (or environment name)
   --list # List cloned repos
+  --list-environments # List available development environments
   --sync # Sync all repos
   --user: string # List cloned repos for user
 ] {
@@ -61,34 +64,36 @@ def src [
   if $sync {
     print "Syncing repos..."
 
-    for repo in $repos {
-      cd $repo
+    $repos
+    | par-each {
+        |repo|
+        cd $repo
 
-      let result = (git pull out> /dev/null | complete)
+        let result = (git pull out> /dev/null | complete)
 
-      if $result.exit_code != 0 {
-        (
-          print
-            --stderr
-            $"\nThere was a problem syncing \"($repo)\":\n\n($result.stderr)"
+        if $result.exit_code != 0 {
+          (
+            print
+              --stderr
+              $"\nThere was a problem syncing \"($repo)\":\n\n($result.stderr)"
+          )
+        }
+
+        let repo_name = (
+          $repo
+          | str replace $"($src_directory)/" ""
         )
+
+        print $"Synced ($repo_name)."
       }
 
-      let repo_name = (
-        $repo
-        | str replace $"($src_directory)/" ""
-      )
-
-      print $"Synced ($repo_name)."
-    }
-
-    cd -
+    return
   }
 
   if $list {
     let repos = (
       $repos
-      | each {
+      | par-each {
           |repo|
 
           let repo = (
@@ -114,4 +119,22 @@ def src [
 
     return ($repos | table --index false)
   }
+
+  let file = (mktemp --tmpdir dev-scripts-init.XXX)
+
+  http get --raw "https://raw.githubusercontent.com/tymbalodeon/dev-scripts/trunk/init.nu"
+  | save --force $file
+
+  if $list_environments {
+    nu $file --list
+  } else {
+    cd (
+      nu $file $init $destination --return-destination 
+      | tee { each { print --no-newline }}
+      | lines
+      | last
+    )
+  }
+
+  rm --force $file
 }
