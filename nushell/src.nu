@@ -102,12 +102,12 @@ def "src clone" [
 # Initialize an environment
 def --env "src init" [
   environment?: string # The environment (`src list-environments`) to initialize
-  destination?: string # Where to download the environment
+  name?: string # Where to download the environment
 ] {
   let file = (get_init_file)
 
   cd (
-    nu $file $environment $destination --return-destination 
+    nu $file $environment $name --return-name 
     | tee { each { print --no-newline }}
     | lines
     | last
