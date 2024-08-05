@@ -24,8 +24,8 @@ def get_remote_path [--path: string --remote: string ] {
 
 # List files on remote
 def "cloud list" [
-    --path = "" # A path relative to <remote>:
-    --remote = "dropbox" # The name of the remote service
+    --path: string = "" # A path relative to <remote>:
+    --remote: string = "dropbox" # The name of the remote service
     
 ] {
     let remote_path = (get_remote_path --path $path --remote $remote)
@@ -43,8 +43,8 @@ def get_local_path [--path: string --remote: string] {
 }
 
 def "cloud download" [
-    --path = "" # A path relative to <remote>:
-    --remote = "dropbox" # The name of the remote service
+    --path: string = "" # A path relative to <remote>:
+    --remote: string = "dropbox" # The name of the remote service
 ] {
     let remote_path = (get_remote_path --path $path --remote $remote)
     let local_path = (get_local_path --path $path --remote $remote)
@@ -53,8 +53,8 @@ def "cloud download" [
 }
 
 def "cloud upload" [
-    --path = "" # A path relative to <remote>:
-    --remote = "dropbox" # The name of the remote service
+    --path: string = "" # A path relative to <remote>:
+    --remote: string = "dropbox" # The name of the remote service
 ] {
     let local_path = (get_local_path --path $path --remote $remote)
 
@@ -70,8 +70,8 @@ def "cloud upload" [
 }
 
 def "cloud edit" [
-    --path = "" # A path relative to <remote>:
-    --remote = "dropbox" # The name of the remote service
+    --path: string = "" # A path relative to <remote>:
+    --remote: string = "dropbox" # The name of the remote service
 ] {
     cloud download --path $path --remote $remote
     hx (get_local_path --path $path --remote $remote)

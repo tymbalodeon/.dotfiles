@@ -191,7 +191,7 @@ def "src sync" [] {
       )
 
       print $"Synced ($repo_name)."
-    } out> /dev/null
+    } | null
 }
 
 def src [] {}
