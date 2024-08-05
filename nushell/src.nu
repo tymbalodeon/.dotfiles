@@ -58,29 +58,89 @@ def --env "src cd" [
   }
 }
 
+def list_repos [user?: string] {
+  let repos = if ($user | is-empty) {
+    gh repo list --visibility public --json name,owner
+  } else {
+    gh repo list --visibility public $user --json name,owner
+  }
+
+  return (
+    $repos
+    | from json
+    | select owner name
+    | each {
+        |repo| 
+
+        {
+          domain: "github.com"
+          user: $repo.owner.login
+          repo: $repo.name
+        }
+      }
+  )
+}
+
+def get_github_user [] {
+  return (
+    gh api user 
+    | from json 
+    | get login
+  )
+}
+
 # Clone repo at URL
-def "src clone" [
-  url: string # The URL of the repo to clone
+def --env "src clone" [
+  repo?: string # The name or URL of the repo to clone
+  --user: string # List repos for user
 ] {
+  if ($repo | is-empty) {
+    list_repos $user
+    | par-each {
+        |repo|
+
+        src clone $repo.repo --user $repo.user
+      }
+    | null
+
+    cd (
+      get_src_directory
+      | path join "github.com"
+      | path join (get_github_user)
+    )
+
+    return
+  }
+
   let values = if (
-    $url
+    $repo
     | str starts-with "git@"
   ) {
-    $url
+    $repo
     | split row "@"
     | split row ":"
     | split row "/"
     | drop nth 0
   } else if (
-    $url
+   $repo
     | str starts-with "http"
   ) {
-    $url
+    $repo
     | split row "://"
     | split row "/"
     | drop nth 0
   } else {
-    return "Unable to parse URL."
+    [
+      "github.com"
+      (
+        if ($user | is-empty) { 
+          get_github_user
+        } else { 
+          $user 
+        }
+      )
+      $repo
+    ]
   }
 
   let target = (
@@ -95,8 +155,14 @@ def "src clone" [
   )
 
   if not ($target | path exists) {
-    git clone $url $target
+    if ($repo | str starts-with "git@") or ($repo | str starts-with "http") {
+      git clone $repo $target
+    } else {
+      gh repo clone $repo $target
+    }
   }
+
+  cd $target
 }
 
 # Initialize an environment
@@ -122,25 +188,8 @@ def "src list" [
   --user: string # List repos for user
 ] {
   if $remote {
-    let repos = if ($user | is-empty) {
-      gh repo list --visibility public --json name,owner
-    } else {
-      gh repo list --visibility public $user --json name,owner      
-    }
-
     return (
-      $repos
-      | from json
-      | select owner name
-      | each {
-          |repo| 
-
-          {
-            domain: "github.com"
-            user: $repo.owner.login
-            repo: $repo.name
-          }
-        }
+      list_repos $user
       | table --index false
     )
   }
