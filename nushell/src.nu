@@ -151,11 +151,19 @@ def list_repos [user?: string] {
     | each {
         |repo| 
 
-        {
+        let repo = {
           domain: "github.com"
           user: $repo.owner.login
           repo: $repo.name
         }
+
+        $repo | insert "synced" (
+          get_src_directory
+          | path join $repo.domain
+          | path join $repo.user
+          | path join $repo.repo
+          | path exists
+        )
       }
   )
 }
