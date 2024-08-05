@@ -1,56 +1,10 @@
-def --env src [
-  destination?: string # Where to download a development environment with `--init`
-  --clone: string # Clone repo at URL
-  --init: string # Initialize the specified development environment at `destination` (or environment name)
-  --list # List cloned repos
-  --list-environments # List available development environments
-  --sync # Sync all repos
-  --user: string # List cloned repos for user
-] {
-  let src_directory = ($env.HOME | path join "src")
+def get_src_directory [] {
+ return ($env.HOME | path join "src")
+}
 
-  if not ($clone | is-empty) {
-    let values = if (
-      $clone
-      | str starts-with "git@"
-    ) {
-      $clone
-      | split row "@"
-      | split row ":"
-      | split row "/"
-      | drop nth 0
-    } else if (
-      $clone
-      | str starts-with "http"
-    ) {
-      $clone
-      | split row "://"
-      | split row "/"
-      | drop nth 0
-    } else {
-      return "Unable to parse URL."
-    }
-
-    let target = (
-      $src_directory
-      | path join (
-        $values | first
-      ) | path join (
-        $values | get 1
-      ) | path join (
-        $values | last | str replace ".git" ""
-      )
-    )
-
-    if not ($target | path exists) {
-      git clone $clone $target
-    }
-
-    return
-  }
-
-  let repos = (
-    ls ($src_directory ++ "/**" | into glob)
+def get_repos [] {
+  return (
+    ls ((get_src_directory) ++ "/**" | into glob)
     | filter {
         |item|
 
@@ -60,81 +14,143 @@ def --env src [
       }
     | get name
   )
+}
 
-  if $sync {
-    print "Syncing repos..."
+# Clone repo at URL
+def "src clone" [
+  url: string # The URL of the repo to clone
+] {
+  let values = if (
+    $url
+    | str starts-with "git@"
+  ) {
+    $url
+    | split row "@"
+    | split row ":"
+    | split row "/"
+    | drop nth 0
+  } else if (
+    $url
+    | str starts-with "http"
+  ) {
+    $url
+    | split row "://"
+    | split row "/"
+    | drop nth 0
+  } else {
+    return "Unable to parse URL."
+  }
 
-    $repos
+  let target = (
+    get_src_directory
+    | path join (
+        $values | first
+      ) | path join (
+        $values | get 1
+      ) | path join (
+        $values | last | str replace ".git" ""
+      )
+  )
+
+  if not ($target | path exists) {
+    git clone $url $target
+  }
+}
+
+# Initialize an environment
+def --env "src init" [
+  environment?: string # The environment (`src list-environments`) to initialize
+  destination?: string # Where to download the environment
+] {
+  let file = (get_init_file)
+
+  cd (
+    nu $file $environment $destination --return-destination 
+    | tee { each { print --no-newline }}
+    | lines
+    | last
+  )
+
+  rm --force $file
+}
+
+# List cloned repos
+def "src list" [
+  --user: string # List cloned repos for user
+] {
+  let repos = (
+    get_repos
     | par-each {
         |repo|
-        cd $repo
 
-        let result = (git pull out> /dev/null | complete)
-
-        if $result.exit_code != 0 {
-          (
-            print
-              --stderr
-              $"\nThere was a problem syncing \"($repo)\":\n\n($result.stderr)"
-          )
-        }
-
-        let repo_name = (
+        let repo = (
           $repo
-          | str replace $"($src_directory)/" ""
+          | split row "/"
+          | reverse
+          | take 3
         )
 
-        print $"Synced ($repo_name)."
-      }
-
-    return
-  }
-
-  if $list {
-    let repos = (
-      $repos
-      | par-each {
-          |repo|
-
-          let repo = (
-            $repo
-            | split row "/"
-            | reverse
-            | take 3
-          )
-
-          {
-            domain: ($repo | last)
-            user: ($repo | get 1)
-            repo: ($repo | first)
-          }
-      }
-    )
-
-    let repos = if ($user | is-empty) {
-      $repos
-    } else {
-      $repos | where user == $user
+        {
+          domain: ($repo | last)
+          user: ($repo | get 1)
+          repo: ($repo | first)
+        }
     }
+  )
 
-    return ($repos | table --index false)
+  let repos = (get_repos)
+
+  let repos = if ($user | is-empty) {
+    $repos
+  } else {
+    $repos | where user == $user
   }
 
+  return ($repos | table --index false)
+}
+
+def get_init_file [] {
   let file = (mktemp --tmpdir dev-scripts-init.XXX)
 
   http get --raw "https://raw.githubusercontent.com/tymbalodeon/dev-scripts/trunk/init.nu"
   | save --force $file
 
-  if $list_environments {
-    nu $file --list
-  } else {
-    cd (
-      nu $file $init $destination --return-destination 
-      | tee { each { print --no-newline }}
-      | lines
-      | last
-    )
-  }
+  return $file
+}
+
+# List available development environments
+def "src list-environments" [] {
+  let file = (get_init_file)
+
+  nu $file --list
 
   rm --force $file
+}
+
+# Sync all repos
+def "src sync" [] {
+  print "Syncing repos..."
+
+  get_repos
+  | par-each {
+      |repo|
+      cd $repo
+
+      let result = (git pull out> /dev/null | complete)
+
+      if $result.exit_code != 0 {
+        (
+          print
+            --stderr
+            $"\nThere was a problem syncing \"($repo)\":\n\n($result.stderr)"
+        )
+      }
+
+      let repo_name = (
+        $repo
+        | str replace $"(get_src_directory)/" ""
+      )
+
+      print $"Synced ($repo_name)."
+    } out> /dev/null
 }
