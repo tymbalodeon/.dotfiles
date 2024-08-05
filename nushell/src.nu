@@ -54,6 +54,14 @@ def matches [
   )
 }
 
+def choose_from_list [options: list] {
+  return (
+    $options
+    | to text
+    | fzf --exact --scheme path
+  )
+}
+
 # Change directory to a repo
 def --env "src cd" [
   repo?: string # The repo name
@@ -83,8 +91,7 @@ def --env "src cd" [
           $matching_users 
           | first
         } else {
-          # TODO
-          $directory
+          choose_from_list $matching_users
         }
       } else {
         $directory 
@@ -126,7 +133,7 @@ def --env "src cd" [
 
     cd (get_src_directory | path join $repo_path)
   } else {
-    # TODO
+    choose_from_list $matching_repos
   }
 }
 
