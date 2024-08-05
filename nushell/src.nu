@@ -194,4 +194,6 @@ def "src sync" [] {
     } | null
 }
 
-def src [] {}
+def src [] {
+  help src
+}
