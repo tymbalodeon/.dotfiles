@@ -123,17 +123,24 @@ def "src list" [
 ] {
   if $remote {
     let repos = if ($user | is-empty) {
-      gh repo list --json name,visibility    
+      gh repo list --visibility public --json name,owner
     } else {
-      gh repo list $user --json name,visibility      
+      gh repo list --visibility public $user --json name,owner      
     }
 
     return (
       $repos
       | from json
-      | filter {|repo| $repo.visibility == "PUBLIC"}
-      | get name
-      | to text
+      | select owner name
+      | each {
+          |repo| 
+
+          {
+            domain: "github.com"
+            user: $repo.owner.login
+            repo: $repo.name
+          }
+        }
     )
   }
 
