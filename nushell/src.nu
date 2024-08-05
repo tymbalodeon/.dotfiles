@@ -116,10 +116,10 @@ def --env "src init" [
   rm --force $file
 }
 
-# List cloned repos
+# List repos
 def "src list" [
   --remote # List remote repos
-  --user: string # List cloned repos for user
+  --user: string # List repos for user
 ] {
   if $remote {
     let repos = if ($user | is-empty) {
