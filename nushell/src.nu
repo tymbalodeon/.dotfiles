@@ -141,6 +141,7 @@ def "src list" [
             repo: $repo.name
           }
         }
+      | table --index false
     )
   }
 
