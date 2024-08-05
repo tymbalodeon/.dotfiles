@@ -13,48 +13,72 @@ def get_parent [path: string] {
     }
 }
 
-# View, edit, and upload files to/from remote storage
-def cloud [
-    path?: string # A path relative to <remote>:
-    --download # Download file from remote
-    --edit # Edit file on remote
-    --list # List files on remote
+# List available remotes
+def "cloud remotes" [] {
+    return (rclone listremotes)
+}
+
+def get_remote_path [--path: string --remote: string ] {
+    return $"($remote):($path)"
+}
+
+# List files on remote
+def "cloud list" [
+    --path = "" # A path relative to <remote>:
     --remote = "dropbox" # The name of the remote service
-    --remotes # List available remotes
-    --upload # Upload file to remote
+    
 ] {
-    if $remotes or ($path | is-empty) {
-        return (rclone listremotes)
-    }
+    let remote_path = (get_remote_path --path $path --remote $remote)
 
-    let remote_path = $"($remote):($path)"
+    return (rclone lsf $remote_path)
+}
 
-    if $list {
-        return (rclone lsf $remote_path)
-    }
-
-    let local_path = (
+def get_local_path [--path: string --remote: string] {
+    return (
         $env.HOME
         | path join "rclone"
         | path join $remote
         | path join $path
     )
+}
 
-    let local_path_parent = (get_parent $local_path)
-    let remote_path_parent = (get_parent $remote_path)
+def "cloud download" [
+    --path = "" # A path relative to <remote>:
+    --remote = "dropbox" # The name of the remote service
+] {
+    let remote_path = (get_remote_path --path $path --remote $remote)
+    let local_path = (get_local_path --path $path --remote $remote)
 
-    if $download or $edit {
-        return (rclone sync $remote_path $local_path_parent)
-    }
+    return (rclone sync $remote_path (get_parent $local_path))
+}
 
-    if $edit {
-        hx $local_path
-    }
+def "cloud upload" [
+    --path = "" # A path relative to <remote>:
+    --remote = "dropbox" # The name of the remote service
+] {
+    let local_path = (get_local_path --path $path --remote $remote)
 
-    if $upload and not ($local_path | path exists) {
+    if not ($local_path | path exists) {
         print ($path | path expand | path exists)
+
         return $"File not found: \"($path)\""
     }
 
-    rclone copy $local_path $remote_path_parent
+    let remote_path = (get_remote_path --path $path --remote $remote)
+
+    rclone copy $local_path (get_parent $remote_path)
+}
+
+def "cloud edit" [
+    --path = "" # A path relative to <remote>:
+    --remote = "dropbox" # The name of the remote service
+] {
+    cloud download --path $path --remote $remote
+    hx (get_local_path --path $path --remote $remote)
+    cloud upload --path $path --remote $remote
+}
+
+# View, edit, and upload files to/from remote storage
+def cloud [] {
+    cloud remotes
 }
