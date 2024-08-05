@@ -2,18 +2,60 @@ def get_src_directory [] {
  return ($env.HOME | path join "src")
 }
 
-def get_repos [] {
-  return (
-    ls ((get_src_directory) ++ "/**" | into glob)
-    | filter {
-        |item|
+def get_repos [
+  --as-table
+] {
+  if $as_table {
+    return (
+      get_repos
+      | par-each {
+          |repo|
 
-        ($item.type == "dir") and (
-          $item.name | path join ".git" | path exists
-        )
+          let repo = (
+            $repo
+            | split row "/"
+            | reverse
+            | take 3
+          )
+
+          {
+            domain: ($repo | last)
+            user: ($repo | get 1)
+            repo: ($repo | first)
+          }
       }
-    | get name
+    )
+  } else {
+    return (
+      ls ((get_src_directory) ++ "/**" | into glob)
+      | filter {
+          |item|
+
+          ($item.type == "dir") and (
+            $item.name | path join ".git" | path exists
+          )
+        }
+      | get name
+    )
+  }
+}
+
+# Change directory to a repo
+def --env "src cd" [
+  repo: string # The repo name
+  user?: string # The username
+  domain?: string # The domain
+] {
+  let matching_repos = (
+    get_repos --as-table
+    | filter {|repo_data| $repo_data.repo == $repo}
   )
+
+  if ($matching_repos | length) == 1 {
+    let $repo_path = ($matching_repos | first | values | path join)
+
+    cd (get_src_directory | path join $repo_path)
+  }
 }
 
 # Clone repo at URL
@@ -95,25 +137,7 @@ def "src list" [
     )
   }
 
-  let repos = (
-    get_repos
-    | par-each {
-        |repo|
-
-        let repo = (
-          $repo
-          | split row "/"
-          | reverse
-          | take 3
-        )
-
-        {
-          domain: ($repo | last)
-          user: ($repo | get 1)
-          repo: ($repo | first)
-        }
-    }
-  )
+  let repos = (get_repos --as-table)
 
   let repos = if ($user | is-empty) {
     $repos
