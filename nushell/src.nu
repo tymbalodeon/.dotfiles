@@ -76,8 +76,25 @@ def --env "src init" [
 
 # List cloned repos
 def "src list" [
+  --remote # List remote repos
   --user: string # List cloned repos for user
 ] {
+  if $remote {
+    let repos = if ($user | is-empty) {
+      gh repo list --json name,visibility    
+    } else {
+      gh repo list $user --json name,visibility      
+    }
+
+    return (
+      $repos
+      | from json
+      | filter {|repo| $repo.visibility == "PUBLIC"}
+      | get name
+      | to text
+    )
+  }
+
   let repos = (
     get_repos
     | par-each {
@@ -97,8 +114,6 @@ def "src list" [
         }
     }
   )
-
-  let repos = (get_repos)
 
   let repos = if ($user | is-empty) {
     $repos
