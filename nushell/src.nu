@@ -40,15 +40,73 @@ def get_repos [
   }
 }
 
+def matches [
+  search_repo: record
+  repo: record
+  column: string
+] {
+  let search_repo_column = ($search_repo | get $column)
+
+  return (
+    (
+      $search_repo_column | is-empty
+    ) or ($search_repo_column == ($repo | get $column))
+  )
+}
+
 # Change directory to a repo
 def --env "src cd" [
-  repo: string # The repo name
-  user?: string # The username
-  domain?: string # The domain
+  repo?: string # The repo name
+  --domain: string # The domain
+  --user: string # The username
 ] {
+  if ($repo | is-empty) {
+    let directory = (get_src_directory)
+
+    let directory = if ($user | is-empty) {
+      if ($domain | is-empty) {
+        $directory
+      } else {
+        $directory 
+        | path join $domain
+      }
+    } else {
+      if ($domain | is-empty) {
+        # find user in all domains
+        $directory 
+      } else {
+        $directory 
+        | path join $domain 
+        | path join $user
+      }
+    }
+
+    print $directory
+
+    return
+  }
+
+  let search_repo = {
+    domain: $domain
+    user: $user
+    repo: $repo
+  }
+
   let matching_repos = (
     get_repos --as-table
-    | filter {|repo_data| $repo_data.repo == $repo}
+    | filter {
+        |repo| 
+
+        let matches_domain = (matches $search_repo $repo "domain")
+        let matches_user = (matches $search_repo $repo "user")
+        let matches_repo = (matches $search_repo $repo "repo")
+
+        [
+          $matches_domain 
+          $matches_user 
+          $matches_repo
+        ] | all {|item| $item}
+      }
   )
 
   if ($matching_repos | length) == 1 {
