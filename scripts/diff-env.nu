@@ -2,7 +2,11 @@
 
 def get_diff [type: string local_file: record file?: string accept = false] {
   if not (
-    $local_file.name in (exa --git-ignore --all | lines | append ".git")
+    $local_file.name in (
+      fd --exclude .git --hidden
+      | lines
+      | each {|file| $file | str replace --regex "/$" ""}
+    )
   ) {
     return
   }
@@ -31,10 +35,18 @@ def get_diff [type: string local_file: record file?: string accept = false] {
             --paging never \\
             ($local_file.name) \\
             <\(printf '(echo $official_file)'\)"
+        | complete
       )
 
+      if $diff.exit_code != 1 {
+        return
+      }
+
+      let diff = $diff.stdout
+
       if $accept {
-        $official_file | save --force $local_file.name
+        $official_file
+        | save --force $local_file.name
       }
 
       return $diff
@@ -44,7 +56,7 @@ def get_diff [type: string local_file: record file?: string accept = false] {
   }
 
   for nested_file in (ls --all $local_file.name) {
-    return (get_diff $type $nested_file $file)
+    get_diff $type $nested_file $file
   }
 }
 

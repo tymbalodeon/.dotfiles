@@ -89,6 +89,7 @@ Available recipes:
     optimise *help           # Replace identical files in the Nix store by hard links
     prune *args              # Collect garbage and remove old generations
     rebuild *args            # Rebuild and switch to (or --test) a configuration
+    release *args            # Create a new release
     remote *web              # View remote repository
     rollback *id             # Rollback to a previous generation
     shell *host              # Open Nix REPL with flake loaded

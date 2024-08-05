@@ -62,6 +62,10 @@
 @rebuild *args:
     ./scripts/rebuild.nu {{ args }}
 
+# Create a new release
+@release *args:
+    ./scripts/release.nu  {{ args }}
+
 # View remote repository
 @remote *web:
     ./scripts/remote.nu  {{ web }}
