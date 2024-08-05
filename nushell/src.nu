@@ -72,8 +72,20 @@ def --env "src cd" [
       }
     } else {
       if ($domain | is-empty) {
-        # find user in all domains
-        $directory 
+        let matching_users = (
+          ls $directory
+          | each {|domain| ls $domain.name | get name}
+          | flatten
+          | filter {|found_user| $user == ($found_user | path basename)}
+        )
+
+        if ($matching_users | length) == 1 {
+          $matching_users 
+          | first
+        } else {
+          # TODO
+          $directory
+        }
       } else {
         $directory 
         | path join $domain 
@@ -81,7 +93,7 @@ def --env "src cd" [
       }
     }
 
-    print $directory
+    cd $directory
 
     return
   }
@@ -113,6 +125,8 @@ def --env "src cd" [
     let $repo_path = ($matching_repos | first | values | path join)
 
     cd (get_src_directory | path join $repo_path)
+  } else {
+    # TODO
   }
 }
 
