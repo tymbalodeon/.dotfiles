@@ -410,7 +410,7 @@ def --env --wrapped "src init" [
   let file = (get_init_file)
 
   let lines = (
-    nu $file ...$args --return-name 
+    nu $file ...$args 
     | tee { par-each { print --no-newline }}
     | lines
   )
