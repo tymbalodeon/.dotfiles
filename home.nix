@@ -46,6 +46,7 @@
       gh
       git
       gitui
+      glab
       google-java-format
       gyre-fonts
       helix
