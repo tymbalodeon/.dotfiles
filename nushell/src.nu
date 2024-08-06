@@ -137,6 +137,33 @@ def --env "src cd" [
   }
 }
 
+def is_synced [repo: record] {
+  let path = (
+    get_src_directory
+    | path join $repo.domain
+    | path join $repo.user
+    | path join $repo.repo
+  )
+
+  if not ($path | path exists) {
+    return false
+  }
+
+  # TODO Implement me!!
+  cd $path
+
+  let default_branch = (
+    git remote show origin 
+    | sed -n '/HEAD branch/s/.*: //p'
+  )
+
+  if (git branch --show-current) != $default_branch {
+    git checkout $default_branch    
+  }
+
+  return (git fetch --dry-run | is-empty)
+}
+
 def list_repos [user?: string] {
   let repos = if ($user | is-empty) {
     gh repo list --visibility public --json name,owner
@@ -157,13 +184,7 @@ def list_repos [user?: string] {
           repo: $repo.name
         }
 
-        $repo | insert "synced" (
-          get_src_directory
-          | path join $repo.domain
-          | path join $repo.user
-          | path join $repo.repo
-          | path exists
-        )
+        $repo | insert "synced" (is_synced $repo)
       }
   )
 }
