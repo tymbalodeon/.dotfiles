@@ -164,11 +164,21 @@ def --env "src cd" [
   )
 
   if ($matching_repos | length) == 1 {
-    let $repo_path = ($matching_repos | first | values | path join)
+    let repo = ($matching_repos | first)
 
-    cd (get_src_directory | path join $repo_path)
+    let $repo_path = if $repo.repo == ".dotfiles" {
+      $env.HOME      
+      | path join $repo.repo
+    } else {
+      get_src_directory
+      | path join $repo.domain
+      | path join $repo.user
+      | path join $repo.repo
+    }
+
+    cd $repo_path
   } else {
-    choose_from_list $matching_repos
+    cd (choose_from_list $matching_repos)
   }
 }
 
