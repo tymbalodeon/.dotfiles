@@ -103,7 +103,11 @@ def --env "src cd" [
       }
     }
 
-    cd $directory
+    if ($directory | path exists) {
+      cd $directory
+    } else {
+      print $"\"($directory)/\" does not exist."
+    }
 
     return
   }
@@ -244,10 +248,19 @@ def list_repos [
   )
 }
 
+def get_domain [domain: string] {
+  if $domain == "github" {
+    return "github.com"
+  } else if $domain == "gitlab" {
+    return "gitlab.com"
+  }
+}
+
 # Clone repo at URL
 def --env "src clone" [
   repo?: string # The name or URL of the repo to clone
-  --user: string # List repos for user
+  --domain: string = "github" # Clone repos at this domain
+  --user: string # Clone repos for user
 ] {
   if ($repo | is-empty) {
     list_repos $user
@@ -257,12 +270,15 @@ def --env "src clone" [
         src clone $repo.repo --user $repo.user
       }
     | null
-
-    cd (
+    
+    let user_directory = (
       get_src_directory
-      | path join "github.com"
-      | path join (get_github_user)
+      | path join (get_domain $domain)
+      | path join (get_remote_user)
     )
+
+    mkdir $user_directory
+    cd $user_directory
 
     return
   }
@@ -286,10 +302,10 @@ def --env "src clone" [
     | drop nth 0
   } else {
     [
-      "github.com"
+      (get_domain $domain)
       (
         if ($user | is-empty) { 
-          get_github_user
+          get_remote_user
         } else { 
           $user 
         }
@@ -313,7 +329,13 @@ def --env "src clone" [
     if ($repo | str starts-with "git@") or ($repo | str starts-with "http") {
       git clone $repo $target
     } else {
-      gh repo clone $repo $target
+      if $domain == "github" {
+        gh repo clone $repo $target
+      } else if $domain == "gitlab" {
+        glab repo clone $repo $target
+      } else {
+        return
+      }
     }
   }
 
