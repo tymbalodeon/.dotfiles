@@ -166,38 +166,81 @@ def is_synced [repo: record] {
   return (git fetch --dry-run | is-empty)
 }
 
-def list_repos [user?: string] {
-  let repos = if ($user | is-empty) {
-    gh repo list --visibility public --json name,owner
+def get_remote_user [domain: string = "github"] {
+  if $domain == "github" {
+    return (
+      gh api user 
+      | from json 
+      | get login
+    )
+  } else if $domain == "gitlab" {
+    return (
+      glab api user err> /dev/null
+      | from json 
+      | get username
+    )
+  }
+}
+
+
+def list_repos [
+  user?: string
+  --domain: string = "github"
+] {
+  let repos = if $domain == "github" {
+    if ($user | is-empty) {
+      gh repo list --visibility public --json name,owner
+    } else {
+      gh repo list --visibility public $user --json name,owner
+    }
+  } else if $domain == "gitlab" {
+    let remote_user =  (get_remote_user $domain)
+
+    if $user != $remote_user {
+      return
+    }
+
+    glab repo list err> /dev/null
+    | lines
+    | filter {|line| $line | str starts-with $remote_user}
+    | par-each {|line| $line | str trim | split row "\t" | first}
   } else {
-    gh repo list --visibility public $user --json name,owner
+    return []
+  }
+
+  let repos = if $domain == "github" {
+    $repos
+    | from json
+    | select owner name
+  } else if $domain == "gitlab" {
+    $repos
   }
 
   return (
     $repos
-    | from json
-    | select owner name
     | par-each {
         |repo| 
 
-        let repo = {
-          domain: "github.com"
-          user: $repo.owner.login
-          repo: $repo.name
+        let repo = if $domain == "github" {
+          {
+            domain: "github.com"
+            user: $repo.owner.login
+            repo: $repo.name
+          }
+        } else if $domain == "gitlab" {
+          let data = ($repo | split row "/")
+
+          {
+            domain: "gitlab.com"
+            user: ($data | first)
+            repo: ($data | last)
+          }
         }
 
         $repo 
         | insert "synced" (is_synced $repo)
       }
     | sort-by --ignore-case "repo"
-  )
-}
-
-def get_github_user [] {
-  return (
-    gh api user 
-    | from json 
-    | get login
   )
 }
 
@@ -305,11 +348,12 @@ def --env "src init" [
 # List repos
 def "src list" [
   --remote # List remote repos
+  --domain: string = "github" # List repos at this domain
   --user: string # List repos for user
 ] {
   if $remote {
     return (
-      list_repos $user
+      list_repos $user --domain $domain
       | table --index false
     )
   }
