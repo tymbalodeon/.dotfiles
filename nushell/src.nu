@@ -4,7 +4,9 @@ def get_src_directory [] {
 
 def get_repos [
   --as-table
+  --domain: string
   --status
+  --user: string
 ] {
   if $as_table {
     return (
@@ -31,6 +33,15 @@ def get_repos [
           } else {
             $repo
           }
+        }
+      | filter {
+          |repo|
+
+          ($domain | is-empty) or (
+            $repo.domain == $domain
+          ) and ($user | is-empty) or (
+            $repo.user == $user
+          )
       }
     )
   } else {
@@ -402,15 +413,9 @@ def "src list" [
   }
 
   let repos = if $status {
-    get_repos --as-table --status
+    get_repos --as-table --domain (get_domain $domain) --status --user $user
   } else {
-    get_repos --as-table
-  }
-
-  let repos = if ($user | is-empty) {
-    $repos
-  } else {
-    $repos | where user == $user
+    get_repos --as-table --domain (get_domain $domain) --user $user
   }
 
   return (
