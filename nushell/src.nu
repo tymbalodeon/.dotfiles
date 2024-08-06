@@ -14,17 +14,28 @@ def get_repos [
       | par-each {
           |repo|
 
-          let repo = (
+          let origin = (cd $repo; git remote get-url origin)
+
+          let repo = if ($origin | str starts-with "git@") {
+            $origin 
+            | parse "git@{domain}:{user}/{repo}.git"
+            | first
+          } else if ($origin | str starts-with "http") {
+            $origin 
+            | str replace --regex "https?://" "" 
+            | parse "https://{domain}/{user}/{repo}.git"
+            | first
+          } else {
             $repo
             | split row "/"
             | reverse
             | take 3
-          )
-
-          let repo = {
-            domain: ($repo | last)
-            user: ($repo | get 1)
-            repo: ($repo | first)
+            | into record
+            | transpose
+            | transpose
+            | get 1
+            | reject column0
+            | rename repo user domain
           }
 
           if $status {
@@ -47,6 +58,7 @@ def get_repos [
   } else {
     return (
       ls ((get_src_directory) ++ "/**" | into glob)
+      | append (ls --all $env.HOME | where name =~ ".dotfiles")
       | filter {
           |item|
 
@@ -216,6 +228,12 @@ def list_repos [
     }
   } else if $domain == "gitlab" {
     let remote_user =  (get_remote_user $domain)
+
+    let user = if ($user | is-empty) {
+      $remote_user
+    } else {
+      $user
+    }
 
     if $user != $remote_user {
       return
@@ -395,15 +413,23 @@ def --env --wrapped "src init" [
 # List repos
 def "src list" [
   --remote # List remote repos
-  --domain: string = "github" # List repos at this domain
+  --domain: string # List repos at this domain
   --status # Show sync status
   --user: string # List repos for user
 ] {
   if $remote {
     let repos = if $status {
-      list_repos $user --domain $domain --status
+      if ($domain | is-empty) {
+        list_repos $user --status
+      } else {
+        list_repos $user --domain $domain --status
+      }
     } else {
-      list_repos $user --domain $domain
+      if ($domain | is-empty) {
+        list_repos $user 
+      } else {
+        list_repos $user --domain $domain
+      }
     }
 
     return (
@@ -413,9 +439,17 @@ def "src list" [
   }
 
   let repos = if $status {
-    get_repos --as-table --domain (get_domain $domain) --status --user $user
+    if ($domain | is-empty) {
+      get_repos --as-table --status --user $user
+    } else {
+      get_repos --as-table --domain (get_domain $domain) --status --user $user
+    }
   } else {
-    get_repos --as-table --domain (get_domain $domain) --user $user
+    if ($domain | is-empty) {
+      get_repos --as-table --user $user
+    } else {
+      get_repos --as-table --domain (get_domain $domain) --user $user
+    }
   }
 
   return (
