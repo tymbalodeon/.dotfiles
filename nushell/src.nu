@@ -2,6 +2,31 @@ def get_src_directory [] {
  return ($env.HOME | path join "src")
 }
 
+def parse_git_url [url: string] {
+  return (
+    if ($url | str starts-with "git@") {
+      $url 
+      | parse "git@{domain}:{user}/{repo}.git"
+      | first
+    } else if ($url | str starts-with "http") {
+      $url 
+      | str replace --regex "https?://" "" 
+      | parse "https://{domain}/{user}/{repo}.git"
+      | first
+    } 
+  )
+}
+
+def into_repo [] {
+  $in
+  | into record
+  | transpose
+  | transpose
+  | get 1
+  | reject column0
+  | rename domain user repo
+}
+
 def get_repos [
   --as-table
   --domain: string
@@ -16,26 +41,17 @@ def get_repos [
 
           let origin = (cd $repo; git remote get-url origin)
 
-          let repo = if ($origin | str starts-with "git@") {
-            $origin 
-            | parse "git@{domain}:{user}/{repo}.git"
-            | first
-          } else if ($origin | str starts-with "http") {
-            $origin 
-            | str replace --regex "https?://" "" 
-            | parse "https://{domain}/{user}/{repo}.git"
-            | first
+          let repo = if ($origin | str starts-with "git@") or (
+            $origin | str starts-with "http"
+          ) {
+            parse_git_url $origin
           } else {
-            $repo
-            | split row "/"
-            | reverse
-            | take 3
-            | into record
-            | transpose
-            | transpose
-            | get 1
-            | reject column0
-            | rename repo user domain
+              $repo
+              | split row "/"
+              | reverse
+              | take 3
+              | reverse
+              | into_repo
           }
 
           if $status {
@@ -338,23 +354,10 @@ def --env "src clone" [
     return (ls)
   }
 
-  let values = if (
-    $repo
-    | str starts-with "git@"
+  let repo = if ($repo | str starts-with "git@") or (
+    $repo | str starts-with "http"
   ) {
-    $repo
-    | split row "@"
-    | split row ":"
-    | split row "/"
-    | drop nth 0
-  } else if (
-   $repo
-    | str starts-with "http"
-  ) {
-    $repo
-    | split row "://"
-    | split row "/"
-    | drop nth 0
+    parse_git_url $repo
   } else {
     [
       (get_domain $domain)
@@ -366,19 +369,22 @@ def --env "src clone" [
         }
       )
       $repo
-    ]
+    ] | into_repo
   }
 
-  let target = (
+  let target = if $repo.repo == ".dotfiles" {
+    $env.HOME 
+    | path join $repo.repo  
+  } else {
     get_src_directory
     | path join (
-        $values | first
+        $repo.domain
       ) | path join (
-        $values | get 1
+        $repo.user
       ) | path join (
-        $values | last | str replace ".git" ""
+        $repo.repo
       )
-  )
+  }
 
   if not ($target | path exists) {
     if ($repo | str starts-with "git@") or ($repo | str starts-with "http") {
@@ -497,12 +503,7 @@ def "src sync" [] {
         )
       }
 
-      let repo_name = (
-        $repo
-        | str replace $"(get_src_directory)/" ""
-      )
-
-      print $"Synced ($repo_name)."
+      print $"Synced \"($repo)/\""
     } | null
 }
 
