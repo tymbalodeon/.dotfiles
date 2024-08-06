@@ -4,6 +4,7 @@ def get_src_directory [] {
 
 def get_repos [
   --as-table
+  --status
 ] {
   if $as_table {
     return (
@@ -24,8 +25,12 @@ def get_repos [
             repo: ($repo | first)
           }
 
-          $repo 
-          | insert "synced" (is_synced $repo)
+          if $status {
+            $repo 
+            | insert "synced" (is_synced $repo)
+          } else {
+            $repo
+          }
       }
     )
   } else {
@@ -79,7 +84,7 @@ def --env "src cd" [
         $directory
       } else {
         $directory 
-        | path join $domain
+        | path join (get_domain $domain)
       }
     } else {
       if ($domain | is-empty) {
@@ -190,6 +195,7 @@ def get_remote_user [domain: string = "github"] {
 def list_repos [
   user?: string
   --domain: string = "github"
+  --status
 ] {
   let repos = if $domain == "github" {
     if ($user | is-empty) {
@@ -241,17 +247,21 @@ def list_repos [
           }
         }
 
-        $repo 
-        | insert "synced" (is_synced $repo)
+        if $status {
+          $repo 
+          | insert "synced" (is_synced $repo)
+        } else {
+          $repo
+        }
       }
     | sort-by --ignore-case "repo"
   )
 }
 
 def get_domain [domain: string] {
-  if $domain == "github" {
+  if "github" in $domain {
     return "github.com"
-  } else if $domain == "gitlab" {
+  } else if "gitlab" in $domain {
     return "gitlab.com"
   }
 }
@@ -263,24 +273,30 @@ def --env "src clone" [
   --user: string # Clone repos for user
 ] {
   if ($repo | is-empty) {
-    list_repos $user
+    let repos = (list_repos $user --domain $domain)
+
+    if not ($repos | length | into bool) {
+      return
+    }
+
+    $repos
     | par-each {
         |repo|
 
-        src clone $repo.repo --user $repo.user
+        src clone $repo.repo --domain $domain --user $repo.user
       }
     | null
     
     let user_directory = (
       get_src_directory
       | path join (get_domain $domain)
-      | path join (get_remote_user)
+      | path join (get_remote_user $domain)
     )
 
     mkdir $user_directory
     cd $user_directory
 
-    return
+    return (ls)
   }
 
   let values = if (
@@ -343,26 +359,24 @@ def --env "src clone" [
 }
 
 # Initialize an environment
-def --env "src init" [
-  environment?: string # The environment to initialize
-  name?: string # Where to download the environment
-  --list-environments # List available development environments
+def --env --wrapped "src init" [
+  ...args: string
 ] {
   let file = (get_init_file)
 
-  if $list_environments {
-    nu $file --list
-    rm --force $file
-
-    return
-  }
-
-  cd (
-    nu $file $environment $name --return-name 
+  let lines = (
+    nu $file ...$args --return-name 
     | tee { par-each { print --no-newline }}
     | lines
-    | last
   )
+
+  if ($lines | length | into bool) {
+    let path = ($lines | last)
+
+    if ($path | path exists) {
+      cd $path
+    }
+  }
 
   rm --force $file
 }
@@ -371,16 +385,27 @@ def --env "src init" [
 def "src list" [
   --remote # List remote repos
   --domain: string = "github" # List repos at this domain
+  --status # Show sync status
   --user: string # List repos for user
 ] {
   if $remote {
-    return (
+    let repos = if $status {
+      list_repos $user --domain $domain --status
+    } else {
       list_repos $user --domain $domain
+    }
+
+    return (
+      $repos
       | table --index false
     )
   }
 
-  let repos = (get_repos --as-table)
+  let repos = if $status {
+    get_repos --as-table --status
+  } else {
+    get_repos --as-table
+  }
 
   let repos = if ($user | is-empty) {
     $repos
@@ -390,7 +415,7 @@ def "src list" [
 
   return (
     $repos 
-    | sort-by --ignore-case "repo"
+    | sort-by --ignore-case "user" "repo"
     | table --index false
   )
 }
