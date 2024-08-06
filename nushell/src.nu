@@ -18,11 +18,14 @@ def get_repos [
             | take 3
           )
 
-          {
+          let repo = {
             domain: ($repo | last)
             user: ($repo | get 1)
             repo: ($repo | first)
           }
+
+          $repo 
+          | insert "synced" (is_synced $repo)
       }
     )
   } else {
@@ -82,7 +85,7 @@ def --env "src cd" [
       if ($domain | is-empty) {
         let matching_users = (
           ls $directory
-          | each {|domain| ls $domain.name | get name}
+          | par-each {|domain| ls $domain.name | get name}
           | flatten
           | filter {|found_user| $user == ($found_user | path basename)}
         )
@@ -149,11 +152,10 @@ def is_synced [repo: record] {
     return false
   }
 
-  # TODO Implement me!!
   cd $path
 
   let default_branch = (
-    git remote show origin 
+    git remote show origin
     | sed -n '/HEAD branch/s/.*: //p'
   )
 
@@ -175,7 +177,7 @@ def list_repos [user?: string] {
     $repos
     | from json
     | select owner name
-    | each {
+    | par-each {
         |repo| 
 
         let repo = {
@@ -184,8 +186,10 @@ def list_repos [user?: string] {
           repo: $repo.name
         }
 
-        $repo | insert "synced" (is_synced $repo)
+        $repo 
+        | insert "synced" (is_synced $repo)
       }
+    | sort-by --ignore-case "repo"
   )
 }
 
@@ -275,14 +279,22 @@ def --env "src clone" [
 
 # Initialize an environment
 def --env "src init" [
-  environment?: string # The environment (`src list-environments`) to initialize
+  environment?: string # The environment to initialize
   name?: string # Where to download the environment
+  --list-environments # List available development environments
 ] {
   let file = (get_init_file)
 
+  if $list_environments {
+    nu $file --list
+    rm --force $file
+
+    return
+  }
+
   cd (
     nu $file $environment $name --return-name 
-    | tee { each { print --no-newline }}
+    | tee { par-each { print --no-newline }}
     | lines
     | last
   )
@@ -310,7 +322,11 @@ def "src list" [
     $repos | where user == $user
   }
 
-  return ($repos | table --index false)
+  return (
+    $repos 
+    | sort-by --ignore-case "repo"
+    | table --index false
+  )
 }
 
 def get_init_file [] {
@@ -320,15 +336,6 @@ def get_init_file [] {
   | save --force $file
 
   return $file
-}
-
-# List available development environments
-def "src list-environments" [] {
-  let file = (get_init_file)
-
-  nu $file --list
-
-  rm --force $file
 }
 
 # Sync all repos
