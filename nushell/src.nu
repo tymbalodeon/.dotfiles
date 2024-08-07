@@ -215,6 +215,8 @@ def --env "src cd" [
   } else {
     cd (choose_from_list $matching_repos)
   }
+
+  return (ls)
 }
 
 def is_synced [repo: record] {
