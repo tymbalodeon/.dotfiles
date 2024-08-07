@@ -251,7 +251,7 @@ def get_remote_repos [
   user?: string
   --domain: string = "github"
   --status
-  --visbility: string
+  --visibility: string
 ] {
   let repos = if $domain == "github" {
     if ($user | is-empty) {
