@@ -353,9 +353,12 @@ def --env "src clone" [
   repo?: string # The name or URL of the repo to clone
   --domain: string = "github" # Clone repos at this domain
   --user: string # Clone repos for user
+  --visibility: string # Limit to public or private repos
 ] {
   if ($repo | is-empty) {
-    let repos = (get_remote_repos $user --domain $domain)
+    let repos = (
+      get_remote_repos $user --domain $domain --visibility $visibility
+    )
 
     if not ($repos | length | into bool) {
       return
