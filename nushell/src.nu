@@ -6,14 +6,14 @@ def parse_git_url [origin: string] {
   let values = (
     if ($origin | str starts-with "git@") {
       $origin 
-      | parse "git@{domain}.com:{user}/{repo}.git"
+      | parse "git@{domain}:{user}/{repo}.git"
     } else if ($origin | str starts-with "http") {
       $origin 
       | str replace --regex "https?://" "" 
-      | parse "https://{domain}.com/{user}/{repo}.git"
+      | parse "https://{domain}/{user}/{repo}.git"
     } else if ($origin | str starts-with "ssh://") {
       $origin 
-      | parse "ssh://git@{domain}.com/{user}/{repo}.git"
+      | parse "ssh://git@{domain}/{user}/{repo}.git"
     } else {
       print --stderr $"Unable to parse remote origin: \"($origin)\""
 
@@ -46,7 +46,19 @@ def get_local_repos [
       | par-each {
           |repo|
 
-          let origin = (cd $repo; git remote get-url origin)
+          cd $repo
+
+          let origin = (
+            git remote get-url origin err> /dev/null
+            | complete
+          )
+
+          let origin = if $origin.exit_code != 0 {
+            ""
+          } else {
+            $origin.stdout 
+            | str trim
+          }
 
           let repo = if ($origin | str starts-with "git@") or (
             $origin | str starts-with "http"
@@ -459,19 +471,26 @@ def "src list" [
   --domain: string # List repos at this domain
   --status # Show sync status
   --user: string # List repos for user
+  --visibility: string # Limit to public or private repos
 ] {
   if $remote {
     let repos = if $status {
       if ($domain | is-empty) {
-        get_remote_repos $user --status
+        get_remote_repos $user --status --visibility $visibility
       } else {
-        get_remote_repos $user --domain $domain --status
+        (
+          get_remote_repos 
+            $user
+            --domain $domain 
+            --status 
+            --visibility $visibility
+        )
       }
     } else {
       if ($domain | is-empty) {
-        get_remote_repos $user 
+        get_remote_repos $user --visibility $visibility
       } else {
-        get_remote_repos $user --domain $domain
+        get_remote_repos $user --domain $domain --visibility $visibility
       }
     }
 
