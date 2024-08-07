@@ -34,15 +34,40 @@ def into_repo [] {
   | rename domain user repo
 }
 
+def get_visibility [path: string] {
+  cd $path
+
+  let origin = (git remote get-url origin)
+
+  let visibility = (
+    if "github" in $origin {
+      gh repo view --json visibility 
+      | from json
+      | get visibility
+    } else if "gitlab" in $origin {
+      glab repo view --output json err> /dev/null
+      | from json
+      | get visibility
+    }
+  )
+
+  return ($visibility | str downcase)
+}
+
 def get_local_repos [
   --as-table
   --domain: string
   --status
   --user: string
+  --visibility: string
 ] {
   if $as_table {
     return (
       get_local_repos
+      --domain $domain
+      --status 
+      --user $user 
+      --visibility $visibility 
       | par-each {
           |repo|
 
@@ -60,7 +85,7 @@ def get_local_repos [
             | str trim
           }
 
-          let repo = if ($origin | str starts-with "git@") or (
+          let repo_data = if ($origin | str starts-with "git@") or (
             $origin | str starts-with "http"
           ) {
             parse_git_url $origin
@@ -73,26 +98,43 @@ def get_local_repos [
               | into_repo
           }
 
-          if $status {
-            $repo 
-            | insert "synced" (is_synced $repo)
+          let repo_data = if $status {
+            $repo_data 
+            | insert "synced" (is_synced $repo_data)
           } else {
-            $repo
+            $repo_data
           }
+
+          let repo_data = if ($visibility | is-empty) {
+            $repo_data
+          } else {
+            $repo_data
+            | insert "visibility" (get_visibility $repo)
+          }
+
+          $repo_data
         }
       | filter {
           |repo|
 
-          ($domain | is-empty) or (
-            $repo.domain == $domain
-          ) and ($user | is-empty) or (
-            $repo.user == $user
+          return (
+            (
+              ($user | is-empty) or ($repo.user == $user)
+            ) and (
+              ($visibility | is-empty) or ($repo.visibility == $visibility)
+            )
           )
       }
     )
   } else {
+    let glob = if ($domain | is-empty) {
+      "/**"
+    } else {
+      $"/($domain)/**"
+    }
+
     return (
-      ls ((get_src_directory) ++ "/**" | into glob)
+      ls ($"(get_src_directory)/($glob)" | into glob)
       | append (ls --all $env.HOME | where name =~ ".dotfiles")
       | filter {
           |item|
@@ -511,16 +553,47 @@ def "src list" [
 
   let repos = if $status {
     if ($domain | is-empty) {
-      get_local_repos --as-table --status --user $user
+      (
+        get_local_repos 
+          --as-table 
+          --status 
+          --user $user
+          --visibility $visibility
+      )
     } else {
-      get_local_repos --as-table --domain (get_domain $domain) --status --user $user
+      (
+        get_local_repos 
+          --as-table 
+          --domain (get_domain $domain) 
+          --status 
+          --user $user
+          --visibility $visibility
+      )
     }
   } else {
     if ($domain | is-empty) {
-      get_local_repos --as-table --user $user
+      (
+        get_local_repos 
+          --as-table 
+          --user $user
+          --visibility $visibility
+      )
     } else {
-      get_local_repos --as-table --domain (get_domain $domain) --user $user
+      (
+        get_local_repos 
+          --as-table 
+          --domain (get_domain $domain) 
+          --user $user
+          --visibility $visibility
+      )
     }
+  }
+
+  let repos = if "visibility" in ($repos | columns) {
+    $repos
+    | reject "visibility"
+  } else {
+    $repos
   }
 
   return (
