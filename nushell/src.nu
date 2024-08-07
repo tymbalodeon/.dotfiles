@@ -34,7 +34,7 @@ def into_repo [] {
   | rename domain user repo
 }
 
-def get_repos [
+def get_local_repos [
   --as-table
   --domain: string
   --status
@@ -42,7 +42,7 @@ def get_repos [
 ] {
   if $as_table {
     return (
-      get_repos
+      get_local_repos
       | par-each {
           |repo|
 
@@ -170,7 +170,7 @@ def --env "src cd" [
   }
 
   let matching_repos = (
-    get_repos --as-table
+    get_local_repos --as-table
     | filter {
         |repo| 
 
@@ -247,17 +247,25 @@ def get_remote_user [domain: string = "github"] {
   }
 }
 
-
-def list_repos [
+def get_remote_repos [
   user?: string
   --domain: string = "github"
   --status
+  --visbility: string
 ] {
   let repos = if $domain == "github" {
     if ($user | is-empty) {
-      gh repo list --visibility public --json name,owner
+      if ($visibility | is-empty) {
+        gh repo list --json name,owner
+      } else {
+        gh repo list --visibility $visibility --json name,owner
+      }
     } else {
-      gh repo list --visibility public $user --json name,owner
+      if ($visibility | is-empty) {
+        gh repo list $user --json name,owner
+      } else {
+        gh repo list --visibility $visibility $user --json name,owner
+      }
     }
   } else if $domain == "gitlab" {
     let remote_user =  (get_remote_user $domain)
@@ -335,7 +343,7 @@ def --env "src clone" [
   --user: string # Clone repos for user
 ] {
   if ($repo | is-empty) {
-    let repos = (list_repos $user --domain $domain)
+    let repos = (get_remote_repos $user --domain $domain)
 
     if not ($repos | length | into bool) {
       return
@@ -455,15 +463,15 @@ def "src list" [
   if $remote {
     let repos = if $status {
       if ($domain | is-empty) {
-        list_repos $user --status
+        get_remote_repos $user --status
       } else {
-        list_repos $user --domain $domain --status
+        get_remote_repos $user --domain $domain --status
       }
     } else {
       if ($domain | is-empty) {
-        list_repos $user 
+        get_remote_repos $user 
       } else {
-        list_repos $user --domain $domain
+        get_remote_repos $user --domain $domain
       }
     }
 
@@ -475,15 +483,15 @@ def "src list" [
 
   let repos = if $status {
     if ($domain | is-empty) {
-      get_repos --as-table --status --user $user
+      get_local_repos --as-table --status --user $user
     } else {
-      get_repos --as-table --domain (get_domain $domain) --status --user $user
+      get_local_repos --as-table --domain (get_domain $domain) --status --user $user
     }
   } else {
     if ($domain | is-empty) {
-      get_repos --as-table --user $user
+      get_local_repos --as-table --user $user
     } else {
-      get_repos --as-table --domain (get_domain $domain) --user $user
+      get_local_repos --as-table --domain (get_domain $domain) --user $user
     }
   }
 
@@ -498,7 +506,7 @@ def "src list" [
 def "src sync" [] {
   print "Syncing repos..."
 
-  get_repos
+  get_local_repos
   | par-each {
       |repo|
       cd $repo
