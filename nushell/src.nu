@@ -3,18 +3,25 @@ def get_src_directory [] {
 }
 
 def parse_git_url [url: string] {
-  return (
-    if ($url | str starts-with "git@") {
-      $url 
-      | parse "git@{domain}:{user}/{repo}.git"
-      | first
-    } else if ($url | str starts-with "http") {
-      $url 
+  let values = (
+    if ($origin | str starts-with "git@") {
+      $origin 
+      | parse "git@{domain}.com:{user}/{repo}.git"
+    } else if ($origin | str starts-with "http") {
+      $origin 
       | str replace --regex "https?://" "" 
-      | parse "https://{domain}/{user}/{repo}.git"
-      | first
-    } 
+      | parse "https://{domain}.com/{user}/{repo}.git"
+    } else if ($origin | str starts-with "ssh://") {
+      $origin 
+      | parse "ssh://git@{domain}.com/{user}/{repo}.git"
+    } else {
+      print --stderr $"Unable to parse remote origin: \"($origin)\""
+
+      exit 1
+    }
   )
+
+  return ($values | first)
 }
 
 def into_repo [] {

@@ -39,6 +39,9 @@
 [github]
     user = tymbalodeon
 
+[gitlab]
+    user = tymbalodeon
+
 [init]
     defaultBranch = trunk
 
