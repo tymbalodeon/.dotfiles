@@ -630,7 +630,7 @@ def "src list" [
 
   return (
     $repos 
-    | sort-by --ignore-case "user" "repo"
+    | sort-by --ignore-case "domain" "user" "repo"
     | table --index false
   )
 }
