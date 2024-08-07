@@ -410,11 +410,23 @@ def --env "src clone" [
   cd $target
 }
 
-# Initialize an environment
-def --env --wrapped "src init" [
+def get_environment_command_source [] {
+  let file = (mktemp --tmpdir dev-scripts-environment-XXX.nu)
+
+  (
+    http get 
+      --raw "https://raw.githubusercontent.com/tymbalodeon/dev-scripts/trunk/environment.nu"
+    | save --force $file
+  )
+
+  return $file
+}
+
+# Create a new project
+def --env --wrapped "src environment" [
   ...args: string
 ] {
-  let file = (get_init_file)
+  let file = (get_environment_command_source)
 
   let lines = (
     nu $file ...$args 
@@ -480,15 +492,6 @@ def "src list" [
     | sort-by --ignore-case "user" "repo"
     | table --index false
   )
-}
-
-def get_init_file [] {
-  let file = (mktemp --tmpdir dev-scripts-init.XXX)
-
-  http get --raw "https://raw.githubusercontent.com/tymbalodeon/dev-scripts/trunk/init.nu"
-  | save --force $file
-
-  return $file
 }
 
 # Sync all repos
