@@ -54,6 +54,16 @@ def get_visibility [path: string] {
   return ($visibility | str downcase)
 }
 
+def get_remote_domain [path: string] {
+  if ($path | path exists) {
+    cd $path
+
+    let origin = (git remote get-url origin)
+
+    return (get_domain $origin)
+  }
+}
+
 def get_local_repos [
   --as-table
   --domain: string
@@ -133,9 +143,27 @@ def get_local_repos [
       $"/($domain)/**"
     }
 
-    return (
+    let repos = (
       ls ($"(get_src_directory)/($glob)" | into glob)
-      | append (ls --all $env.HOME | where name =~ ".dotfiles")
+    )
+
+    let dotfiles = (
+      ls --all $env.HOME 
+      | where name =~ ".dotfiles"   
+      | first
+    )
+
+    let repos = if ($domain | is-empty) or (
+      $domain == (get_remote_domain $dotfiles.name)
+    ) {
+      $repos
+      | append $dotfiles
+    } else {
+      $repos
+    }
+
+    return (
+      $repos
       | filter {
           |item|
 
@@ -384,7 +412,11 @@ def get_remote_repos [
   )
 }
 
-def get_domain [domain: string] {
+def get_domain [domain?: string] {
+  if ($domain | is-empty) {
+    return    
+  }
+
   if "github" in $domain {
     return "github.com"
   } else if "gitlab" in $domain {
@@ -604,11 +636,19 @@ def "src list" [
 }
 
 # Sync all repos
-def "src sync" [] {
+def "src sync" [
+  --domain: string # Sync repos at this domain
+  --user: string # Sync repos for this user
+  --visibility: string # Sync only private or public repos
+] {
   print "Syncing repos..."
 
-  get_local_repos
-  | par-each {
+  (
+    get_local_repos
+      --domain (get_domain $domain)
+      --user $user
+      --visibility $visibility
+  ) | par-each {
       |repo|
       cd $repo
 
