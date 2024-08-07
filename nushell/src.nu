@@ -172,7 +172,7 @@ def --env "src cd" [
       print $"\"($directory)/\" does not exist."
     }
 
-    return
+    return (ls)
   }
 
   let search_repo = {
@@ -368,7 +368,13 @@ def --env "src clone" [
     | par-each {
         |repo|
 
-        src clone $repo.repo --domain $domain --user $repo.user
+        (
+          src clone 
+            $repo.repo 
+            --domain $domain 
+            --user $repo.user
+            --visibility $visibility
+        )
       }
     | null
     
@@ -384,7 +390,7 @@ def --env "src clone" [
     return (ls)
   }
 
-  let repo = if ($repo | str starts-with "git@") or (
+  let repo_data = if ($repo | str starts-with "git@") or (
     $repo | str starts-with "http"
   ) {
     parse_git_url $repo
@@ -402,31 +408,29 @@ def --env "src clone" [
     ] | into_repo
   }
 
-  let target = if $repo.repo == ".dotfiles" {
+  let target = if $repo_data.repo == ".dotfiles" {
     $env.HOME 
-    | path join $repo.repo  
+    | path join $repo_data.repo  
   } else {
     get_src_directory
     | path join (
-        $repo.domain
+        $repo_data.domain
       ) | path join (
-        $repo.user
+        $repo_data.user
       ) | path join (
-        $repo.repo
+        $repo_data.repo
       )
   }
 
   if not ($target | path exists) {
     if ($repo | str starts-with "git@") or ($repo | str starts-with "http") {
       git clone $repo $target
+    } else if "github" in $domain {
+      gh repo clone $repo_data.repo $target
+    } else if "gitlab" in $domain {
+      glab repo clone $repo_data.repo $target
     } else {
-      if $domain == "github" {
-        gh repo clone $repo $target
-      } else if $domain == "gitlab" {
-        glab repo clone $repo $target
-      } else {
-        return
-      }
+      return
     }
   }
 
