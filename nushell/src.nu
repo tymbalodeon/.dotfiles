@@ -2,7 +2,7 @@ def get_src_directory [] {
  return ($env.HOME | path join "src")
 }
 
-def parse_git_url [url: string] {
+def parse_git_url [origin: string] {
   let values = (
     if ($origin | str starts-with "git@") {
       $origin 
