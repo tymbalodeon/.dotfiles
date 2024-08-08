@@ -558,6 +558,7 @@ def --env --wrapped "src environment" [
 def "src list" [
   --remote # List remote repos
   --domain: string # List repos at this domain
+  --sort-by: list<string> # Sort the output by these columns
   --status # Show sync status
   --user: string # List repos for user
   --visibility: string # Limit to public or private repos
@@ -634,9 +635,15 @@ def "src list" [
     $repos
   }
 
+  let sort_by = if ($sort_by | is-empty) {
+    [domain user repo]
+  } else {
+    $sort_by
+  }
+
   return (
     $repos 
-    | sort-by --ignore-case "domain" "user" "repo"
+    | sort-by --ignore-case ...$sort_by
     | table --index false
   )
 }
