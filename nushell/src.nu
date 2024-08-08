@@ -671,3 +671,7 @@ def "src sync" [
       print $"Synced \"($repo)/\""
     } | null
 }
+
+def src [] {
+  help src
+}
