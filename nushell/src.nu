@@ -35,6 +35,8 @@ def into_repo [] {
 }
 
 def get_visibility [path: string] {
+  print $"Checking remote visibility for ($path)..."
+
   cd $path
 
   let origin = (git remote get-url origin)
@@ -144,7 +146,11 @@ def get_local_repos [
     }
 
     let repos = (
-      ls ($"(get_src_directory)/($glob)" | into glob)
+      try {
+        ls ($"(get_src_directory)/($glob)" | into glob)
+      } catch {
+        return []
+      }
     )
 
     let dotfiles = (
