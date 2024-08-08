@@ -37,6 +37,8 @@
       dejavu_fonts
       delta
       dust
+      erlang
+      erlang-ls
       eza
       fastfetch
       fd
