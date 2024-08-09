@@ -192,7 +192,7 @@ def matches [
   return (
     (
       $search_repo_column | is-empty
-    ) or ($search_repo_column == ($repo | get $column))
+    ) or (($repo | get $column) =~ $search_repo_column)
   )
 }
 
@@ -226,7 +226,7 @@ def --env "src cd" [
           ls $directory
           | par-each {|domain| ls $domain.name | get name}
           | flatten
-          | filter {|found_user| $user == ($found_user | path basename)}
+          | filter {|found_user| ($found_user | path basename) =~ $user}
         )
 
         if ($matching_users | length) == 1 {
@@ -245,7 +245,7 @@ def --env "src cd" [
     if ($directory | path exists) {
       cd $directory
     } else {
-      print $"\"($directory)/\" does not exist."
+      return $"\"($directory)/\" does not exist."
     }
 
     return (ls)
@@ -439,6 +439,25 @@ def get_domain [domain?: string] {
     return "github.com"
   } else if "gitlab" in $domain {
     return "gitlab.com"
+  } else {
+    let available_domains = (
+      ["github.com" "gitlab.com"] 
+      | filter {|available_domain| $available_domain =~ $domain}
+    )
+
+    if not ($available_domains | length | into bool) {
+      return
+    } else if ($available_domains | length) == 1 {
+      return ($available_domains | first)
+    }
+
+    let domain = (choose_from_list $available_domains)
+
+    if ($domain | is-empty) {
+      return
+    } else {
+      return $domain
+    }
   }
 }
 
