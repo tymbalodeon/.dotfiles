@@ -349,13 +349,11 @@ def get_remote_user [domain: string = "github"] {
   }
 }
 
-def get_remote_repos [
+def get_github_repos [
   user?: string
-  --domain: string = "github"
-  --status
-  --visibility: string
+  visibility?: string
 ] {
-  let repos = if $domain == "github" {
+  let repos = (
     if ($user | is-empty) {
       if ($visibility | is-empty) {
         gh repo list --json name,owner
@@ -369,55 +367,82 @@ def get_remote_repos [
         gh repo list --visibility $visibility $user --json name,owner
       }
     }
-  } else if $domain == "gitlab" {
-    let remote_user =  (get_remote_user $domain)
-
-    let user = if ($user | is-empty) {
-      $remote_user
-    } else {
-      $user
-    }
-
-    if $user != $remote_user {
-      return
-    }
-
-    glab repo list err> /dev/null
-    | lines
-    | filter {|line| $line | str starts-with $remote_user}
-    | par-each {|line| $line | str trim | split row "\t" | first}
-  } else {
-    return []
-  }
-
-  let repos = if $domain == "github" {
+  )
+  return (
     $repos
     | from json
     | select owner name
+    | par-each {
+        |repo| 
+
+        {
+          domain: "github.com"
+          user: $repo.owner.login
+          repo: $repo.name
+        }
+      }
+  )
+}
+
+def get_gitlab_repos [
+  user?: string
+  visibility?: string
+] {
+  let remote_user =  (get_remote_user "gitlab")
+
+  let user = if ($user | is-empty) {
+    $remote_user
+  } else {
+    $user
+  }
+
+  if $user != $remote_user {
+    return
+  }
+
+  return (
+    glab repo list err> /dev/null
+    | lines
+    | filter {|line| $line | str starts-with $remote_user}
+    | par-each {
+        |repo| 
+
+        let repo = (
+          $repo
+          | str trim | split row "\t"
+          | first
+        )
+
+        let data = ($repo | split row "/")
+
+        {
+          domain: "gitlab.com"
+          user: ($data | first)
+          repo: ($data | last)
+        }
+      }
+  )
+}
+
+def get_remote_repos [
+  user?: string
+  --domain: string
+  --status
+  --visibility: string
+] {
+  let repos = if $domain == "github" {
+    get_github_repos $user $visibility
   } else if $domain == "gitlab" {
-    $repos
+    get_gitlab_repos $user $visibility
+  } else {
+    get_github_repos $user $visibility
+    | append (get_gitlab_repos $user $visibility)
   }
 
   return (
     $repos
     | par-each {
         |repo| 
-
-        let repo = if $domain == "github" {
-          {
-            domain: "github.com"
-            user: $repo.owner.login
-            repo: $repo.name
-          }
-        } else if $domain == "gitlab" {
-          let data = ($repo | split row "/")
-
-          {
-            domain: "gitlab.com"
-            user: ($data | first)
-            repo: ($data | last)
-          }
-        }
 
         if $status {
           $repo 
@@ -594,8 +619,8 @@ def "src list" [
   --user: string # List repos for user
   --visibility: string # Limit to public or private repos
 ] {
-  if $remote {
-    let repos = if $status {
+  let repos = if $remote {
+    if $status {
       if ($domain | is-empty) {
         get_remote_repos $user --status --visibility $visibility
       } else {
@@ -614,56 +639,51 @@ def "src list" [
         get_remote_repos $user --domain $domain --visibility $visibility
       }
     }
+  } else {
+    let repos = if $status {
+      if ($domain | is-empty) {
+        (
+          get_local_repos 
+            --as-table 
+            --status 
+            --user $user
+            --visibility $visibility
+        )
+      } else {
+        (
+          get_local_repos 
+            --as-table 
+            --domain (get_domain $domain) 
+            --status 
+            --user $user
+            --visibility $visibility
+        )
+      }
+    } else {
+      if ($domain | is-empty) {
+        (
+          get_local_repos 
+            --as-table 
+            --user $user
+            --visibility $visibility
+        )
+      } else {
+        (
+          get_local_repos 
+            --as-table 
+            --domain (get_domain $domain) 
+            --user $user
+            --visibility $visibility
+        )
+      }
+    }
 
-    return (
+    if "visibility" in ($repos | columns) {
       $repos
-      | table --index false
-    )
-  }
-
-  let repos = if $status {
-    if ($domain | is-empty) {
-      (
-        get_local_repos 
-          --as-table 
-          --status 
-          --user $user
-          --visibility $visibility
-      )
+      | reject "visibility"
     } else {
-      (
-        get_local_repos 
-          --as-table 
-          --domain (get_domain $domain) 
-          --status 
-          --user $user
-          --visibility $visibility
-      )
+      $repos
     }
-  } else {
-    if ($domain | is-empty) {
-      (
-        get_local_repos 
-          --as-table 
-          --user $user
-          --visibility $visibility
-      )
-    } else {
-      (
-        get_local_repos 
-          --as-table 
-          --domain (get_domain $domain) 
-          --user $user
-          --visibility $visibility
-      )
-    }
-  }
-
-  let repos = if "visibility" in ($repos | columns) {
-    $repos
-    | reject "visibility"
-  } else {
-    $repos
   }
 
   let sort_by = if ($sort_by | is-empty) {
@@ -673,7 +693,7 @@ def "src list" [
   }
 
   return (
-    $repos 
+    $repos
     | sort-by --ignore-case ...$sort_by
     | table --index false
   )
