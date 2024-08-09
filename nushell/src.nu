@@ -289,7 +289,13 @@ def --env "src cd" [
 
     cd $repo_path
   } else {
-    cd (choose_from_list $matching_repos)
+    let matching_repo = (choose_from_list $matching_repos)
+
+    if ($matching_repo | path exists) {
+      cd $matching_repo
+    } else {
+      return
+    }
   }
 
   return (ls)
