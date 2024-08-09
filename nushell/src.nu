@@ -315,10 +315,16 @@ def is_synced [repo: record] {
 
   cd $path
 
-  let default_branch = (
-    git remote show origin
-    | sed -n '/HEAD branch/s/.*: //p'
-  )
+  let default_branch = try {
+    git remote show origin err> /dev/null
+    | sed --quiet '/HEAD branch/s/.*: //p' 
+  } catch {
+    ""
+  }
+
+  if ($default_branch | is-empty) {
+    return null
+  }
 
   if (git branch --show-current) != $default_branch {
     git checkout $default_branch    
