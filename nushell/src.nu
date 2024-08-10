@@ -137,6 +137,12 @@ def get_local_repos [args: record] {
       $"/($args.domain)/**"
     }
 
+    let glob = if ($args.user | is-empty) {
+      $glob
+    } else {
+      $"($glob)/($args.user)/*"
+    }
+
     let repos = (
       try {
         ls ($"(get_src_directory)/($glob)" | into glob)
@@ -538,6 +544,7 @@ def get_domain [domain?: string] {
 def --env "src clone" [
   repo?: string # The name or URL of the repo to clone
   --domain: string = "github" # Clone repos at this domain
+  --no-ls # Don't list directory contents
   --user: string # Clone repos for user
   --visibility: string # Limit to public or private repos
 ] {
@@ -573,11 +580,18 @@ def --env "src clone" [
     mkdir $user_directory
     cd $user_directory
 
-    return (ls)
+    return (if $no_ls { null } else { ls })
   }
 
-  let repo_data = if ($repo | str starts-with "git@") or (
-    $repo | str starts-with "http"
+  let repo_data = if (
+    ($repo | str starts-with "git@") or not (
+      $repo 
+      | find "https?://"
+      | is-empty
+    ) or (
+      $repo 
+      | str starts-with "ssh://"
+    )
   ) {
     parse_git_url $repo
   } else {
@@ -612,9 +626,9 @@ def --env "src clone" [
     if ($repo | str starts-with "git@") or ($repo | str starts-with "http") {
       git clone $repo $target
     } else if "github" in $domain {
-      gh repo clone $repo_data.repo $target
+      gh repo clone $"($user)/($repo_data.repo)" $target
     } else if "gitlab" in $domain {
-      glab repo clone $repo_data.repo $target
+      glab repo clone $"($user)/($repo_data.repo)" $target
     } else {
       return
     }
@@ -735,8 +749,6 @@ def "src sync" [
   --user: string # Sync repos for this user
   --visibility: string # Sync only private or public repos
 ] {
-  print "Syncing repos..."
-
   let args = {
     as_table: false
     domain: (get_domain $domain)
@@ -744,8 +756,14 @@ def "src sync" [
     visibility: $visibility
   }
 
+  let repos = (get_local_repos $args)
+
+  if ($repos | length | into bool) {
+    print "Syncing repos..."
+  }
+
   let synced_repos = (
-    get_local_repos $args
+    $repos
     | par-each {
         |repo|
         cd $repo
@@ -757,6 +775,7 @@ def "src sync" [
         }
 
         print $"Synced \"($repo)/\""
+
         parse_repo_path $repo
       }
   )
