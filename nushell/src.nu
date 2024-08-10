@@ -676,6 +676,7 @@ def --env --wrapped "src environment" [
 def "src list" [
   --remote # List remote repos
   --domain: string # List repos at this domain
+  --me # List only repos belonging to the current user
   --paths # List local paths
   --sort-by: list<string> # Sort the output by these columns
   --status # Show sync status
@@ -727,6 +728,18 @@ def "src list" [
       | to text
       | ^sort --ignore-case
     )
+  }
+
+  let repos = if $me {
+    let users = (
+      ["github" "gitlab"]
+      | each {|domain| git config $"($domain).user"}
+    )
+
+    $repos
+    | filter {|repo| $repo.user in $users}
+  } else {
+    $repos
   }
 
   let sort_by = if ($sort_by | is-empty) {
