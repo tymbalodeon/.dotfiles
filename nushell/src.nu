@@ -66,34 +66,6 @@ def get_remote_domain [path: string] {
   }
 }
 
-def get_repo_visibilities [domain: string] {
-  let empty_table = [{name: null visibility: null}]
-
-  return (
-    if "github" in $domain {
-      try {
-        gh repo list --json name,owner,visibility
-        | from json
-        | update owner {|in| $in.login}
-        | update visibility {|in| $in | str downcase}
-        | insert domain github.com
-      } catch {
-        $empty_table
-      }
-    } else if "gitlab" in $domain {
-      try {
-        glab repo list --output json err> /dev/null
-        | from json
-        | update owner {|in| $in.username}
-        | select name owner visibility
-        | insert domain gitlab.com
-      } catch {
-        $empty_table
-      }
-    }
-  )
-}
-
 def get_local_repos [
   --as-table
   --domain: string
@@ -102,20 +74,6 @@ def get_local_repos [
   --visibility: string
 ] {
   if $as_table {
-    let empty_table = [{name: null visibility: null}]
-
-    let visibilities = if ($domain | is-empty) {
-      let github_repos = (get_repo_visibilities "github")
-      let gitlab_repos = (get_repo_visibilities "gitlab")
-
-      $github_repos
-      | merge $gitlab_repos
-    } else if "github" in $domain {
-      get_repo_visibilities "github"
-    } else if "gitlab" in $domain {
-      get_repo_visibilities "gitlab"
-    }
-
     return (
       get_local_repos
       --domain $domain
@@ -163,20 +121,7 @@ def get_local_repos [
             $repo_data
           } else {
             $repo_data
-            | insert visibility (
-                $visibilities
-                | filter {
-                    |repo|
-
-                    $repo_data == (
-                      $repo
-                      | reject visibility
-                      | rename repo user domain
-                    )
-                  }
-                | first
-                | get visibility
-              )
+            | insert "visibility" (get_visibility $repo)
           }
 
           $repo_data
@@ -216,7 +161,7 @@ def get_local_repos [
 
     let repos = if ($domain | is-empty) or (
       $domain == (get_remote_domain $dotfiles.name)
-    ) and ($visibility != "private") {
+    ) {
       $repos
       | append $dotfiles
     } else {
@@ -229,9 +174,7 @@ def get_local_repos [
           |item|
 
           ($item.type == "dir") and (
-            $item.name
-            | path join ".git"
-            | path exists
+            $item.name | path join ".git" | path exists
           )
         }
       | get name
@@ -258,6 +201,20 @@ def choose_from_list [options: list] {
     $options
     | to text
     | fzf --exact --scheme path
+  )
+}
+
+def get_repo_path [repo: record] {
+  return (
+    if $repo.repo == ".dotfiles" {
+      $env.HOME 
+      | path join $repo.repo
+    } else {
+      get_src_directory
+      | path join $repo.domain
+      | path join $repo.user
+      | path join $repo.repo
+    }
   )
 }
 
@@ -354,10 +311,7 @@ def --env "src cd" [
       $env.HOME      
       | path join $repo.repo
     } else {
-      get_src_directory
-      | path join $repo.domain
-      | path join $repo.user
-      | path join $repo.repo
+      get_repo_path $repo
     }
 
     cd $repo_path
@@ -377,12 +331,9 @@ def --env "src cd" [
 }
 
 def is_synced [repo: record] {
-  let path = (
-    get_src_directory
-    | path join $repo.domain
-    | path join $repo.user
-    | path join $repo.repo
-  )
+  let path = (get_repo_path $repo)
+
+  print $"Checking sync status for ($path)..."
 
   if not ($path | path exists) {
     return false
@@ -392,7 +343,7 @@ def is_synced [repo: record] {
 
   let default_branch = try {
     git remote show origin err> /dev/null
-    | sed --quiet '/HEAD branch/s/.*: //p' 
+    | sed -n '/HEAD branch/s/.*: //p'
   } catch {
     ""
   }
@@ -401,11 +352,26 @@ def is_synced [repo: record] {
     return null
   }
 
-  if (git branch --show-current) != $default_branch {
+  let current_branch = (git branch --show-current)
+
+  if $current_branch != $default_branch {
+    direnv revoke
+
+    if not (git status --short | is-empty) {
+      git stash
+    }
+
     git checkout $default_branch    
   }
 
-  return (git fetch --dry-run | is-empty)
+  let status = (git fetch --dry-run | is-empty)
+
+  if $current_branch != $default_branch {
+    git checkout $current_branch
+    git stash pop
+  }
+
+  return $status
 }
 
 def get_remote_user [domain: string = "github"] {
