@@ -196,17 +196,24 @@ def choose_from_list [options: list] {
   )
 }
 
-def get_repo [path: string] {
-  $path
-  | path parse
-  | reject extension
-  | insert user ($in.parent | path basename)
-  | insert domain ($in.parent | path dirname | path basename)
-  | reject parent
-  | rename --column {stem: repo}
+def parse_repo_path [path: string] {
+  return (
+    if ($path | path basename) == ".dotfiles" {
+      cd $path
+      parse_git_url (git remote get-url origin)
+    } else {
+      $path
+      | path parse
+      | reject extension
+      | insert user ($in.parent | path basename)
+      | insert domain ($in.parent | path dirname | path basename)
+      | reject parent
+      | rename --column {stem: repo}
+    }
+  )
 }
 
-def get_repo_path [repo: record] {
+def parse_repo_path_path [repo: record] {
   return (
     if $repo.repo == ".dotfiles" {
       $env.HOME
@@ -314,7 +321,7 @@ def --env "src cd" [
       $env.HOME
       | path join $repo.repo
     } else {
-      get_repo_path $repo
+      parse_repo_path_path $repo
     }
 
     cd $repo_path
@@ -334,7 +341,7 @@ def --env "src cd" [
 }
 
 def is_synced [repo: record] {
-  let path = (get_repo_path $repo)
+  let path = (parse_repo_path_path $repo)
 
   print $"Checking sync status for ($path)..."
 
@@ -750,8 +757,7 @@ def "src sync" [
         }
 
         print $"Synced \"($repo)/\""
-
-        get_repo $repo
+        parse_repo_path $repo
       }
   )
 
