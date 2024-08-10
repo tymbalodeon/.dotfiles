@@ -159,23 +159,6 @@ def get_local_repos [
             $repo_data
           }
 
-          let stuff = (
-            $visibilities
-            | filter {
-                |repo|
-
-                $repo_data == (
-                  $repo
-                  | reject visibility
-                  | rename repo user domain
-                )
-              }
-          )
-
-          if ($stuff | is-empty) {
-            print $repo_data
-          }
-
           let repo_data = if ($visibility | is-empty) {
             $repo_data
           } else {
