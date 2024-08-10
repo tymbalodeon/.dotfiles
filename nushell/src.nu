@@ -719,6 +719,7 @@ def "src sync" [
   print "Syncing repos..."
 
   let args = {
+    as_table: false
     domain: (get_domain $domain)
     user: $user
     visibility: $visibility
@@ -732,11 +733,7 @@ def "src sync" [
     let result = (git pull out> /dev/null | complete)
 
     if $result.exit_code != 0 {
-      (
-        print
-          --stderr
-          $"\nThere was a problem syncing \"($repo)\":\n\n($result.stderr)"
-      )
+      print --stderr $"(ansi y)Skipping \"($repo)\"(ansi reset)"
     }
 
     print $"Synced \"($repo)/\""
