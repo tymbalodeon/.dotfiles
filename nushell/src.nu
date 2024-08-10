@@ -66,6 +66,34 @@ def get_remote_domain [path: string] {
   }
 }
 
+def get_repo_visibilities [domain: string] {
+  let empty_table = [{name: null visibility: null}]
+
+  return (
+    if "github" in $domain {
+      try {
+        gh repo list --json name,owner,visibility 
+        | from json
+        | update owner {|in| $in.login}
+        | update visibility {|in| $in | str downcase}
+        | insert domain github.com
+      } catch {
+        $empty_table
+      }
+    } else if "gitlab" in $domain {
+      try {
+        glab repo list --output json err> /dev/null
+        | from json
+        | update owner {|in| $in.username}
+        | select name owner visibility
+        | insert domain gitlab.com
+      } catch {
+        $empty_table
+      }
+    }
+  )
+}
+
 def get_local_repos [
   --as-table
   --domain: string
@@ -74,6 +102,20 @@ def get_local_repos [
   --visibility: string
 ] {
   if $as_table {
+    let empty_table = [{name: null visibility: null}]
+
+    let visibilities = if ($domain | is-empty) {
+      let github_repos = (get_repo_visibilities "github")
+      let gitlab_repos = (get_repo_visibilities "gitlab")
+
+      $github_repos 
+      | merge $gitlab_repos
+    } else if "github" in $domain {
+      get_repo_visibilities "github"
+    } else if "gitlab" in $domain {
+      get_repo_visibilities "gitlab"
+    }
+
     return (
       get_local_repos
       --domain $domain
@@ -117,11 +159,41 @@ def get_local_repos [
             $repo_data
           }
 
+          let stuff = (
+            $visibilities
+            | filter {
+                |repo|
+
+                $repo_data == (
+                  $repo                  
+                  | reject visibility
+                  | rename repo user domain
+                )
+              }
+          )
+
+          if ($stuff | is-empty) {
+            print $repo_data
+          }
+        
           let repo_data = if ($visibility | is-empty) {
             $repo_data
           } else {
             $repo_data
-            | insert "visibility" (get_visibility $repo)
+            | insert visibility (
+                $visibilities
+                | filter {
+                    |repo|
+
+                    $repo_data == (
+                      $repo                  
+                      | reject visibility
+                      | rename repo user domain
+                    )
+                  }
+                | first
+                | get visibility
+              )
           }
 
           $repo_data
@@ -161,7 +233,7 @@ def get_local_repos [
 
     let repos = if ($domain | is-empty) or (
       $domain == (get_remote_domain $dotfiles.name)
-    ) {
+    ) and ($visibility != "private") {
       $repos
       | append $dotfiles
     } else {
@@ -174,7 +246,9 @@ def get_local_repos [
           |item|
 
           ($item.type == "dir") and (
-            $item.name | path join ".git" | path exists
+            $item.name 
+            | path join ".git" 
+            | path exists
           )
         }
       | get name
