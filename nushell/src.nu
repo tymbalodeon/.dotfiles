@@ -224,6 +224,7 @@ def get_repo_path [repo: record] {
 def --env "src cd" [
   repo?: string # The repo name
   --domain: string # The domain
+  --no-ls # Don't list directory contents
   --search # Search the `src` directory interactively
   --user: string # The username
 ] {
@@ -235,7 +236,7 @@ def --env "src cd" [
       )
     )
 
-    return (ls)
+    return (if $no_ls { null } else { ls })
   }
 
   if ($repo | is-empty) {
@@ -280,7 +281,7 @@ def --env "src cd" [
       return $"\"($directory)/\" does not exist."
     }
 
-    return (ls)
+    return (if $no_ls { null } else { ls })
   }
 
   let search_repo = {
@@ -329,7 +330,7 @@ def --env "src cd" [
     return
   }
 
-  return (ls)
+    return (if $no_ls { null } else { ls })
 }
 
 def is_synced [repo: record] {
