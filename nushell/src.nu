@@ -208,8 +208,20 @@ def choose_from_list [options: list] {
 def --env "src cd" [
   repo?: string # The repo name
   --domain: string # The domain
+  --search # Search the `src` directory interactively
   --user: string # The username
 ] {
+  if $search {
+    cd (
+      choose_from_list (
+        fd "" --max-depth 3 --type dir (get_src_directory) 
+        | lines
+      )
+    )
+
+    return (ls)
+  }
+
   if ($repo | is-empty) {
     let directory = (get_src_directory)
 
