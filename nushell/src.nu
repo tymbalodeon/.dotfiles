@@ -672,6 +672,13 @@ def --env --wrapped "src environment" [
   rm --force $file
 }
 
+def get_my_users [] {
+  return (
+    ["github" "gitlab"]
+    | each {|domain| git config $"($domain).user"}
+  )
+}
+
 # List repos
 def "src list" [
   --remote # List remote repos
@@ -680,6 +687,7 @@ def "src list" [
   --paths # List local paths
   --sort-by: list<string> # Sort the output by these columns
   --status # Show sync status
+  # --urls: # List repo remote URLs
   --user: string # List repos for user
   --visibility: string # Limit to public or private repos
 ] {
@@ -730,17 +738,16 @@ def "src list" [
     )
   }
 
-  let repos = if $me {
-    let users = (
-      ["github" "gitlab"]
-      | each {|domain| git config $"($domain).user"}
-    )
+  let repos = (
+    if $me {
+      let users = (get_my_users)
 
-    $repos
-    | filter {|repo| $repo.user in $users}
-  } else {
-    $repos
-  }
+      $repos
+      | filter {|repo| $repo.user in $users}
+    } else {
+      $repos
+    }
+  )
 
   let sort_by = if ($sort_by | is-empty) {
     [domain user repo]
@@ -759,6 +766,7 @@ def "src list" [
 def "src sync" [
   --clone # clone repos that don't exist locally
   --domain: string # Sync repos at this domain
+  --me # Sync only repos belonging to the current user
   --user: string # Sync repos for this user
   --visibility: string # Sync only private or public repos
 ] {
@@ -774,6 +782,21 @@ def "src sync" [
   if ($repos | length | into bool) {
     print "Syncing repos..."
   }
+
+  let repos = (
+    if $me {
+      let users = (get_my_users)
+
+      $repos
+      | filter {
+          |repo| 
+          
+          ($repo | path dirname | path basename) in $users
+        }
+    } else {
+      $repos
+    }
+  )
 
   let synced_repos = (
     $repos
