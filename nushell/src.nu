@@ -196,6 +196,16 @@ def choose_from_list [options: list] {
   )
 }
 
+def get_repo [path: string] {
+  $path
+  | path parse
+  | reject extension
+  | insert user ($in.parent | path basename)
+  | insert domain ($in.parent | path dirname | path basename)
+  | reject parent
+  | rename --column {stem: repo}
+}
+
 def get_repo_path [repo: record] {
   return (
     if $repo.repo == ".dotfiles" {
@@ -712,6 +722,7 @@ def "src list" [
 
 # Sync all repos
 def "src sync" [
+  --clone # clone repos that don't exist locally
   --domain: string # Sync repos at this domain
   --user: string # Sync repos for this user
   --visibility: string # Sync only private or public repos
@@ -725,19 +736,40 @@ def "src sync" [
     visibility: $visibility
   }
 
-  get_local_repos $args
-  | par-each {
-    |repo|
-    cd $repo
+  let synced_repos = (
+    get_local_repos $args
+    | par-each {
+        |repo|
+        cd $repo
 
-    let result = (git pull out> /dev/null | complete)
+        let result = (git pull out> /dev/null | complete)
 
-    if $result.exit_code != 0 {
-      print --stderr $"(ansi y)Skipping \"($repo)\"(ansi reset)"
+        if $result.exit_code != 0 {
+          print --stderr $"(ansi y)Skipping \"($repo)\"(ansi reset)"
+        }
+
+        print $"Synced \"($repo)/\""
+
+        get_repo $repo
+      }
+  )
+
+  if $clone {
+    for repo in (
+      get_remote_repos 
+        $user 
+        --domain $domain 
+        --visibility $visibility
+      | filter {|repo| not ($repo in $synced_repos)}
+    ) {
+      (
+        src clone 
+          $repo.repo 
+          --domain $repo.domain 
+          --user $repo.user
+      )
     }
-
-    print $"Synced \"($repo)/\""
-  } | null
+  }
 }
 
 def src [] {
