@@ -26,7 +26,7 @@ def get_remote_path [--path: string --remote: string ] {
 def "cloud list" [
     --path: string = "" # A path relative to <remote>:
     --remote: string = "dropbox" # The name of the remote service
-
+    
 ] {
     let remote_path = (get_remote_path --path $path --remote $remote)
 

@@ -5,14 +5,14 @@ def get_src_directory [] {
 def parse_git_url [origin: string] {
   let values = (
     if ($origin | str starts-with "git@") {
-      $origin
+      $origin 
       | parse "git@{domain}:{user}/{repo}.git"
     } else if ($origin | str starts-with "http") {
-      $origin
-      | str replace --regex "https?://" ""
+      $origin 
+      | str replace --regex "https?://" "" 
       | parse "https://{domain}/{user}/{repo}.git"
     } else if ($origin | str starts-with "ssh://") {
-      $origin
+      $origin 
       | parse "ssh://git@{domain}/{user}/{repo}.git"
     } else {
       print --stderr $"Unable to parse remote origin: \"($origin)\""
@@ -43,7 +43,7 @@ def get_visibility [path: string] {
 
   let visibility = (
     if "github" in $origin {
-      gh repo view --json visibility
+      gh repo view --json visibility 
       | from json
       | get visibility
     } else if "gitlab" in $origin {
@@ -119,9 +119,9 @@ def get_local_repos [
     return (
       get_local_repos
       --domain $domain
-      --status
-      --user $user
-      --visibility $visibility
+      --status 
+      --user $user 
+      --visibility $visibility 
       | par-each {
           |repo|
 
@@ -135,7 +135,7 @@ def get_local_repos [
           let origin = if $origin.exit_code != 0 {
             ""
           } else {
-            $origin.stdout
+            $origin.stdout 
             | str trim
           }
 
@@ -153,7 +153,7 @@ def get_local_repos [
           }
 
           let repo_data = if $status {
-            $repo_data
+            $repo_data 
             | insert "synced" (is_synced $repo_data)
           } else {
             $repo_data
@@ -226,8 +226,8 @@ def get_local_repos [
     )
 
     let dotfiles = (
-      ls --all $env.HOME
-      | where name =~ ".dotfiles"
+      ls --all $env.HOME 
+      | where name =~ ".dotfiles"   
       | first
     )
 
@@ -281,7 +281,7 @@ def choose_from_list [options: list] {
 def get_repo_path [repo: record] {
   return (
     if $repo.repo == ".dotfiles" {
-      $env.HOME
+      $env.HOME 
       | path join $repo.repo
     } else {
       get_src_directory
@@ -302,7 +302,7 @@ def --env "src cd" [
   if $search {
     cd (
       choose_from_list (
-        fd "" --max-depth 3 --type dir (get_src_directory)
+        fd "" --max-depth 3 --type dir (get_src_directory) 
         | lines
       )
     )
@@ -317,7 +317,7 @@ def --env "src cd" [
       if ($domain | is-empty) {
         $directory
       } else {
-        $directory
+        $directory 
         | path join (get_domain $domain)
       }
     } else {
@@ -334,14 +334,14 @@ def --env "src cd" [
         }
 
         if ($matching_users | length) == 1 {
-          $matching_users
+          $matching_users 
           | first
         } else {
           choose_from_list $matching_users
         }
       } else {
-        $directory
-        | path join $domain
+        $directory 
+        | path join $domain 
         | path join $user
       }
     }
@@ -364,15 +364,15 @@ def --env "src cd" [
   let matching_repos = (
     get_local_repos --as-table
     | filter {
-        |repo|
+        |repo| 
 
         let matches_domain = (matches $search_repo $repo "domain")
         let matches_user = (matches $search_repo $repo "user")
         let matches_repo = (matches $search_repo $repo "repo")
 
         [
-          $matches_domain
-          $matches_user
+          $matches_domain 
+          $matches_user 
           $matches_repo
         ] | all {|item| $item}
       }
@@ -382,7 +382,7 @@ def --env "src cd" [
     let repo = ($matching_repos | first)
 
     let $repo_path = if $repo.repo == ".dotfiles" {
-      $env.HOME
+      $env.HOME      
       | path join $repo.repo
     } else {
       get_repo_path $repo
@@ -435,7 +435,7 @@ def is_synced [repo: record] {
       git stash
     }
 
-    git checkout $default_branch
+    git checkout $default_branch    
   }
 
   let status = (git fetch --dry-run | is-empty)
@@ -451,14 +451,14 @@ def is_synced [repo: record] {
 def get_remote_user [domain: string = "github"] {
   if $domain == "github" {
     return (
-      gh api user
-      | from json
+      gh api user 
+      | from json 
       | get login
     )
   } else if $domain == "gitlab" {
     return (
       glab api user err> /dev/null
-      | from json
+      | from json 
       | get username
     )
   }
@@ -488,7 +488,7 @@ def get_github_repos [
     | from json
     | select owner name
     | par-each {
-        |repo|
+        |repo| 
 
         {
           domain: "github.com"
@@ -520,7 +520,7 @@ def get_gitlab_repos [
     | lines
     | filter {|line| $line | str starts-with $remote_user}
     | par-each {
-        |repo|
+        |repo| 
 
         let repo = (
           $repo
@@ -557,10 +557,10 @@ def get_remote_repos [
   return (
     $repos
     | par-each {
-        |repo|
+        |repo| 
 
         if $status {
-          $repo
+          $repo 
           | insert "synced" (is_synced $repo)
         } else {
           $repo
@@ -572,7 +572,7 @@ def get_remote_repos [
 
 def get_domain [domain?: string] {
   if ($domain | is-empty) {
-    return
+    return    
   }
 
   if "github" in $domain {
@@ -581,7 +581,7 @@ def get_domain [domain?: string] {
     return "gitlab.com"
   } else {
     let available_domains = (
-      ["github.com" "gitlab.com"]
+      ["github.com" "gitlab.com"] 
       | filter {|available_domain| $available_domain =~ $domain}
     )
 
@@ -622,15 +622,15 @@ def --env "src clone" [
         |repo|
 
         (
-          src clone
-            $repo.repo
-            --domain $domain
+          src clone 
+            $repo.repo 
+            --domain $domain 
             --user $repo.user
             --visibility $visibility
         )
       }
     | null
-
+    
     let user_directory = (
       get_src_directory
       | path join (get_domain $domain)
@@ -651,10 +651,10 @@ def --env "src clone" [
     [
       (get_domain $domain)
       (
-        if ($user | is-empty) {
+        if ($user | is-empty) { 
           get_remote_user
-        } else {
-          $user
+        } else { 
+          $user 
         }
       )
       $repo
@@ -662,8 +662,8 @@ def --env "src clone" [
   }
 
   let target = if $repo_data.repo == ".dotfiles" {
-    $env.HOME
-    | path join $repo_data.repo
+    $env.HOME 
+    | path join $repo_data.repo  
   } else {
     get_src_directory
     | path join (
@@ -694,7 +694,7 @@ def get_environment_command_source [] {
   let file = (mktemp --tmpdir dev-scripts-environment-XXX.nu)
 
   (
-    http get
+    http get 
       --raw "https://raw.githubusercontent.com/tymbalodeon/dev-scripts/trunk/environment.nu"
     | save --force $file
   )
@@ -709,7 +709,7 @@ def --env --wrapped "src environment" [
   let file = (get_environment_command_source)
 
   let lines = (
-    nu $file ...$args
+    nu $file ...$args 
     | tee { par-each { print --no-newline }}
     | lines
   )
@@ -740,10 +740,10 @@ def "src list" [
         get_remote_repos $user --status --visibility $visibility
       } else {
         (
-          get_remote_repos
+          get_remote_repos 
             $user
-            --domain $domain
-            --status
+            --domain $domain 
+            --status 
             --visibility $visibility
         )
       }
@@ -758,18 +758,18 @@ def "src list" [
     let repos = if $status {
       if ($domain | is-empty) {
         (
-          get_local_repos
-            --as-table
-            --status
+          get_local_repos 
+            --as-table 
+            --status 
             --user $user
             --visibility $visibility
         )
       } else {
         (
-          get_local_repos
-            --as-table
-            --domain (get_domain $domain)
-            --status
+          get_local_repos 
+            --as-table 
+            --domain (get_domain $domain) 
+            --status 
             --user $user
             --visibility $visibility
         )
@@ -777,16 +777,16 @@ def "src list" [
     } else {
       if ($domain | is-empty) {
         (
-          get_local_repos
-            --as-table
+          get_local_repos 
+            --as-table 
             --user $user
             --visibility $visibility
         )
       } else {
         (
-          get_local_repos
-            --as-table
-            --domain (get_domain $domain)
+          get_local_repos 
+            --as-table 
+            --domain (get_domain $domain) 
             --user $user
             --visibility $visibility
         )

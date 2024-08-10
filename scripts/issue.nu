@@ -33,7 +33,7 @@ def "main close" [
 # Create issue
 def "main create" [] {
   let last_issue_number = (
-    gh issue list --json number
+    gh issue list --json number    
     | from json
     | get number
   )
@@ -43,7 +43,7 @@ def "main create" [] {
   } else {
     $last_issue_number | math max
   }
-
+ 
 
   gh issue create --editor
 
@@ -100,7 +100,7 @@ export def main [
     if $web {
       main list --web
     } else {
-      main list
+      main list 
     }
   } else {
     if $web {
