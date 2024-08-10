@@ -204,6 +204,20 @@ def choose_from_list [options: list] {
   )
 }
 
+def get_repo_path [repo: record] {
+  return (
+    if $repo.repo == ".dotfiles" {
+      $env.HOME 
+      | path join $repo.repo
+    } else {
+      get_src_directory
+      | path join $repo.domain
+      | path join $repo.user
+      | path join $repo.repo
+    }
+  )
+}
+
 # Change directory to a repo
 def --env "src cd" [
   repo?: string # The repo name
@@ -297,10 +311,7 @@ def --env "src cd" [
       $env.HOME      
       | path join $repo.repo
     } else {
-      get_src_directory
-      | path join $repo.domain
-      | path join $repo.user
-      | path join $repo.repo
+      get_repo_path $repo
     }
 
     cd $repo_path
@@ -320,12 +331,9 @@ def --env "src cd" [
 }
 
 def is_synced [repo: record] {
-  let path = (
-    get_src_directory
-    | path join $repo.domain
-    | path join $repo.user
-    | path join $repo.repo
-  )
+  let path = (get_repo_path $repo)
+
+  print $"Checking sync status for ($path)..."
 
   if not ($path | path exists) {
     return false
@@ -335,7 +343,7 @@ def is_synced [repo: record] {
 
   let default_branch = try {
     git remote show origin err> /dev/null
-    | sed --quiet '/HEAD branch/s/.*: //p' 
+    | sed -n '/HEAD branch/s/.*: //p'
   } catch {
     ""
   }
@@ -344,11 +352,26 @@ def is_synced [repo: record] {
     return null
   }
 
-  if (git branch --show-current) != $default_branch {
+  let current_branch = (git branch --show-current)
+
+  if $current_branch != $default_branch {
+    direnv revoke
+
+    if not (git status --short | is-empty) {
+      git stash
+    }
+
     git checkout $default_branch    
   }
 
-  return (git fetch --dry-run | is-empty)
+  let status = (git fetch --dry-run | is-empty)
+
+  if $current_branch != $default_branch {
+    git checkout $current_branch
+    git stash pop
+  }
+
+  return $status
 }
 
 def get_remote_user [domain: string = "github"] {
