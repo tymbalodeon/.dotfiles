@@ -66,20 +66,12 @@ def get_remote_domain [path: string] {
   }
 }
 
-def get_local_repos [
-  --as-table
-  --domain: string
-  --status
-  --user: string
-  --visibility: string
-] {
-  if $as_table {
+def get_local_repos [args: record] {
+  if $args.as_table {
+    let args = ($args | update as_table false)
+
     return (
-      get_local_repos
-      --domain $domain
-      --status
-      --user $user
-      --visibility $visibility
+      get_local_repos $args
       | par-each {
           |repo|
 
@@ -110,14 +102,14 @@ def get_local_repos [
               | into_repo
           }
 
-          let repo_data = if $status {
+          let repo_data = if $args.status {
             $repo_data
             | insert "synced" (is_synced $repo_data)
           } else {
             $repo_data
           }
 
-          let repo_data = if ($visibility | is-empty) {
+          let repo_data = if ($args.visibility | is-empty) {
             $repo_data
           } else {
             $repo_data
@@ -131,18 +123,18 @@ def get_local_repos [
 
           return (
             (
-              ($user | is-empty) or ($repo.user == $user)
+              ($args.user | is-empty) or ($repo.user == $args.user)
             ) and (
-              ($visibility | is-empty) or ($repo.visibility == $visibility)
+              ($args.visibility | is-empty) or ($repo.visibility == $args.visibility)
             )
           )
       }
     )
   } else {
-    let glob = if ($domain | is-empty) {
+    let glob = if ($args.domain | is-empty) {
       "/**"
     } else {
-      $"/($domain)/**"
+      $"/($args.domain)/**"
     }
 
     let repos = (
@@ -159,8 +151,8 @@ def get_local_repos [
       | first
     )
 
-    let repos = if ($domain | is-empty) or (
-      $domain == (get_remote_domain $dotfiles.name)
+    let repos = if ($args.domain | is-empty) or (
+      $args.domain == (get_remote_domain $dotfiles.name)
     ) {
       $repos
       | append $dotfiles
@@ -288,7 +280,7 @@ def --env "src cd" [
   }
 
   let matching_repos = (
-    get_local_repos --as-table
+    get_local_repos {as_table: true}
     | filter {
         |repo|
 
@@ -652,6 +644,7 @@ def --env --wrapped "src environment" [
 def "src list" [
   --remote # List remote repos
   --domain: string # List repos at this domain
+  --paths # List local paths
   --sort-by: list<string> # Sort the output by these columns
   --status # Show sync status
   --user: string # List repos for user
@@ -678,50 +671,30 @@ def "src list" [
       }
     }
   } else {
-    let repos = if $status {
-      if ($domain | is-empty) {
-        (
-          get_local_repos
-            --as-table
-            --status
-            --user $user
-            --visibility $visibility
-        )
-      } else {
-        (
-          get_local_repos
-            --as-table
-            --domain (get_domain $domain)
-            --status
-            --user $user
-            --visibility $visibility
-        )
-      }
-    } else {
-      if ($domain | is-empty) {
-        (
-          get_local_repos
-            --as-table
-            --user $user
-            --visibility $visibility
-        )
-      } else {
-        (
-          get_local_repos
-            --as-table
-            --domain (get_domain $domain)
-            --user $user
-            --visibility $visibility
-        )
-      }
+    let args = {
+      as_table: (if $paths { false } else { true })
+      domain: (get_domain $domain) 
+      status: $status 
+      user: $user 
+      visibility: $visibility
     }
 
-    if "visibility" in ($repos | columns) {
+    let repos = (get_local_repos $args)
+
+    if not $paths and "visibility" in ($repos | columns) {
       $repos
       | reject "visibility"
     } else {
       $repos
     }
+  }
+
+  if $paths {
+    return (
+      $repos 
+      | to text
+      | ^sort --ignore-case
+    )
   }
 
   let sort_by = if ($sort_by | is-empty) {
@@ -745,27 +718,29 @@ def "src sync" [
 ] {
   print "Syncing repos..."
 
-  (
-    get_local_repos
-      --domain (get_domain $domain)
-      --user $user
-      --visibility $visibility
-  ) | par-each {
-      |repo|
-      cd $repo
+  let args = {
+    domain: (get_domain $domain)
+    user: $user
+    visibility: $visibility
+  }
 
-      let result = (git pull out> /dev/null | complete)
+  get_local_repos $args
+  | par-each {
+    |repo|
+    cd $repo
 
-      if $result.exit_code != 0 {
-        (
-          print
-            --stderr
-            $"\nThere was a problem syncing \"($repo)\":\n\n($result.stderr)"
-        )
-      }
+    let result = (git pull out> /dev/null | complete)
 
-      print $"Synced \"($repo)/\""
-    } | null
+    if $result.exit_code != 0 {
+      (
+        print
+          --stderr
+          $"\nThere was a problem syncing \"($repo)\":\n\n($result.stderr)"
+      )
+    }
+
+    print $"Synced \"($repo)/\""
+  } | null
 }
 
 def src [] {
