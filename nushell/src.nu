@@ -229,6 +229,10 @@ def --env "src cd" [
           | filter {|found_user| ($found_user | path basename) =~ $user}
         )
 
+        if not ($matching_users | length | into bool) {
+          return
+        }
+
         if ($matching_users | length) == 1 {
           $matching_users 
           | first
@@ -288,7 +292,7 @@ def --env "src cd" [
     }
 
     cd $repo_path
-  } else {
+  } else if ($matching_repos | length | into bool) {
     let matching_repo = (choose_from_list $matching_repos)
 
     if ($matching_repo | path exists) {
@@ -296,6 +300,8 @@ def --env "src cd" [
     } else {
       return
     }
+  } else {
+    return
   }
 
   return (ls)
