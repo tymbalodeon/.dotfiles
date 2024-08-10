@@ -72,7 +72,7 @@ def get_repo_visibilities [domain: string] {
   return (
     if "github" in $domain {
       try {
-        gh repo list --json name,owner,visibility 
+        gh repo list --json name,owner,visibility
         | from json
         | update owner {|in| $in.login}
         | update visibility {|in| $in | str downcase}
@@ -108,7 +108,7 @@ def get_local_repos [
       let github_repos = (get_repo_visibilities "github")
       let gitlab_repos = (get_repo_visibilities "gitlab")
 
-      $github_repos 
+      $github_repos
       | merge $gitlab_repos
     } else if "github" in $domain {
       get_repo_visibilities "github"
@@ -165,7 +165,7 @@ def get_local_repos [
                 |repo|
 
                 $repo_data == (
-                  $repo                  
+                  $repo
                   | reject visibility
                   | rename repo user domain
                 )
@@ -175,7 +175,7 @@ def get_local_repos [
           if ($stuff | is-empty) {
             print $repo_data
           }
-        
+
           let repo_data = if ($visibility | is-empty) {
             $repo_data
           } else {
@@ -186,7 +186,7 @@ def get_local_repos [
                     |repo|
 
                     $repo_data == (
-                      $repo                  
+                      $repo
                       | reject visibility
                       | rename repo user domain
                     )
@@ -246,8 +246,8 @@ def get_local_repos [
           |item|
 
           ($item.type == "dir") and (
-            $item.name 
-            | path join ".git" 
+            $item.name
+            | path join ".git"
             | path exists
           )
         }
