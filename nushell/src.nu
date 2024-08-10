@@ -689,7 +689,7 @@ def "src list" [
     }
   }
 
-  if $paths {
+  if $paths and not $remote {
     return (
       $repos 
       | to text
