@@ -355,10 +355,8 @@ def is_synced [repo: record] {
   let current_branch = (git branch --show-current)
 
   if $current_branch != $default_branch {
-    direnv revoke
-
     if not (git status --short | is-empty) {
-      git stash
+      return $"(ansi r)dirty"
     }
 
     git checkout $default_branch
@@ -368,7 +366,6 @@ def is_synced [repo: record] {
 
   if $current_branch != $default_branch {
     git checkout $current_branch
-    git stash pop
   }
 
   return $status
