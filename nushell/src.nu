@@ -644,8 +644,6 @@ def --env "src clone" [
     ] | into_repo
   }
 
-  return $repo_data
-
   let target = if $repo_data.repo == ".dotfiles" {
     $env.HOME
     | path join $repo_data.repo
