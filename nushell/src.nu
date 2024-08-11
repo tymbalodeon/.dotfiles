@@ -57,7 +57,8 @@ def get_visibility [path: string] {
     if ($visibility | is-empty) {
       $visibility
     } else {
-      $visibility | str downcase
+      $visibility 
+      | str downcase
     }
   )
 }
@@ -72,12 +73,63 @@ def get_remote_domain [path: string] {
   }
 }
 
-def get_local_repos [args: record] {
-  if $args.as_table {
-    let args = ($args | update as_table false)
+def get_local_repo_paths [args: record] {
+  let glob = if ($args.domain | is-empty) {
+    "/**"
+  } else {
+    $"/($args.domain)/**"
+  }
 
-    return (
-      get_local_repos $args
+  let glob = if ($args.user | is-empty) {
+    $glob
+  } else {
+    $"($glob)/($args.user)/*"
+  }
+
+  let repos = (
+    try {
+      (
+        glob 
+          --exclude [**/.git/**] 
+          --no-file 
+          $"\(?i\)(get_src_directory)($glob)"
+      )
+    } catch {
+      return []
+    }
+  )
+
+  let dotfiles = ($env.HOME | path join ".dotfiles")
+
+  let repos = if ($args.domain | is-empty) or (
+    $args.domain == (get_remote_domain $dotfiles.name)
+  ) {
+    $repos
+    | append $dotfiles
+  } else {
+    $repos
+  }
+
+  return (
+    $repos
+    | filter {
+        |item|
+
+        (
+          (($item | path type) == "dir")
+          and (
+            $item 
+            | path join ".git" 
+            | path exists
+          )
+        )
+      }
+  )
+}
+
+def get_local_repos [args: record] {
+  let repos = (
+      get_local_repo_paths $args
       | par-each {
           |repo|
 
@@ -106,20 +158,28 @@ def get_local_repos [args: record] {
               | take 3
               | reverse
               | into_repo
-          }
+          } | insert path $repo
 
-          let repo_data = if $args.status {
+          let repo_data = if (
+            $args.include_status or (
+              $args.include_status != false and not (
+                $args.include_status | is-empty
+              )
+            )
+          ) {
             $repo_data
             | insert "synced" (is_synced $repo_data)
           } else {
             $repo_data
           }
 
-          let repo_data = if ($args.visibility | is-empty) {
-            $repo_data
-          } else {
+          let repo_data = if (
+            ($args.include_visibility) or ($args.visibility)
+          ) {
             $repo_data
             | insert "visibility" (get_visibility $repo)
+          } else {
+            $repo_data
           }
 
           $repo_data
@@ -127,63 +187,25 @@ def get_local_repos [args: record] {
       | filter {
           |repo|
 
-          return (
-            (
-              ($args.user | is-empty) or ($repo.user == $args.user)
-            ) and (
-              ($args.visibility | is-empty) or ($repo.visibility == $args.visibility)
+          (
+            ($args.user | is-empty) or (
+              ($repo.user | str downcase) == ($args.user | str downcase)
             )
-          )
-      }
-    )
-  } else {
-    let glob = if ($args.domain | is-empty) {
-      "/**"
-    } else {
-      $"/($args.domain)/**"
-    }
-
-    let glob = if ($args.user | is-empty) {
-      $glob
-    } else {
-      $"($glob)/($args.user)/*"
-    }
-
-    let repos = (
-      try {
-        ls ($"(get_src_directory)/($glob)" | into glob)
-      } catch {
-        return []
-      }
-    )
-
-    let dotfiles = (
-      ls --all $env.HOME
-      | where name =~ ".dotfiles"
-      | first
-    )
-
-    let repos = if ($args.domain | is-empty) or (
-      $args.domain == (get_remote_domain $dotfiles.name)
-    ) {
-      $repos
-      | append $dotfiles
-    } else {
-      $repos
-    }
-
-    return (
-      $repos
-      | filter {
-          |item|
-
-          ($item.type == "dir") and (
-            $item.name | path join ".git" | path exists
+          ) and (
+            ($args.visibility | is-empty) or ($repo.visibility == $args.visibility)
           )
         }
-      | get name
-    )
-  }
+  )
+
+  return (
+    if $args.paths { 
+      $repos
+      | get path
+    } else {
+      $repos
+      | reject path
+    }
+  )
 }
 
 def matches [
@@ -309,8 +331,16 @@ def --env "src cd" [
     repo: $repo
   }
 
+  let args = {
+    domain: $domain
+    paths: false
+    user: $user
+    include_status: null
+    visibility: null
+  }
+
   let matching_repos = (
-    get_local_repos {as_table: true}
+    get_local_repos $args
     | filter {
         |repo|
 
@@ -689,16 +719,23 @@ def get_my_users [] {
 def "src list" [
   --remote # List remote repos
   --domain: string # List repos at this domain
+  --include: list<string> # Include columns in the output [status, visibility]
   --me # List only repos belonging to the current user
   --paths # List local paths
   --sort-by: list<string> # Sort the output by these columns
-  --status # Show sync status
-  # --urls: # List repo remote URLs
   --user: string # List repos for user
   --visibility: string # Limit to public or private repos
 ] {
+  let include_status = (
+    not ($include | is-empty) and ("status" in $include)
+  )
+
+  let include_visibility = (
+    not ($include | is-empty) and ("visibility" in $include)
+  )
+
   let repos = if $remote {
-    if $status {
+    if $include_status {
       if ($domain | is-empty) {
         get_remote_repos $user --status --visibility $visibility
       } else {
@@ -719,21 +756,15 @@ def "src list" [
     }
   } else {
     let args = {
-      as_table: (if $paths { false } else { true })
+      paths: $paths
       domain: (get_domain $domain) 
-      status: $status 
+      include_status: $include_status 
+      include_visibility: $include_visibility
       user: $user 
       visibility: $visibility
     }
 
-    let repos = (get_local_repos $args)
-
-    if not $paths and "visibility" in ($repos | columns) {
-      $repos
-      | reject "visibility"
-    } else {
-      $repos
-    }
+    get_local_repos $args
   }
 
   if $paths and not $remote {
@@ -742,6 +773,19 @@ def "src list" [
       | to text
       | ^sort --ignore-case
     )
+  }
+
+  let repos = if ($visibility | is-empty) {      
+    $repos
+  } else {
+    if ($include | is-empty) or (
+      not ("visibility" in $include)
+    ) {
+      $repos
+      | reject "visibility"
+    } else {
+      $repos
+    }
   }
 
   let repos = (
@@ -777,8 +821,9 @@ def "src sync" [
   --visibility: string # Sync only private or public repos
 ] {
   let args = {
-    as_table: false
+    paths: true
     domain: (get_domain $domain)
+    include_status: null
     user: $user
     visibility: $visibility
   }
