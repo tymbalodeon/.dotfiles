@@ -39,6 +39,9 @@
 [github]
     user = benjaminrosen
 
+[gitlab]
+    user = benjaminrosen
+
 [init]
     defaultBranch = trunk
 
