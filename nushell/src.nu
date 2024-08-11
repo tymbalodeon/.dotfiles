@@ -39,7 +39,7 @@ def get_visibility [path: string] {
 
   cd $path
 
-  let origin = (git remote get-url origin)
+  let origin = (git remote get-url origin err> /dev/null)
 
   let visibility = (
     if "github" in $origin {
@@ -53,7 +53,13 @@ def get_visibility [path: string] {
     }
   )
 
-  return ($visibility | str downcase)
+  return (
+    if ($visibility | is-empty) {
+      $visibility
+    } else {
+      $visibility | str downcase
+    }
+  )
 }
 
 def get_remote_domain [path: string] {
