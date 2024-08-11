@@ -10,7 +10,7 @@ def parse_git_url [origin: string] {
     } else if ($origin | str starts-with "http") {
       $origin
       | str replace --regex "https?://" ""
-      | parse "https://{domain}/{user}/{repo}.git"
+      | parse "{domain}/{user}/{repo}.git"
     } else if ($origin | str starts-with "ssh://") {
       $origin
       | parse "ssh://git@{domain}/{user}/{repo}.git"
@@ -622,7 +622,7 @@ def --env "src clone" [
   let repo_data = if (
     ($repo | str starts-with "git@") or not (
       $repo 
-      | find "https?://"
+      | find --regex "https?://"
       | is-empty
     ) or (
       $repo 
@@ -643,6 +643,8 @@ def --env "src clone" [
       $repo
     ] | into_repo
   }
+
+  return $repo_data
 
   let target = if $repo_data.repo == ".dotfiles" {
     $env.HOME
