@@ -265,6 +265,7 @@ def parse_repo_path_path [repo: record] {
 def --env "src cd" [
   repo?: string # The repo name
   --domain: string # The domain
+  # --me # `cd` to the current user's repos (GitHub, if exists, else GitLab)
   --no-ls # Don't list directory contents
   --search # Search the `src` directory interactively
   --user: string # The username
@@ -663,9 +664,9 @@ def --env "src clone" [
     if ($repo | str starts-with "git@") or ($repo | str starts-with "http") {
       git clone $repo $target
     } else if "github" in $domain {
-      gh repo clone $"($user)/($repo_data.repo)" $target
+      gh repo clone $"($repo_data.user)/($repo_data.repo)" $target
     } else if "gitlab" in $domain {
-      glab repo clone $"($user)/($repo_data.repo)" $target
+      glab repo clone $"($repo_data.user)/($repo_data.repo)" $target
     } else {
       return
     }
