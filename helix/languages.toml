@@ -64,8 +64,9 @@ auto-format = true
 soft-wrap = { enable = true, wrap-at-text-width = true }
 
 [[language]]
-name = "text"
+name = "txt"
 soft-wrap = { enable = true, wrap-at-text-width = true }
+scope = "text.txt"
 
 [[language]]
 name = "typst"
