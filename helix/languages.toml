@@ -65,8 +65,9 @@ soft-wrap = { enable = true, wrap-at-text-width = true }
 
 [[language]]
 name = "txt"
-soft-wrap = { enable = true, wrap-at-text-width = true }
+file-types = ["txt"]
 scope = "text.txt"
+soft-wrap = { enable = true, wrap-at-text-width = true }
 
 [[language]]
 name = "typst"
