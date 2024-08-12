@@ -161,10 +161,8 @@ def get_local_repos [args: record] {
           } | insert path $repo
 
           let repo_data = if (
-            $args.include_status or (
-              $args.include_status != false and not (
-                $args.include_status | is-empty
-              )
+            not ($args.include_status | is-empty) and (
+              $args.include_status == true
             )
           ) {
             $repo_data
@@ -174,7 +172,9 @@ def get_local_repos [args: record] {
           }
 
           let repo_data = if (
-            ($args.include_visibility) or ($args.visibility)
+            not ($args.include_visibility | is-empty) and (
+              $args.include_visibility == true
+            ) or ($args.visibility == true)
           ) {
             $repo_data
             | insert "visibility" (get_visibility $repo)
@@ -336,6 +336,7 @@ def --env "src cd" [
     paths: false
     user: $user
     include_status: null
+    include_visibility: null
     visibility: null
   }
 

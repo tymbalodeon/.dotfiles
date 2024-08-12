@@ -72,6 +72,7 @@
       nodePackages.prettier
       nodePackages.typescript-language-server
       openjdk
+      ov
       pandoc
       pipx
       pup
