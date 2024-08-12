@@ -61,6 +61,7 @@ command = "ruff-lsp"
 [[language]]
 name = "toml"
 auto-format = true
+soft-wrap = { enable = true, wrap-at-text-width = true }
 
 [[language]]
 name = "typst"
