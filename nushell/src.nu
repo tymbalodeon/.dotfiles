@@ -265,18 +265,38 @@ def parse_repo_path_path [repo: record] {
 def --env "src cd" [
   repo?: string # The repo name
   --domain: string # The domain
-  # --me # `cd` to the current user's repos (GitHub, if exists, else GitLab)
+  --me # `cd` to the current user's repos (GitHub, if exists, else GitLab)
   --no-ls # Don't list directory contents
   --search # Search the `src` directory interactively
   --user: string # The username
 ] {
   if $search {
-    cd (
-      choose_from_list (
-        fd "" --max-depth 3 --type dir (get_src_directory)
-        | lines
-      )
+    let search_term = if $me {
+      let github_user = (get_remote_user "github")
+
+      if ($github_user | is-empty) {
+        get_remote_user "gitlab"
+      } else {
+        $github_user
+      }
+    } else {
+      ""
+    }
+
+    let files = (
+      fd --max-depth 3 --type dir $search_term (get_src_directory)
+      | lines
     )
+
+    let files = if $me {
+      $files
+      | each {|path| fd --type dir "" $path | lines}
+      | flatten
+    } else {
+      $files
+    }
+
+    cd (choose_from_list $files)
 
     return (if $no_ls { null } else { ls })
   }
@@ -710,7 +730,7 @@ def --env --wrapped "src environment" [
   rm --force $file
 }
 
-def get_my_users [] {
+def get_remote_users [] {
   return (
     ["github" "gitlab"]
     | each {|domain| git config $"($domain).user"}
@@ -792,7 +812,7 @@ def "src list" [
 
   let repos = (
     if $me {
-      let users = (get_my_users)
+      let users = (get_remote_users)
 
       $repos
       | filter {|repo| $repo.user in $users}
@@ -838,7 +858,7 @@ def "src sync" [
 
   let repos = (
     if $me {
-      let users = (get_my_users)
+      let users = (get_remote_users)
 
       $repos
       | filter {
