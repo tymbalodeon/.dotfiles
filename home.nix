@@ -76,7 +76,6 @@
       pipx
       pup
       pyright
-      python3
       racket-minimal
       rclone
       ripgrep
