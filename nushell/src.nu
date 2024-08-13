@@ -419,7 +419,9 @@ def is_synced [repo: record] {
 
   let default_branch = try {
     git remote show origin err> /dev/null
-    | sed -n '/HEAD branch/s/.*: //p'
+    | rg "HEAD branch: "
+    | split row ": "
+    | last
   } catch {
     ""
   }
