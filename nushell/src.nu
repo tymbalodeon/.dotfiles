@@ -270,21 +270,23 @@ def --env "src cd" [
   --search # Search the `src` directory interactively
   --user: string # The username
 ] {
-  if $search {
-    let search_term = if $me {
-      let github_user = (get_remote_user "github")
+  let user = if not ($user | is-empty) {
+    $user
+  } else if $me {
+    let github_user = (get_remote_user "github")
 
-      if ($github_user | is-empty) {
-        get_remote_user "gitlab"
-      } else {
-        $github_user
-      }
+    if ($github_user | is-empty) {
+      get_remote_user "gitlab"
     } else {
-      ""
+      $github_user
     }
+  } else {
+    ""
+  }
 
+  if $search {
     let files = (
-      fd --max-depth 3 --type dir $search_term (get_src_directory)
+      fd --max-depth 3 --type dir $user (get_src_directory)
       | lines
     )
 
