@@ -152,12 +152,12 @@ def get_local_repos [args: record] {
           ) {
             parse_git_url $origin
           } else {
-              $repo
-              | split row "/"
-              | reverse
-              | take 3
-              | reverse
-              | into_repo
+            $repo
+            | split row "/"
+            | reverse
+            | take 3
+            | reverse
+            | into_repo
           } | insert path $repo
 
           let repo_data = if (
@@ -759,6 +759,7 @@ def "src list" [
   --me # List only repos belonging to the current user
   --paths # List local paths
   --sort-by: list<string> # Sort the output by these columns
+  --urls # List remote URLs
   --user: string # List repos for user
   --visibility: string # Limit to public or private repos
 ] {
@@ -801,22 +802,30 @@ def "src list" [
     )
   }
 
-  let repos = (
-    if $me {
-      let users = (get_remote_users)
+  let repos = if $include_visibility {
+    $repos
+  } else if "visibility" in ($repos | columns) {
+    $repos
+    | reject visibility
+  } else {
+    $repos
+  }
 
-      $repos
-      | filter {|repo| $repo.user in $users}
-    } else {
-      $repos
-    }
-  )
+  let repos = if $me {
+    let users = (get_remote_users)
+
+    $repos
+    | filter {|repo| $repo.user in $users}
+  } else {
+    $repos
+  }
 
   let sort_by = if ($sort_by | is-empty) {
     [domain user repo]
   } else {
     $sort_by
   }
+
 
   return (
     $repos
@@ -903,6 +912,14 @@ def "src sync" [
   }
 }
 
+# TODO change `repo?` to `repo`
+def "src remove" [repo?: string] {
+  print "Implement me!"
+}
+
 def src [] {
   help src
 }
+
+alias "src ls" = src list
+alias "src rm" = src remove
