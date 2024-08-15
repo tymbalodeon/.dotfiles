@@ -13,7 +13,7 @@ def parse_git_url [origin: string] {
       | parse "{domain}/{user}/{repo}.git"
     } else if ($origin | str starts-with "ssh://") {
       $origin
-      | parse "ssh://git@{domain}/{user}/{repo}.git"
+      | parse "ssh://git@{domain}/{user}/{repo}"
     } else {
       print --stderr $"Unable to parse remote origin: \"($origin)\""
 
@@ -171,10 +171,8 @@ def get_local_repos [args: record] {
             $repo_data
           }
 
-          let repo_data = if (
-            not ($args.include_visibility | is-empty) and (
-              $args.include_visibility == true
-            ) or ($args.visibility == true)
+          let repo_data = if not ($args.visibility | is-empty) or (
+            $args.include_visibility
           ) {
             $repo_data
             | insert "visibility" (get_visibility $repo)
@@ -540,19 +538,14 @@ def get_gitlab_repos [
   )
 }
 
-def get_remote_repos [
-  user?: string
-  --domain: string
-  --status
-  --visibility: string
-] {
-  let repos = if $domain == "github" {
-    get_github_repos $user $visibility
-  } else if $domain == "gitlab" {
-    get_gitlab_repos $user $visibility
+def get_remote_repos [args: record] {
+  let repos = if $args.domain == "github" {
+    get_github_repos $args.user $args.visibility
+  } else if $args.domain == "gitlab" {
+    get_gitlab_repos $args.user $args.visibility
   } else {
-    get_github_repos $user $visibility
-    | append (get_gitlab_repos $user $visibility)
+    get_github_repos $args.user $args.visibility
+    | append (get_gitlab_repos $args.user $args.visibility)
   }
 
   return (
@@ -560,9 +553,22 @@ def get_remote_repos [
     | par-each {
         |repo|
 
-        if $status {
+        if $args.include_status {
           $repo
           | insert "synced" (is_synced $repo)
+        } else {
+          $repo
+        }
+
+        if $args.include_visibility {
+          $repo
+          | insert "visibility" (
+              if ($args.visibility | is-empty) {
+                get_visibility $repo
+              } else {
+                $args.visibility
+              }
+            )
         } else {
           $repo
         }
@@ -611,9 +617,13 @@ def --env "src clone" [
   --visibility: string # Limit to public or private repos
 ] {
   if ($repo | is-empty) {
-    let repos = (
-      get_remote_repos $user --domain $domain --visibility $visibility
-    )
+    let args = {
+      domain: $domain
+      user: $user
+      visibility: $visibility
+    }
+
+    let repos = (get_remote_repos $args)
 
     if not ($repos | length | into bool) {
       return
@@ -761,25 +771,15 @@ def "src list" [
   )
 
   let repos = if $remote {
-    if $include_status {
-      if ($domain | is-empty) {
-        get_remote_repos $user --status --visibility $visibility
-      } else {
-        (
-          get_remote_repos
-            $user
-            --domain $domain
-            --status
-            --visibility $visibility
-        )
-      }
-    } else {
-      if ($domain | is-empty) {
-        get_remote_repos $user --visibility $visibility
-      } else {
-        get_remote_repos $user --domain $domain --visibility $visibility
-      }
+    let args = {
+      domain: $domain
+      include_status: $include_status
+      include_visibility: $include_visibility
+      user: $user
+      visibility: $visibility
     }
+
+    get_remote_repos $args
   } else {
     let args = {
       paths: $paths
@@ -799,19 +799,6 @@ def "src list" [
       | to text
       | ^sort --ignore-case
     )
-  }
-
-  let repos = if ($visibility | is-empty) {      
-    $repos
-  } else {
-    if ($include | is-empty) or (
-      not ("visibility" in $include)
-    ) {
-      $repos
-      | reject "visibility"
-    } else {
-      $repos
-    }
   }
 
   let repos = (
@@ -895,11 +882,16 @@ def "src sync" [
 
   if $clone {
     for repo in (
-      get_remote_repos 
-        $user 
-        --domain $domain 
-        --visibility $visibility
-      | filter {|repo| not ($repo in $synced_repos)}
+      let args = {
+        domain: $domain
+        user: $user
+        visibility: $visibility
+      }
+
+      (
+        get_remote_repos $args
+        | filter {|repo| not ($repo in $synced_repos)}
+      )
     ) {
       (
         src clone 
