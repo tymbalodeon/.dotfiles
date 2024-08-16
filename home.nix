@@ -57,6 +57,7 @@
       google-java-format
       gyre-fonts
       helix
+      hexyl
       ibm-plex
       inconsolata
       iosevka
