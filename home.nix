@@ -29,14 +29,18 @@
       antlr
       bat
       bat-extras.batman
+      bottom
       chicken
-      cookiecutter
-      coreutils
       chuck
       clang
       clang-tools
+      cookiecutter
+      coreutils
       dejavu_fonts
       delta
+      difftastic
+      dogdns
+      duf
       dust
       erlang
       erlang-ls
@@ -88,7 +92,7 @@
       swiProlog
       taplo
       tinymist
-      tldr
+      tealdeer
       typst
       typst-lsp
       typstyle
@@ -96,8 +100,8 @@
       vivid
       vscode-langservers-extracted
       w3m
-      yamlfmt
       yaml-language-server
+      yamlfmt
       yazi
       zathura
       zellij

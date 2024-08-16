@@ -5,7 +5,9 @@
 }: rec {
   home = {
     file = let
-      nushell_config_path = "Library/Application Support/nushell";
+      darwin_config_path = "Library/Application Support";
+      nushell_config_path = "${darwin_config_path}/nushell";
+      tealdeer_config_path = "${darwin_config_path}/tealdeer";
     in {
       ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
       ".hushlogin".source = ./.hushlogin;
@@ -20,6 +22,7 @@
         ./nushell/theme-function.nu;
       "${nushell_config_path}/themes.toml".source = ../nushell/themes.toml;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
+      "${tealdeer_config_path}/config.toml".source = ../tealdeer/config.toml;
     };
 
     homeDirectory = "/Users/benrosen";
