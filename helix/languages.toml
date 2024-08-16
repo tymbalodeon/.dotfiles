@@ -59,6 +59,10 @@ language-servers = ["pyright", "ruff"]
 command = "ruff-lsp"
 
 [[language]]
+name = "rust"
+formatter = { command = "rustfmt" }
+
+[[language]]
 name = "toml"
 auto-format = true
 soft-wrap = { enable = true, wrap-at-text-width = true }

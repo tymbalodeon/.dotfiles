@@ -30,6 +30,7 @@
       bat
       bat-extras.batman
       chicken
+      cookiecutter
       coreutils
       chuck
       clang

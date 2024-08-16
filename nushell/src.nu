@@ -57,7 +57,7 @@ def get_visibility [path: string] {
     if ($visibility | is-empty) {
       $visibility
     } else {
-      $visibility 
+      $visibility
       | str downcase
     }
   )
@@ -89,9 +89,9 @@ def get_local_repo_paths [args: record] {
   let repos = (
     try {
       (
-        glob 
-          --exclude [**/.git/**] 
-          --no-file 
+        glob
+          --exclude [**/.git/**]
+          --no-file
           $"\(?i\)(get_src_directory)($glob)"
       )
     } catch {
@@ -118,8 +118,8 @@ def get_local_repo_paths [args: record] {
         (
           (($item | path type) == "dir")
           and (
-            $item 
-            | path join ".git" 
+            $item
+            | path join ".git"
             | path exists
           )
         )
@@ -172,7 +172,7 @@ def get_local_repos [args: record] {
           }
 
           let repo_data = if not ($args.visibility | is-empty) or (
-            $args.include_visibility
+            $args.include_visibility == true
           ) {
             $repo_data
             | insert "visibility" (get_visibility $repo)
@@ -196,7 +196,7 @@ def get_local_repos [args: record] {
   )
 
   return (
-    if $args.paths { 
+    if $args.paths {
       $repos
       | get path
     } else {
@@ -657,11 +657,11 @@ def --env "src clone" [
 
   let repo_data = if (
     ($repo | str starts-with "git@") or not (
-      $repo 
+      $repo
       | find --regex "https?://"
       | is-empty
     ) or (
-      $repo 
+      $repo
       | str starts-with "ssh://"
     )
   ) {
@@ -722,7 +722,7 @@ def get_environment_command_source [] {
 }
 
 # Create a new project
-def --env --wrapped "src environment" [
+def --env --wrapped "src new" [
   ...args: string
 ] {
   let file = (get_environment_command_source)
@@ -784,10 +784,10 @@ def "src list" [
   } else {
     let args = {
       paths: $paths
-      domain: (get_domain $domain) 
-      include_status: $include_status 
+      domain: (get_domain $domain)
+      include_status: $include_status
       include_visibility: $include_visibility
-      user: $user 
+      user: $user
       visibility: $visibility
     }
 
@@ -796,7 +796,7 @@ def "src list" [
 
   if $paths and not $remote {
     return (
-      $repos 
+      $repos
       | to text
       | ^sort --ignore-case
     )
@@ -862,8 +862,8 @@ def "src sync" [
 
       $repos
       | filter {
-          |repo| 
-          
+          |repo|
+
           ($repo | path dirname | path basename) in $users
         }
     } else {
@@ -903,9 +903,9 @@ def "src sync" [
       )
     ) {
       (
-        src clone 
-          $repo.repo 
-          --domain $repo.domain 
+        src clone
+          $repo.repo
+          --domain $repo.domain
           --user $repo.user
       )
     }
@@ -920,6 +920,3 @@ def "src remove" [repo?: string] {
 def src [] {
   help src
 }
-
-alias "src ls" = src list
-alias "src rm" = src remove
