@@ -52,7 +52,7 @@
           ansible-language-server
           bat
           deadnix
-          difftastic
+          delta
           flake-checker
           fzf
           gh
