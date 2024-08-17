@@ -4,7 +4,7 @@ use ./optimise.nu
 use ./prune.nu
 
 # Run `prune` and `optimise`
-export def main [
+def main [
   --all
 ] {
   if $all {

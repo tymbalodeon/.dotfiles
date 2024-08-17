@@ -27,7 +27,7 @@ def make_command_output [
 }
 
 # Update README command output
-export def main [] {
+def main [] {
   let just_start = (make_command_comment "just")
   let just_end = (make_command_comment "just" --end)
 

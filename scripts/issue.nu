@@ -92,7 +92,7 @@ def "main view" [
 }
 
 # View issues
-export def main [
+def main [
   issue_number?: number # The number of the issue to view
   --web # Open the remote repository website in the browser
 ] {

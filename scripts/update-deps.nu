@@ -53,7 +53,7 @@ def get_input_status [system: string input: string] {
 }
 
 # Update dependencies
-export def main [
+def main [
     ...inputs: string # Inputs to update
     --all # Update all inputs, including for other hosts
     --list-inputs # List flake inputs

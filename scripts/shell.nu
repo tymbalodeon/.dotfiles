@@ -3,7 +3,7 @@
 use ./hosts.nu get_configuration
 
 # Open Nix REPL with flake loaded
-export def main [
+def main [
     host?: string # The target host configuration (auto-detected if not specified)
 ] {
   let configuration = (get_configuration $host)

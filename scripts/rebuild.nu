@@ -8,7 +8,7 @@ use ./optimise.nu
 use ./update-deps.nu
 
 # Rebuild and switch to (or --test) a configuration
-export def main [
+def main [
     host?: string # The target host configuration (auto-detected if not specified)
     --clean # Run `just prune` and `just optimise` after rebuilding
     --hosts # The available hosts on the current system

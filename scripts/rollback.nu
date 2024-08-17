@@ -3,7 +3,7 @@
 use ./hosts.nu is_nixos
 
 # Rollback to a previous generation
-export def main [
+def main [
   generation_id: int
 ] {
   if (is_nixos) {

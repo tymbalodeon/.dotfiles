@@ -533,7 +533,7 @@ def delta [source: string target: string side_by_side: bool] {
 }
 
 # View the diff between configurations
-export def main [
+def main [
   source?: string # Host or system name
   target?: string # Host or system to compare to
   --file: string # View the diff for a specific file

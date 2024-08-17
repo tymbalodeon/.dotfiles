@@ -3,7 +3,7 @@
 use ./hosts.nu is_nixos
 
 # View generations
-export def main [] {
+def main [] {
   if (is_nixos) {
     nixos-rebuild list-generations --json
     | from json
