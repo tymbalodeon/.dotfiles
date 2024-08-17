@@ -30,6 +30,7 @@
     push = upstream
 
 [delta]
+    diff-so-fancy = true
     navigate = true
     syntax-theme = gruvbox-dark
 
