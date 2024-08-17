@@ -6,10 +6,19 @@ use ./hosts.nu is_nixos
 # List dependencies
 def main [
   host?: string # The target host configuration (auto-detected if not specified)
+  --dev # View dev dependencies
   --find: string # Search for a dependency
   --installed # View packages installed by Home Manager
 ] {
-  let dependencies = if $installed {
+  let dependencies = if $dev {
+    open flake.nix
+    | rg --multiline "packages = .+\\[(\n|[^;])+\\];"
+    | lines
+    | drop
+    | drop nth 0
+    | str trim
+    | to text
+  } else if $installed {
     if (is_nixos) {
       exit 1
     }
