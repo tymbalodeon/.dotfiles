@@ -54,10 +54,12 @@
       git
       gitui
       glab
+      glow
       google-java-format
       gyre-fonts
       helix
       hexyl
+      hyperfine
       ibm-plex
       inconsolata
       iosevka
@@ -101,6 +103,7 @@
       vivid
       vscode-langservers-extracted
       w3m
+      xh
       yaml-language-server
       yamlfmt
       yazi
