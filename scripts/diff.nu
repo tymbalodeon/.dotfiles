@@ -522,13 +522,11 @@ def get_matching_files [files: string file: string] {
   )
 }
 
-def delta [source: string target: string side_by_side: bool] {
-  do --ignore-errors {
-    if $side_by_side {
-      ^delta --paging never --side-by-side $source $target
-    } else {
-      ^delta --paging never $source $target
-    }
+def difft [source: string target: string side_by_side: bool] {
+  if $side_by_side {
+    ^difft --display side-by-side $source $target
+  } else {
+    ^difft --display inline $source $target
   }
 }
 
@@ -571,7 +569,7 @@ def main [
           continue
         }
 
-        delta $source_file $target_file $side_by_side
+        difft $source_file $target_file $side_by_side
       }
     }
 
@@ -605,6 +603,6 @@ def main [
     let source = ($files | get 0)
     let target = ($files | get 1)
 
-    delta $source $target $side_by_side
+    difft $source $target $side_by_side
   }
 }

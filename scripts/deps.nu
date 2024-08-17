@@ -14,7 +14,11 @@ def main [
       exit 1
     }
     
-    home-manager packages
+    try {
+      home-manager packages
+    } catch {
+      exit 1
+    }
   } else {
     let configuration = (get_configuration $host --with-packages-path)
 

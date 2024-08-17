@@ -53,6 +53,7 @@
           bat
           deadnix
           delta
+          difftastic
           flake-checker
           fzf
           gh
