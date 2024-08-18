@@ -51,6 +51,7 @@
           alejandra
           ansible-language-server
           bat
+          cocogitto
           deadnix
           delta
           flake-checker

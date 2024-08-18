@@ -49,8 +49,7 @@ def main [
   } else {
     return (
       $dependencies
-      | find $find
-      | to text
+      | rg --color always $find
     )
   }
 }

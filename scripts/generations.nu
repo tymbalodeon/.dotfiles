@@ -10,6 +10,8 @@ def main [] {
     | reject specialisations configurationRevision
     | table --index false
   } else {
-    home-manager generations
+    try {
+      home-manager generations
+    }
   }
 }
