@@ -6,7 +6,7 @@
     cl = clone
     d = diff
     ds = diff --staged
-    l = log --graph --pretty=format:'%C(auto)%h%d %s %C(dim)(%ar)%Creset' -20
+    l = log --graph --pretty=format:'%C(auto)%h%d%C(reset) %C(dim)%ar%C(reset) %C(bold)%s%C(reset) %C(dim blue)(%an)%C(reset)'
     last = log -1 HEAD --stat
     m = merge
     p = push
