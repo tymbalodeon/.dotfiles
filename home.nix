@@ -106,6 +106,7 @@
       yaml-language-server
       yamlfmt
       yazi
+      yq-go
       zathura
       zellij
       zola
