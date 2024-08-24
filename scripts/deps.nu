@@ -22,7 +22,7 @@ def main [
     if (is_nixos) {
       exit 1
     }
-    
+
     try {
       home-manager packages
     } catch {

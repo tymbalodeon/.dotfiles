@@ -6,15 +6,15 @@ def main [
 ] {
   if ($search_term | is-empty) {
     let command = (
-      just --list 
+      just --list
       | lines
       | drop nth 0
       | to text
-      | fzf 
+      | fzf
       | str trim | split row " " | first)
 
     let out = (
-      just $command 
+      just $command
       | complete
     )
 
