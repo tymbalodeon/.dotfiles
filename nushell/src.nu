@@ -846,6 +846,7 @@ def "src sync" [
     paths: true
     domain: (get_domain $domain)
     include_status: null
+    include_visibility: null
     user: $user
     visibility: $visibility
   }
