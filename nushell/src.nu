@@ -102,7 +102,7 @@ def get_local_repo_paths [args: record] {
   let dotfiles = ($env.HOME | path join ".dotfiles")
 
   let repos = if ($args.domain | is-empty) or (
-    $args.domain == (get_remote_domain $dotfiles.name)
+    $args.domain == (get_remote_domain $dotfiles)
   ) {
     $repos
     | append $dotfiles
@@ -825,7 +825,6 @@ def "src list" [
   } else {
     $sort_by
   }
-
 
   return (
     $repos
