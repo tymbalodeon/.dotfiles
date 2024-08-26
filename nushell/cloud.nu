@@ -14,8 +14,13 @@ def get_parent [path: string] {
 }
 
 # List available remotes
-def "cloud remotes" [] {
-    return (rclone listremotes)
+def "cloud list-remotes" [] {
+    return (
+        rclone listremotes
+        | lines
+        | str replace --regex ":$" ""
+        | to text
+    )
 }
 
 def get_remote_path [--path: string --remote: string ] {
@@ -24,8 +29,8 @@ def get_remote_path [--path: string --remote: string ] {
 
 # List files on remote
 def "cloud list" [
-    --path: string = "" # A path relative to <remote>:
-    --remote: string = "dropbox" # The name of the remote service
+    remote: string # The name of the remote service
+    path: string = "" # A path relative to <remote>:
 
 ] {
     let remote_path = (get_remote_path --path $path --remote $remote)
@@ -42,6 +47,7 @@ def get_local_path [--path: string --remote: string] {
     )
 }
 
+# Download files from remote
 def "cloud download" [
     --path: string = "" # A path relative to <remote>:
     --remote: string = "dropbox" # The name of the remote service
@@ -52,6 +58,7 @@ def "cloud download" [
     return (rclone sync $remote_path (get_parent $local_path))
 }
 
+# Upload a file to remote
 def "cloud upload" [
     --path: string = "" # A path relative to <remote>:
     --remote: string = "dropbox" # The name of the remote service
@@ -69,16 +76,17 @@ def "cloud upload" [
     rclone copy $local_path (get_parent $remote_path)
 }
 
+# Download a file, open it in $EDITOR, and upload it after
 def "cloud edit" [
     --path: string = "" # A path relative to <remote>:
     --remote: string = "dropbox" # The name of the remote service
 ] {
     cloud download --path $path --remote $remote
-    hx (get_local_path --path $path --remote $remote)
+    ^$env.EDITOR (get_local_path --path $path --remote $remote)
     cloud upload --path $path --remote $remote
 }
 
 # View, edit, and upload files to/from remote storage
 def cloud [] {
-    cloud remotes
+    help cloud
 }
