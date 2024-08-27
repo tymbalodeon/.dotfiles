@@ -23,47 +23,68 @@ def "cloud list-remotes" [] {
     )
 }
 
-def get_remote_path [--path: string --remote: string ] {
-    return $"($remote):($path)"
+def get_path [remote: string path: string choose: bool] {
+    return (
+        if $choose {
+            let remote = if (
+                $remote 
+                | str ends-with ":"
+            ) {
+                $remote
+            } else {
+                $"($remote):"
+            }
+
+            rclone lsf $remote
+            | fzf
+        } else {
+            $path
+        }
+    )
+}
+
+def get_remote_path [remote: string path: string choose: bool] {
+    return $"($remote):(get_path $remote $path $choose)"
 }
 
 # List files on remote
 def "cloud list" [
     remote: string # The name of the remote service
     path: string = "" # A path relative to <remote>:
+    --choose # Choose a path interactively
 
 ] {
-    let remote_path = (get_remote_path --path $path --remote $remote)
-
-    return (rclone lsf $remote_path)
+    return (rclone lsf (get_remote_path $remote $path $choose))
 }
 
-def get_local_path [--path: string --remote: string] {
+def get_local_path [remote: string path: string choose: bool] {
     return (
         $env.HOME
         | path join "rclone"
         | path join $remote
-        | path join $path
+        | path join (get_path $remote $path $choose)
     )
 }
 
 # Download files from remote
 def "cloud download" [
-    --path: string = "" # A path relative to <remote>:
-    --remote: string = "dropbox" # The name of the remote service
+    remote: string # The name of the remote service
+    path?: string # A path relative to <remote>:
+    --choose # Choose a path interactively
 ] {
-    let remote_path = (get_remote_path --path $path --remote $remote)
-    let local_path = (get_local_path --path $path --remote $remote)
+    let remote_path = (get_remote_path $remote $path $choose)
+    let local_path = (get_local_path $remote $path $choose)
 
     return (rclone sync $remote_path (get_parent $local_path))
 }
 
 # Upload a file to remote
 def "cloud upload" [
-    --path: string = "" # A path relative to <remote>:
-    --remote: string = "dropbox" # The name of the remote service
+    remote: string # The name of the remote service
+    path: string = "" # A path relative to <remote>:
+    --choose # Choose a path interactively
 ] {
-    let local_path = (get_local_path --path $path --remote $remote)
+    let local_path = (get_local_path $remote $path $choose)
 
     if not ($local_path | path exists) {
         print ($path | path expand | path exists)
@@ -71,19 +92,20 @@ def "cloud upload" [
         return $"File not found: \"($path)\""
     }
 
-    let remote_path = (get_remote_path --path $path --remote $remote)
+    let remote_path = (get_remote_path $remote $path $choose)
 
     rclone copy $local_path (get_parent $remote_path)
 }
 
 # Download a file, open it in $EDITOR, and upload it after
 def "cloud edit" [
-    --path: string = "" # A path relative to <remote>:
-    --remote: string = "dropbox" # The name of the remote service
+    remote: string # The name of the remote service
+    path: string = "" # A path relative to <remote>:
+    --choose # Choose a path interactively
 ] {
-    cloud download --path $path --remote $remote
-    ^$env.EDITOR (get_local_path --path $path --remote $remote)
-    cloud upload --path $path --remote $remote
+    cloud download $remote $path
+    ^$env.EDITOR (get_local_path $remote $path $choose)
+    cloud upload $remote $path
 }
 
 # View, edit, and upload files to/from remote storage
