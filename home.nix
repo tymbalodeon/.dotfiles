@@ -54,6 +54,7 @@
       gitui
       glab
       glow
+      gnum4
       google-java-format
       gyre-fonts
       helix
