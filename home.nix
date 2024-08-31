@@ -86,6 +86,7 @@
       pup
       pyright
       racket-minimal
+      rakudo
       rclone
       ripgrep
       ruff-lsp
