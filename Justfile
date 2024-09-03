@@ -1,4 +1,4 @@
-@_help:
+@help:
     ./scripts/help.nu
 
 # Check flake and run pre-commit hooks
@@ -55,7 +55,8 @@
     ./scripts/prune.nu {{ args }}
 
 # Update README command output
-@_readme *help:
+[private]
+@readme *help:
     ./scripts/readme.nu {{ help }}
 
 # Rebuild and switch to (or --test) a configuration
@@ -71,6 +72,7 @@
     ./scripts/remote.nu  {{ web }}
 
 # Rollback to a previous generation
+[macos]
 @rollback *id:
     ./scripts/rollback.nu {{ id }}
 

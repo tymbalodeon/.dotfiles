@@ -82,6 +82,7 @@ Available recipes:
     diff-env *args           # View the diff between environments
     find-recipe *search_term # Search available `just` recipes
     generations *help        # View generations
+    help
     history *search_term     # Search project history
     hosts *help              # List available hosts
     init *help               # Initialize direnv environment

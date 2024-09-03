@@ -1,4 +1,3 @@
-alias just = just --unstable
 alias l = ls --long
 alias la = ls --long --all
 alias lsa = ls --all
