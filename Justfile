@@ -1,5 +1,13 @@
-@help:
-    ./scripts/help.nu
+set unstable := true
+
+# View help text
+@help *recipe:
+    ./scripts/help.nu {{ recipe }}
+
+# View file annotated with version control information
+[no-cd]
+@annotate *filename:
+    ./scripts/annotate.nu {{ filename }}
 
 # Check flake and run pre-commit hooks
 @check *args:
@@ -30,9 +38,10 @@
 @generations *help:
     ./scripts/generations.nu {{ help }}
 
-# Search project history
-@history *search_term:
-    ./scripts/history.nu {{ search_term }}
+# View project history
+[no-cd]
+@history *args:
+    ./scripts/history.nu {{ args }}
 
 # List available hosts
 @hosts *help:
@@ -89,5 +98,6 @@
     ./scripts/update-deps.nu {{ help }}
 
 # View the source code for a recipe
+[no-cd]
 @view-source *recipe:
     ./scripts/view-source.nu {{ recipe }}

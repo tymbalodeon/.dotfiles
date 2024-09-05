@@ -75,6 +75,7 @@ information about a particular recipe.
 ```nushell
 Available recipes:
 (run `just <recipe> --help/-h` for more info)
+    annotate *filename       # View file annotated with version control information
     check *args              # Check flake and run pre-commit hooks
     clean *all               # Run `prune` and `optimise`
     deps *args               # List dependencies
@@ -82,8 +83,8 @@ Available recipes:
     diff-env *args           # View the diff between environments
     find-recipe *search_term # Search available `just` recipes
     generations *help        # View generations
-    help
-    history *search_term     # Search project history
+    help *recipe             # View help text
+    history *args            # View project history
     hosts *help              # List available hosts
     init *help               # Initialize direnv environment
     issue *args              # View issues

@@ -1,17 +1,27 @@
 #!/usr/bin/env nu
 
-# Search available `just` commands interactively, or by <regex>
+export def find_recipe [] {
+  return (
+    just --summary
+    | split row " "
+    | to text
+    | (
+        fzf
+          --preview
+          $"bat --force-colorization {}.nu"
+      )
+    | str trim
+    | split row " "
+    | first
+  )
+}
+
+# Search available `just` recipes
 def main [
   search_term?: string # Regex pattern to match
 ] {
   if ($search_term | is-empty) {
-    let command = (
-      just --list
-      | lines
-      | drop nth 0
-      | to text
-      | fzf
-      | str trim | split row " " | first)
+    let command = (find_recipe)
 
     let out = (
       just $command

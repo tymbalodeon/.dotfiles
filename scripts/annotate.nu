@@ -2,8 +2,7 @@
 
 # View file annotated with version control information
 def main [
-  invocation_directory: string
-  filename: string
+  filename: string # The file to annotate
 ] {
-  git blame ($invocation_directory | path join $filename)
+  git blame $filename
 }
