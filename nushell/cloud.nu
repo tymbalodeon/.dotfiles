@@ -27,7 +27,7 @@ def get_path [remote: string path: string choose: bool] {
     return (
         if $choose {
             let remote = if (
-                $remote 
+                $remote
                 | str ends-with ":"
             ) {
                 $remote
