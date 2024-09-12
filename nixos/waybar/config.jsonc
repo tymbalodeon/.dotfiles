@@ -1,13 +1,8 @@
 {
   "layer": "top",
   "spacing": 4,
-  "modules-left": [
-    "hyprland/workspaces",
-    "hyprland/window"
-  ],
-  "modules-center": [
-    "clock"
-  ],
+  "modules-left": ["hyprland/workspaces", "hyprland/window"],
+  "modules-center": ["clock"],
   "modules-right": [
     "idle_inhibitor",
     "temperature",
@@ -16,15 +11,12 @@
     "network",
     "backlight",
     "wireplumber",
-    "battery"
+    "battery",
   ],
   "backlight": {
     "device": "intel_backlight",
     "format": "{percent}% {icon}",
-    "format-icons": [
-      "",
-      ""
-    ]
+    "format-icons": ["", ""],
   },
   "battery": {
     "format": "{capacity}% {icon}",
@@ -34,15 +26,9 @@
     "states": {
       "good": 75,
       "warning": 30,
-      "critical": 15
+      "critical": 15,
     },
-    "format-icons": [
-      "",
-      "",
-      "",
-      "",
-      ""
-    ]
+    "format-icons": ["", "", "", "", ""],
   },
   "clock": {
     "format": "{:%I:%M %p}",
@@ -52,56 +38,48 @@
       "mode": "year",
       "mode-mon-col": 3,
       "format": {
-        "weeks": "{:%W}"
-      }
-    }
+        "weeks": "{:%W}",
+      },
+    },
   },
   "cpu": {
-    "format": "{usage}% "
+    "format": "{usage}% ",
   },
   "hyprland/window": {
     "format": "{}",
     "rewrite": {
       "(.*) — Mozilla Firefox": "   $1",
-      "(.*)nu": " "
-    }
+      "(.*)nu": " ",
+    },
   },
   "hyprland/workspaces": {
     "on-click": "activate",
-    "sort-by-number": true
+    "sort-by-number": true,
   },
   "idle_inhibitor": {
     "format": "{icon}",
     "format-icons": {
       "activated": "",
-      "deactivated": ""
-    }
+      "deactivated": "",
+    },
   },
   "memory": {
-    "format": "{}% "
+    "format": "{}% ",
   },
   "network": {
     "format-wifi": "{essid} ({signalStrength}%) ",
     "format-ethernet": "{ipaddr}/{cidr} ",
     "format-disconnected": "Disconnected ⚠",
-    "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    "format-alt": "{ifname}: {ipaddr}/{cidr}",
   },
   "temperature": {
     "critical-threshold": 80,
     "format": "{temperatureF}°F {icon}",
-    "format-icons": [
-      "",
-      "",
-      ""
-    ]
+    "format-icons": ["", "", ""],
   },
   "wireplumber": {
     "format": "{volume}% {icon}",
-    "format-icons": [
-      "",
-      "",
-      ""
-    ],
-    "format-muted": ""
-  }
+    "format-icons": ["", "", ""],
+    "format-muted": "",
+  },
 }
