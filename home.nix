@@ -41,6 +41,8 @@
       dogdns
       duf
       dust
+      elixir
+      elixir-ls
       erlang
       erlang-ls
       eza
@@ -63,7 +65,6 @@
       ibm-plex
       inconsolata
       iosevka
-      janet
       jdt-language-server
       jq
       just
