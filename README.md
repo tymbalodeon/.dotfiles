@@ -93,6 +93,7 @@ Available recipes:
     rebuild *args            # Rebuild and switch to (or --test) a configuration
     release *args            # Create a new release
     remote *web              # View remote repository
+    rollback *id             # Rollback to a previous generation
     shell *host              # Open Nix REPL with flake loaded
     stats *help              # View repository analytics
     update-deps *help        # Update dependencies
