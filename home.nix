@@ -52,6 +52,7 @@
       font-awesome
       fzf
       gh
+      ghc
       git
       gitui
       glab
