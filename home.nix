@@ -38,6 +38,7 @@
       coreutils
       dejavu_fonts
       delta
+      devenv
       dogdns
       duf
       dust
