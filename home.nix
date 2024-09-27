@@ -26,26 +26,18 @@
     packages = with pkgs; [
       alejandra
       ansible-language-server
-      antlr
       bat
       bat-extras.batman
       bottom
-      chicken
       chuck
       clang
       clang-tools
-      cookiecutter
       coreutils
       dejavu_fonts
       delta
-      devenv
       dogdns
       duf
       dust
-      elixir
-      elixir-ls
-      erlang
-      erlang-ls
       eza
       fastfetch
       fd
@@ -88,7 +80,6 @@
       pipx
       pup
       pyright
-      racket-minimal
       rakudo
       rclone
       ripgrep
@@ -96,7 +87,6 @@
       rustup
       sd
       shfmt
-      swiProlog
       taplo
       tinymist
       tealdeer
