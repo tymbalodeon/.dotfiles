@@ -25,13 +25,11 @@ def parse_git_url [origin: string] {
 }
 
 def into_repo [] {
-  $in
-  | into record
-  | transpose
-  | transpose
-  | get 1
-  | reject column0
-  | rename domain user repo
+  {
+    domain: $in.0
+    user: $in.1
+    repo: $in.2
+  }
 }
 
 def get_visibility [path: string] {
@@ -147,18 +145,20 @@ def get_local_repos [args: record] {
             | str trim
           }
 
-          let repo_data = if ($origin | str starts-with "git@") or (
-            $origin | str starts-with "http"
-          ) {
-            parse_git_url $origin
-          } else {
-            $repo
-            | split row "/"
-            | reverse
-            | take 3
-            | reverse
-            | into_repo
-          } | insert path $repo
+          let repo_data = (
+            if ($origin | str starts-with "git@") or (
+              $origin | str starts-with "http"
+            ) {
+              parse_git_url $origin
+            } else {
+              $repo
+              | split row "/"
+              | reverse
+              | take 3
+              | reverse
+              | into_repo
+            }
+          ) | insert path $repo
 
           let repo_data = if (
             not ($args.include_status | is-empty) and (
@@ -877,9 +877,9 @@ def "src sync" [
         |repo|
         cd $repo
 
-        let result = (git pull out> /dev/null | complete)
-
-        if $result.exit_code != 0 {
+        try {
+          let result = (git pull out+err> /dev/null)
+        } catch {
           print --stderr $"(ansi y)Skipping \"($repo)\"(ansi reset)"
         }
 
