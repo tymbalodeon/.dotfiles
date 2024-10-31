@@ -758,7 +758,7 @@ def "src list" [
   --include: list<string> # Include columns in the output [status, visibility]
   --me # List only repos belonging to the current user
   --paths # List local paths
-  --sort-by: list<string> # Sort the output by these columns
+  # --sort-by: list<string> # Sort the output by these columns
   --urls # List remote URLs
   --user: string # List repos for user
   --visibility: string # Limit to public or private repos
@@ -820,15 +820,15 @@ def "src list" [
     $repos
   }
 
-  let sort_by = if ($sort_by | is-empty) {
-    [domain user repo]
-  } else {
-    $sort_by
-  }
+  # let sort_by = if ($sort_by | is-empty) {
+  #   [domain user repo]
+  # } else {
+  #   $sort_by
+  # }
 
   return (
     $repos
-    | sort-by --ignore-case ...$sort_by
+    # | sort-by --ignore-case ...$sort_by
     | table --index false
   )
 }
