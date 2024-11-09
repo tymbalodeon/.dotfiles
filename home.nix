@@ -37,7 +37,8 @@
       delta
       dogdns
       duf
-      dust
+      # FIXME currently broken
+      # dust
       eza
       fastfetch
       fd
