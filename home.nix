@@ -95,6 +95,7 @@
       typst-lsp
       typstyle
       ubuntu_font_family
+      unison-ucm
       vivid
       vscode-langservers-extracted
       w3m
