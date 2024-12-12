@@ -37,8 +37,7 @@
       delta
       dogdns
       duf
-      # FIXME currently broken
-      # dust
+      dust
       eza
       fastfetch
       fd
@@ -69,7 +68,7 @@
       markdown-oxide
       marksman
       nb
-      (nerdfonts.override {fonts = ["CascadiaCode"];})
+      nerd-fonts.caskaydia-cove
       nil
       nix-search-cli
       nodePackages.bash-language-server
@@ -146,7 +145,7 @@
         confirm_os_window_close = 0;
         enable_audio_bell = "no";
         enabled_layouts = "grid, stack, vertical, horizontal, tall";
-        font_family = "CaskaydiaCove Nerd Font Mono";
+        font_family = "CaskaydiaCove Nerd Font";
         inactive_text_alpha = "0.5";
         include = "theme.conf";
         tab_bar_edge = "top";

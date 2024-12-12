@@ -75,6 +75,7 @@ information about a particular recipe.
 ```nushell
 Available recipes:
 (run `just <recipe> --help/-h` for more info)
+
     annotate *filename       # View file annotated with version control information
     check *args              # Check flake and run pre-commit hooks
     clean *all               # Run `prune` and `optimise`
@@ -101,3 +102,6 @@ Available recipes:
 ```
 
 <!-- `just` end -->
+
+
+
