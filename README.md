@@ -102,6 +102,3 @@ Available recipes:
 ```
 
 <!-- `just` end -->
-
-
-
