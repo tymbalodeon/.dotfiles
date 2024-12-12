@@ -74,7 +74,7 @@ scope = "text.txt"
 soft-wrap = { enable = true, wrap-at-text-width = true }
 
 [[language]]
-name = "typescript"
+name = "tsx"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "typescript"] }
 
