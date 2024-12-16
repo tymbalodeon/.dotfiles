@@ -88,6 +88,7 @@
       sd
       shfmt
       taplo
+      tinty
       tinymist
       tealdeer
       typst
