@@ -76,6 +76,7 @@
       nodePackages.bash-language-server
       nodePackages.prettier
       nodePackages.typescript-language-server
+      noto-fonts
       openjdk
       ov
       pandoc
