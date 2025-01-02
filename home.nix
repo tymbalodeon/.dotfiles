@@ -24,6 +24,7 @@
     };
 
     packages = with pkgs; [
+      alacritty
       alejandra
       ansible-language-server
       bat
@@ -42,6 +43,7 @@
       fastfetch
       fd
       fh
+      fira-code
       font-awesome
       fzf
       gh
@@ -146,7 +148,7 @@
         confirm_os_window_close = 0;
         enable_audio_bell = "no";
         enabled_layouts = "grid, stack, vertical, horizontal, tall";
-        font_family = "CaskaydiaCove Nerd Font Mono";
+        font_family = "Fira Code";
         inactive_text_alpha = "0.5";
         include = "theme.conf";
         tab_bar_edge = "top";

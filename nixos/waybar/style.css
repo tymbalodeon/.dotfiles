@@ -1,7 +1,7 @@
 @import "./colors.css";
 
 * {
-  font-family: FontAwesome, "CaskaydiaCove Nerd Font Propo", sans-serif;
+  font-family: "Fira Code", "Font Awesome 6 Free", sans-serif;
   font-size: 14px;
 }
 
