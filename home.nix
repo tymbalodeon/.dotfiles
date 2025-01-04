@@ -60,7 +60,6 @@
       hyperfine
       ibm-plex
       inconsolata
-      iosevka
       jdt-language-server
       jq
       just
@@ -71,6 +70,8 @@
       marksman
       nb
       nerd-fonts.caskaydia-cove
+      nerd-fonts.fira-mono
+      nerd-fonts.iosevka-term
       nil
       nix-search-cli
       nodePackages.bash-language-server
@@ -149,7 +150,7 @@
         confirm_os_window_close = 0;
         enable_audio_bell = "no";
         enabled_layouts = "grid, stack, vertical, horizontal, tall";
-        font_family = "Fira Code";
+        font_family = "FiraMono Nerd Font Mono";
         inactive_text_alpha = "0.5";
         include = "theme.conf";
         tab_bar_edge = "top";
