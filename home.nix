@@ -27,6 +27,8 @@
       alacritty
       alejandra
       ansible-language-server
+      # TODO evaluate
+      atac
       bat
       bat-extras.batman
       bottom
@@ -81,17 +83,24 @@
       pipx
       pup
       pyright
+      # TODO evaluate
+      rainfrog
       rakudo
       rclone
+      # TODO evaluate
+      repgrep
       ripgrep
       ruff-lsp
       rustup
       sd
+      serie
       shfmt
       taplo
+      tealdeer
       tinty
       tinymist
-      tealdeer
+      # TODO evaluate
+      tui-journal
       typst
       typst-lsp
       typstyle
