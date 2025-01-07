@@ -83,11 +83,9 @@
       pipx
       pup
       pyright
-      # TODO evaluate
       rainfrog
       rakudo
       rclone
-      # TODO evaluate
       repgrep
       ripgrep
       ruff-lsp
