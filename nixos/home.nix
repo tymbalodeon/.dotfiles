@@ -30,13 +30,8 @@
     homeDirectory = "/home/benrosen";
 
     packages = with pkgs; [
-      elmPackages.elm
-      elmPackages.elm-format
-      elmPackages.elm-land
-      elmPackages.elm-language-server
-      elmPackages.elm-pages
-      elmPackages.lamdera
       gforth
+      ghostty
       mako
       rofi-wayland
       wev

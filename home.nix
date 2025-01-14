@@ -49,7 +49,6 @@
       fzf
       gh
       ghc
-      ghostty
       git
       gitui
       glab
