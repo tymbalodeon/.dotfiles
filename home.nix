@@ -24,7 +24,6 @@
     };
 
     packages = with pkgs; [
-      alacritty
       alejandra
       ansible-language-server
       # TODO evaluate
@@ -50,6 +49,7 @@
       fzf
       gh
       ghc
+      ghostty
       git
       gitui
       glab
@@ -83,6 +83,7 @@
       pipx
       pup
       pyright
+      python313
       rainfrog
       rakudo
       rclone
