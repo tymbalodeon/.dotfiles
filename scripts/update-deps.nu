@@ -99,14 +99,8 @@ export def main [
             $inputs
         }
 
-        if $is_nixos {
-            for input in $inputs {
-                nix flake lock --update-input $input
-            }
-        } else {
-            for input in $inputs {
-                nix flake update $input
-            }
+        for input in $inputs {
+            nix flake update $input
         }
     }
 }
