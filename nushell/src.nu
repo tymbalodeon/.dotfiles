@@ -852,10 +852,6 @@ def "src sync" [
 
   let repos = (get_local_repos $args)
 
-  if ($repos | length | into bool) {
-    print "Syncing repos..."
-  }
-
   let repos = (
     if $me {
       let users = (get_remote_users)
@@ -883,7 +879,7 @@ def "src sync" [
           print --stderr $"(ansi y)Skipping \"($repo)\"(ansi reset)"
         }
 
-        print $"Synced \"($repo)/\""
+        print $"  (ansi green_bold)Synced(ansi reset) ($repo)"
 
         parse_repo_path $repo
       }
