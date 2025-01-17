@@ -47,5 +47,43 @@
   };
 
   imports = [../home.nix];
-  programs.kitty.settings.font_size = "8.0";
+
+  programs = {
+    kitty.settings.font_size = "8.0";
+
+    ghostty = {
+      enable = true;
+      installBatSyntax = true;
+
+      settings = {
+        font-family = "Fira Code";
+
+        font-feature = [
+          "+zero"
+          "+onum"
+          "+cv30"
+          "+ss09"
+          "+cv25"
+          "+cv26"
+          "+cv32"
+          "+ss07"
+        ];
+
+        font-size = 8;
+
+        keybind = [
+          "ctrl+shift+l=new_split:right"
+          "ctrl+shift+j=new_split:down"
+          "ctrl+alt+k=goto_split:top"
+          "ctrl+alt+j=goto_split:bottom"
+          "ctrl+alt+h=goto_split:left"
+          "ctrl+alt+l=goto_split:right"
+          "ctrl+alt+p=scroll_page_up"
+          "ctrl+alt+n=scroll_page_down"
+        ];
+
+        window-decoration = false;
+      };
+    };
+  };
 }
