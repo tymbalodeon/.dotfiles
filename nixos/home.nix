@@ -50,7 +50,10 @@
   imports = [../home.nix];
 
   programs = {
-    kitty.settings.font_size = "8.0";
+    kitty.settings = {
+      font_size = "8.0";
+      kitty_mod = "shift+alt";
+    };
 
     ghostty = {
       enable = true;
