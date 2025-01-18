@@ -4,6 +4,7 @@ theme = "gruvbox"
 bufferline = "multiple"
 color-modes = true
 cursorline = true
+end-of-line-diagnostics = "hint"
 mouse = false
 shell = ["nu", "-c"]
 
@@ -17,8 +18,8 @@ hidden = false
 [editor.indent-guides]
 render = true
 
-[editor.lsp]
-display-messages = true
+[editor.inline-diagnostics]
+cursor-line = "warning"
 
 [editor.statusline]
 left = [
@@ -46,6 +47,7 @@ normal = "NORMAL"
 select = "SELECT"
 
 [editor.whitespace.render]
+space = "all"
 tab = "all"
 
 [keys.normal]
