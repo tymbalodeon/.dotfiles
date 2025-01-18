@@ -162,6 +162,7 @@
         font_family = "Fira Code";
         inactive_text_alpha = "0.5";
         include = "theme.conf";
+        kitty_mod = "shift+alt";
         tab_bar_edge = "top";
         tab_bar_style = "powerline";
         tab_powerline_style = "slanted";
