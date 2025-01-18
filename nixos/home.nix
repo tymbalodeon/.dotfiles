@@ -30,6 +30,7 @@
     homeDirectory = "/home/benrosen";
 
     packages = with pkgs; [
+      brightnessctl
       gforth
       ghostty
       mako
