@@ -53,6 +53,11 @@ formatter = { command = "alejandra" }
 [[language]]
 name = "python"
 auto-format = true
+formatter = { command = "uvx", args = [
+  "sh",
+  "-c",
+  "ruff check --fix - | ruff format -",
+] }
 language-servers = ["pyright", "ruff"]
 
 [language-server.ruff]
