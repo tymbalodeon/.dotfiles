@@ -10,6 +10,11 @@ auto-format = true
 [[language]]
 name = "css"
 formatter = { command = "prettier", args = ["--parser", "css"] }
+language-servers = ["stylelint"]
+
+[language-server.stylelint]
+command = "stylelint"
+config = { rules = { at-rule-no-unknown = false } }
 
 [[language]]
 name = "java"

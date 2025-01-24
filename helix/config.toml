@@ -1,4 +1,4 @@
-theme = "gruvbox"
+theme = "tokyonight"
 
 [editor]
 bufferline = "multiple"
