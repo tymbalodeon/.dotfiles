@@ -71,6 +71,7 @@
       markdown-oxide
       marksman
       nb
+      nerd-fonts.jetbrains-mono
       nil
       nix-search-cli
       nodePackages.bash-language-server
