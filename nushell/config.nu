@@ -40,5 +40,4 @@ if not (which tinty | is-empty) {
     tinty apply ($themes | get shell_theme)
 }
 
-
 source ($nu.default-config-dir | path join "zoxide.nu")
