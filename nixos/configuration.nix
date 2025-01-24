@@ -68,8 +68,6 @@
       remotePlay.openFirewall = true;
       dedicatedServer.openFirewall = true;
     };
-
-    waybar.enable = true;
   };
 
   security.rtkit.enable = true;

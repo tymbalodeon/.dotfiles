@@ -7,6 +7,11 @@
       url = "github:nix-community/home-manager";
     };
 
+    hyprpanel = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:jas-singhfsu/hyprpanel";
+    };
+
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -39,13 +44,18 @@
       nixpkgs.lib.genAttrs supportedSystems
       (system:
         f {
+          overlays = [inputs.hyprpanel.overlay];
+
           pkgs =
             if system == "x86_64-darwin"
             then import nixpkgs-darwin {inherit system;}
             else import nixpkgs {inherit system;};
         });
   in {
-    devShells = forEachSupportedSystem ({pkgs}: {
+    devShells = forEachSupportedSystem ({
+      pkgs,
+      overlays,
+    }: {
       default = pkgs.mkShell {
         packages = with pkgs; [
           alejandra

@@ -19,10 +19,6 @@
       ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
       ".config/tinty/mako.toml".source = ./tinty/mako.toml;
       ".config/tinty/rofi.toml".source = ./tinty/rofi.toml;
-      ".config/tinty/waybar.toml".source = ./tinty/waybar.toml;
-      ".config/waybar/colors.css".source = ./waybar/colors.css;
-      ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
-      ".config/waybar/style.css".source = ./waybar/style.css;
       ".gitconfig".source = ../.gitconfig;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
@@ -50,11 +46,6 @@
   imports = [../home.nix];
 
   programs = {
-    kitty.settings = {
-      font_size = "8.0";
-      kitty_mod = "ctrl+shift";
-    };
-
     ghostty = {
       enable = true;
       installBatSyntax = true;
@@ -88,6 +79,13 @@
 
         window-decoration = false;
       };
+    };
+
+    hyprpanel.enable = true;
+
+    kitty.settings = {
+      font_size = "8.0";
+      kitty_mod = "ctrl+shift";
     };
   };
 }
