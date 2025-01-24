@@ -81,8 +81,6 @@
       };
     };
 
-    hyprpanel.enable = true;
-
     kitty.settings = {
       font_size = "8.0";
       kitty_mod = "ctrl+shift";

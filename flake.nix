@@ -44,18 +44,13 @@
       nixpkgs.lib.genAttrs supportedSystems
       (system:
         f {
-          overlays = [inputs.hyprpanel.overlay];
-
           pkgs =
             if system == "x86_64-darwin"
             then import nixpkgs-darwin {inherit system;}
             else import nixpkgs {inherit system;};
         });
   in {
-    devShells = forEachSupportedSystem ({
-      pkgs,
-      overlays,
-    }: {
+    devShells = forEachSupportedSystem ({pkgs}: {
       default = pkgs.mkShell {
         packages = with pkgs; [
           alejandra
@@ -125,6 +120,7 @@
             ./nixos/configuration.nix
             ./nixos/hardware-configurations/${hostName}.nix
             {networking.hostName = hostName;}
+            {nixpkgs.overlays = [inputs.hyprpanel.overlay];}
           ];
 
           specialArgs = {inherit inputs;};
