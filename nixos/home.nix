@@ -52,7 +52,7 @@
   programs = {
     kitty.settings = {
       font_size = "8.0";
-      kitty_mod = "shift+alt";
+      kitty_mod = "ctrl+shift";
     };
 
     ghostty = {
