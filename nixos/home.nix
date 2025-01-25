@@ -36,6 +36,7 @@
       ghostty
       mako
       rofi-wayland
+      waybar
       wev
       wl-clipboard
     ];
