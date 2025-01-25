@@ -1,0 +1,85 @@
+{
+  "layer": "top",
+  "spacing": 4,
+  "modules-left": ["hyprland/workspaces", "hyprland/window"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "idle_inhibitor",
+    "temperature",
+    "cpu",
+    "memory",
+    "network",
+    "backlight",
+    "wireplumber",
+    "battery",
+  ],
+  "backlight": {
+    "device": "intel_backlight",
+    "format": "{percent}% {icon}",
+    "format-icons": ["", ""],
+  },
+  "battery": {
+    "format": "{capacity}% {icon}",
+    "format-charging": "{capacity}% ",
+    "format-plugged": "{capacity}% ",
+    "format-alt": "{time} {icon}",
+    "states": {
+      "good": 75,
+      "warning": 30,
+      "critical": 15,
+    },
+    "format-icons": ["", "", "", "", ""],
+  },
+  "clock": {
+    "format": "{:%I:%M %p}",
+    "format-alt": "{:%A, %B %d, %Y (%I:%M %p)}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "year",
+      "mode-mon-col": 3,
+      "format": {
+        "weeks": "{:%W}",
+      },
+    },
+  },
+  "cpu": {
+    "format": "{usage}% ",
+  },
+  "hyprland/window": {
+    "format": "{}",
+    "rewrite": {
+      "(.*) — Mozilla Firefox": "   $1",
+      "(.*)nu": " ",
+    },
+  },
+  "hyprland/workspaces": {
+    "on-click": "activate",
+    "sort-by-number": true,
+  },
+  "idle_inhibitor": {
+    "format": "{icon}",
+    "format-icons": {
+      "activated": "",
+      "deactivated": "",
+    },
+  },
+  "memory": {
+    "format": "{}% ",
+  },
+  "network": {
+    "format-wifi": "{essid} ({signalStrength}%) ",
+    "format-ethernet": "{ipaddr}/{cidr} ",
+    "format-disconnected": "Disconnected ⚠",
+    "format-alt": "{ifname}: {ipaddr}/{cidr}",
+  },
+  "temperature": {
+    "critical-threshold": 80,
+    "format": "{temperatureF}°F {icon}",
+    "format-icons": ["", "", ""],
+  },
+  "wireplumber": {
+    "format": "{volume}% {icon}",
+    "format-icons": ["", "", ""],
+    "format-muted": "",
+  },
+}

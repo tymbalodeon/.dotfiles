@@ -12,7 +12,6 @@
     firefox
     git
     helix
-    hyprpanel
     hyprpaper
     xdg-utils
   ];

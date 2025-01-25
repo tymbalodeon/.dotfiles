@@ -4,7 +4,6 @@
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
       ".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
       ".config/hypr/wallpaper".source = ./hypr/wallpaper;
-      ".config/hyprpanel/config.json".source = ./hyprpanel/config.json;
       ".config/mako/config".source = ./mako/config;
       ".config/nushell/aliases.nu".source = ../nushell/aliases.nu;
       ".config/nushell/cloud.nu".source = ../nushell/cloud.nu;
@@ -20,6 +19,10 @@
       ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
       ".config/tinty/mako.toml".source = ./tinty/mako.toml;
       ".config/tinty/rofi.toml".source = ./tinty/rofi.toml;
+      ".config/tinty/waybar.toml".source = ./tinty/waybar.toml;
+      ".config/waybar/colors.css".source = ./waybar/colors.css;
+      ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
+      ".config/waybar/style.css".source = ./waybar/style.css;
       ".gitconfig".source = ../.gitconfig;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
     };

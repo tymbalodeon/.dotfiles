@@ -5,11 +5,6 @@
       url = "github:nix-community/home-manager";
     };
 
-    hyprpanel = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:jas-singhfsu/hyprpanel";
-    };
-
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -118,7 +113,6 @@
             ./nixos/${hostName}/configuration.nix
             ./nixos/hardware-configurations/${hostName}.nix
             {networking.hostName = hostName;}
-            {nixpkgs.overlays = [inputs.hyprpanel.overlay];}
           ];
 
           specialArgs = {inherit inputs;};

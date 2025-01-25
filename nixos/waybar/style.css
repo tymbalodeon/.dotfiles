@@ -1,0 +1,93 @@
+@import "./colors.css";
+
+* {
+  font-family: Cantarell, "Font Awesome 6 Free", sans-serif;
+  font-size: 16px;
+}
+
+window#waybar,
+tooltip {
+  background-color: @background;
+  color: @foreground;
+}
+
+tooltip {
+  border-color: @foreground;
+}
+
+#backlight,
+#battery,
+#clock,
+#cpu,
+#idle_inhibitor #memory,
+#network,
+#temperature,
+#wireplumber {
+  margin: 0 8px;
+  padding: 0 8px;
+}
+
+#window,
+#workspaces {
+  margin: 8px;
+  padding: 0 8px;
+}
+
+#workspaces button {
+  color: @background;
+  background-color: @foreground;
+  border-radius: 50%;
+  padding: 0 4px;
+  margin: 4px;
+}
+
+#workspaces button:hover {
+  background-color: @background;
+  color: @foreground;
+}
+
+#workspaces button.active {
+  background-color: @green;
+  color: @background;
+}
+
+#battery.charging,
+#battery.plugged {
+  background-color: @yellow;
+  color: @background;
+}
+
+@keyframes blink {
+  to {
+    background-color: @foreground;
+    color: @background;
+  }
+}
+
+#battery.critical:not(.charging) {
+  animation-direction: alternate;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-name: blink;
+  animation-timing-function: steps(12);
+  background-color: @red;
+  color: @foreground;
+}
+
+#battery.warning {
+  background-color: @yellow;
+  color: @background;
+}
+
+#idle_inhibitor.activated {
+  background-color: @green;
+  color: @background;
+}
+
+#network.disconnected {
+  background-color: @red;
+}
+
+#temperature.critical {
+  background-color: @red;
+}
