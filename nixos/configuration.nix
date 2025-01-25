@@ -9,6 +9,8 @@
   };
 
   environment.systemPackages = with pkgs; [
+    (catppuccin-sddm.override
+      {flavor = "mocha";})
     firefox
     git
     helix
@@ -73,20 +75,11 @@
   security.rtkit.enable = true;
 
   services = {
-    greetd = {
+    displayManager.sddm = {
       enable = true;
-
-      settings.default_session = {
-        command = ''
-          ${pkgs.greetd.tuigreet}/bin/tuigreet \
-            --asterisks \
-            --cmd Hyprland \
-            --remember \
-            --time
-        '';
-
-        user = "greeter";
-      };
+      package = pkgs.kdePackages.sddm;
+      theme = "catppuccin-mocha";
+      wayland.enable = true;
     };
 
     pipewire = {
