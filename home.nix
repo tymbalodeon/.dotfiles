@@ -26,8 +26,6 @@
     packages = with pkgs; [
       alejandra
       ansible-language-server
-      # TODO evaluate
-      atac
       bat
       bat-extras.batman
       bottom
@@ -99,8 +97,6 @@
       tealdeer
       tinty
       tinymist
-      # TODO evaluate
-      tui-journal
       typst
       typst-lsp
       typstyle
