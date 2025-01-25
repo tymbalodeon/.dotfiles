@@ -1,6 +1,4 @@
 {
-  description = "Nix configuration";
-
   inputs = {
     home-manager = {
       inputs.nixpkgs.follows = "nixpkgs";
@@ -117,7 +115,7 @@
 
         value = nixpkgs.lib.nixosSystem {
           modules = [
-            ./nixos/configuration.nix
+            ./nixos/${hostName}/configuration.nix
             ./nixos/hardware-configurations/${hostName}.nix
             {networking.hostName = hostName;}
             {nixpkgs.overlays = [inputs.hyprpanel.overlay];}
