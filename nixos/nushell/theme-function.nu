@@ -41,7 +41,6 @@ def theme [
     --helix # Set theme for helix
     --kitty # Set theme for kitty
     --list # List available themes
-    --mako # Set theme for mako
     --preview # View colors for $theme
     --rofi # Set theme for rofi
     --shell # Set (persistent) theme for shell
@@ -119,7 +118,7 @@ def theme [
     }
 
     let none = not (
-        [$all $fzf $helix $kitty $mako $rofi $waybar]
+        [$all $fzf $helix $kitty $rofi $waybar]
         | any {|application| $application}
     )
 
@@ -137,7 +136,6 @@ def theme [
         if ($all or $fzf) { $applications = ($applications | append "fzf") }
         if ($all or $helix) { $applications = ($applications | append "helix") }
         if ($all or $kitty) { $applications = ($applications | append "kitty") }
-        if ($all or $mako) { $applications = ($applications | append "mako") }
         if ($all or $rofi) { $applications = ($applications | append "rofi") }
         if ($all or $shell) { $applications = ($applications | append "shell") }
         if ($all or $waybar) { $applications = ($applications | append "waybar") }

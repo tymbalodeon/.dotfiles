@@ -1,7 +1,0 @@
-shell = "nu -c '{}'"
-
-[[items]]
-name = "mako"
-path = "https://github.com/stacyharper/base16-mako"
-themes-dir = "colors"
-hook = "cp --force %f ~/.dotfiles/nixos/mako/config"

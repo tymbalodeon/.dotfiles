@@ -95,10 +95,7 @@
       pulse.enable = true;
     };
 
-    xserver.xkb = {
-      layout = "us";
-      variant = "";
-    };
+    xserver.xkb.layout = "us";
   };
 
   system.stateVersion = "23.11";

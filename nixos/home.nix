@@ -4,7 +4,6 @@
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
       ".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
       ".config/hypr/wallpaper".source = ./hypr/wallpaper;
-      ".config/mako/config".source = ./mako/config;
       ".config/nushell/aliases.nu".source = ../nushell/aliases.nu;
       ".config/nushell/cloud.nu".source = ../nushell/cloud.nu;
       ".config/nushell/colors.nu".source = ../nushell/colors.nu;
@@ -17,7 +16,6 @@
       ".config/rofi/config.rasi".source = ./rofi/config.rasi;
       ".config/tealdeer/config.toml".source = ../tealdeer/config.toml;
       ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
-      ".config/tinty/mako.toml".source = ./tinty/mako.toml;
       ".config/tinty/rofi.toml".source = ./tinty/rofi.toml;
       ".config/tinty/waybar.toml".source = ./tinty/waybar.toml;
       ".config/waybar/colors.css".source = ./waybar/colors.css;
@@ -34,7 +32,6 @@
       discord-ptb
       gforth
       ghostty
-      mako
       rofi-wayland
       waybar
       wev
@@ -92,4 +89,6 @@
       kitty_mod = "ctrl+shift";
     };
   };
+
+  services.swaync.enable = true;
 }
