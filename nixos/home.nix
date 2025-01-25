@@ -27,6 +27,7 @@
 
     packages = with pkgs; [
       brightnessctl
+      discord
       gforth
       ghostty
       mako
