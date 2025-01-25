@@ -1,19 +1,19 @@
 /**
- * Base16 Tokyo Night Dark ROFI Color theme
+ * Base16 Catppuccin Mocha ROFI Color theme
  *
  * Authors
- *  Scheme: Michaël Ball
+ *  Scheme: https://github.com/catppuccin/catppuccin
  *  Template: Tinted Theming (https://github.com/tinted-theming)
  */
 
 * {
-    red:                         rgba ( 192, 202, 245, 100 % );
-    blue:                        rgba ( 42, 195, 222, 100 % );
-    lightfg:                     rgba ( 203, 204, 209, 100 % );
-    lightbg:                     rgba ( 22, 22, 30, 100 % );
-    foreground:                  rgba ( 169, 177, 214, 100 % );
-    background:                  rgba ( 26, 27, 38, 100 % );
-    background-color:            rgba ( 26, 27, 38, 0 % );
+    red:                         rgba ( 243, 139, 168, 100 % );
+    blue:                        rgba ( 137, 180, 250, 100 % );
+    lightfg:                     rgba ( 245, 224, 220, 100 % );
+    lightbg:                     rgba ( 24, 24, 37, 100 % );
+    foreground:                  rgba ( 205, 214, 244, 100 % );
+    background:                  rgba ( 30, 30, 46, 100 % );
+    background-color:            rgba ( 30, 30, 46, 0 % );
     separatorcolor:              @foreground;
     border-color:                @foreground;
     selected-normal-foreground:  @lightbg;
