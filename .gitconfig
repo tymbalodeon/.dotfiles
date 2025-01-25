@@ -18,6 +18,7 @@
     sh = stash
     sl = stash list
     sp = stash pop
+    sw = switch
     tg = tag
     tracked = ls-tree --full-tree --name-only -r HEAD
     tr = tracked
