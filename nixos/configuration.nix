@@ -14,6 +14,7 @@
       {
         flavor = "mocha";
         font = "Cantarell";
+        fontSize = "12";
       })
     firefox
     git

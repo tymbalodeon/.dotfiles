@@ -29,7 +29,7 @@
 
     packages = with pkgs; [
       brightnessctl
-      discord-ptb
+      equibop
       gforth
       ghostty
       rofi-wayland
