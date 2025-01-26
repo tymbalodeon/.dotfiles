@@ -57,3 +57,5 @@ alias find := find-recipe
     ./scripts/view-source.nu {{ recipe }}
 
 alias src := view-source
+
+mod dotfiles "just/dotfiles.just"

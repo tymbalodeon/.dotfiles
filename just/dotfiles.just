@@ -1,0 +1,49 @@
+# View help text
+@help *recipe:
+    ../scripts/dotfiles/help.nu {{ recipe }}
+
+# Run `prune` and `optimise`
+@clean *all:
+    ../scripts/dotfiles/clean.nu {{ all }}
+
+# View the diff between hosts
+@diff *args:
+    ../scripts/dotfiles/diff.nu {{ args }}
+
+# View generations
+@generations *help:
+    ../scripts/dotfiles/generations.nu {{ help }}
+
+# List available hosts
+@hosts *help:
+    ../scripts/dotfiles/hosts.nu {{ help }}
+
+# Replace identical files in the Nix store by hard links
+@optimise *help:
+    ../scripts/dotfiles/optimise.nu {{ help }}
+
+# Collect garbage and remove old generations
+@prune *args:
+    ../scripts/dotfiles/prune.nu {{ args }}
+
+# Update README command output
+[private]
+@readme *help:
+    ../scripts/dotfiles/readme.nu {{ help }}
+
+# Rebuild and switch to (or --test) a configuration
+@rebuild *args:
+    ../scripts/dotfiles/rebuild.nu {{ args }}
+
+# Rollback to a previous generation
+[macos]
+@rollback *id:
+    ../scripts/dotfiles/rollback.nu {{ id }}
+
+# Open Nix REPL with flake loaded
+@shell *host:
+    ../scripts/dotfiles/shell.nu {{ host }}
+
+# Update dependencies
+@update-deps *help:
+    ../scripts/dotfiles/update-deps.nu {{ help }}
