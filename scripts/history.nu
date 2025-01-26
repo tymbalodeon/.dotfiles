@@ -1,23 +1,28 @@
 #!/usr/bin/env nu
 
-def --wrapped cog-log [...args: string] {
-  let args = (
+export def parse-args [...args: string] {
+  (
     $args
     | window 2 --stride 2
     | filter {
         |arg|
 
         let value = ($arg | last)
-        let type = ($value | describe)
 
-        if $type == "string" {
-          $value | is-not-empty
-        } else if $type == "bool" {
+        try {
           $value
+          | into bool
+        } catch {
+          $value
+          | is-not-empty
         }
       }
     | flatten
-  )
+  ) | filter {$in not-in ["false" "true"]}
+}
+
+def --wrapped cog-log [...args: string] {
+  let args = (parse-args ...$args)
 
   cog log ...$args
 }
@@ -25,6 +30,7 @@ def --wrapped cog-log [...args: string] {
 # View project history
 def main [
   filename?: string
+  --annotate-lines # Annotate $filename lines with commit information
   --author: string # Filter on commit author
   --breaking-change # Filter BREAKING CHANGE commits
   --no-error # Omit error on the commit log
@@ -43,12 +49,14 @@ def main [
       (
         cog-log
           --author $author
-          --breaking-change $breaking_change
-          --no-error $no_error
+          --breaking-change ($breaking_change | into string)
+          --no-error ($no_error | into string)
           --scope $scope
           --type $type
       )
     }
+  } else if $annotate_lines {
+    git blame $filename
   } else {
     git log --patch $filename
   }

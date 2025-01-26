@@ -1,19 +1,17 @@
 #!/usr/bin/env nu
 
-export def find_recipe [] {
-  return (
-    just --summary
-    | split row " "
-    | to text
-    | (
-        fzf
-          --preview
-          $"bat --force-colorization {}.nu"
-      )
-    | str trim
-    | split row " "
-    | first
-  )
+export def choose-recipe [] {
+  just --summary
+  | split row " "
+  | to text
+  | (
+      fzf
+        --preview
+        $"bat --force-colorization {}.nu"
+    )
+  | str trim
+  | split row " "
+  | first
 }
 
 # Search available `just` recipes
@@ -21,12 +19,8 @@ def main [
   search_term?: string # Regex pattern to match
 ] {
   if ($search_term | is-empty) {
-    let command = (find_recipe)
-
-    let out = (
-      just $command
-      | complete
-    )
+    let command = (choose-recipe)
+    let out = (just $command | complete)
 
     print (
       if $out.exit_code != 0 {

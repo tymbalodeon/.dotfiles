@@ -17,7 +17,7 @@ git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
 NixOS:
 
 (Available hosts can be found in
-[hardware configurations](./nixos/hardware-configurations).)
+[hardware configurations](./configuration/nixos/hardware-configurations).)
 
 ```sh
 sudo nixos-rebuild switch --flake ~/.dotfiles#<HOST>
