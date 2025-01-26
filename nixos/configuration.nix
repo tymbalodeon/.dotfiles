@@ -112,8 +112,6 @@
       alsa.enable = true;
       pulse.enable = true;
     };
-
-    xserver.xkb.layout = "us";
   };
 
   system.stateVersion = "23.11";
