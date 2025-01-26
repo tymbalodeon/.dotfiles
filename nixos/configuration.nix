@@ -62,7 +62,11 @@
   nixpkgs.config.allowUnfree = true;
 
   programs = {
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      withUWSM = true;
+    };
+
     nix-ld.enable = true;
 
     steam = {
