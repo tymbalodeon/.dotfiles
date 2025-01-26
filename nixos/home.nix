@@ -14,6 +14,7 @@
       ".config/nushell/theme.nu".source = ../nushell/theme.nu;
       ".config/nushell/themes.toml".source = ../nushell/themes.toml;
       ".config/rofi/config.rasi".source = ./rofi/config.rasi;
+      ".config/swaync/style.css".source = ./swaync/style.css;
       ".config/tealdeer/config.toml".source = ../tealdeer/config.toml;
       ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
       ".config/tinty/rofi.toml".source = ./tinty/rofi.toml;
