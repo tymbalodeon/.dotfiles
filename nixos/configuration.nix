@@ -9,8 +9,12 @@
   };
 
   environment.systemPackages = with pkgs; [
+    bibata-cursors
     (catppuccin-sddm.override
-      {flavor = "mocha";})
+      {
+        flavor = "mocha";
+        font = "Cantarell";
+      })
     firefox
     git
     helix
@@ -79,11 +83,27 @@
   security.rtkit.enable = true;
 
   services = {
-    displayManager.sddm = {
-      enable = true;
-      package = pkgs.kdePackages.sddm;
-      theme = "catppuccin-mocha";
-      wayland.enable = true;
+    displayManager = {
+      defaultSession = "hyprland-uwsm";
+
+      sddm = {
+        enable = true;
+        package = pkgs.kdePackages.sddm;
+
+        settings = {
+          Autologin = {
+            User = "benrosen";
+          };
+
+          Theme = {
+            CursorTheme = "Bibata-Modern-Classic";
+            CursorSize = 16;
+          };
+        };
+
+        theme = "catppuccin-mocha";
+        wayland.enable = true;
+      };
     };
 
     pipewire = {
