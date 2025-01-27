@@ -46,5 +46,6 @@
     ../scripts/dotfiles/shell.nu {{ host }}
 
 # Update dependencies
+[working-directory: "../configuration"]
 @update *help:
     ../scripts/dotfiles/update.nu {{ help }}
