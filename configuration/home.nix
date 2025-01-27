@@ -24,8 +24,6 @@
     };
 
     packages = with pkgs; [
-      alejandra
-      ansible-language-server
       bat
       bat-extras.batman
       bottom
@@ -66,14 +64,11 @@
       liberation_ttf
       lilypond-unstable-with-fonts
       lldb
-      markdown-oxide
       marksman
       nb
       nerd-fonts.jetbrains-mono
-      nil
       nix-search-cli
       nodePackages.bash-language-server
-      nodePackages.prettier
       nodePackages.typescript-language-server
       noto-fonts
       openjdk
@@ -91,9 +86,7 @@
       ruff-lsp
       rustup
       sd
-      serie
       shfmt
-      taplo
       tealdeer
       tinty
       tinymist
@@ -102,11 +95,8 @@
       ubuntu_font_family
       unison-ucm
       vivid
-      vscode-langservers-extracted
       w3m
       xh
-      yaml-language-server
-      yamlfmt
       yazi
       yq-go
       zathura
