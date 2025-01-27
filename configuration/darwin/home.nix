@@ -1,8 +1,4 @@
-{
-  pkgs,
-  pkgs-elm,
-  ...
-}: rec {
+{pkgs, ...}: rec {
   home = {
     file = let
       darwin_config_path = "Library/Application Support";
@@ -27,18 +23,9 @@
 
     homeDirectory = "/Users/benrosen";
 
-    packages =
-      (with pkgs; [
-        pforth
-      ])
-      ++ (with pkgs-elm.elmPackages; [
-        elm
-        elm-format
-        elm-land
-        elm-language-server
-        elm-pages
-        lamdera
-      ]);
+    packages = with pkgs; [
+      pforth
+    ];
   };
 
   imports = [../home.nix];

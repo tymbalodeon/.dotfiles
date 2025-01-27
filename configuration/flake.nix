@@ -1,16 +1,14 @@
 {
-  inputs = {
+  inputs = let
+    nixpkgsUrl = "github:nixos/nixpkgs/nixos-unstable";
+  in {
     home-manager = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:nix-community/home-manager";
     };
 
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    nixpkgs-elm = {
-      url = "github:nixos/nixpkgs/3030f185ba6a4bf4f18b87f345f104e6a6961f34";
-    };
+    nixpkgs.url = nixpkgsUrl;
+    nixpkgs-darwin.url = nixpkgsUrl;
 
     nushell-syntax = {
       type = "github";
@@ -24,61 +22,9 @@
     home-manager,
     nixpkgs,
     nixpkgs-darwin,
-    nixpkgs-elm,
     nushell-syntax,
     ...
-  } @ inputs: let
-    supportedSystems = [
-      "x86_64-darwin"
-      "x86_64-linux"
-    ];
-
-    forEachSupportedSystem = f:
-      nixpkgs.lib.genAttrs supportedSystems
-      (system:
-        f {
-          pkgs =
-            if system == "x86_64-darwin"
-            then import nixpkgs-darwin {inherit system;}
-            else import nixpkgs {inherit system;};
-        });
-  in {
-    devShells = forEachSupportedSystem ({pkgs}: {
-      default = pkgs.mkShell {
-        packages = with pkgs; [
-          alejandra
-          ansible-language-server
-          bat
-          cocogitto
-          deadnix
-          delta
-          flake-checker
-          fzf
-          gh
-          git
-          just
-          lychee
-          markdown-oxide
-          marksman
-          nil
-          nodePackages.prettier
-          nushell
-          pre-commit
-          python312Packages.pre-commit-hooks
-          ripgrep
-          statix
-          stylelint
-          taplo
-          tokei
-          vscode-langservers-extracted
-          yaml-language-server
-          yamlfmt
-        ];
-
-        shellHook = "pre-commit install --hook-type commit-msg";
-      };
-    });
-
+  } @ inputs: {
     homeConfigurations = let
       hosts = ["benrosen" "work"];
 
@@ -91,11 +37,6 @@
 
           extraSpecialArgs = {
             inherit nushell-syntax;
-
-            pkgs-elm = import nixpkgs-elm {
-              config.allowUnfree = true;
-              system = "x86_64-darwin";
-            };
           };
         };
       };
