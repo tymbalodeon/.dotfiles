@@ -98,7 +98,6 @@
       tinty
       tinymist
       typst
-      typst-lsp
       typstyle
       ubuntu_font_family
       unison-ucm

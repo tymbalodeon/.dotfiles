@@ -1,14 +1,12 @@
 {
-  inputs = let
-    nixpkgsUrl = "github:nixos/nixpkgs/nixos-unstable";
-  in {
+  inputs = {
     home-manager = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:nix-community/home-manager";
     };
 
-    nixpkgs.url = nixpkgsUrl;
-    nixpkgs-darwin.url = nixpkgsUrl;
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nushell-syntax = {
       type = "github";
