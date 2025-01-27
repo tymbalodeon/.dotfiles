@@ -6,7 +6,7 @@ use ./hosts.nu get_built_host_name
 use ./hosts.nu is_nixos
 use ./prune.nu
 use ./optimise.nu
-use ./update-deps.nu
+use ./update.nu
 
 # Rebuild and switch to (or --test) a configuration
 def main [
@@ -19,7 +19,7 @@ def main [
     --update # Update the flake lock before rebuilding
 ] {
   if $update {
-    update-deps
+    update
   }
 
   let is_nixos = (is_nixos)

@@ -32,6 +32,7 @@
     ../scripts/dotfiles/readme.nu {{ help }}
 
 # Rebuild and switch to (or --test) a configuration
+[working-directory: "../configuration"]
 @rebuild *args:
     ../scripts/dotfiles/rebuild.nu {{ args }}
 
@@ -45,5 +46,5 @@
     ../scripts/dotfiles/shell.nu {{ host }}
 
 # Update dependencies
-@update-deps *help:
-    ../scripts/dotfiles/update-deps.nu {{ help }}
+@update *help:
+    ../scripts/dotfiles/update.nu {{ help }}

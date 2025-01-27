@@ -59,3 +59,43 @@ alias find := find-recipe
 alias src := view-source
 
 mod dotfiles "just/dotfiles.just"
+
+# alias for `dotfiles clean`
+@clean *all:
+    just dotfiles clean {{ all }}
+
+# alias for `dotfiles diff`
+@diff *args:
+    just dotfiles diff {{ args }}
+
+# alias for `dotfiles generations`
+@generations *help:
+    just dotfiles generations {{ help }}
+
+# alias for `dotfiles hosts`
+@hosts *help:
+    just dotfiles hosts {{ help }}
+
+# alias for `dotfiles optimise`
+@optimise *help:
+    just dotfiles optimise {{ help }}
+
+# alias for `dotfiles prune`
+@prune *args:
+    just dotfiles prune {{ args }}
+
+# alias for `dotfiles rebuild`
+@rebuild *args:
+    just dotfiles rebuild {{ args }}
+
+# alias for `dotfiles rollback`
+@rollback *id:
+    just dotfiles rollback {{ id }}
+
+# alias for `dotfiles shell`
+@shell *host:
+    just dotfiles shell {{ host }}
+
+# alias for `dotfiles update`
+@update *help:
+    just dotfiles update {{ help }}
