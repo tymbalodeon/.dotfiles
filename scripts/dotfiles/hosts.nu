@@ -150,5 +150,13 @@ export def get-built-host-name [] {
 
 # View available hosts
 export def main [] {
-  return (get-available-hosts | table --index false)
+  if (is-nixos) {
+    get-available-hosts
+    | get NixOS
+    | str join "\n"
+  } else {
+    get-available-hosts
+    | get Darwin
+    | str join "\n"
+  }
 }
