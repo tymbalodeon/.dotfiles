@@ -14,7 +14,7 @@ def main [
     --all # (with `--clean` or `--prune`)
     --clean # Run `just prune` and `just optimise` after rebuilding
     --hosts # The available hosts on the current system
-    --older-than # (with `--clean` or `--prune`)
+    --older-than: string # (with `--clean` or `--prune`)
     --optimise # Run `just optimise` after rebuilding
     --prune # Run `just prune` after rebuilding
     --test # Apply the configuration without adding it to the boot menu
