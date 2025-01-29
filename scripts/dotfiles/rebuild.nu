@@ -24,7 +24,7 @@ def main [
     update
   }
 
-  let is_nixos = (is_nixos)
+  let is_nixos = (is-nixos)
 
   if $hosts {
     let hosts = if $is_nixos {
