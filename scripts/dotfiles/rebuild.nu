@@ -1,9 +1,9 @@
 #!/usr/bin/env nu
 
 use ../environment.nu get-project-path
-use ./hosts.nu get_available_hosts
-use ./hosts.nu get_built_host_name
-use ./hosts.nu is_nixos
+use ./hosts.nu get-available-hosts
+use ./hosts.nu get-built-host-name
+use ./hosts.nu is-nixos
 use ./prune.nu
 use ./optimise.nu
 use ./update.nu
@@ -28,16 +28,16 @@ def main [
 
   if $hosts {
     let hosts = if $is_nixos {
-      get_available_hosts | get NixOS
+      get-available-hosts | get NixOS
     } else {
-      get_available_hosts | get Darwin
+      get-available-hosts | get Darwin
     }
 
     return ($hosts | to text)
   }
 
   let host = if ($host | is-empty) {
-    get_built_host_name
+    get-built-host-name
   } else {
     $host
   }

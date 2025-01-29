@@ -1,12 +1,12 @@
 #!/usr/bin/env nu
 
-use ./hosts.nu is_nixos
+use ./hosts.nu is-nixos
 
 # Rollback to a previous generation
 def main [
   generation_id: int
 ] {
-  if (is_nixos) {
+  if (is-nixos) {
     print "Feature not available on NixOS."
 
     exit 1

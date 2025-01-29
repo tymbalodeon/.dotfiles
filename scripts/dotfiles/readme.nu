@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-def make_command_comment [
+def make-command-comment [
   command: string
   --end
   --start
@@ -14,11 +14,11 @@ def make_command_comment [
   return $"<!-- `($command)` ($type) -->"
 }
 
-def make_command_regex [start end] {
+def make-command-regex [start end] {
   return $"($start)\(.|\\s\)*($end)"
 }
 
-def make_command_output [
+def make-command-output [
   start: string
   output: string
   end: string
@@ -28,8 +28,8 @@ def make_command_output [
 
 # Update README command output
 def main [] {
-  let just_start = (make_command_comment "just")
-  let just_end = (make_command_comment "just" --end)
+  let just_start = (make-command-comment "just")
+  let just_end = (make-command-comment "just" --end)
 
   let just_output = (
     $"```nushell\n(
@@ -41,8 +41,8 @@ def main [] {
     open README.md
     | str replace
       --regex
-      (make_command_regex $just_start $just_end)
-      (make_command_output $just_start $just_output $just_end)
+      (make-command-regex $just_start $just_end)
+      (make-command-output $just_start $just_output $just_end)
     | save --force README.md
   )
 }

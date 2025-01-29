@@ -1,32 +1,32 @@
 #!/usr/bin/env nu
 
-use ./hosts.nu is_nixos
+use ./hosts.nu is-nixos
 
-def get_global_inputs [] {
+def get-global-inputs [] {
     return ["nushell-syntax"]
 }
 
-def get_darwin_inputs [] {
+def get-darwin-inputs [] {
     return (
-        (get_global_inputs) ++ [
+        (get-global-inputs) ++ [
             "home-manager" "nixpkgs-darwin"
         ]
     )
 }
 
-def get_nixos_inputs [] {
-    return ((get_global_inputs) ++ ["nixpkgs"])
+def get-nixos-inputs [] {
+    return ((get-global-inputs) ++ ["nixpkgs"])
 }
 
-def get_input_status [system: string input: string] {
-    let global_inputs = (get_global_inputs)
+def get-input-status [system: string input: string] {
+    let global_inputs = (get-global-inputs)
 
     let system_inputs = {
-        "darwin": (get_darwin_inputs)
-        "nixos": (get_nixos_inputs)
+        "darwin": (get-darwin-inputs)
+        "nixos": (get-nixos-inputs)
     }
 
-    let is_nixos = (is_nixos)
+    let is_nixos = (is-nixos)
 
     let is_system_match = (
         ($is_nixos and $system == "nixos")
@@ -71,14 +71,14 @@ export def main [
                 |input|
 
                 $input
-                | update darwin (get_input_status "darwin" $input.input)
+                | update darwin (get-input-status "darwin" $input.input)
             }
             | insert nixos ""
             | each {
                 |input|
 
                 $input
-                | update nixos (get_input_status "nixos" $input.input)
+                | update nixos (get-input-status "nixos" $input.input)
             }
             | table --index false
         )
@@ -87,13 +87,13 @@ export def main [
     if $all {
         nix flake update
     } else {
-        let is_nixos = (is_nixos)
+        let is_nixos = (is-nixos)
 
         mut inputs = if ($inputs | is-empty) {
             if $is_nixos {
-                get_nixos_inputs
+                get-nixos-inputs
             } else {
-                get_darwin_inputs
+                get-darwin-inputs
             }
         } else {
             $inputs
