@@ -5,8 +5,12 @@
       url = "github:nix-community/home-manager";
     };
 
+    nix-darwin = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:LnL7/nix-darwin/master";
+    };
+
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nushell-syntax = {
       type = "github";
@@ -18,11 +22,28 @@
 
   outputs = {
     home-manager,
+    nix-darwin,
     nixpkgs,
-    nixpkgs-darwin,
     nushell-syntax,
     ...
   } @ inputs: {
+    darwinConfigurations = let
+      hosts = ["benrosen" "work"];
+
+      mkHost = hostName: {
+        name = hostName;
+
+        value = nix-darwin.lib.darwinSystem {
+          modules = [
+            home-manager.darwinModules.home-manager
+            ./darwin/${hostName}/home.nix
+            ./darwin/${hostName}/configuration.nix
+          ];
+        };
+      };
+    in
+      builtins.listToAttrs (map mkHost hosts);
+
     homeConfigurations = let
       hosts = ["benrosen" "work"];
 
@@ -31,7 +52,7 @@
 
         value = home-manager.lib.homeManagerConfiguration {
           modules = [./darwin/${hostName}/home.nix];
-          pkgs = nixpkgs-darwin.legacyPackages.x86_64-darwin;
+          pkgs = nixpkgs.legacyPackages.x86_64-darwin;
 
           extraSpecialArgs = {
             inherit nushell-syntax;

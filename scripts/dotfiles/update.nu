@@ -9,7 +9,8 @@ def get-global-inputs [] {
 def get-darwin-inputs [] {
     return (
         (get-global-inputs) ++ [
-            "home-manager" "nixpkgs-darwin"
+            "home-manager"
+            "nix-darwin"
         ]
     )
 }
