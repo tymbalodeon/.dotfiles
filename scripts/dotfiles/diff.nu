@@ -1,54 +1,55 @@
 #!/usr/bin/env nu
 
+use ../environment.nu get-project-path
+use ../environment.nu get-project-root
 use ./hosts.nu
-use ./hosts.nu get_available_host_names
-use ./hosts.nu get_available_hosts
-use ./hosts.nu get_built_host_name
-use ./hosts.nu get_darwin_hosts
-use ./hosts.nu get_nixos_hosts
-use ./hosts.nu get_systems
-use ./hosts.nu is_nixos
+use ./hosts.nu get-available-host-names
+use ./hosts.nu get-available-hosts
+use ./hosts.nu get-built-host-name
+use ./hosts.nu get-darwin-hosts
+use ./hosts.nu get-nixos-hosts
+use ./hosts.nu get-systems
+use ./hosts.nu is-nixos
 
-def raise_configuration_error [configuration: string] {
+def raise-configuration-error [configuration: string] {
   print $"Unrecognized host or system name: `($configuration)`\n"
   print "Please specify a valid host or system name:"
   print (hosts)
 
   exit 1
-
 }
 
-def validate_configuration [configuration: string] {
+def validate-configuration [configuration: string] {
   let configuration = ($configuration | str downcase)
 
-  if not ($configuration in (get_available_host_names)) {
-    raise_configuration_error $configuration
+  if not ($configuration in (get-available-host-names)) {
+    raise-configuration-error $configuration
   }
 
   return $configuration
 }
 
-def validate_source_and_target [source?: string target?: string] {
+def validate-source-and-target [source?: string target?: string] {
   let validated_source = if (
     ($source | is-empty) or ($target | is-empty)
   ) {
-    get_built_host_name
+    get-built-host-name
   } else {
-    validate_configuration $source
+    validate-configuration $source
   }
 
   let validated_target = if ($target | is-empty) {
     if ($source | is-empty) {
-      if (is_nixos) {
+      if (is-nixos) {
         "darwin"
       } else {
         "nixos"
       }
     } else {
-      validate_configuration $source
+      validate-configuration $source
     }
   } else {
-    validate_configuration $target
+    validate-configuration $target
   }
 
   return (
@@ -59,7 +60,9 @@ def validate_source_and_target [source?: string target?: string] {
   )
 }
 
-def get_shared_configuration_files [configuration?: string] {
+def get-shared-configuration-files [configuration?: string] {
+  let configuration_path = (get-project-path configuration)
+
   if ($configuration | is-empty) {
     return (
       fd
@@ -76,6 +79,7 @@ def get_shared_configuration_files [configuration?: string] {
         --hidden
         --type "file"
         ""
+        $configuration_path
     )
   } else {
     let excludes = {
@@ -101,8 +105,8 @@ def get_shared_configuration_files [configuration?: string] {
           --hidden
           --type "file"
           ""
-      )
-      | lines
+          $configuration_path
+      ) | lines
       | filter {
           |line|
 
@@ -116,19 +120,19 @@ def get_shared_configuration_files [configuration?: string] {
           }
 
           $keep
-      }
+        }
       | to text
     )
   }
 }
 
-def format_files [
+def format-files [
   files: string
   unique_files: bool
   configuration?: string
 ] {
   let include_shared = not $unique_files
-  let darwin_hosts = (get_darwin_hosts)
+  let darwin_hosts = (get-darwin-hosts)
 
   let files = (
     $files
@@ -138,10 +142,11 @@ def format_files [
 
         let directories = (
           $line
+          | str replace $"(get-project-root)/" ""
           | path split
         )
 
-        let $base = ($directories | first)
+        let $base = ($directories | get 1)
 
         let file_configuration = if (
           $directories | get 1
@@ -159,14 +164,14 @@ def format_files [
   )
 
   let files = if $include_shared {
-    (get_shared_configuration_files | lines) ++ $files
+    (get-shared-configuration-files | lines) ++ $files
   } else {
     $files
   }
 
-  let darwin_hosts = (get_darwin_hosts --with-system)
-  let nixos_hosts = (get_nixos_hosts --with-system)
-  let hosts = (get_available_hosts --list)
+  let darwin_hosts = (get-darwin-hosts --with-system)
+  let nixos_hosts = (get-nixos-hosts --with-system)
+  let hosts = (get-available-hosts --list)
 
   return (
     $files
@@ -199,7 +204,7 @@ def format_files [
             let is_darwin_configuration = ($configuration in $darwin_hosts)
             let is_nixos_configuration = ($configuration in $nixos_hosts)
             let is_host_configuration = ($configuration in $hosts)
-
+            
             let host_color = if $is_host_configuration {
               "n"
             } else {
@@ -256,13 +261,13 @@ def format_files [
         } else {
           $line
         }
-    }
+      }
     | to text
   )
 }
 
-def split_paths [paths: list<string>] {
-  let systems = (get_systems)
+def split-paths [paths: list<string>] {
+  let systems = (get-systems)
 
   return (
     $paths
@@ -285,7 +290,7 @@ def split_paths [paths: list<string>] {
   )
 }
 
-def get_excluded_paths_pattern [name: string] {
+def get-excluded-paths-pattern [name: string] {
   return (
     {
       benrosen: "work"
@@ -298,14 +303,19 @@ def get_excluded_paths_pattern [name: string] {
 
 }
 
-def get_host_files [host_directory: string --with-shared] {
+def get-host-files [host_directory: string --with-shared] {
   let nested_path = ("/" in $host_directory)
 
-  let system_directory = if $nested_path {
-    $host_directory | path dirname
-  } else {
-    $host_directory
-  }
+  let system_directory = (
+    get-project-path configuration
+    | path join (
+        if $nested_path {
+          $host_directory | path dirname
+        } else {
+          $host_directory
+        }
+      )
+  )
 
   let host_name = if $nested_path {
     $host_directory | path basename
@@ -315,7 +325,7 @@ def get_host_files [host_directory: string --with-shared] {
 
   let files = (
     if $nested_path {
-      let exclude_pattern = (get_excluded_paths_pattern $host_name)
+      let exclude_pattern = (get-excluded-paths-pattern $host_name)
 
       (
         fd
@@ -337,13 +347,13 @@ def get_host_files [host_directory: string --with-shared] {
     | lines
   )
 
-  let host_files = (split_paths $files)
+  let host_files = (split-paths $files)
 
   return (
     if $with_shared {
       $host_files ++ (
-        split_paths (
-          get_shared_configuration_files
+        split-paths (
+          get-shared-configuration-files
           | lines
         )
       )
@@ -353,7 +363,7 @@ def get_host_files [host_directory: string --with-shared] {
   )
 }
 
-def get_file_and_system [row: record] {
+def get-file-and-system [row: record] {
   return {
     file: (
       ($row | reject system)
@@ -364,7 +374,7 @@ def get_file_and_system [row: record] {
   }
 }
 
-def get_full_path [file: record] {
+def get-full-path [file: record] {
   let path = ($file | reject system | path join)
 
   return (
@@ -376,15 +386,15 @@ def get_full_path [file: record] {
   )
 }
 
-def get_common_files [
+def get-common-files [
   target: string
   source_files: list
   target_files: list
 ] {
-  let systems = (get_systems)
+  let systems = (get-systems)
 
   let available_hosts = (
-    (get_available_host_names)
+    (get-available-host-names)
     | append ""
   )
 
@@ -424,37 +434,37 @@ def get_common_files [
 
   $common_files.source = (
     $common_files.source
-    | each {|file| (get_full_path $file)}
+    | each {|file| (get-full-path $file)}
   )
 
   $common_files.target = (
     $common_files.target
-    | each {|file| (get_full_path $file)}
+    | each {|file| (get-full-path $file)}
   )
 
   return $common_files
 }
 
-def get_configuration_directory [configuration: string] {
-  if $configuration in (get_darwin_hosts) {
+def get-configuration-directory [configuration: string] {
+  if $configuration in (get-darwin-hosts) {
     return $"darwin/($configuration)"
-  } else if $configuration in (get_nixos_hosts) {
+  } else if $configuration in (get-nixos-hosts) {
     return "nixos"
   } else {
     return $configuration
   }
 }
 
-def list_files [unique_files: bool configuration?: string] {
+def list-files [unique_files: bool configuration?: string] {
   let configurations = if ($configuration | is-empty) {
-    get_available_host_names
+    get-available-host-names
   } else {
     [$configuration]
   }
 
-  let systems = (get_systems)
-  let darwin_hosts = (get_darwin_hosts)
-  let nixos_hosts = (get_nixos_hosts)
+  let systems = (get-systems)
+  let darwin_hosts = (get-darwin-hosts)
+  let nixos_hosts = (get-nixos-hosts)
 
   let configuration_files = (
     $configurations
@@ -462,18 +472,28 @@ def list_files [unique_files: bool configuration?: string] {
         |configuration|
 
         if ($configuration in $systems) {
-          fd --hidden --type file "" $configuration
-          | lines
+          (
+            fd
+              --hidden
+              --type file
+              ""
+              (get-project-path configuration | path join $configuration)
+          ) | lines
         } else {
-          let system_directory = if $configuration in $darwin_hosts {
-            "darwin"
-          } else if $configuration in $nixos_hosts {
-            "nixos"
-          } else {
-            raise_configuration_error $configuration
-          }
+          let system_directory = (
+            get-project-path configuration
+            | path join (
+                if $configuration in $darwin_hosts {
+                  "darwin"
+                } else if $configuration in $nixos_hosts {
+                  "nixos"
+                } else {
+                  raise_configuration_error $configuration
+                }
+              )
+          )
 
-          let exclude_pattern = (get_excluded_paths_pattern $configuration)
+          let exclude_pattern = (get-excluded-paths-pattern $configuration)
 
           (
             fd
@@ -482,19 +502,18 @@ def list_files [unique_files: bool configuration?: string] {
               --type file
               ""
               $system_directory
-          )
-          | lines
+          ) | lines
         }
-    }
+      }
+    | flatten
+    | uniq
+    | to text
   )
-  | flatten
-  | uniq
-  | to text
 
-  return (format_files $configuration_files $unique_files $configuration)
+  return (format-files $configuration_files $unique_files $configuration)
 }
 
-def get_matching_files [files: string file: string] {
+def get-matching-files [files: string file: string] {
   return (
     $files
     | rg $file
@@ -522,7 +541,7 @@ def get_matching_files [files: string file: string] {
   )
 }
 
-def delta [source: string target: string side_by_side: bool] {
+def diff [source: string target: string side_by_side: bool] {
   do --ignore-errors {
     if $side_by_side {
       ^delta --diff-so-fancy --paging never --side-by-side $source $target
@@ -544,23 +563,23 @@ def main [
 ] {
   if ($source | is-empty) {
     if $files or $unique_files {
-      return (list_files $unique_files)
+      return (list-files $unique_files)
     }
 
     if $shared_files {
-      return (get_shared_configuration_files)
+      return (get-shared-configuration-files)
     }
   }
 
-  let validated_args = (validate_source_and_target $source $target)
+  let validated_args = (validate-source-and-target $source $target)
   let source = ($validated_args | get source)
   let target = ($validated_args | get target)
 
   if not ($file | is-empty) {
-    let target_files = (list_files true $target)
-    let source_files = (list_files true $source)
-    let matching_source_files = (get_matching_files $source_files $file)
-    let matching_target_files = (get_matching_files $target_files $file)
+    let target_files = (list-files true $target)
+    let source_files = (list-files true $source)
+    let matching_source_files = (get-matching-files $source_files $file)
+    let matching_target_files = (get-matching-files $target_files $file)
 
     print $matching_source_files
     print $matching_target_files
@@ -571,7 +590,7 @@ def main [
           continue
         }
 
-        delta $source_file $target_file $side_by_side
+        diff $source_file $target_file $side_by_side
       }
     }
 
@@ -579,20 +598,20 @@ def main [
   }
 
   if $files or $unique_files {
-    return (list_files $unique_files $target)
+    return (list-files $unique_files $target)
   }
 
   if $shared_files {
-    return (get_shared_configuration_files $target)
+    return (get-shared-configuration-files $target)
   }
 
-  let source_directory = (get_configuration_directory $source)
-  let target_directory = (get_configuration_directory $target)
-  let source_files = (get_host_files $source_directory --with-shared)
-  let target_files = (get_host_files $target_directory)
+  let source_directory = (get-configuration-directory $source)
+  let target_directory = (get-configuration-directory $target)
+  let source_files = (get-host-files $source_directory --with-shared)
+  let target_files = (get-host-files $target_directory)
 
   let common_files = (
-    get_common_files
+    get-common-files
       $target
       $source_files
       $target_files
@@ -605,6 +624,6 @@ def main [
     let source = ($files | get 0)
     let target = ($files | get 1)
 
-    delta $source $target $side_by_side
+    diff $source $target $side_by_side
   }
 }

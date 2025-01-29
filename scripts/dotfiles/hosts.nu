@@ -2,13 +2,13 @@
 
 use ../environment.nu get-project-path
 
-export def is_nixos [] {
+export def is-nixos [] {
   return ("NixOS" in (uname | get kernel-version))
 }
 
-export def get_available_hosts [--list] {
-  let darwin_hosts = (get_hosts "homeConfigurations")
-  let nixos_hosts = (get_hosts "nixosConfigurations")
+export def get-available-hosts [--list] {
+  let darwin_hosts = (get-hosts "homeConfigurations")
+  let nixos_hosts = (get-hosts "nixosConfigurations")
 
   return (
     if $list {
@@ -24,8 +24,8 @@ export def get_available_hosts [--list] {
   )
 }
 
-export def get_configuration [host?: string, --with-packages-path] {
-  let kernel_name = if (is_nixos) {
+export def get-configuration [host?: string, --with-packages-path] {
+  let kernel_name = if (is-nixos) {
     "NixOS"
   } else {
     "Darwin"
@@ -36,7 +36,7 @@ export def get_configuration [host?: string, --with-packages-path] {
     NixOS: "nixosConfigurations"
   }
 
-  let available_hosts = (get_available_hosts)
+  let available_hosts = (get-available-hosts)
 
   let base = if ($host | is-empty) {
     $base_configurations
@@ -88,25 +88,27 @@ export def get_configuration [host?: string, --with-packages-path] {
   return $".#($base).($host)($packages_path)"
 }
 
-def get_hosts [configuration] {
+def get-hosts [configuration] {
   return (
-      nix eval $".#($configuration)" --apply builtins.attrNames err> /dev/null
-      | str replace --all --regex '\[ | \]|"' ""
+      (
+        nix eval $"(get-project-path configuration)#($configuration)"
+          --apply builtins.attrNames
+          err> /dev/null
+      ) | str replace --all --regex '\[ | \]|"' ""
       | split row " "
   )
 }
 
-
-export def get_systems [] {
+export def get-systems [] {
   return ["darwin" "nixos"]
 }
 
-export def get_available_host_names [] {
-  return ((get_available_hosts --list) ++ (get_systems))
+export def get-available-host-names [] {
+  return ((get-available-hosts --list) ++ (get-systems))
 }
 
-export def get_darwin_hosts [--with-system] {
-  let hosts = (get_available_hosts | get Darwin)
+export def get-darwin-hosts [--with-system] {
+  let hosts = (get-available-hosts | get Darwin)
 
   return (
     if $with_system {
@@ -117,8 +119,8 @@ export def get_darwin_hosts [--with-system] {
   )
 }
 
-export def get_nixos_hosts [--with-system] {
-  let hosts = (get_available_hosts | get NixOs)
+export def get-nixos-hosts [--with-system] {
+  let hosts = (get-available-hosts | get NixOs)
 
   return (
     if $with_system {
@@ -129,8 +131,8 @@ export def get_nixos_hosts [--with-system] {
   )
 }
 
-export def get_built_host_name [] {
-  if (is_nixos) {
+export def get-built-host-name [] {
+  if (is-nixos) {
     return (cat /etc/hostname | str trim)
   } else {
     if (
@@ -148,5 +150,5 @@ export def get_built_host_name [] {
 
 # View available hosts
 export def main [] {
-  return (get_available_hosts | table --index false)
+  return (get-available-hosts | table --index false)
 }
