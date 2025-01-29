@@ -11,8 +11,10 @@ use ./update.nu
 # Rebuild and switch to (or --test) a configuration
 def main [
     host?: string # The target host configuration (auto-detected if not specified)
+    --all # (with `--clean` or `--prune`)
     --clean # Run `just prune` and `just optimise` after rebuilding
     --hosts # The available hosts on the current system
+    --older-than # (with `--clean` or `--prune`)
     --optimise # Run `just optimise` after rebuilding
     --prune # Run `just prune` after rebuilding
     --test # Apply the configuration without adding it to the boot menu
@@ -59,7 +61,13 @@ def main [
   bat cache --build
 
   if $clean or $prune {
-    prune
+    if $all {
+      prune --all
+    } else if not ($older_than | is-empty) {
+      prune --older-than $older_than
+    } else {
+      prune
+    }
   }
 
   if $clean or $optimise {
