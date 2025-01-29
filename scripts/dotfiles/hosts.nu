@@ -85,7 +85,7 @@ export def get-configuration [host?: string, --with-packages-path] {
     ""
   }
 
-  return $".#($base).($host)($packages_path)"
+  return $"./configuration#($base).($host)($packages_path)"
 }
 
 def get-hosts [configuration] {

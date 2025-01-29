@@ -42,8 +42,9 @@
     ../scripts/dotfiles/rollback.nu {{ id }}
 
 # Open Nix REPL with flake loaded
+[no-cd]
 @shell *host:
-    ../scripts/dotfiles/shell.nu {{ host }}
+    ./scripts/dotfiles/shell.nu {{ host }}
 
 # Update dependencies
 [working-directory: "../configuration"]
