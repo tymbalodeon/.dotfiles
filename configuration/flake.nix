@@ -26,52 +26,40 @@
     nixpkgs,
     nushell-syntax,
     ...
-  } @ inputs: {
+  } @ inputs: let
+    getHosts = hostsDirectory:
+      builtins.attrNames (builtins.readDir hostsDirectory);
+  in {
     darwinConfigurations = let
-      hosts = ["benrosen" "work"];
+      hosts = getHosts ./darwin/hosts;
 
       mkHost = hostName: {
         name = hostName;
 
         value = nix-darwin.lib.darwinSystem {
-          modules = [
-            home-manager.darwinModules.home-manager
-            ./darwin/${hostName}/home.nix
-            ./darwin/${hostName}/configuration.nix
-          ];
-        };
-      };
-    in
-      builtins.listToAttrs (map mkHost hosts);
-
-    homeConfigurations = let
-      hosts = ["benrosen" "work"];
-
-      mkHost = hostName: {
-        name = hostName;
-
-        value = home-manager.lib.homeManagerConfiguration {
-          modules = [./darwin/${hostName}/home.nix];
-          pkgs = nixpkgs.legacyPackages.x86_64-darwin;
-
-          extraSpecialArgs = {
+          modules = [./darwin/hosts/${hostName}/configuration.nix];
+          specialArgs = {
+            inherit home-manager;
             inherit nushell-syntax;
           };
+          system = "x86_64-darwin";
         };
       };
     in
       builtins.listToAttrs (map mkHost hosts);
 
     nixosConfigurations = let
-      hosts = ["bumbirich" "ruzia"];
+      hosts = getHosts ./nixos/hosts;
 
       mkHost = hostName: {
         name = hostName;
 
         value = nixpkgs.lib.nixosSystem {
           modules = [
-            ./nixos/${hostName}/configuration.nix
-            ./nixos/hardware-configurations/${hostName}.nix
+            ./nixos/hosts/${hostName}/configuration.nix
+            # TODO
+            # import this in the configuration.nix?
+            ./nixos/hosts/${hostName}/hardware-configuration.nix
             {networking.hostName = hostName;}
           ];
 

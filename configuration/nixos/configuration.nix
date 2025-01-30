@@ -31,7 +31,7 @@
       inherit (inputs) nushell-syntax;
     };
 
-    users."benrosen" = import ./home.nix;
+    users.benrosen = import ./home.nix;
     useGlobalPkgs = true;
   };
 
