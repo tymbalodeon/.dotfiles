@@ -204,7 +204,7 @@ def format-files [
             let is_darwin_configuration = ($configuration in $darwin_hosts)
             let is_nixos_configuration = ($configuration in $nixos_hosts)
             let is_host_configuration = ($configuration in $hosts)
-            
+
             let host_color = if $is_host_configuration {
               "n"
             } else {
