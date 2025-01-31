@@ -1,4 +1,4 @@
 {...}: {
-  home.file.".gitconfig".source = ../../../.gitconfig;
+  home.file.".gitconfig".source = ../../../../.gitconfig;
   imports = [../../home.nix];
 }

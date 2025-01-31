@@ -7,18 +7,18 @@
     in {
       ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
       ".hushlogin".source = ./.hushlogin;
-      "${nushell_config_path}/aliases.nu".source = ../nushell/aliases.nu;
-      "${nushell_config_path}/cloud.nu".source = ../nushell/cloud.nu;
-      "${nushell_config_path}/colors.nu".source = ../nushell/colors.nu;
-      "${nushell_config_path}/f.nu".source = ../nushell/f.nu;
-      "${nushell_config_path}/prompt.nu".source = ../nushell/prompt.nu;
-      "${nushell_config_path}/src.nu".source = ../nushell/src.nu;
-      "${nushell_config_path}/theme.nu".source = ../nushell/theme.nu;
+      "${nushell_config_path}/aliases.nu".source = ../../nushell/aliases.nu;
+      "${nushell_config_path}/cloud.nu".source = ../../nushell/cloud.nu;
+      "${nushell_config_path}/colors.nu".source = ../../nushell/colors.nu;
+      "${nushell_config_path}/f.nu".source = ../../nushell/f.nu;
+      "${nushell_config_path}/prompt.nu".source = ../../nushell/prompt.nu;
+      "${nushell_config_path}/src.nu".source = ../../nushell/src.nu;
+      "${nushell_config_path}/theme.nu".source = ../../nushell/theme.nu;
       "${nushell_config_path}/theme-function.nu".source =
-        ./nushell/theme-function.nu;
-      "${nushell_config_path}/themes.toml".source = ../nushell/themes.toml;
+        ../../kernels/darwin/nushell/theme-function.nu;
+      "${nushell_config_path}/themes.toml".source = ../../nushell/themes.toml;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
-      "${tealdeer_config_path}/config.toml".source = ../tealdeer/config.toml;
+      "${tealdeer_config_path}/config.toml".source = ../../tealdeer/config.toml;
     };
 
     homeDirectory = "/Users/benrosen";
@@ -28,7 +28,7 @@
     ];
   };
 
-  imports = [../home.nix];
+  imports = [../../home.nix];
 
   programs = {
     kitty.settings = {
