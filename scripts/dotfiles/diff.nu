@@ -7,8 +7,8 @@ use ./hosts.nu get-available-host-names
 use ./hosts.nu get-available-hosts
 use ./hosts.nu get-built-host-name
 use ./hosts.nu get-darwin-hosts
+use ./hosts.nu get-kernels
 use ./hosts.nu get-nixos-hosts
-use ./hosts.nu get-systems
 use ./hosts.nu is-nixos
 
 def raise-configuration-error [configuration: string] {
@@ -267,7 +267,7 @@ def format-files [
 }
 
 def split-paths [paths: list<string>] {
-  let systems = (get-systems)
+  let systems = (get-kernels)
 
   return (
     $paths
@@ -391,7 +391,7 @@ def get-common-files [
   source_files: list
   target_files: list
 ] {
-  let systems = (get-systems)
+  let systems = (get-kernels)
 
   let available_hosts = (
     (get-available-host-names)
@@ -462,7 +462,7 @@ def list-files [unique_files: bool configuration?: string] {
     [$configuration]
   }
 
-  let systems = (get-systems)
+  let systems = (get-kernels)
   let darwin_hosts = (get-darwin-hosts)
   let nixos_hosts = (get-nixos-hosts)
 

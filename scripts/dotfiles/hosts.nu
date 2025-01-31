@@ -3,44 +3,63 @@
 use ../environment.nu get-project-path
 
 export def is-nixos [] {
-  return ("NixOS" in (uname | get kernel-version))
+  "NixOS" in (uname | get kernel-version)
+}
+
+export def get-kernels [] {
+  ls configuration/kernels 
+  | get name
+  | path basename
+}
+
+def get-hosts [kernel: string] {
+  ls (
+    "configuration"
+    | path join kernels
+    | path join $kernel
+    | path join hosts
+  ) | get name
+  | path basename
 }
 
 export def get-available-hosts [--list] {
-  let darwin_hosts = (get-hosts "homeConfigurations")
-  let nixos_hosts = (get-hosts "nixosConfigurations")
+  if $list {
+    get-kernels
+    | each {|kernel| get-hosts $kernel}
+    | flatten
+    | sort
+  } else {
+    mut hosts = {}
 
-  return (
-    if $list {
-      $darwin_hosts ++ $nixos_hosts
-    } else {
-      $darwin_hosts
-      | wrap Darwin
-      | merge (
-          $nixos_hosts
-          | wrap NixOS
+    for kernel in (get-kernels) {
+      $hosts = (
+        $hosts
+        | insert $kernel (get-hosts $kernel)
       )
     }
-  )
-}
 
+    $hosts
+  }
+}
+  
 export def get-configuration [host?: string, --with-packages-path] {
-  let kernel_name = if (is-nixos) {
-    "NixOS"
-  } else {
-    "Darwin"
+  let available_hosts = (get-available-hosts)
+
+  if ($host | is-not-empty) and ($host not-in $available_hosts) {
+    error make {msg: "Invalid host name."}
   }
 
+  let kernel = (uname).kernel-name
+
   let base_configurations = {
-    Darwin: "homeConfigurations",
+    Darwin: "darwinConfigurations",
     NixOS: "nixosConfigurations"
   }
 
-  let available_hosts = (get-available-hosts)
 
   let base = if ($host | is-empty) {
     $base_configurations
-    | get $kernel_name
+    | get $kernel
   } else {
     if $host in ($available_hosts | get Darwin) {
       $base_configurations
@@ -48,16 +67,15 @@ export def get-configuration [host?: string, --with-packages-path] {
     } else if $host in ($available_hosts | get NixOS) {
       $base_configurations
       | get NixOS
-    } else {
-      error make {msg: "Invalid host name."}
-    }
+    } 
   }
 
   let host = if ($host | is-empty) {
-    if $kernel_name == "Darwin" {
-      "benrosen"
+    if $kernel == "Darwin" {
+      (whoami)
     } else {
-      cat /etc/hostname | str trim
+      cat /etc/hostname
+      | str trim
     }
   } else {
     $host
@@ -71,79 +89,59 @@ export def get-configuration [host?: string, --with-packages-path] {
   let packages_path = if $with_packages_path {
     if ($host | is-empty) {
       $paths
-      | get $kernel_name
+      | get $kernel
     } else {
       if $host in ($available_hosts | get Darwin) {
         $paths | get Darwin
       } else if $host in ($available_hosts | get NixOS) {
         $paths | get NixOS
-      } else {
-        error make {msg: "Invalid host name."}
-      }
+      } 
     }
   } else {
     ""
   }
 
-  return $"./configuration#($base).($host)($packages_path)"
-}
-
-def get-hosts [configuration] {
-  return (
-      (
-        nix eval $"(get-project-path configuration)#($configuration)"
-          --apply builtins.attrNames
-          err> /dev/null
-      ) | str replace --all --regex '\[ | \]|"' ""
-      | split row " "
-  )
-}
-
-export def get-systems [] {
-  return ["darwin" "nixos"]
+  $"./configuration#($base).($host)($packages_path)"
 }
 
 export def get-available-host-names [] {
-  return ((get-available-hosts --list) ++ (get-systems))
+  (get-available-hosts --list) ++ (get-kernels)
 }
 
 export def get-darwin-hosts [--with-system] {
   let hosts = (get-available-hosts | get Darwin)
 
-  return (
-    if $with_system {
-      ($hosts | append "darwin")
-    } else {
-      $hosts
-    }
-  )
+  if $with_system {
+    ($hosts | append "darwin")
+  } else {
+    $hosts
+  }
 }
 
 export def get-nixos-hosts [--with-system] {
   let hosts = (get-available-hosts | get NixOs)
 
-  return (
-    if $with_system {
-      ($hosts | append "nixos")
-    } else {
-      $hosts
-    }
-  )
+  if $with_system {
+    ($hosts | append "nixos")
+  } else {
+    $hosts
+  }
 }
 
 export def get-built-host-name [] {
   if (is-nixos) {
-    return (cat /etc/hostname | str trim)
+    cat /etc/hostname
+    | str trim
   } else {
     if (
       rg
         (git config user.email)
-        (get-project-path configuration/darwin/hosts/work/.gitconfig)
-      | is-empty
+        (get-project-path configuration/kernels/darwin/hosts/work/.gitconfig)
+      | is-not-empty
     ) {
-      "benrosen"
-    } else {
       "work"
+    } else {
+      whoami
     }
   }
 }

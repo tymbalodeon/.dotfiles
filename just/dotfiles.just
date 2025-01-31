@@ -7,16 +7,18 @@
     ../scripts/dotfiles/clean.nu {{ all }}
 
 # View the diff between hosts
+[no-cd]
 @diff *args:
-    ../scripts/dotfiles/diff.nu {{ args }}
+    ./scripts/dotfiles/diff.nu {{ args }}
 
 # View generations
 @generations *help:
     ../scripts/dotfiles/generations.nu {{ help }}
 
 # List available hosts
+[no-cd]
 @hosts *help:
-    ../scripts/dotfiles/hosts.nu {{ help }}
+    ./scripts/dotfiles/hosts.nu {{ help }}
 
 # Replace identical files in the Nix store by hard links
 @optimise *help:
