@@ -30,6 +30,7 @@
 
     packages = with pkgs; [
       brightnessctl
+      cantarell-fonts
       equibop
       gforth
       ghostty

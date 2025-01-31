@@ -27,7 +27,6 @@
       bat
       bat-extras.batman
       bottom
-      cantarell-fonts
       chuck
       clang
       clang-tools
