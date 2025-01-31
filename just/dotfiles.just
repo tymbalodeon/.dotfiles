@@ -20,6 +20,11 @@
 @hosts *help:
     ./scripts/dotfiles/hosts.nu {{ help }}
 
+# List flake inputs
+[working-directory: "../configuration"]
+@inputs *help:
+    ../scripts/dotfiles/inputs.nu {{ help }}
+
 # Replace identical files in the Nix store by hard links
 @optimise *help:
     ../scripts/dotfiles/optimise.nu {{ help }}
@@ -49,6 +54,6 @@
     ./scripts/dotfiles/shell.nu {{ host }}
 
 # Update dependencies
-[working-directory: "../configuration"]
+[no-cd]
 @update *help:
-    ../scripts/dotfiles/update.nu {{ help }}
+    ./scripts/dotfiles/update.nu {{ help }}

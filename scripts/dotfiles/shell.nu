@@ -8,5 +8,5 @@ def main [
 ] {
   let configuration = (get-configuration $host)
 
-  nix --extra-experimental-features repl-flake repl $configuration
+  nix repl --file configuration/flake.nix
 }

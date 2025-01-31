@@ -76,6 +76,10 @@ mod dotfiles "just/dotfiles.just"
 @hosts *help:
     just dotfiles hosts {{ help }}
 
+# alias for `dotfiles inputs`
+@inputs *help:
+    just dotfiles inputs {{ help }}
+
 # alias for `dotfiles optimise`
 @optimise *help:
     just dotfiles optimise {{ help }}
