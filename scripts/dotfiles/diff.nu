@@ -144,28 +144,28 @@ def format-files [
           | path split
         )
 
-        let $base = ($directories | get 2)
-
-        let file_configuration = if (
-          $directories | get 1
-        ) in $darwin_hosts {
-          $base | path join ($directories | get 1)
+        let $base = if "hosts" in $directories {
+          $directories
+          | get 4
+        } else if "kernels" in $directories {
+          $directories
+          | get 2
         } else {
-          $base
+          "configuration"
         }
 
-        (
+        let line = (
           $line
-          | str replace $"($file_configuration)/" ""
-        ) + $" [($file_configuration)/]"
+          | str replace $"configuration/" ""
+        )
+
+        if $base == "configuration" {
+          $line
+        } else {
+          $line + $" [($base)/]"
+        }
     }
   )
-
-  let files = if $include_shared {
-    (get-shared-configuration-files | lines) ++ $files
-  } else {
-    $files
-  }
 
   let darwin_hosts = (get-darwin-configurations --with-kernel)
   let nixos_hosts = (get-nixos-configurations --with-kernel)
@@ -232,14 +232,18 @@ def format-files [
             "cb"
           }
 
-          {
-            "benrosen": $darwin_host_color
-            "bumbirich": $nixos_host_color
-            "darwin": $darwin_color
-            "nixos": $nixos_color
-            "ruzia": $nixos_host_color
-            "work": $darwin_host_color
-          } | get $file_configuration
+          try {
+            {
+              "benrosen": $darwin_host_color
+              "bumbirich": $nixos_host_color
+              "darwin": $darwin_color
+              "nixos": $nixos_color
+              "ruzia": $nixos_host_color
+              "work": $darwin_host_color
+            } | get $file_configuration
+          } catch {
+            "n"
+          }
         } else {
           mut color = "n"
 
@@ -501,6 +505,10 @@ def list-files [unique_files: bool configuration?: string] {
           ) | lines
         }
       }
+    | append (
+        fd --exclude kernels --type file "" configuration
+        | lines
+      )
     | flatten
     | uniq
     | to text
