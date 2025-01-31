@@ -144,7 +144,7 @@ def format-files [
           | path split
         )
 
-        let $base = ($directories | get 1)
+        let $base = ($directories | get 2)
 
         let file_configuration = if (
           $directories | get 1
@@ -259,7 +259,7 @@ def format-files [
         $line
       }
     }
-  | to text
+  | str join "\n"
 }
 
 def split-paths [paths: list<string>] {
