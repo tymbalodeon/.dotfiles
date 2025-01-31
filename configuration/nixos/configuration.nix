@@ -1,6 +1,5 @@
 {
-  home-manager,
-  nushell-syntax,
+  inputs,
   pkgs,
   ...
 }: {
@@ -27,7 +26,7 @@
   hardware.bluetooth.enable = true;
 
   home-manager = {
-    extraSpecialArgs = {inherit nushell-syntax;};
+    extraSpecialArgs = {inherit inputs;};
     users.benrosen = import ./home.nix;
     useGlobalPkgs = true;
   };
@@ -48,7 +47,7 @@
     };
   };
 
-  imports = [home-manager.nixosModules.default];
+  imports = [inputs.home-manager.nixosModules.default];
   networking = {networkmanager.enable = true;};
 
   nix = {

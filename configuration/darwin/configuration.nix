@@ -1,14 +1,10 @@
-{
-  home-manager,
-  nushell-syntax,
-  ...
-}: {
+{inputs, ...}: {
   home-manager = {
-    extraSpecialArgs = {inherit nushell-syntax;};
+    extraSpecialArgs = {inherit inputs;};
     users.benrosen = import ./home.nix;
   };
 
-  imports = [home-manager.darwinModules.home-manager];
+  imports = [inputs.home-manager.darwinModules.home-manager];
   users.users.benrosen.home = "/Users/benrosen";
 
   system = {

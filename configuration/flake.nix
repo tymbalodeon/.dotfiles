@@ -26,35 +26,27 @@
     nixpkgs,
     nushell-syntax,
     ...
-  }: let
-    getHosts = hostsDirectory:
-      builtins.attrNames (builtins.readDir hostsDirectory);
+  } @ inputs: let
+    mkHosts = mkHost: hostsDirectory:
+      builtins.foldl'
+      (a: b: a // b)
+      {}
+      (map mkHost (builtins.attrNames (builtins.readDir hostsDirectory)));
   in {
-    darwinConfigurations = let
-      hosts = getHosts ./darwin/hosts;
-
-      mkHost = hostName: {
+    darwinConfigurations =
+      mkHosts
+      (hostName: {
         ${hostName} = nix-darwin.lib.darwinSystem {
           modules = [./darwin/hosts/${hostName}/configuration.nix];
-
-          specialArgs = {
-            inherit home-manager;
-            inherit nushell-syntax;
-          };
-
+          specialArgs = {inherit inputs;};
           system = "x86_64-darwin";
         };
-      };
-    in
-      builtins.foldl' (a: b: a // b) {} (map mkHost hosts);
+      })
+      ./darwin/hosts;
 
-    nixosConfigurations = let
-      hosts = getHosts ./nixos/hosts;
-
-      mkHost = hostName: {
-        name = hostName;
-
-        value = nixpkgs.lib.nixosSystem {
+    nixosConfigurations =
+      mkHosts (hostName: {
+        ${hostName} = nixpkgs.lib.nixosSystem {
           modules = [
             ./nixos/hosts/${hostName}/configuration.nix
             # TODO
@@ -63,10 +55,9 @@
             {networking.hostName = hostName;}
           ];
 
-          specialArgs = {inherit home-manager;};
+          specialArgs = {inherit inputs;};
         };
-      };
-    in
-      builtins.listToAttrs (map mkHost hosts);
+      })
+      ./nixos/hosts;
   };
 }

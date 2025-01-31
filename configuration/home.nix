@@ -1,5 +1,5 @@
 {
-  nushell-syntax,
+  inputs,
   pkgs,
   ...
 }: {
@@ -10,7 +10,7 @@
       ".config/bat/config".source = ./bat/config;
 
       ".config/bat/syntaxes/nushell.sublime-syntax".source =
-        nushell-syntax + "/nushell.sublime-syntax";
+        inputs.nushell-syntax + "/nushell.sublime-syntax";
 
       ".config/helix/config.toml".source = ./helix/config.toml;
       ".config/helix/languages.toml".source = ./helix/languages.toml;
