@@ -138,7 +138,7 @@ export def get-built-host-name [] {
     if (
       rg
         (git config user.email)
-        (get-project-path configuration/darwin/work/.gitconfig)
+        (get-project-path configuration/darwin/hosts/work/.gitconfig)
       | is-empty
     ) {
       "benrosen"

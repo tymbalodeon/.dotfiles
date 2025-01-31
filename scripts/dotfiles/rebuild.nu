@@ -53,7 +53,7 @@ def main [
         sudo nixos-rebuild switch --flake $host
     }
   } else {
-    home-manager switch --flake $host
+    nix run "nix-darwin/master#darwin-rebuild" -- switch --flake $host
   }
 
   rustup update
