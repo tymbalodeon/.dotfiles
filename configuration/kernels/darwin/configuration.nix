@@ -7,6 +7,10 @@
   imports = [inputs.home-manager.darwinModules.home-manager];
   users.users.benrosen.home = "/Users/benrosen";
 
+  security.sudo.extraConfig = ''
+    Defaults env_keep += "TERM TERMINFO"
+  '';
+
   system = {
     activationScripts.postUserActivation.text = ''
       /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u

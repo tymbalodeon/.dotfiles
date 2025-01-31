@@ -10,8 +10,6 @@ def main [] {
     | reject specialisations configurationRevision
     | table --index false
   } else {
-    try {
-      home-manager generations
-    }
+    /run/current-system/sw/bin/darwin-rebuild --list-generations
   }
 }
