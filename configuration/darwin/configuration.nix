@@ -25,6 +25,7 @@
         mineffect = "scale";
       };
 
+      menuExtraClock.IsAnalog = false;
       NSGlobalDomain._HIHideMenuBar = true;
       SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
     };
