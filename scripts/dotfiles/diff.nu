@@ -1,14 +1,12 @@
 #!/usr/bin/env nu
 
-use ../environment.nu get-project-path
-use ../environment.nu get-project-root
 use ./hosts.nu
-use ./hosts.nu get-available-host-names
+use ./hosts.nu get-available-configurations
 use ./hosts.nu get-available-hosts
 use ./hosts.nu get-built-host-name
-use ./hosts.nu get-darwin-hosts
+use ./hosts.nu get-darwin-configurations
 use ./hosts.nu get-kernels
-use ./hosts.nu get-nixos-hosts
+use ./hosts.nu get-nixos-configurations
 use ./hosts.nu is-nixos
 
 def raise-configuration-error [configuration: string] {
@@ -22,7 +20,7 @@ def raise-configuration-error [configuration: string] {
 def validate-configuration [configuration: string] {
   let configuration = ($configuration | str downcase)
 
-  if not ($configuration in (get-available-host-names)) {
+  if not ($configuration in (get-available-configurations)) {
     raise-configuration-error $configuration
   }
 
@@ -61,7 +59,7 @@ def validate-source-and-target [source?: string target?: string] {
 }
 
 def get-shared-configuration-files [configuration?: string] {
-  let configuration_path = (get-project-path configuration)
+  let configuration_path = "configuration"
 
   if ($configuration | is-empty) {
     return (
@@ -132,7 +130,7 @@ def format-files [
   configuration?: string
 ] {
   let include_shared = not $unique_files
-  let darwin_hosts = (get-darwin-hosts)
+  let darwin_hosts = (get-darwin-configurations)
 
   let files = (
     $files
@@ -142,7 +140,7 @@ def format-files [
 
         let directories = (
           $line
-          | str replace $"(get-project-root)/" ""
+          | str replace (realpath . | path dirname) ""
           | path split
         )
 
@@ -169,101 +167,99 @@ def format-files [
     $files
   }
 
-  let darwin_hosts = (get-darwin-hosts --with-system)
-  let nixos_hosts = (get-nixos-hosts --with-system)
+  let darwin_hosts = (get-darwin-configurations --with-kernel)
+  let nixos_hosts = (get-nixos-configurations --with-kernel)
   let hosts = (get-available-hosts --list)
 
-  return (
-    $files
-    | sort
-    | each {
-        |line|
+  $files
+  | sort
+  | each {
+      |line|
 
-        if "[" in $line {
-          let file_configuration = if "bumbirich" in $line {
-            "bumbirich"
-          } else if "ruzia" in $line {
-            "ruzia"
-          } else (
-            $line
-            | rg '\[.+\]' --only-matching
-            | str replace "[" ""
-            | str replace "]" ""
-            | split row "/"
-            | filter {|directory| not ($directory | is-empty)}
-            | last
-          )
+      if "[" in $line {
+        let file_configuration = if "bumbirich" in $line {
+          "bumbirich"
+        } else if "ruzia" in $line {
+          "ruzia"
+        } else (
+          $line
+          | rg '\[.+\]' --only-matching
+          | str replace "[" ""
+          | str replace "]" ""
+          | split row "/"
+          | filter {|directory| not ($directory | is-empty)}
+          | last
+        )
 
-          let color = if $include_shared or $unique_files {
-            let $configuration = if ($configuration | is-empty) {
-              ""
-            } else {
-              $configuration
-            }
-
-            let is_darwin_configuration = ($configuration in $darwin_hosts)
-            let is_nixos_configuration = ($configuration in $nixos_hosts)
-            let is_host_configuration = ($configuration in $hosts)
-
-            let host_color = if $is_host_configuration {
-              "n"
-            } else {
-              "ub"
-            }
-
-            let darwin_color = if $is_darwin_configuration {
-              "n"
-            } else {
-              "pb"
-            }
-
-            let nixos_color = if $is_nixos_configuration {
-              "n"
-            } else {
-              "ub"
-            }
-
-            let darwin_host_color = if $is_darwin_configuration {
-              $host_color
-            } else {
-              "yb"
-            }
-
-            let nixos_host_color = if $is_nixos_configuration {
-              $host_color
-            } else {
-              "cb"
-            }
-
-            {
-              "benrosen": $darwin_host_color
-              "bumbirich": $nixos_host_color
-              "darwin": $darwin_color
-              "nixos": $nixos_color
-              "ruzia": $nixos_host_color
-              "work": $darwin_host_color
-            } | get $file_configuration
+        let color = if $include_shared or $unique_files {
+          let $configuration = if ($configuration | is-empty) {
+            ""
           } else {
-            mut color = "n"
-
-            for host in $hosts {
-              if $host in $line {
-                $color = "cb"
-
-                break
-              }
-            }
-
-            $color
+            $configuration
           }
 
-          $"(ansi $color)($line)(ansi reset)"
+          let is_darwin_configuration = ($configuration in $darwin_hosts)
+          let is_nixos_configuration = ($configuration in $nixos_hosts)
+          let is_host_configuration = ($configuration in $hosts)
+
+          let host_color = if $is_host_configuration {
+            "n"
+          } else {
+            "ub"
+          }
+
+          let darwin_color = if $is_darwin_configuration {
+            "n"
+          } else {
+            "pb"
+          }
+
+          let nixos_color = if $is_nixos_configuration {
+            "n"
+          } else {
+            "ub"
+          }
+
+          let darwin_host_color = if $is_darwin_configuration {
+            $host_color
+          } else {
+            "yb"
+          }
+
+          let nixos_host_color = if $is_nixos_configuration {
+            $host_color
+          } else {
+            "cb"
+          }
+
+          {
+            "benrosen": $darwin_host_color
+            "bumbirich": $nixos_host_color
+            "darwin": $darwin_color
+            "nixos": $nixos_color
+            "ruzia": $nixos_host_color
+            "work": $darwin_host_color
+          } | get $file_configuration
         } else {
-          $line
+          mut color = "n"
+
+          for host in $hosts {
+            if $host in $line {
+              $color = "cb"
+
+              break
+            }
+          }
+
+          $color
         }
+
+        $"(ansi $color)($line)(ansi reset)"
+      } else {
+        $line
       }
-    | to text
-  )
+    }
+  | to text
 }
 
 def split-paths [paths: list<string>] {
@@ -291,16 +287,12 @@ def split-paths [paths: list<string>] {
 }
 
 def get-excluded-paths-pattern [name: string] {
-  return (
-    {
-      benrosen: "work"
-      bumbirich: "ruzia"
-      ruzia: "bumbirich"
-      work: "benrosen"
-    }
-    | get $name
-  )
-
+  {
+    benrosen: "work"
+    bumbirich: "ruzia"
+    ruzia: "bumbirich"
+    work: "benrosen"
+  } | get $name
 }
 
 def get-host-files [host_directory: string --with-shared] {
@@ -394,7 +386,7 @@ def get-common-files [
   let systems = (get-kernels)
 
   let available_hosts = (
-    (get-available-host-names)
+    (get-available-configurations)
     | append ""
   )
 
@@ -446,9 +438,9 @@ def get-common-files [
 }
 
 def get-configuration-directory [configuration: string] {
-  if $configuration in (get-darwin-hosts) {
+  if $configuration in (get-darwin-configurations) {
     return $"darwin/($configuration)"
-  } else if $configuration in (get-nixos-hosts) {
+  } else if $configuration in (get-nixos-configurations) {
     return "nixos"
   } else {
     return $configuration
@@ -457,40 +449,44 @@ def get-configuration-directory [configuration: string] {
 
 def list-files [unique_files: bool configuration?: string] {
   let configurations = if ($configuration | is-empty) {
-    get-available-host-names
+    get-available-configurations
   } else {
     [$configuration]
   }
 
-  let systems = (get-kernels)
-  let darwin_hosts = (get-darwin-hosts)
-  let nixos_hosts = (get-nixos-hosts)
+  let kernels = (get-kernels)
+  let base_directory = "configuration/kernels"
+  let darwin_hosts = (get-darwin-configurations)
+  let nixos_hosts = (get-nixos-configurations)
 
   let configuration_files = (
     $configurations
     | each {
         |configuration|
 
-        if ($configuration in $systems) {
+        if ($configuration in $kernels) {
           (
             fd
               --hidden
               --type file
               ""
-              (get-project-path configuration | path join $configuration)
+              (
+                $base_directory
+                | path join $configuration
+              )
           ) | lines
         } else {
-          let system_directory = (
-            get-project-path configuration
+          let kernel_directory = (
+            $base_directory
             | path join (
-                if $configuration in $darwin_hosts {
-                  "darwin"
-                } else if $configuration in $nixos_hosts {
-                  "nixos"
-                } else {
-                  raise_configuration_error $configuration
-                }
-              )
+              if $configuration in $darwin_hosts {
+                "darwin"
+              } else if $configuration in $nixos_hosts {
+                "nixos"
+              } else {
+                raise_configuration_error $configuration
+              }
+            )
           )
 
           let exclude_pattern = (get-excluded-paths-pattern $configuration)
@@ -501,7 +497,7 @@ def list-files [unique_files: bool configuration?: string] {
               --hidden
               --type file
               ""
-              $system_directory
+              $kernel_directory
           ) | lines
         }
       }
@@ -510,7 +506,7 @@ def list-files [unique_files: bool configuration?: string] {
     | to text
   )
 
-  return (format-files $configuration_files $unique_files $configuration)
+  format-files $configuration_files $unique_files $configuration
 }
 
 def get-matching-files [files: string file: string] {

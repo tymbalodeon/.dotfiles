@@ -27,37 +27,38 @@
     nushell-syntax,
     ...
   } @ inputs: let
-    mkHosts = mkHost: hostsDirectory:
+    mkHosts = mkHost: kernel:
       builtins.foldl'
       (a: b: a // b)
       {}
-      (map mkHost (builtins.attrNames (builtins.readDir hostsDirectory)));
+      (map mkHost
+        (builtins.attrNames (builtins.readDir ./kernels/${kernel}/hosts)));
   in {
     darwinConfigurations =
       mkHosts
       (hostName: {
         ${hostName} = nix-darwin.lib.darwinSystem {
-          modules = [./darwin/hosts/${hostName}/configuration.nix];
+          modules = [./kernels/darwin/hosts/${hostName}/configuration.nix];
           specialArgs = {inherit inputs;};
           system = "x86_64-darwin";
         };
       })
-      ./darwin/hosts;
+      "darwin";
 
     nixosConfigurations =
       mkHosts (hostName: {
         ${hostName} = nixpkgs.lib.nixosSystem {
           modules = [
-            ./nixos/hosts/${hostName}/configuration.nix
+            ./kernels/nixos/hosts/${hostName}/configuration.nix
             # TODO
             # import this in the configuration.nix?
-            ./nixos/hosts/${hostName}/hardware-configuration.nix
+            ./kernels/nixos/hosts/${hostName}/hardware-configuration.nix
             {networking.hostName = hostName;}
           ];
 
           specialArgs = {inherit inputs;};
         };
       })
-      ./nixos/hosts;
+      "nixos";
   };
 }

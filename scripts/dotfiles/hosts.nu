@@ -104,24 +104,24 @@ export def get-configuration [host?: string, --with-packages-path] {
   $"./configuration#($base).($host)($packages_path)"
 }
 
-export def get-available-host-names [] {
+export def get-available-configurations [] {
   (get-available-hosts --list) ++ (get-kernels)
 }
 
-export def get-darwin-hosts [--with-system] {
+export def get-darwin-configurations [--with-kernel] {
   let hosts = (get-available-hosts | get Darwin)
 
-  if $with_system {
+  if $with_kernel {
     ($hosts | append "darwin")
   } else {
     $hosts
   }
 }
 
-export def get-nixos-hosts [--with-system] {
+export def get-nixos-configurations [--with-kernel] {
   let hosts = (get-available-hosts | get NixOs)
 
-  if $with_system {
+  if $with_kernel {
     ($hosts | append "nixos")
   } else {
     $hosts
