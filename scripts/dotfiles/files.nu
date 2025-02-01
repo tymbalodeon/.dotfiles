@@ -47,21 +47,23 @@ def main [
     error make { msg: $"unrecognized configuration name '($configuration)'" }
   }
 
-  if $unique {
-    # list-files $unique
-  } else {
-    let files = (
-      fd
-        --exclude "flake.lock"
-        --hidden
-        --type "file"
-        ""
-        "configuration"
-    )
+  let files = (
+    fd
+      --exclude "flake.lock"
+      --hidden
+      --type "file"
+      ""
+      "configuration"
+    | lines
+  )
 
+  if $unique {
+    $files
+    | filter {|file| $configuration in $file}
+    | str join "\n"
+  } else {
     if ($configuration | is-empty) {
       $files
-      | lines
       | filter {|file| not ($file | str contains kernels)}
       | str join "\n"
     } else {
