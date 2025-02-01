@@ -27,11 +27,67 @@ def matches_configuration [file: string configuration: string] {
   | str contains $configuration
 }
 
-def format-files [
-  files: list<string>
-  unique: bool
-  configuration?: string
+# List configuration files
+def main [
+  configuration?: string # Configuration name
+  --unique # View only files unique to a configuration
 ] {
+  validate-configuration-name $configuration
+
+  let files = (
+    fd
+      --exclude "flake.lock"
+      --hidden
+      --type "file"
+      ""
+      "configuration"
+    | lines
+  )
+
+  let files = if $unique {
+    $files
+    | filter {|file| $configuration in $file}
+  } else {
+    if ($configuration | is-empty) {
+      $files
+      | filter {|file| not ($file | str contains kernels)}
+    } else {
+      let configuration_is_kernel_name = (
+        $configuration in (ls --short-names configuration/kernels).name
+      )
+
+      let configuration_is_host_name = (
+        $configuration in (ls --short-names configuration/**/hosts/**).name
+      )
+
+      let kernel_name = if $configuration_is_host_name {
+        ls ($"configuration/**/($configuration)" | into glob)
+        | get name
+        | split row "kernels/"
+        | last
+        | path split
+        | first
+      } else {
+        null
+      }
+    
+      $files
+      | filter {
+          |file|
+
+          $configuration_is_kernel_name and (
+            matches_configuration $file $configuration
+          ) and not (matches_hosts $file) or not (
+            matches_kernels $file
+          ) or $configuration_is_host_name and (
+            matches_configuration $file $configuration
+          ) or not (matches_hosts $file) and (
+            matches_kernel_name $file $kernel_name
+          )
+        }
+    }
+  }
+
   let files = (
     $files
     | each {
@@ -104,68 +160,4 @@ def format-files [
   # FIXME differentiate host vs kernel to make colors work (host matches first, then kernel if no host match)
   $files
   | str join "\n"
-}
-
-# List configuration files
-def main [
-  configuration?: string # Configuration name
-  --unique # View only files unique to a configuration
-] {
-  validate-configuration-name $configuration
-
-  let files = (
-    fd
-      --exclude "flake.lock"
-      --hidden
-      --type "file"
-      ""
-      "configuration"
-    | lines
-  )
-
-  let files = if $unique {
-    $files
-    | filter {|file| $configuration in $file}
-  } else {
-    if ($configuration | is-empty) {
-      $files
-      | filter {|file| not ($file | str contains kernels)}
-    } else {
-      let configuration_is_kernel_name = (
-        $configuration in (ls --short-names configuration/kernels).name
-      )
-
-      let configuration_is_host_name = (
-        $configuration in (ls --short-names configuration/**/hosts/**).name
-      )
-
-      let kernel_name = if $configuration_is_host_name {
-        ls ($"configuration/**/($configuration)" | into glob)
-        | get name
-        | split row "kernels/"
-        | last
-        | path split
-        | first
-      } else {
-        null
-      }
-    
-      $files
-      | filter {
-          |file|
-
-          $configuration_is_kernel_name and (
-            matches_configuration $file $configuration
-          ) and not (matches_hosts $file) or not (
-            matches_kernels $file
-          ) or $configuration_is_host_name and (
-            matches_configuration $file $configuration
-          ) or not (matches_hosts $file) and (
-            matches_kernel_name $file $kernel_name
-          )
-        }
-    }
-  }
-
-  format-files $files $unique $configuration
 }
