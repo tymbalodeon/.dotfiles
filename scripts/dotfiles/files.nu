@@ -30,7 +30,8 @@ def matches_configuration [file: string configuration: string] {
 # List configuration files
 def main [
   configuration?: string # Configuration name
-  --unique # View only files unique to a configuration
+  --all # List files for all configuraitons
+  --unique # List files unique to a configuration
 ] {
   validate-configuration-name $configuration
 
@@ -44,120 +45,120 @@ def main [
     | lines
   )
 
-  let files = if $unique {
-    $files
-    | filter {|file| $configuration in $file}
-  } else {
-    if ($configuration | is-empty) {
-      $files
-      | filter {|file| not ($file | str contains kernels)}
-    } else {
-      let configuration_is_kernel_name = (
-        $configuration in (ls --short-names configuration/kernels).name
-      )
-
-      let configuration_is_host_name = (
-        $configuration in (ls --short-names configuration/**/hosts/**).name
-      )
-
-      let kernel_name = if $configuration_is_host_name {
-        ls ($"configuration/**/($configuration)" | into glob)
-        | get name
-        | split row "kernels/"
-        | last
-        | path split
-        | first
-      } else {
-        null
-      }
-    
-      $files
-      | filter {
-          |file|
-
-          $configuration_is_kernel_name and (
-            matches_configuration $file $configuration
-          ) and not (matches_hosts $file) or not (
-            matches_kernels $file
-          ) or $configuration_is_host_name and (
-            matches_configuration $file $configuration
-          ) or not (matches_hosts $file) and (
-            matches_kernel_name $file $kernel_name
-          )
-        }
-    }
-  }
-
   let files = (
-    $files
-    | each {
-        |line|
-
-        let directories = (
-          $line
-          | str replace (realpath . | path dirname) ""
-          | path split
+    if $unique {
+      $files
+      | filter {|file| $configuration in $file}
+    } else {
+      if ($configuration | is-empty) {
+        if $all {
+          $files
+        } else {
+          $files
+          | filter {|file| not ($file | str contains kernels)}
+        }
+      } else {
+        let configuration_is_kernel_name = (
+          $configuration in (ls --short-names configuration/kernels).name
         )
 
-        let $base = if "hosts" in $directories {
-          $directories
-          | get 4
-        } else if "kernels" in $directories {
-          $directories
-          | get 2
-        } else {
-          "configuration"
-        }
+        let configuration_is_host_name = (
+          $configuration in (ls --short-names configuration/**/hosts/**).name
+        )
 
-        if not $unique and $base != "configuration" {
-          $line + $" [($base)]"
+        let kernel_name = if $configuration_is_host_name {
+          ls ($"configuration/**/($configuration)" | into glob)
+          | get name
+          | split row "kernels/"
+          | last
+          | path split
+          | first
         } else {
-          $line
+          null
         }
+    
+        $files
+        | filter {
+            |file|
+
+            $configuration_is_kernel_name and (
+              matches_configuration $file $configuration
+            ) and not (matches_hosts $file) or not (
+              matches_kernels $file
+            ) or $configuration_is_host_name and (
+              matches_configuration $file $configuration
+            ) or not (matches_hosts $file) and (
+              matches_kernel_name $file $kernel_name
+            )
+          }
+      }
+    }
+  | each {
+      |line|
+
+      let directories = (
+        $line
+        | str replace (realpath . | path dirname) ""
+        | path split
+      )
+
+      let $base = if "hosts" in $directories {
+        $directories
+        | get 4
+      } else if "kernels" in $directories {
+        $directories
+        | get 2
+      } else {
+        "configuration"
+      }
+
+      if not $unique and $base != "configuration" {
+        $line + $" [($base)]"
+      } else {
+        $line
+      }
     }
   )
 
-  # FIXME
-  let include_shared = not $unique
+  (
+    if $all or not $unique {
+      let hosts_and_colors = (
+        get-all-configurations
+        | zip (
+          ansi --list
+          | get name
+          | filter {
+              |color|
 
-  let files = if not $unique {
-    let hosts_and_colors = (
-      get-all-configurations
-      | zip (
-        ansi --list
-        | get name
-        | filter {
-            |color|
-
-            $color not-in [reset title identity escape size] and (
-             "_" not-in $color 
-            # TODO is it possible to programmatically detect which colors will work?
-            ) and not ("black" in $color) or (
-              "xterm" in $color
-            )
-          }
+              $color not-in [reset title identity escape size] and (
+               "_" not-in $color 
+              # TODO is it possible to programmatically detect which colors will work?
+              ) and not ("black" in $color) or (
+                "xterm" in $color
+              )
+            }
+        )
       )
-    )
 
-    $files
-    | each {
-        |line|
+      $files
+      | each {
+          |line|
 
-        mut line = $line
+          mut line = $line
 
-        for $host_and_color in $hosts_and_colors {
-          if $host_and_color.0 in $line {
-            $line = $"(ansi $host_and_color.1)($line)(ansi reset)"
+          for $host_and_color in $hosts_and_colors {
+            if $host_and_color.0 in $line {
+              $line = $"(ansi $host_and_color.1)($line)(ansi reset)"
+            }
           }
-        }
 
-        $line
-      }
-  } else {
-    $files
-  }
+          $line
+        }
+    } else {
+      $files
+    }
+  )
+  | str join "\n"
 
   # FIXME differentiate host vs kernel to make colors work (host matches first, then kernel if no host match)
-  $files
-  | str join "\n"
 }
