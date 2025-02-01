@@ -58,69 +58,78 @@ def validate-source-and-target [source?: string target?: string] {
   )
 }
 
+def matches_kernel_name [file: string kernel_name?: string] {
+  if ($kernel_name | is-empty) {
+    false
+  } else {
+    $file
+    | str contains $kernel_name
+  }
+}
+
+def matches_kernels [file: string] {
+  $file | str contains kernels
+}
+
+def matches_hosts [file: string] {
+  $file | str contains hosts
+}
+
+def matches_configuration [file: string configuration: string] {
+  $file | str contains $configuration
+}
+
 def get-shared-configuration-files [configuration?: string] {
-  let configuration_path = "configuration"
+  let files = (
+    fd
+      --exclude "flake.lock"
+      --hidden
+      --type "file"
+      ""
+      "configuration"
+  )
 
   if ($configuration | is-empty) {
-    return (
-      fd
-        --exclude ".git"
-        --exclude ".gitignore"
-        --exclude ".pre-commit-config.yaml"
-        --exclude ".stylelintrc.json"
-        --exclude "Justfile"
-        --exclude "README.md"
-        --exclude "darwin"
-        --exclude "flake.lock"
-        --exclude "nixos"
-        --exclude "scripts"
-        --hidden
-        --type "file"
-        ""
-        $configuration_path
-    )
+    $files
+    | lines
+    | filter {|file| not ($file | str contains kernels)}
+    | str join "\n"
   } else {
-    let excludes = {
-      benrosen: ["nixos" "work"]
-      bumbirich: ["darwin" "ruzia"]
-      darwin: ["benrosen" "nixos" "work"]
-      nixos: ["bumbirich" "darwin" "ruzia"]
-      ruzia: ["bumbirich" "darwin"]
-      work: ["benrosen" "nixos"]
-    } | get $configuration
-
-    return (
-      (
-        fd
-          --exclude ".git"
-          --exclude ".gitignore"
-          --exclude ".pre-commit-config.yaml"
-          --exclude ".stylelintrc.json"
-          --exclude "Justfile"
-          --exclude "README.md"
-          --exclude "flake.lock"
-          --exclude "scripts"
-          --hidden
-          --type "file"
-          ""
-          $configuration_path
-      ) | lines
-      | filter {
-          |line|
-
-          mut keep = true
-
-          for exclude in $excludes {
-            if $exclude in $line {
-              $keep = false
-              break
-            }
-          }
-
-          $keep
-        }
-      | to text
+    let configuration_is_kernel_name = (
+      $configuration in (ls configuration/kernels --short-names).name
     )
+
+    let configuration_is_host_name = (
+      $configuration in (ls configuration/**/hosts/** --short-names).name
+    )
+
+    let kernel_name = if $configuration_is_host_name {
+      ls ($"configuration/**/($configuration)" | into glob)
+      | get name
+      | split row "kernels/"
+      | last
+      | path split
+      | first
+    } else {
+      null
+    }
+    
+    $files
+    | lines
+    | filter {
+        |file|
+
+        $configuration_is_kernel_name and (
+          matches_configuration $file $configuration
+        ) and not (matches_hosts $file) or not (
+          matches_kernels $file
+        ) or $configuration_is_host_name and (
+          matches_configuration $file $configuration
+        ) or not (matches_hosts $file) and (
+          matches_kernel_name $file $kernel_name
+        )
+      }
+    | str join "\n"
   }
 }
 

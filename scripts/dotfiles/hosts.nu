@@ -146,15 +146,26 @@ export def get-built-host-name [] {
   }
 }
 
+# FIXME
 # View available hosts
 export def main [] {
-  if (is-nixos) {
-    get-available-hosts
-    | get NixOS
+  let kernel = ((uname).kernel-name | str downcase)
+  let hosts = (get-available-hosts)
+
+  let available_hosts = (
+    $hosts
+    | get $kernel
     | str join "\n"
-  } else {
-    get-available-hosts
-    | get Darwin
+  )
+
+  let other_hosts = (
+    $hosts
+    | reject $kernel
+    | each {|kernel| $kernel | values}
+    | flatten
     | str join "\n"
-  }
+  )
+
+  print $available_hosts
+  # print $other_hosts
 }
