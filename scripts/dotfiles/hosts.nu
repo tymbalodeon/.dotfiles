@@ -6,32 +6,31 @@ export def is-nixos [] {
   "NixOS" in (uname | get kernel-version)
 }
 
-export def get-kernels [] {
-  ls configuration/kernels 
+export def get-all-kernels [] {
+  ls --short-names configuration/kernels 
   | get name
-  | path basename
 }
 
 def get-hosts [kernel: string] {
-  ls (
+  ls --short-names (
     "configuration"
     | path join kernels
     | path join $kernel
     | path join hosts
-  ) | get name
-  | path basename
+  )
+  | get name
 }
 
-export def get-available-hosts [--list] {
+export def get-all-hosts [--list] {
   if $list {
-    get-kernels
+    get-all-kernels
     | each {|kernel| get-hosts $kernel}
     | flatten
     | sort
   } else {
     mut hosts = {}
 
-    for kernel in (get-kernels) {
+    for kernel in (get-all-kernels) {
       $hosts = (
         $hosts
         | insert $kernel (get-hosts $kernel)
@@ -41,12 +40,24 @@ export def get-available-hosts [--list] {
     $hosts
   }
 }
+
+def get-all-configurations [] {
+  let kernels = (get-all-kernels)
+
+  $kernels
+  | append (
+      $kernels
+    | each {|kernel| get-hosts $kernel}
+  )
+  | flatten
+  | sort
+}
   
 export def get-configuration [host?: string, --with-packages-path] {
-  let available_hosts = (get-available-hosts)
+  let available_hosts = (get-all-hosts)
 
   if ($host | is-not-empty) and ($host not-in $available_hosts) {
-    error make {msg: "Invalid host name."}
+    error make --unspanned { msg: "Invalid host name." }
   }
 
   let kernel = (uname).kernel-name
@@ -55,7 +66,6 @@ export def get-configuration [host?: string, --with-packages-path] {
     Darwin: "darwinConfigurations",
     NixOS: "nixosConfigurations"
   }
-
 
   let base = if ($host | is-empty) {
     $base_configurations
@@ -104,30 +114,6 @@ export def get-configuration [host?: string, --with-packages-path] {
   $"./configuration#($base).($host)($packages_path)"
 }
 
-export def get-available-configurations [] {
-  (get-available-hosts --list) ++ (get-kernels)
-}
-
-export def get-darwin-configurations [--with-kernel] {
-  let hosts = (get-available-hosts | get Darwin)
-
-  if $with_kernel {
-    ($hosts | append "darwin")
-  } else {
-    $hosts
-  }
-}
-
-export def get-nixos-configurations [--with-kernel] {
-  let hosts = (get-available-hosts | get NixOs)
-
-  if $with_kernel {
-    ($hosts | append "nixos")
-  } else {
-    $hosts
-  }
-}
-
 export def get-built-host-name [] {
   if (is-nixos) {
     cat /etc/hostname
@@ -146,11 +132,30 @@ export def get-built-host-name [] {
   }
 }
 
+export def validate-configuration-name [configuration?: string] {
+  if ($configuration | is-not-empty) and not (
+    $configuration in (get-all-hosts --list)
+  ) and not ($configuration in (get-all-kernels)) {
+    let available_configurations = (
+      get-all-configurations
+      | each {|configuration| $"• ($configuration)"}
+      | str join "\n"
+    )
+
+    error make --unspanned {
+      msg: $"unrecognized configuration name '($configuration)'
+
+Available configurations:
+($available_configurations)"
+    }
+  }
+}
+
 # FIXME
 # View available hosts
 export def main [] {
   let kernel = ((uname).kernel-name | str downcase)
-  let hosts = (get-available-hosts)
+  let hosts = (get-all-hosts)
 
   let available_hosts = (
     $hosts
