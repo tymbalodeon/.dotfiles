@@ -53,49 +53,56 @@ def format-files [
           "configuration"
         }
 
-        if $base == "configuration" {
-          $line
-        } else {
+        if not $unique and $base != "configuration" {
           $line + $" [($base)]"
+        } else {
+          $line
         }
     }
   )
 
+  # FIXME
   let include_shared = not $unique
 
-  # FIXME differentiate host vs kernel to make colors work (host matches first, then kernel if no host match)
-  let hosts_and_colors = (
-    get-all-configurations
-    | zip (
-      ansi --list
-      | get name
-      | filter {
-          |color|
+  let files = if not $unique {
+    let hosts_and_colors = (
+      get-all-configurations
+      | zip (
+        ansi --list
+        | get name
+        | filter {
+            |color|
 
-          $color not-in [reset title identity escape size] and (
-           "_" not-in $color 
-          # TODO is it possible to programmatically detect which colors will work?
-          ) and not ("black" in $color) or (
-            "xterm" in $color
-          )
-        }
+            $color not-in [reset title identity escape size] and (
+             "_" not-in $color 
+            # TODO is it possible to programmatically detect which colors will work?
+            ) and not ("black" in $color) or (
+              "xterm" in $color
+            )
+          }
+      )
     )
-  )
 
-  $files
-  | each {
-      |line|
+    $files
+    | each {
+        |line|
 
-      mut line = $line
+        mut line = $line
 
-      for $host_and_color in $hosts_and_colors {
-        if $host_and_color.0 in $line {
-          $line = $"(ansi $host_and_color.1)($line)(ansi reset)"
+        for $host_and_color in $hosts_and_colors {
+          if $host_and_color.0 in $line {
+            $line = $"(ansi $host_and_color.1)($line)(ansi reset)"
+          }
         }
-      }
 
-      $line
-    }
+        $line
+      }
+  } else {
+    $files
+  }
+
+  # FIXME differentiate host vs kernel to make colors work (host matches first, then kernel if no host match)
+  $files
   | str join "\n"
 }
 
