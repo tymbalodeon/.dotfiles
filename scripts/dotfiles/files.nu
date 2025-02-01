@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-use ./hosts.nu get-all-hosts
+use ./hosts.nu get-all-configurations
 use ./hosts.nu validate-configuration-name
 
 def matches_kernel_name [file: string kernel_name?: string] {
@@ -13,15 +13,18 @@ def matches_kernel_name [file: string kernel_name?: string] {
 }
 
 def matches_kernels [file: string] {
-  $file | str contains kernels
+  $file
+  | str contains kernels
 }
 
 def matches_hosts [file: string] {
-  $file | str contains hosts
+  $file
+  | str contains hosts
 }
 
 def matches_configuration [file: string configuration: string] {
-  $file | str contains $configuration
+  $file
+  | str contains $configuration
 }
 
 def format-files [
@@ -50,113 +53,48 @@ def format-files [
           "configuration"
         }
 
-        let line = (
-          $line
-          | str replace $"configuration/" ""
-        )
-
         if $base == "configuration" {
           $line
         } else {
-          $line + $" [($base)/]"
+          $line + $" [($base)]"
         }
     }
   )
 
-  let hosts = (get-all-hosts --list)
   let include_shared = not $unique
 
+  # FIXME differentiate host vs kernel to make colors work (host matches first, then kernel if no host match)
+  let hosts_and_colors = (
+    get-all-configurations
+    | zip (
+      ansi --list
+      | get name
+      | filter {
+          |color|
+
+          $color not-in [reset title identity escape size] and (
+           "_" not-in $color 
+          # TODO is it possible to programmatically detect which colors will work?
+          ) and not ("black" in $color) or (
+            "xterm" in $color
+          )
+        }
+    )
+  )
+
   $files
-  | sort
   | each {
       |line|
 
-      if "[" in $line {
-        let file_configuration = if "bumbirich" in $line {
-          "bumbirich"
-        } else if "ruzia" in $line {
-          "ruzia"
-        } else (
-          $line
-          | rg '\[.+\]' --only-matching
-          | str replace "[" ""
-          | str replace "]" ""
-          | split row "/"
-          | filter {|directory| not ($directory | is-empty)}
-          | last
-        )
+      mut line = $line
 
-        let color = if $include_shared or $unique {
-          let $configuration = if ($configuration | is-empty) {
-            ""
-          } else {
-            $configuration
-          }
-
-          let is_darwin_configuration = ($configuration in $darwin_hosts)
-          let is_nixos_configuration = ($configuration in $nixos_hosts)
-          let is_host_configuration = ($configuration in $hosts)
-
-          let host_color = if $is_host_configuration {
-            "n"
-          } else {
-            "ub"
-          }
-
-          let darwin_color = if $is_darwin_configuration {
-            "n"
-          } else {
-            "pb"
-          }
-
-          let nixos_color = if $is_nixos_configuration {
-            "n"
-          } else {
-            "ub"
-          }
-
-          let darwin_host_color = if $is_darwin_configuration {
-            $host_color
-          } else {
-            "yb"
-          }
-
-          let nixos_host_color = if $is_nixos_configuration {
-            $host_color
-          } else {
-            "cb"
-          }
-
-          try {
-            {
-              "benrosen": $darwin_host_color
-              "bumbirich": $nixos_host_color
-              "darwin": $darwin_color
-              "nixos": $nixos_color
-              "ruzia": $nixos_host_color
-              "work": $darwin_host_color
-            } | get $file_configuration
-          } catch {
-            "n"
-          }
-        } else {
-          mut color = "n"
-
-          for host in $hosts {
-            if $host in $line {
-              $color = "cb"
-
-              break
-            }
-          }
-
-          $color
+      for $host_and_color in $hosts_and_colors {
+        if $host_and_color.0 in $line {
+          $line = $"(ansi $host_and_color.1)($line)(ansi reset)"
         }
-
-        $"(ansi $color)($line)(ansi reset)"
-      } else {
-        $line
       }
+
+      $line
     }
   | str join "\n"
 }
@@ -185,7 +123,6 @@ def main [
     if ($configuration | is-empty) {
       $files
       | filter {|file| not ($file | str contains kernels)}
-      | str join "\n"
     } else {
       let configuration_is_kernel_name = (
         $configuration in (ls --short-names configuration/kernels).name

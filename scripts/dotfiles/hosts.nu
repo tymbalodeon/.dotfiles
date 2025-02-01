@@ -41,7 +41,7 @@ export def get-all-hosts [--list] {
   }
 }
 
-def get-all-configurations [] {
+export def get-all-configurations [] {
   let kernels = (get-all-kernels)
 
   $kernels
