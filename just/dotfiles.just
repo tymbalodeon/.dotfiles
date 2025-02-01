@@ -11,6 +11,11 @@
 @diff *args:
     ./scripts/dotfiles/diff.nu {{ args }}
 
+# List configuration files
+[no-cd]
+@files *configuration:
+    ./scripts/dotfiles/files.nu {{ configuration }}
+
 # View generations
 @generations *help:
     ../scripts/dotfiles/generations.nu {{ help }}

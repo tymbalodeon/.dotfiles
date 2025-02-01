@@ -6,7 +6,7 @@
 @check *args:
     ./scripts/check.nu {{ args }}
 
-# List dependencies (alias: `deps`)
+# List dependencies
 @dependencies *args:
     ./scripts/dependencies.nu {{ args }}
 
@@ -67,6 +67,10 @@ mod dotfiles "just/dotfiles.just"
 # alias for `dotfiles diff`
 @diff *args:
     just dotfiles diff {{ args }}
+
+# alias for `dotfiles files`
+@files *configuration:
+    just dotfiles files {{ configuration }}
 
 # alias for `dotfiles generations`
 @generations *help:
