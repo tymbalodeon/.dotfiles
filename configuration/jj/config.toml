@@ -1,0 +1,6 @@
+[user]
+name = "Ben Rosen"
+email = "benjamin.j.rosen@gmail.com"
+
+[ui]
+default-command = ["log"]

@@ -4,6 +4,7 @@
       ".config/hypr/hyprland.conf".source = ./hypr/hyprland.conf;
       ".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
       ".config/hypr/wallpaper".source = ./hypr/wallpaper;
+      ".config/jj/config.toml".source = ../../jj/config.toml;
       ".config/nushell/aliases.nu".source = ../../nushell/aliases.nu;
       ".config/nushell/cloud.nu".source = ../../nushell/cloud.nu;
       ".config/nushell/colors.nu".source = ../../nushell/colors.nu;
@@ -22,7 +23,7 @@
       ".config/waybar/colors.css".source = ./waybar/colors.css;
       ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
       ".config/waybar/style.css".source = ./waybar/style.css;
-      ".gitconfig".source = ../../.gitconfig;
+      ".gitconfig".source = ../../git/.gitconfig;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
     };
 

@@ -46,7 +46,7 @@ export def get-built-host-name [] {
     if (
       rg
         (git config user.email)
-        configuration/kernels/darwin/hosts/work/.gitconfig
+        configuration/kernels/darwin/hosts/work/git/.gitconfig
       | is-not-empty
     ) {
       "work"
