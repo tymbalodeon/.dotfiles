@@ -67,30 +67,28 @@ def main [
           $configuration in (ls --short-names configuration/**/hosts/**).name
         )
 
-        let kernel_name = if $configuration_is_host_name {
+        let kernel_name = (
           ls ($"configuration/**/($configuration)" | into glob)
           | get name
           | split row "kernels/"
           | last
           | path split
           | first
-        } else {
-          null
-        }
+        )
     
         $files
         | filter {
             |file|
 
-            $configuration_is_kernel_name and (
-              matches_configuration $file $configuration
-            ) and not (matches_hosts $file) or not (
-              matches_kernels $file
-            ) or $configuration_is_host_name and (
-              matches_configuration $file $configuration
-            ) or not (matches_hosts $file) and (
+            $configuration_is_kernel_name and $all and (
               matches_kernel_name $file $kernel_name
-            )
+            ) or (matches_configuration $file $configuration) and not (
+              matches_hosts $file
+            ) or not (matches_kernels $file) or (
+              $configuration_is_host_name
+            ) and (matches_configuration $file $configuration) or not (
+              matches_hosts $file
+            ) and (matches_kernel_name $file $kernel_name)
           }
       }
     }
@@ -145,7 +143,7 @@ def main [
 
       let hosts_and_colors = (
         get-all-hosts --list
-        | zip ($colors | drop nth 0..($kernels_and_colors | length) - 1)
+        | zip ($colors | drop nth 0..(($kernels_and_colors | length) - 1))
       )
 
       $files
