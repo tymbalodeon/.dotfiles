@@ -129,7 +129,9 @@ def main [
   )
 
   (
-    if $all or not $unique {
+    if ($configuration | is-empty) or (
+      $configuration in (get-all-kernels)
+    ) and $all or not $unique {
       let colors = (
         ansi --list
         | get name
