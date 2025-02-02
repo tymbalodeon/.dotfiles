@@ -47,7 +47,7 @@ def main [
   )
 
   let files = (
-    if $unique {
+    if $unique and ($configuration | is-not-empty) {
       $files
       | filter {|file| $configuration in $file}
     } else {
@@ -145,7 +145,7 @@ def main [
 
       let hosts_and_colors = (
         get-all-hosts --list
-        | zip ($colors | drop nth (($kernels_and_colors | length) + 1))
+        | zip ($colors | drop nth 0..($kernels_and_colors | length) - 1)
       )
 
       $files
