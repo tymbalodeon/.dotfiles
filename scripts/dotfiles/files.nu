@@ -48,17 +48,8 @@ def main [
 
   let files = (
     if $unique and ($configuration | is-not-empty) {
-      let files = (
-        $files
-        | filter {|file| $configuration in $file}
-      )
-
-      if $all {
-        $files
-      } else {
-        $files
-        | filter {|file| "hosts" not-in $file}
-      }
+      $files
+      | filter {|file| $configuration in $file}
     } else {
       if ($configuration | is-empty) {
         if $all {
