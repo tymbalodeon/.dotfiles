@@ -48,8 +48,17 @@ def main [
 
   let files = (
     if $unique and ($configuration | is-not-empty) {
-      $files
-      | filter {|file| $configuration in $file}
+      let files = (
+        $files
+        | filter {|file| $configuration in $file}
+      )
+
+      if $all {
+        $files
+      } else {
+        $files
+        | filter {|file| "hosts" not-in $file}
+      }
     } else {
       if ($configuration | is-empty) {
         if $all {
@@ -162,7 +171,7 @@ def main [
             }
           }
 
-          if not $matched_host {
+          if not $matched_host and ($configuration | is-empty) or not $unique {
             for $kernel_and_color in $kernels_and_colors {
               if $kernel_and_color.0 in $line {
                 $line = $"(ansi $kernel_and_color.1)($line)(ansi reset)"
