@@ -1,12 +1,6 @@
 #!/usr/bin/env nu
 
-use ./hosts.nu get-configuration
-
 # Open Nix REPL with flake loaded
-def main [
-    host?: string # The target host configuration (auto-detected if not specified)
-] {
-  let configuration = (get-configuration $host)
-
+def main [] {
   nix repl --file configuration/flake.nix
 }

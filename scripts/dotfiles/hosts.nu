@@ -1,9 +1,7 @@
 #!/usr/bin/env nu
 
-use ../environment.nu get-project-path
-
 export def is-nixos [] {
-  "NixOS" in (uname | get kernel-version)
+  (uname | get kernel-version) == "NixOS"
 }
 
 export def get-all-kernels [] {
@@ -21,24 +19,11 @@ def get-hosts [kernel: string] {
   | get name
 }
 
-export def get-all-hosts [--list] {
-  if $list {
-    get-all-kernels
-    | each {|kernel| get-hosts $kernel}
-    | flatten
-    | sort
-  } else {
-    mut hosts = {}
-
-    for kernel in (get-all-kernels) {
-      $hosts = (
-        $hosts
-        | insert $kernel (get-hosts $kernel)
-      )
-    }
-
-    $hosts
-  }
+export def get-all-hosts [] {
+  get-all-kernels
+  | each {|kernel| get-hosts $kernel}
+  | flatten
+  | sort
 }
 
 export def get-all-configurations [] {
@@ -63,7 +48,7 @@ export def get-configuration [host?: string, --with-packages-path] {
   let kernel = (uname).kernel-name
 
   let base_configurations = {
-    Darwin: "darwinConfigurations",
+    darwin: "darwinConfigurations",
     NixOS: "nixosConfigurations"
   }
 
@@ -71,9 +56,9 @@ export def get-configuration [host?: string, --with-packages-path] {
     $base_configurations
     | get $kernel
   } else {
-    if $host in ($available_hosts | get Darwin) {
+    if $host in ($available_hosts | get darwin) {
       $base_configurations
-      | get Darwin
+      | get darwin
     } else if $host in ($available_hosts | get NixOS) {
       $base_configurations
       | get NixOS
@@ -81,7 +66,7 @@ export def get-configuration [host?: string, --with-packages-path] {
   }
 
   let host = if ($host | is-empty) {
-    if $kernel == "Darwin" {
+    if $kernel == "darwin" {
       (whoami)
     } else {
       cat /etc/hostname
@@ -92,7 +77,7 @@ export def get-configuration [host?: string, --with-packages-path] {
   }
 
   let paths = {
-    Darwin: ".config.home.packages",
+    darwin: ".config.home.packages",
     NixOS: ".config.home-manager.users.benrosen.home.packages"
   }
 
@@ -101,8 +86,8 @@ export def get-configuration [host?: string, --with-packages-path] {
       $paths
       | get $kernel
     } else {
-      if $host in ($available_hosts | get Darwin) {
-        $paths | get Darwin
+      if $host in ($available_hosts | get darwin) {
+        $paths | get darwin
       } else if $host in ($available_hosts | get NixOS) {
         $paths | get NixOS
       } 
@@ -122,7 +107,7 @@ export def get-built-host-name [] {
     if (
       rg
         (git config user.email)
-        (get-project-path configuration/kernels/darwin/hosts/work/.gitconfig)
+        configuration/kernels/darwin/hosts/work/.gitconfig
       | is-not-empty
     ) {
       "work"
@@ -132,45 +117,87 @@ export def get-built-host-name [] {
   }
 }
 
-export def validate-configuration-name [configuration?: string] {
-  if ($configuration | is-not-empty) and not (
-    $configuration in (get-all-hosts --list)
-  ) and not ($configuration in (get-all-kernels)) {
-    let available_configurations = (
-      get-all-configurations
-      | each {|configuration| $"• ($configuration)"}
-      | str join "\n"
-    )
+def raise_configuration_error [configuration: string --kernels] {
+  let available_configurations = if $kernels {
+    get-all-kernels 
+  } else {
+    get-all-configurations
+  }
+  | each {|configuration| $"• ($configuration)"}
+  | str join "\n"
 
-    error make --unspanned {
-      msg: $"unrecognized configuration name '($configuration)'
+  let type = if $kernels {
+    "kernel"
+  } else {
+    "configuration"
+  }
 
-Available configurations:
+  error make --unspanned {
+    msg: $"unrecognized ($type) name '($configuration)'
+
+Available ($type)s:
 ($available_configurations)"
     }
+}
+
+export def validate-configuration-name [
+  configuration?: string
+  --validate-kernel
+] {
+  if ($configuration | is-empty) {
+    return
+  }
+
+  if $validate_kernel and ($configuration not-in (get-all-kernels)) {
+    raise_configuration_error $configuration --kernels
+  }
+
+  if not ($configuration in (get-all-hosts)) and not ($configuration in (get-all-kernels)) {
+    raise_configuration_error $configuration
   }
 }
 
-# FIXME
-# View available hosts
-export def main [] {
-  let kernel = ((uname).kernel-name | str downcase)
-  let hosts = (get-all-hosts)
+# List hosts
+export def main [
+  kernel?: string # List hosts for $kernel
+  --all # List all hosts
+] {
+  validate-configuration-name $kernel --validate-kernel
 
-  let available_hosts = (
+  mut hosts = {}
+
+  for kernel in (get-all-kernels) {
+    $hosts = (
+      $hosts
+      | insert $kernel (get-hosts $kernel)
+    )
+  }
+
+  if ($kernel | is-empty) {
+    let kernel = ((uname).kernel-name | str downcase)
+
+    let available_hosts = (
+      $hosts
+      | get $kernel
+    )
+
+    if $all {
+      let other_hosts = (
+        $hosts
+        | reject $kernel
+        | each {|kernel| $kernel | values}
+        | flatten
+      )
+
+      $available_hosts
+      | append $other_hosts
+      | sort
+    } else {
+      $available_hosts    
+    }
+  } else {
     $hosts
     | get $kernel
-    | str join "\n"
-  )
-
-  let other_hosts = (
-    $hosts
-    | reject $kernel
-    | each {|kernel| $kernel | values}
-    | flatten
-    | str join "\n"
-  )
-
-  print $available_hosts
-  # print $other_hosts
+  }
+  | str join "\n"
 }
