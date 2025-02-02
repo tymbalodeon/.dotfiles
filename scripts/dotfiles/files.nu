@@ -31,6 +31,7 @@ def matches_configuration [file: string configuration: string] {
 # List configuration files
 def main [
   configuration?: string # Configuration name
+  --no-color # Don't colorize output
   --shared # List only shared configuration files
   --unique # List files unique to a configuration
 ] {
@@ -120,9 +121,13 @@ def main [
   )
 
   (
-    if ($configuration | is-empty) or (
-      $configuration in (get-all-kernels)
-    ) and not $shared or not $unique {
+    if not $no_color and (
+      (
+        ($configuration | is-empty)
+      ) or $configuration in (get-all-kernels) and not (
+        $shared
+      ) or not $unique
+    ) {
       let colors = (
         ansi --list
         | get name
