@@ -1,6 +1,7 @@
 #!/usr/bin/env nu
 
-use ./hosts.nu get-all-configurations
+use ./hosts.nu get-all-hosts
+use ./hosts.nu get-all-kernels
 use ./hosts.nu validate-configuration-name
 
 def matches_kernel_name [file: string kernel_name?: string] {
@@ -122,22 +123,29 @@ def main [
 
   (
     if $all or not $unique {
-      let hosts_and_colors = (
-        get-all-configurations
-        | zip (
-          ansi --list
-          | get name
-          | filter {
-              |color|
+      let colors = (
+        ansi --list
+        | get name
+        | filter {
+            |color|
 
-              $color not-in [reset title identity escape size] and (
-               "_" not-in $color 
-              # TODO is it possible to programmatically detect which colors will work?
-              ) and not ("black" in $color) or (
-                "xterm" in $color
-              )
-            }
-        )
+            $color not-in [reset title identity escape size] and (
+             "_" not-in $color 
+            # TODO is it possible to programmatically detect which colors will work?
+            ) and not ("black" in $color) or (
+              "xterm" in $color
+            )
+          }
+      )
+
+      let kernels_and_colors = (
+        get-all-kernels
+        | zip $colors
+      )
+
+      let hosts_and_colors = (
+        get-all-hosts --list
+        | zip ($colors | drop nth (($kernels_and_colors | length) + 1))
       )
 
       $files
@@ -145,10 +153,24 @@ def main [
           |line|
 
           mut line = $line
+          mut matched_host = false
 
           for $host_and_color in $hosts_and_colors {
             if $host_and_color.0 in $line {
               $line = $"(ansi $host_and_color.1)($line)(ansi reset)"
+              $matched_host = true
+
+              break
+            }
+          }
+
+          if not $matched_host {
+            for $kernel_and_color in $kernels_and_colors {
+              if $kernel_and_color.0 in $line {
+                $line = $"(ansi $kernel_and_color.1)($line)(ansi reset)"
+
+                break
+              }
             }
           }
 
@@ -159,6 +181,4 @@ def main [
     }
   )
   | str join "\n"
-
-  # FIXME differentiate host vs kernel to make colors work (host matches first, then kernel if no host match)
 }
