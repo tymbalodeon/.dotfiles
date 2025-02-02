@@ -31,7 +31,7 @@ def matches_configuration [file: string configuration: string] {
 # List configuration files
 def main [
   configuration?: string # Configuration name
-  --all # List files for all configuraitons
+  --shared # List only shared configuration files
   --unique # List files unique to a configuration
 ] {
   validate-configuration-name $configuration
@@ -52,7 +52,7 @@ def main [
       | filter {|file| $configuration in $file}
     } else {
       if ($configuration | is-empty) {
-        if $all {
+        if not $shared {
           $files
         } else {
           $files
@@ -80,7 +80,7 @@ def main [
         | filter {
             |file|
 
-            $configuration_is_kernel_name and $all and (
+            $configuration_is_kernel_name and not $shared and (
               matches_kernel_name $file $kernel_name
             ) or (matches_configuration $file $configuration) and not (
               matches_hosts $file
@@ -122,7 +122,7 @@ def main [
   (
     if ($configuration | is-empty) or (
       $configuration in (get-all-kernels)
-    ) and $all or not $unique {
+    ) and not $shared or not $unique {
       let colors = (
         ansi --list
         | get name
