@@ -37,67 +37,6 @@ export def get-all-configurations [] {
   | flatten
   | sort
 }
-  
-export def get-configuration [host?: string, --with-packages-path] {
-  let available_hosts = (get-all-hosts)
-
-  if ($host | is-not-empty) and ($host not-in $available_hosts) {
-    error make --unspanned { msg: "Invalid host name." }
-  }
-
-  let kernel = (uname).kernel-name
-
-  let base_configurations = {
-    darwin: "darwinConfigurations",
-    NixOS: "nixosConfigurations"
-  }
-
-  let base = if ($host | is-empty) {
-    $base_configurations
-    | get $kernel
-  } else {
-    if $host in ($available_hosts | get darwin) {
-      $base_configurations
-      | get darwin
-    } else if $host in ($available_hosts | get NixOS) {
-      $base_configurations
-      | get NixOS
-    } 
-  }
-
-  let host = if ($host | is-empty) {
-    if $kernel == "darwin" {
-      (whoami)
-    } else {
-      cat /etc/hostname
-      | str trim
-    }
-  } else {
-    $host
-  }
-
-  let paths = {
-    darwin: ".config.home.packages",
-    NixOS: ".config.home-manager.users.benrosen.home.packages"
-  }
-
-  let packages_path = if $with_packages_path {
-    if ($host | is-empty) {
-      $paths
-      | get $kernel
-    } else {
-      if $host in ($available_hosts | get darwin) {
-        $paths | get darwin
-      } else if $host in ($available_hosts | get NixOS) {
-        $paths | get NixOS
-      } 
-    }
-  } else {
-    ""
-  }
-
-  $"./configuration#($base).($host)($packages_path)"
-}
 
 export def get-built-host-name [] {
   if (is-nixos) {

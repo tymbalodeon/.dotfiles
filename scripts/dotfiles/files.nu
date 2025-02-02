@@ -153,7 +153,7 @@ def main [
       )
 
       let hosts_and_colors = (
-        get-all-hosts --list
+        get-all-hosts
         | zip ($colors | drop nth 0..(($kernels_and_colors | length) - 1))
       )
 
