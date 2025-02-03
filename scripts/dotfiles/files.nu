@@ -28,11 +28,25 @@ def matches_configuration [file: string configuration: string] {
   | str contains $configuration
 }
 
+def get-header [text: string configuration?: string] {
+  let header = $text
+
+  if ($configuration | is-empty) or ($configuration | is-not-empty) and (
+    $configuration in (get-all-hosts)
+  ) {
+    $"($text)s"
+  } else {
+    $text
+  }
+}
+
 # List configuration files
 def main [
   configuration?: string # Configuration name
-  --no-color # Don't colorize output
+  --no-colors # Don't colorize output
+  --no-headers # Don't show headers in output
   --shared # List only shared configuration files
+  --sort-by-configuration # List configuration files sorted by configuration
   --unique # List files unique to a configuration
 ] {
   validate-configuration-name $configuration
@@ -93,35 +107,10 @@ def main [
           }
       }
     }
-  | each {
-      |line|
-
-      let directories = (
-        $line
-        | str replace (realpath . | path dirname) ""
-        | path split
-      )
-
-      let $base = if "hosts" in $directories {
-        $directories
-        | get 4
-      } else if "kernels" in $directories {
-        $directories
-        | get 2
-      } else {
-        "configuration"
-      }
-
-      if not $unique and $base != "configuration" {
-        $line + $" [($base)]"
-      } else {
-        $line
-      }
-    }
   )
 
-  (
-    if not $no_color and (
+  let files = (
+    if not $no_colors and (
       (
         ($configuration | is-empty)
       ) or $configuration in (get-all-kernels) and not (
@@ -137,7 +126,7 @@ def main [
             $color not-in [reset title identity escape size] and (
              "_" not-in $color 
             # TODO is it possible to programmatically detect which colors will work?
-            ) and not ("black" in $color) or (
+            ) and not ("black" in $color) and not ("purple" in $color) or (
               "xterm" in $color
             )
           }
@@ -169,7 +158,7 @@ def main [
             }
           }
 
-          if not $matched_host and ($configuration | is-empty) or not $unique {
+          if not $matched_host and (($configuration | is-empty) or not $unique) {
             for $kernel_and_color in $kernels_and_colors {
               if $kernel_and_color.0 in $line {
                 $line = $"(ansi $kernel_and_color.1)($line)(ansi reset)"
@@ -185,5 +174,52 @@ def main [
       $files
     }
   )
+
+  let files = if $sort_by_configuration {
+    let shared_files = (
+      $files
+      | filter {|file| "kernels" not-in $file}
+    )
+
+    let shared_kernel_files = (
+      $files
+      | filter {|file| "kernels" in $file and "hosts" not-in $file}
+    )
+
+    let shared_kernel_files = (
+      let kernel_header = (get-header "Kernel" $configuration);
+
+      if not $no_headers {
+        $shared_kernel_files
+        | prepend [$"\n($kernel_header):"]
+      } else {
+        $shared_kernel_files
+      }
+    )
+
+    let shared_host_files = (
+      $files
+      | filter {|file| "hosts" in $file}
+    )
+
+    let shared_host_files = (
+      let host_header = (get-header "Host" $configuration);
+
+      if not $no_headers {
+        $shared_host_files
+        | prepend [$"\n($host_header):"]
+      } else {
+        $shared_host_files
+      }
+    )
+
+    $shared_files
+    | append $shared_kernel_files
+    | append $shared_host_files
+  } else {
+    $files
+  }
+
+  $files
   | str join "\n"
 }
