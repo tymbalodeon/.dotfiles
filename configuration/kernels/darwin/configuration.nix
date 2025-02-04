@@ -8,7 +8,7 @@
 
   nix.extraOptions = ''
     bash-prompt-prefix = (nix:$name)\040
-    experimental-features = flakes nix-command repl-flake
+    experimental-features = flakes nix-command
     extra-nix-path = nixpkgs=flake:nixpkgs
     upgrade-nix-store-path-url = https://install.determinate.systems/nix-upgrade/stable/universal
   '';
