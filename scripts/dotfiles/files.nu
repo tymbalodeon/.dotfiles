@@ -31,8 +31,8 @@ def matches_configuration [file: string configuration: string] {
 def get-header [text: string configuration?: string] {
   let header = $text
 
-  if ($configuration | is-empty) or ($configuration | is-not-empty) and (
-    $configuration in (get-all-hosts)
+  if ($configuration | is-empty) or (
+    $text == "Host" and $configuration in (get-all-kernels)
   ) {
     $"($text)s"
   } else {
@@ -109,27 +109,34 @@ def main [
     }
   )
 
+  let is_kernel_configuration = ($configuration in (get-all-kernels))
+  let is_host_configuration = ($configuration in (get-all-hosts))
+
   let files = (
-    if not $no_colors and (
-      (
-        ($configuration | is-empty)
-      ) or $configuration in (get-all-kernels) and not (
-        $shared
-      ) or not $unique
-    ) {
+    if not $no_colors and (not $sort_by_configuration and not (
+      $unique and $is_host_configuration
+    ) or (
+      $configuration | is-empty
+    ) and not $is_host_configuration and (
+      not $shared and $is_kernel_configuration or not $unique
+    )) {
       let colors = (
         ansi --list
         | get name
         | filter {
             |color|
 
-            $color not-in [reset title identity escape size] and (
-             "_" not-in $color 
+            $color not-in [reset title identity escape size] and not (
+              [_bold _underline _italic _dimmed _reverse bg_]
+              | each {|name| $name in $color}
+              | any {|color| $color}
             # TODO is it possible to programmatically detect which colors will work?
             ) and not ("black" in $color) and not ("purple" in $color) or (
               "xterm" in $color
             )
           }
+        | sort-by {|a, b| "light" in $a}
+        | take (get-all-kernels | append (get-all-hosts) | length)
       )
 
       let kernels_and_colors = (
@@ -175,7 +182,9 @@ def main [
     }
   )
 
-  let files = if $sort_by_configuration {
+  let files = if $sort_by_configuration and (
+    not $is_host_configuration
+  ) {
     let shared_files = (
       $files
       | filter {|file| "kernels" not-in $file}
@@ -191,7 +200,7 @@ def main [
 
       if not $no_headers {
         $shared_kernel_files
-        | prepend [$"\n($kernel_header):"]
+        | prepend [$"($kernel_header):"]
       } else {
         $shared_kernel_files
       }
@@ -207,15 +216,25 @@ def main [
 
       if not $no_headers {
         $shared_host_files
-        | prepend [$"\n($host_header):"]
+        | prepend [$"($host_header):"]
       } else {
         $shared_host_files
       }
     )
 
-    $shared_files
-    | append $shared_kernel_files
-    | append $shared_host_files
+    let kernel_and_host_files = (
+      $shared_kernel_files
+      | to text
+      | append $shared_host_files
+    )
+
+    if ($shared_files | is-empty) {
+      $kernel_and_host_files
+    } else {
+      $shared_files
+      | to text
+      | append $kernel_and_host_files
+    }
   } else {
     $files
   }
