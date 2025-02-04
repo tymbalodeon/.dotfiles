@@ -31,8 +31,8 @@ def matches_configuration [file: string configuration: string] {
 def get-header [text: string configuration?: string] {
   let header = $text
 
-  if ($configuration | is-empty) or ($configuration | is-not-empty) and (
-    $configuration in (get-all-hosts)
+  if ($configuration | is-empty) or (
+    $text == "Host" and $configuration in (get-all-kernels)
   ) {
     $"($text)s"
   } else {
@@ -109,13 +109,16 @@ def main [
     }
   )
 
+  let is_kernel_configuration = ($configuration in (get-all-kernels))
+  let is_host_configuration = ($configuration in (get-all-hosts))
+
   let files = (
-    if not $no_colors and (
-      (
-        ($configuration | is-empty)
-      ) or $configuration in (get-all-kernels) and not (
-        $shared
-      ) or not $unique
+    if not $is_host_configuration and not (
+      $no_colors
+    ) and not $sort_by_configuration or (
+      $configuration | is-empty
+    ) and (
+      not $shared and $is_kernel_configuration or not $unique
     ) {
       let colors = (
         ansi --list
@@ -175,7 +178,9 @@ def main [
     }
   )
 
-  let files = if $sort_by_configuration {
+  let files = if $sort_by_configuration and (
+    not $is_host_configuration
+  ) {
     let shared_files = (
       $files
       | filter {|file| "kernels" not-in $file}
