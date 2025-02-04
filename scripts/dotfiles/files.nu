@@ -113,11 +113,11 @@ def main [
   let is_host_configuration = ($configuration in (get-all-hosts))
 
   let files = (
-    if not $is_host_configuration and not (
-      $no_colors
-    ) and not $sort_by_configuration or (
+    if not $no_colors and not $sort_by_configuration and not (
+      $unique and $is_host_configuration
+    ) or (
       $configuration | is-empty
-    ) and (
+    ) and not $is_host_configuration and (
       not $shared and $is_kernel_configuration or not $unique
     ) {
       let colors = (
