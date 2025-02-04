@@ -126,13 +126,17 @@ def main [
         | filter {
             |color|
 
-            $color not-in [reset title identity escape size] and (
-             "_" not-in $color 
+            $color not-in [reset title identity escape size] and not (
+              [_bold _underline _italic _dimmed _reverse bg_]
+              | each {|name| $name in $color}
+              | any {|color| $color}
             # TODO is it possible to programmatically detect which colors will work?
             ) and not ("black" in $color) and not ("purple" in $color) or (
               "xterm" in $color
             )
           }
+        | sort-by {|a, b| "light" in $a}
+        | take (get-all-kernels | append (get-all-hosts) | length)
       )
 
       let kernels_and_colors = (
