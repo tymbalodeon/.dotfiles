@@ -5,7 +5,13 @@
   };
 
   imports = [inputs.home-manager.darwinModules.home-manager];
-  users.users.benrosen.home = "/Users/benrosen";
+
+  nix.extraOptions = ''
+    bash-prompt-prefix = (nix:$name)\040
+    experimental-features = flakes nix-command repl-flake
+    extra-nix-path = nixpkgs=flake:nixpkgs
+    upgrade-nix-store-path-url = https://install.determinate.systems/nix-upgrade/stable/universal
+  '';
 
   security.sudo.extraConfig = ''
     Defaults env_keep += "TERM TERMINFO"
@@ -41,4 +47,6 @@
 
     stateVersion = 6;
   };
+
+  users.users.benrosen.home = "/Users/benrosen";
 }
