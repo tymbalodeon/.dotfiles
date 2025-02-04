@@ -44,10 +44,20 @@ export def get-built-host-name [] {
     | str trim
   } else {
     if (
-      rg
-        (git config user.email)
-        configuration/kernels/darwin/hosts/work/git/.gitconfig
-      | is-not-empty
+      try {
+        (
+          rg
+            (git config user.email)
+            (
+              ls ("**/kernels/darwin/hosts/work/git/.gitconfig" | into glob)
+              | get name
+              | first
+            )
+        )
+        | is-not-empty
+      } catch {
+        false
+      }
     ) {
       "work"
     } else {
