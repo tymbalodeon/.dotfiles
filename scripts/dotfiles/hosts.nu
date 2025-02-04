@@ -1,7 +1,7 @@
 #!/usr/bin/env nu
 
 export def is-nixos [] {
-  (uname | get kernel-version) == "NixOS"
+  (uname).kernel-version == "NixOS"
 }
 
 export def get-all-kernels [] {
