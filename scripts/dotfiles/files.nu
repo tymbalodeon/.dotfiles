@@ -191,7 +191,7 @@ def main [
 
       if not $no_headers {
         $shared_kernel_files
-        | prepend [$"\n($kernel_header):"]
+        | prepend [$"($kernel_header):"]
       } else {
         $shared_kernel_files
       }
@@ -207,15 +207,25 @@ def main [
 
       if not $no_headers {
         $shared_host_files
-        | prepend [$"\n($host_header):"]
+        | prepend [$"($host_header):"]
       } else {
         $shared_host_files
       }
     )
 
-    $shared_files
-    | append $shared_kernel_files
-    | append $shared_host_files
+    let kernel_and_host_files = (
+      $shared_kernel_files
+      | to text
+      | append $shared_host_files
+    )
+
+    if ($shared_files | is-empty) {
+      $kernel_and_host_files
+    } else {
+      $shared_files
+      | to text
+      | append $kernel_and_host_files
+    }
   } else {
     $files
   }
