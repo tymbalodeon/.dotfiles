@@ -12,6 +12,7 @@ def main [
     host?: string # The target host configuration (auto-detected if not specified)
     --all # (with `--clean` or `--prune`)
     --clean # Run `just prune` and `just optimise` after rebuilding
+    --debug # Run and show verbose trace
     --older-than: string # (with `--clean` or `--prune`)
     --optimise # Run `just optimise` after rebuilding
     --prune # Run `just prune` after rebuilding
@@ -39,7 +40,11 @@ def main [
         sudo nixos-rebuild switch --flake $host
     }
   } else {
-    /run/current-system/sw/bin/darwin-rebuild switch --flake $host
+    if $debug {
+      /run/current-system/sw/bin/darwin-rebuild switch --flake $host --show-trace --verbose
+    } else {
+      /run/current-system/sw/bin/darwin-rebuild switch --flake $host
+    }
   }
 
   rustup update
