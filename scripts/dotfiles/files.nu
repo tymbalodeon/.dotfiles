@@ -208,7 +208,9 @@ def main [
       | filter {|file| "kernels" in $file and "hosts" not-in $file}
     )
 
-    let shared_kernel_files = if ($configuration | is-empty) {
+    let shared_kernel_files = if not $no_colors and (
+      $configuration | is-empty
+    ) {
       colorize-files $shared_kernel_files $colors $unique $configuration
     } else {
       $shared_kernel_files
@@ -219,9 +221,9 @@ def main [
       | filter {|file| "hosts" in $file}
     )
 
-    let shared_host_files = if ($configuration | is-empty) or (
-      $is_kernel_configuration
-    ) {
+    let shared_host_files = if not $no_colors and (
+      $configuration | is-empty
+    ) or $is_kernel_configuration {
       colorize-files $shared_host_files $colors $unique $configuration
     } else {
       $shared_host_files
@@ -243,7 +245,7 @@ def main [
 
         let configuration_files = ($configuration_files | to text)
 
-        if ($files | length) > 1 {
+        if not $no_headers and ($files | length) > 1 {
           let configuration_type = if "hosts" in $configuration_files {
             "Host"
           } else if "kernel" in $configuration_files {
