@@ -124,6 +124,38 @@ def colorize-files [
     }
 }
 
+def get-configuration-name [
+  file: string
+  configuration_type: string
+  colors: record<
+    kernel_colors: table<kernel: string, color: string>,
+    host_colors: table<host: string, color: string>
+  >
+] {
+  try {
+    let configuration_name = (
+      $file
+      | rg $"($configuration_type)s/\([^/]+\)/" --only-matching --replace "$1"
+    )
+
+    let color = (
+      $colors
+      | get $"($configuration_type)_colors"
+      | filter {
+          |color|
+
+          ($color | get $configuration_type) == $configuration_name
+        }
+      | first
+      | get color
+    )
+
+    $"[(ansi $color)($configuration_name)(ansi reset)]"
+  } catch {
+    null
+  }
+}
+
 # List configuration files
 def main [
   configuration?: string # Configuration name
@@ -131,6 +163,7 @@ def main [
   --no-headers # Don't show headers in output
   --shared # List only shared configuration files
   --sort-by-configuration # List configuration files sorted by configuration
+  --sort-by-file # List configuration files sorted by file
   --unique # List files unique to a configuration
 ] {
   validate-configuration-name $configuration
@@ -197,7 +230,52 @@ def main [
   let is_host_configuration = ($configuration in (get-all-hosts))
   let colors = (get-colors)
 
-  let files = if $sort_by_configuration {
+  let files = if $sort_by_file {
+    return (
+      $files
+      | each {
+          |file|
+
+          let kernel = (get-configuration-name $file "kernel" $colors)
+          let host = (get-configuration-name $file "host" $colors)
+
+          let file_path = (
+            $file
+            | path split
+            | filter {
+                |path|
+
+                $path not-in (
+                  [configuration kernels hosts] ++ (
+                    get-all-kernels
+                  ) ++ (get-all-hosts)
+                )
+              }
+            | path join
+          )
+
+          # $file_path
+          # | wrap file
+          # | merge ($kernel | wrap kernel)
+          # | merge ($host | wrap host)
+          $file_path
+          | append (
+              if ($host | is-not-empty) and ($kernel | is-not-empty) {
+                $"($kernel)/($host)"
+              } else if ($kernel | is-not-empty) {
+                $kernel
+              } else {
+                ""
+              }
+            )
+          | str join " "
+        }
+      | sort-by --custom {|a, b| ($a | ansi strip) < ($b | ansi strip)}
+      | to text
+      # | sort-by file
+      # | table --index false
+    )
+  } else if $sort_by_configuration {
     let shared_files = (
       $files
       | filter {|file| "kernels" not-in $file}
