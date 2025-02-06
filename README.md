@@ -57,7 +57,7 @@ Assuming you already have [direnv](https://direnv.net/),
 [just](https://just.systems/man/en/), and [nushell](https://www.nushell.sh/)
 installed (which you will after [installing](#Installation) the configuration),
 a development environment can be activated using
-[https://github.com/tymbalodeon/environments](environments) by running:
+[environments](https://github.com/tymbalodeon/environments) by running:
 
 ```nushell
 just env activate
