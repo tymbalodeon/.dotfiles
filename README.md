@@ -6,8 +6,6 @@ Supports [NixOS](https://nixos.org/manual/nixos/stable/) and
 
 ## Installation
 
-_Note: The commands below assume that the repository is cloned to `~/.dotfiles`:_
-
 ```sh
 git clone git@github.com:tymbalodeon/.dotfiles.git ~/.dotfiles
 ```
@@ -32,10 +30,7 @@ Install Nix using the Determinate Systems
 [Nix Installer](https://github.com/DeterminateSystems/nix-installer).
 
 ```sh
-nix run home-manager -- switch --flake ~/.dotfiles
-
-# Or, for a "work" configuration
-# nix run home-manager -- switch --flake ~/.dotfiles#work
+nix run "nix-darwin/master#darwin-rebuild" -- switch --flake ~/.dotfiles/configuration#benrosen
 ```
 
 ### Subsequent builds
@@ -53,18 +48,19 @@ just rebuild # <HOST>
 
 ```nushell
 # To see available hosts on the current system:
-just rebuild --hosts
+just hosts
 ```
 
 ## Development environment
 
 Assuming you already have [direnv](https://direnv.net/),
 [just](https://just.systems/man/en/), and [nushell](https://www.nushell.sh/)
-installed (which you will after [installing](#installation) the configuration),
-a development environment can be created by running:
+installed (which you will after [installing](#Installation) the configuration),
+a development environment can be activated using
+[environments](https://github.com/tymbalodeon/environments) by running:
 
 ```nushell
-just init
+just env activate
 ```
 
 Run `just` to see available "recipes," and `just <recipe> --help/-h` to get more
@@ -72,33 +68,46 @@ information about a particular recipe.
 
 <!-- `just` start -->
 
-```nushell
+````nushell
 Available recipes:
-(run `just <recipe> --help/-h` for more info)
-
-    annotate *filename       # View file annotated with version control information
     check *args              # Check flake and run pre-commit hooks
-    clean *all               # Run `prune` and `optimise`
-    deps *args               # List dependencies
-    diff *args               # View the diff between hosts
-    diff-env *args           # View the diff between environments
-    find-recipe *search_term # Search available `just` recipes
-    generations *help        # View generations
+    clean *all               # alias for `dotfiles clean`
+    dependencies *args       # List dependencies (alias: `deps`) [alias: deps]
+    diff *args               # alias for `dotfiles diff`
+    environment *args        # Manage environments [alias: env]
+    files *configuration     # alias for `dotfiles files`
+    find-recipe *search_term # Search available `just` recipes [alias: find]
+    generations *help        # alias for `dotfiles generations`
     help *recipe             # View help text
     history *args            # View project history
-    hosts *help              # List available hosts
-    init *help               # Initialize direnv environment
+    hosts *help              # alias for `dotfiles hosts`
+    inputs *help             # alias for `dotfiles inputs`
     issue *args              # View issues
-    optimise *help           # Replace identical files in the Nix store by hard links
-    prune *args              # Collect garbage and remove old generations
-    rebuild *args            # Rebuild and switch to (or --test) a configuration
-    release *args            # Create a new release
+    optimise *help           # alias for `dotfiles optimise`
+    prune *args              # alias for `dotfiles prune`
+    rebuild *args            # alias for `dotfiles rebuild`
+    release *preview         # Create a new release
     remote *web              # View remote repository
-    rollback *id             # Rollback to a previous generation
-    shell *host              # Open Nix REPL with flake loaded
+    rollback *id             # alias for `dotfiles rollback`
+    shell *host              # alias for `dotfiles shell`
     stats *help              # View repository analytics
-    update-deps *help        # Update dependencies
-    view-source *recipe      # View the source code for a recipe
-```
+    test *args               # Run tests
+    update *help             # alias for `dotfiles update`
+    view-source *recipe      # View the source code for a recipe [alias: src]
+    dotfiles:
+        clean *all           # Run `prune` and `optimise`
+        diff *args           # View the diff between hosts
+        files *configuration # List configuration files
+        generations *help    # View generations
+        help *recipe         # View help text
+        hosts *help          # List available hosts
+        inputs *help         # List flake inputs
+        optimise *help       # Replace identical files in the Nix store by hard links
+        prune *args          # Collect garbage and remove old generations
+        rebuild *args        # Rebuild and switch to (or --test) a configuration
+        rollback *id         # Rollback to a previous generation
+        shell *host          # Open Nix REPL with flake loaded
+        update *help         # Update dependencies```
+````
 
 <!-- `just` end -->
