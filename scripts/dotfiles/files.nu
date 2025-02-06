@@ -131,6 +131,7 @@ def main [
   --no-headers # Don't show headers in output
   --shared # List only shared configuration files
   --sort-by-configuration # List configuration files sorted by configuration
+  --sort-by-file # List configuration files sorted by file
   --unique # List files unique to a configuration
 ] {
   validate-configuration-name $configuration
@@ -197,7 +198,26 @@ def main [
   let is_host_configuration = ($configuration in (get-all-hosts))
   let colors = (get-colors)
 
-  let files = if $sort_by_configuration {
+  let files = if $sort_by_file {
+    $files
+    | each {
+        |file|
+
+        $file
+        | path split
+        | filter {
+            |path|
+
+            $path not-in (
+              [configuration kernels hosts] ++ (
+                get-all-kernels
+              ) ++ (get-all-hosts)
+            )
+          }
+        | path join
+      }
+    | sort
+  } else if $sort_by_configuration {
     let shared_files = (
       $files
       | filter {|file| "kernels" not-in $file}
