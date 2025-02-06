@@ -67,6 +67,7 @@
               stylelint
               taplo
               tokei
+              unixtools.column
               vscode-langservers-extracted
               yaml-language-server
               yamlfmt
