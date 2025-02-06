@@ -109,9 +109,16 @@ export def validate-configuration-name [
 # List hosts
 export def main [
   kernel?: string # List hosts for $kernel
-  --all # List all hosts
+  --current-platform # List hosts available on the current platform only
 ] {
   validate-configuration-name $kernel --validate-kernel
+
+  if ($kernel | is-empty) and not $current_platform {
+    return (
+      get-all-hosts
+      | str join "\n"
+    )
+  }
 
   mut hosts = {}
 
@@ -122,31 +129,16 @@ export def main [
     )
   }
 
-  if ($kernel | is-empty) {
-    let kernel = ((uname).kernel-name | str downcase)
-
-    let available_hosts = (
+  let hosts = (
+    if $current_platform {
+      $hosts
+      | get (uname).kernel-name
+    } else {
       $hosts
       | get $kernel
-    )
-
-    if $all {
-      let other_hosts = (
-        $hosts
-        | reject $kernel
-        | each {|kernel| $kernel | values}
-        | flatten
-      )
-
-      $available_hosts
-      | append $other_hosts
-      | sort
-    } else {
-      $available_hosts    
     }
-  } else {
-    $hosts
-    | get $kernel
-  }
+  )
+
+  $hosts
   | str join "\n"
 }
