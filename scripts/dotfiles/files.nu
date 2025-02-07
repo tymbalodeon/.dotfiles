@@ -331,7 +331,46 @@ def main [
           | str trim
         }
 
-      | sort-by --custom {|a, b| ($a | ansi strip) < ($b | ansi strip)}
+      | sort-by --custom {
+          |a, b|
+
+          let a = ($a | ansi strip)
+          let b = ($b | ansi strip)
+
+          if not $group_by_configuration {
+            return ($a < $b)
+          }
+
+          let a_parts = ($a | split row " ")
+          let b_parts = ($b | split row " ")
+          let a_parts_length = ($a_parts | length)
+          let b_parts_length = ($b_parts | length)
+
+          if ([$a_parts_length $b_parts_length] | all {$in > 2}) {
+            $a_parts.2 < $b_parts.2
+          } else if ([$a_parts_length $b_parts_length] | all {$in > 1}) {
+            $a_parts.1 < $b_parts.1
+          }
+
+          if not (
+            [$a_parts_length $b_parts_length]
+            | any {$in > 1}
+          ) {
+            $a < $b
+          } else if $a_parts_length == 1 and $b_parts_length > 1 {
+            true
+          } else if $b_parts_length == 1 and $a_parts_length > 1 {
+            false
+          } else if $a_parts.1 == $b_parts.1 {
+             if ([$a_parts_length $b_parts_length] | all {$in == 3}) {
+              $a_parts.2 < $b_parts.2
+            } else {
+              $a_parts_length < $b_parts_length
+            }
+          } else {
+            $a_parts.1 < $b_parts.1
+          }
+        }
       | to text
       | column -t
     )
