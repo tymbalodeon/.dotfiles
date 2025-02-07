@@ -85,6 +85,30 @@ def get-colors [] {
   }
 }
 
+def get-file-color [
+  file: string
+  colors: record<
+    kernel_colors: list<record<kernel: string, color: string>>,
+    host_colors: list<record<host: string, color: string>>,
+  >
+  unique: bool
+  configuration?: string
+] {
+  for $host_and_color in $colors.host_colors {
+    if $host_and_color.host in $file {
+      return $host_and_color.color
+    }
+  }
+
+  for $kernel_and_color in $colors.kernel_colors {
+    if $kernel_and_color.kernel in $file {
+      return $kernel_and_color.color
+    }
+  }
+
+  return "default"
+}
+
 def colorize-files [
   files: list<string>
   colors: record<
@@ -96,35 +120,22 @@ def colorize-files [
 ] {
   $files
   | each {
-      |line|
+      |file|
 
-      mut line = $line
-      mut matched_host = false
+      let color = (get-file-color $file $colors $unique $configuration)
 
-      for $host_and_color in $colors.host_colors {
-        if $host_and_color.host in $line {
-          $line = $"(ansi $host_and_color.color)($line)(ansi reset)"
-          $matched_host = true
-
-          break
-        }
-      }
-
-      if not $matched_host and (($configuration | is-empty) or not $unique) {
-        for $kernel_and_color in $colors.kernel_colors {
-          if $kernel_and_color.kernel in $line {
-            $line = $"(ansi $kernel_and_color.color)($line)(ansi reset)"
-
-            break
-          }
-        }
-      }
-
-      $line
+      $"(ansi $color)($file)(ansi reset)"
     }
 }
 
-def get-configuration-name [
+def get-configuration-name [file: string configuration_type: string] {
+  try {
+    $file
+    | rg $"($configuration_type)s/\([^/]+\)/" --only-matching --replace "$1"
+  }
+}
+
+def colorize-configuration-name [
   file: string
   configuration_type: string
   colors: record<
@@ -132,40 +143,64 @@ def get-configuration-name [
     host_colors: table<host: string, color: string>
   >
 ] {
-  try {
-    let configuration_name = (
-      $file
-      | rg $"($configuration_type)s/\([^/]+\)/" --only-matching --replace "$1"
-    )
+  let configuration_name = (
+    get-configuration-name $file $configuration_type
+  )
 
-    let color = (
-      $colors
-      | get $"($configuration_type)_colors"
-      | filter {
-          |color|
-
-          ($color | get $configuration_type) == $configuration_name
-        }
-      | first
-      | get color
-    )
-
-    $"[(ansi $color)($configuration_name)(ansi reset)]"
-  } catch {
-    null
+  if ($configuration_name | is-empty) {
+    return null
   }
+
+  let color = (
+    $colors
+    | get $"($configuration_type)_colors"
+    | filter {
+        |color|
+
+        ($color | get $configuration_type) == $configuration_name
+      }
+    | first
+    | get color
+  )
+
+  let configuration_name = (
+    $"(ansi $color)($configuration_name)(ansi reset)"
+  )
+
+  $configuration_name
 }
 
 # List configuration files
 def main [
   configuration?: string # Configuration name
+  --group-by-configuration # List configuration files sorted by configuration
+  --group-by-file # List configuration files sorted by file
   --no-colors # Don't colorize output
   --no-headers # Don't show headers in output
   --shared # List only shared configuration files
-  --sort-by-configuration # List configuration files sorted by configuration
-  --sort-by-file # List configuration files sorted by file
+  --tree # View file tree for $configuration
   --unique # List files unique to a configuration
 ] {
+  if $tree {
+    try {
+      let configuration = if ($configuration | is-empty) {
+        "configuration"
+      } else {
+        ($"configuration/**/($configuration)" | into glob)      
+      }
+
+      return (
+        eza
+          --all
+          --color always
+          --tree $configuration
+          err> /dev/null
+      )
+    } catch {
+      return
+    }
+  }
+
   validate-configuration-name $configuration
 
   let files = (
@@ -180,8 +215,17 @@ def main [
 
   let files = (
     if $unique and ($configuration | is-not-empty) {
-      $files
-      | filter {|file| $configuration in $file}
+      let files = (
+        $files
+        | filter {|file| $configuration in $file}
+      )
+
+      if $shared {
+        $files
+        | filter {|file| "hosts" not-in $file}
+      } else {
+        $files
+      }
     } else {
       if ($configuration | is-empty) {
         if not $shared {
@@ -230,16 +274,29 @@ def main [
   let is_host_configuration = ($configuration in (get-all-hosts))
   let colors = (get-colors)
 
-  let files = if $sort_by_file {
+  let files = if $group_by_file {
     return (
       $files
       | each {
           |file|
 
-          let kernel = (get-configuration-name $file "kernel" $colors)
-          let host = (get-configuration-name $file "host" $colors)
+          let kernel = if not $no_colors {
+            colorize-configuration-name $file "kernel" $colors
+          } else {
+            get-configuration-name $file "kernel"
+          }
 
-          let file_path = (
+          let host = if not $no_colors {
+            colorize-configuration-name $file "host" $colors
+          } else {
+            get-configuration-name $file "host"
+          }
+
+          let file_color = (
+            get-file-color $file $colors $unique $configuration
+          )
+
+          let file = (
             $file
             | path split
             | filter {
@@ -254,14 +311,16 @@ def main [
             | path join
           )
 
-          # $file_path
-          # | wrap file
-          # | merge ($kernel | wrap kernel)
-          # | merge ($host | wrap host)
-          $file_path
+          let file = if not $no_colors {
+            $"(ansi $file_color)($file)(ansi reset)"
+          } else {
+            $file            
+          }
+          
+          $file
           | append (
               if ($host | is-not-empty) and ($kernel | is-not-empty) {
-                $"($kernel)/($host)"
+                $"($kernel) ($host)"
               } else if ($kernel | is-not-empty) {
                 $kernel
               } else {
@@ -269,13 +328,14 @@ def main [
               }
             )
           | str join " "
+          | str trim
         }
+
       | sort-by --custom {|a, b| ($a | ansi strip) < ($b | ansi strip)}
       | to text
-      # | sort-by file
-      # | table --index false
+      | column -t
     )
-  } else if $sort_by_configuration {
+  } else if $group_by_configuration {
     let shared_files = (
       $files
       | filter {|file| "kernels" not-in $file}
@@ -348,13 +408,15 @@ def main [
         }
     }
     | str join "\n"
-  } else if not $no_colors and (not $sort_by_configuration and not (
-    $unique and $is_host_configuration
-  ) or (
-    $configuration | is-empty
-  ) and not $is_host_configuration and (
-    not $shared and $is_kernel_configuration or not $unique
-  )) {
+  } else if not $no_colors and (
+    not $group_by_configuration and not (
+      $unique and $is_host_configuration
+    ) or (
+      $configuration | is-empty
+    ) and not $is_host_configuration and (
+      not $shared and $is_kernel_configuration or not $unique
+    )
+  ) {
     colorize-files $files $colors $unique $configuration
   } else {
     $files
