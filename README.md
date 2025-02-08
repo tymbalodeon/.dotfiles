@@ -55,7 +55,7 @@ just hosts
 
 Assuming you already have [direnv](https://direnv.net/),
 [just](https://just.systems/man/en/), and [nushell](https://www.nushell.sh/)
-installed (which you will after [installing](#Installation) the configuration),
+installed (which you will after [installing](#installation) the configuration),
 a development environment can be activated using
 [environments](https://github.com/tymbalodeon/environments) by running:
 
@@ -109,4 +109,3 @@ Available recipes:
 ```
 
 <!-- `just` end -->
-

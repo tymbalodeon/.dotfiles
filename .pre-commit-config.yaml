@@ -58,6 +58,11 @@ repos:
         entry: statix fix
         language: system
         pass_filenames: false
+      - id: test
+        name: test
+        entry: just test
+        language: system
+        pass_filenames: false
       - id: yamlfmt
         name: yamlfmt
         entry: yamlfmt

@@ -5,7 +5,7 @@ export def is-nixos [] {
 }
 
 export def get-all-kernels [] {
-  ls --short-names configuration/kernels 
+  ls --short-names configuration/kernels
   | get name
 }
 
@@ -68,7 +68,7 @@ export def get-built-host-name [] {
 
 def raise_configuration_error [configuration: string --kernels] {
   let available_configurations = if $kernels {
-    get-all-kernels 
+    get-all-kernels
   } else {
     get-all-configurations
   }

@@ -106,7 +106,7 @@ def get-file-color [
     }
   }
 
-  return "default"
+  "default"
 }
 
 def colorize-files [
@@ -176,17 +176,18 @@ def main [
   --group-by-configuration # List configuration files sorted by configuration
   --group-by-file # List configuration files sorted by file
   --no-colors # Don't colorize output
-  --no-headers # Don't show headers in output
+  --no-labels # Don't show labels in output
   --shared # List only shared configuration files
   --tree # View file tree for $configuration
-  --unique # List files unique to a configuration
+  --unique # List files unique to $configuration
+  --unique-filenames # List unique filenames for $configuration
 ] {
   if $tree {
     try {
       let configuration = if ($configuration | is-empty) {
         "configuration"
       } else {
-        ($"configuration/**/($configuration)" | into glob)      
+        ($"configuration/**/($configuration)" | into glob)
       }
 
       return (
@@ -251,7 +252,7 @@ def main [
           | path split
           | first
         )
-    
+
         $files
         | filter {
             |file|
@@ -274,11 +275,26 @@ def main [
   let is_host_configuration = ($configuration in (get-all-hosts))
   let colors = (get-colors)
 
-  let files = if $group_by_file {
-    return (
+  let files = if $group_by_file or $unique_filenames {
+    let files = (
       $files
       | each {
           |file|
+
+          let file_path = (
+            $file
+            | path split
+            | filter {
+                |path|
+
+                $path not-in (
+                  [configuration kernels hosts] ++ (
+                    get-all-kernels
+                  ) ++ (get-all-hosts)
+                )
+              }
+            | path join
+          )
 
           let kernel = if not $no_colors {
             colorize-configuration-name $file "kernel" $colors
@@ -296,27 +312,12 @@ def main [
             get-file-color $file $colors $unique $configuration
           )
 
-          let file = (
-            $file
-            | path split
-            | filter {
-                |path|
-
-                $path not-in (
-                  [configuration kernels hosts] ++ (
-                    get-all-kernels
-                  ) ++ (get-all-hosts)
-                )
-              }
-            | path join
-          )
-
-          let file = if not $no_colors {
-            $"(ansi $file_color)($file)(ansi reset)"
+          let file = if not $no_colors and not $unique_filenames {
+            $"(ansi $file_color)($file_path)(ansi reset)"
           } else {
-            $file            
+            $file_path
           }
-          
+
           $file
           | append (
               if ($host | is-not-empty) and ($kernel | is-not-empty) {
@@ -330,14 +331,69 @@ def main [
           | str join " "
           | str trim
         }
+    )
 
+    if $unique_filenames {
+      mut filenames = {}
+
+      for file in $files {
+        let split = (
+          $file
+          | split row " "
+        )
+
+        let filename = (
+          $split
+          | first
+        )
+
+        let configurations = (
+          $split
+          | drop nth 0
+        )
+
+        if $filename in ($filenames | columns) {
+          $filenames = (
+            $filenames
+            | update $filename (
+                $filenames
+                | get $filename
+                | append $configurations
+                | flatten
+              )
+          )
+        } else {
+          $filenames = (
+            $filenames
+            | insert $filename $configurations
+          )
+        }
+      }
+
+    $filenames
+    | transpose filename configurations
+    | each {
+        |file|
+
+        $file.filename
+        | append (
+          $file.configurations
+          | uniq
+          | sort-by --custom {|a, b| ($a | ansi strip) < ($b | ansi strip)}
+          | str join " "
+        )
+        | str join " "
+        | str trim
+      }
+    } else {
+      $files
       | sort-by --custom {
           |a, b|
 
           let a = ($a | ansi strip)
           let b = ($b | ansi strip)
 
-          if not $group_by_configuration {
+          if $unique_filenames or not $group_by_configuration {
             return ($a < $b)
           }
 
@@ -371,9 +427,7 @@ def main [
             $a_parts.1 < $b_parts.1
           }
         }
-      | to text
-      | column -t
-    )
+    }
   } else if $group_by_configuration {
     let shared_files = (
       $files
@@ -422,7 +476,7 @@ def main [
 
         let configuration_files = ($configuration_files | to text)
 
-        if not $no_headers and ($files | length) > 1 {
+        if not no_labels and ($files | length) > 1 {
           let configuration_type = if "hosts" in $configuration_files {
             "Host"
           } else if "kernel" in $configuration_files {
@@ -436,7 +490,7 @@ def main [
           )
 
           if ($header | is-not-empty) {
-            $configuration_files 
+            $configuration_files
             | prepend [$"($header):"]
             | str join "\n"
           } else {
@@ -446,7 +500,6 @@ def main [
           $configuration_files
         }
     }
-    | str join "\n"
   } else if not $no_colors and (
     not $group_by_configuration and not (
       $unique and $is_host_configuration
@@ -461,6 +514,12 @@ def main [
     $files
   }
 
-  $files
-  | str join "\n"
+  if $group_by_file or $unique_filenames {
+    $files
+    | to text
+    | column -t
+  } else {
+    $files
+    | str join "\n"
+  }
 }

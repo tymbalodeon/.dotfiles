@@ -21,10 +21,8 @@
   };
 
   outputs = {
-    home-manager,
     nix-darwin,
     nixpkgs,
-    nushell-syntax,
     ...
   } @ inputs: let
     mkHosts = mkHost: kernel:
