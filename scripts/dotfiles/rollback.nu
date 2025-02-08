@@ -6,6 +6,7 @@ use ./hosts.nu is-nixos
 def main [
   generation_id: int
 ] {
+    # TODO add NixOS version? Is this possible?
   if (is-nixos) {
     print "Feature not available on NixOS."
 
@@ -13,6 +14,7 @@ def main [
   }
 
   let paths = (
+    # TODO update to darwin-rebuild
     home-manager generations
     | lines
     | each {
