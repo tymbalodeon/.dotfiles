@@ -48,19 +48,9 @@ repos:
         entry: just --fmt --unstable
         language: system
         pass_filenames: false
-      - id: readme
-        name: readme
-        entry: just dotfiles readme
-        language: system
-        pass_filenames: false
       - id: statix
         name: statix
         entry: statix fix
-        language: system
-        pass_filenames: false
-      - id: test
-        name: test
-        entry: just test
         language: system
         pass_filenames: false
       - id: yamlfmt
@@ -82,3 +72,16 @@ repos:
       - id: conventional-pre-commit
         stages:
           - commit-msg
+  # dotfiles
+  - repo: local
+    hooks:
+      - id: readme
+        name: readme
+        entry: just dotfiles readme
+        language: system
+        pass_filenames: false
+      - id: test
+        name: test
+        entry: just test
+        language: system
+        pass_filenames: false
