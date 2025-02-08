@@ -11,11 +11,11 @@ def make-command-comment [
     "start"
   }
 
-  return $"<!-- `($command)` ($type) -->"
+  $"<!-- `($command)` ($type) -->"
 }
 
-def make-command-regex [start end] {
-  return $"($start)\(.|\\s\)*($end)"
+def make-command-regex [start: string end: string] {
+  $"($start)\(.|\\s\)*($end)"
 }
 
 def make-command-output [
@@ -23,7 +23,7 @@ def make-command-output [
   output: string
   end: string
 ] {
-  return $"($start)\n\n($output)\n\n($end)\n"
+  $"($start)\n\n($output)\n\n($end)\n"
 }
 
 # Update README command output
@@ -35,6 +35,41 @@ def main [] {
     $"```nushell\n(
         just | ansi strip
       )\n```"
+  )
+
+  let macos_recipes = (
+    open just/dotfiles.just
+    | split row "\n\n"
+    | filter {
+        |recipe|
+
+        "macos" in $recipe
+      }
+    | each {
+        |recipe|
+
+        $recipe
+        | split row "@"
+        | last
+        | split row " "
+        | first
+    }
+  )
+
+  let just_output = (
+    $just_output
+    | lines
+    | filter {
+        |line|
+
+        (
+          $line
+          | str trim
+          | split row " "
+          | first
+        ) not-in $macos_recipes
+      }
+    | str join "\n"
   )
 
   (

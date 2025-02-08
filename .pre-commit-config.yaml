@@ -48,6 +48,11 @@ repos:
         entry: just --fmt --unstable
         language: system
         pass_filenames: false
+      - id: readme
+        name: readme
+        entry: just dotfiles readme
+        language: system
+        pass_filenames: false
       - id: statix
         name: statix
         entry: statix fix

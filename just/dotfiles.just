@@ -39,9 +39,10 @@
     ../scripts/dotfiles/prune.nu {{ args }}
 
 # Update README command output
+[no-cd]
 [private]
 @readme *help:
-    ../scripts/dotfiles/readme.nu {{ help }}
+    ./scripts/dotfiles/readme.nu {{ help }}
 
 # Rebuild and switch to (or --test) a configuration
 [working-directory: "../configuration"]

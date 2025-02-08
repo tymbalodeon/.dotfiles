@@ -68,7 +68,7 @@ information about a particular recipe.
 
 <!-- `just` start -->
 
-````nushell
+```nushell
 Available recipes:
     check *args              # Check flake and run pre-commit hooks
     clean *all               # alias for `dotfiles clean`
@@ -88,7 +88,6 @@ Available recipes:
     rebuild *args            # alias for `dotfiles rebuild`
     release *preview         # Create a new release
     remote *web              # View remote repository
-    rollback *id             # alias for `dotfiles rollback`
     shell *host              # alias for `dotfiles shell`
     stats *help              # View repository analytics
     test *args               # Run tests
@@ -105,9 +104,9 @@ Available recipes:
         optimise *help       # Replace identical files in the Nix store by hard links
         prune *args          # Collect garbage and remove old generations
         rebuild *args        # Rebuild and switch to (or --test) a configuration
-        rollback *id         # Rollback to a previous generation
         shell *host          # Open Nix REPL with flake loaded
-        update *help         # Update dependencies```
-````
+        update *help         # Update dependencies
+```
 
 <!-- `just` end -->
+
