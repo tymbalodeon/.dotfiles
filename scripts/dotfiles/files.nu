@@ -364,7 +364,7 @@ def main [
               |configuration|
 
               if $configuration in $configurations {
-                get-colorized-configuration-name $configuration $colors
+                $configuration
               } else {
                 $"[($configuration)]"
               }
@@ -430,7 +430,7 @@ def main [
 
               $a < $b
             }
-          | str replace --regex '\[.+\]' "-"
+          | str replace --regex '\[.+\]' "•"
           | str join " "
         )
         | str join " "
@@ -573,8 +573,40 @@ def main [
     )
 
     if $unique_filenames {
+      let all_configurations = (get-all-configurations)
+
       $files
-      | str replace --all "-" " "
+      | lines
+      | each {
+          |file|
+
+          let parts = (
+            $file
+            | split row " "
+          )
+
+          let file = ($parts | first)
+
+          let configurations = (
+            $parts
+            | drop nth 0
+            | each {
+                |configuration|
+
+                if $configuration in $all_configurations {
+                  get-colorized-configuration-name $configuration $colors
+                } else {
+                  $configuration
+                }
+            }
+          )
+
+          $file
+          | append $configurations
+          | str join " "
+        }
+      | str join "\n"
+      | str replace --all "•" " "
     } else {
       $files
     }
