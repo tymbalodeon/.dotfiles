@@ -101,12 +101,12 @@ def get-file-color [
   }
 
   if ($color | is-empty) {
-    return null
+    return "default"
   }
 
   let color = ($color | first)
 
-  colorize $color.configuration $color.name
+  $color.name
 }
 
 def colorize [text: string color: string] {
