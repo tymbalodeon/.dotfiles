@@ -48,9 +48,6 @@
         ${hostName} = nixpkgs.lib.nixosSystem {
           modules = [
             ./kernels/nixos/hosts/${hostName}/configuration.nix
-            # TODO
-            # import this in the configuration.nix?
-            ./kernels/nixos/hosts/${hostName}/hardware-configuration.nix
             {networking.hostName = hostName;}
           ];
 

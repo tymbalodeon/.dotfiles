@@ -373,7 +373,7 @@ def main [
 
         if $filename in ($filenames | columns) {
           let existing_configurations = (
-            $filenames            
+            $filenames
             | get $filename
           )
 
