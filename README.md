@@ -71,7 +71,7 @@ information about a particular recipe.
 ```nushell
 Available recipes:
     check *args              # Check flake and run pre-commit hooks
-    dependencies *args       # List dependencies (alias: `deps`) [alias: deps]
+    dependencies *args       # List dependencies [alias: deps]
     environment *args        # Manage environments [alias: env]
     find-recipe *search_term # Search available `just` recipes [alias: find]
     help *recipe             # View help text
