@@ -60,7 +60,8 @@ def main [
   file?: string # View the diff for a specific file
   --source: string # Host or system name
   --target: string # Host or system to compare to
-  --side-by-side # View the diff in side-by-side layout
+  --single-column # Force a single column layout
+  --side-by-side # Force side-by-side layout
 ] {
   let validated_args = (validate-source-and-target $source $target)
   let source = ($validated_args | get source)
@@ -103,6 +104,16 @@ def main [
             (get-file-base $source_file) in $target_file
           }
       )
+
+      let side_by_side = if $single_column {
+        false
+      } else if $side_by_side {
+        $side_by_side
+      } else if (tput cols | into int) > 158 {
+        true
+      } else {
+        false
+      }
 
       for target_file in $files {
         diff $source_file $target_file $side_by_side
