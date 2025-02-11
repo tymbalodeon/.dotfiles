@@ -25,18 +25,18 @@
     nixpkgs,
     ...
   } @ inputs: let
-    mkHosts = mkHost: kernel:
+    mkHosts = mkHost: system:
       builtins.foldl'
       (a: b: a // b)
       {}
       (map mkHost
-        (builtins.attrNames (builtins.readDir ./kernels/${kernel}/hosts)));
+        (builtins.attrNames (builtins.readDir ./systems/${system}/hosts)));
   in {
     darwinConfigurations =
       mkHosts
       (hostName: {
         ${hostName} = nix-darwin.lib.darwinSystem {
-          modules = [./kernels/darwin/hosts/${hostName}/configuration.nix];
+          modules = [./systems/darwin/hosts/${hostName}/configuration.nix];
           specialArgs = {inherit inputs;};
           system = "x86_64-darwin";
         };
@@ -47,7 +47,7 @@
       mkHosts (hostName: {
         ${hostName} = nixpkgs.lib.nixosSystem {
           modules = [
-            ./kernels/nixos/hosts/${hostName}/configuration.nix
+            ./systems/nixos/hosts/${hostName}/configuration.nix
             {networking.hostName = hostName;}
           ];
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env nu
 
 use ./hosts.nu get-all-configurations
-use ./hosts.nu get-all-kernels
+use ./hosts.nu get-all-systems
 use ./hosts.nu get-built-host-name
 use ./hosts.nu get-current-system
 use ./hosts.nu validate-configuration-name
@@ -36,6 +36,11 @@ def get-configuration-files [configuration: string] {
   | lines
 }
 
+def get-configuration-file [configuration: string file: string] {
+  fd --type file $file (fd --type directory $configuration)
+  | lines
+}
+
 def diff [source: string target: string side_by_side: bool] {
   do --ignore-errors {
     if $side_by_side {
@@ -51,7 +56,7 @@ def get-file-base [file: string] {
 
   $file
   | split row --regex $"hosts/($pattern)"
-  | split row --regex $"kernels/($pattern)"
+  | split row --regex $"systems/($pattern)"
   | last
 }
 
@@ -84,7 +89,7 @@ def main [
           | filter {
               |line|
 
-              "kernels" not-in $line
+              "systems" not-in $line
           }
         )
       | uniq
@@ -120,6 +125,9 @@ def main [
       }
     }
   } else {
-    print implement me!
+    print $source
+    print $target
+    print (get-configuration-file $source $file)
+    print (get-configuration-file $target $file)
   }
 }

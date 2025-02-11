@@ -2,21 +2,21 @@
 
 use ./hosts.nu get-all-configurations
 use ./hosts.nu get-all-hosts
-use ./hosts.nu get-all-kernels
+use ./hosts.nu get-all-systems
 use ./hosts.nu validate-configuration-name
 
-def matches_kernel_name [file: string kernel_name?: string] {
-  if ($kernel_name | is-empty) {
+def matches_system_name [file: string system_name?: string] {
+  if ($system_name | is-empty) {
     false
   } else {
     $file
-    | str contains $kernel_name
+    | str contains $system_name
   }
 }
 
-def matches_kernels [file: string] {
+def matches_systems [file: string] {
   $file
-  | str contains kernels
+  | str contains systems
 }
 
 def matches_hosts [file: string] {
@@ -37,7 +37,7 @@ def get-header [text?: string configuration?: string] {
   let header = $text
 
   if ($configuration | is-empty) or (
-    $text == "Host" and $configuration in (get-all-kernels)
+    $text == "Host" and $configuration in (get-all-systems)
   ) {
     $"($text)s"
   } else {
@@ -57,6 +57,7 @@ def get-colors [] {
           | each {|name| $name in $color}
           | any {|color| $color}
         # TODO is it possible to programmatically detect which colors will work?
+        # `delta` seems able to do this--use that as an example!
         ) and not ("black" in $color) and not ("purple" in $color) or (
           "xterm" in $color
         )
@@ -88,13 +89,13 @@ def get-file-color [
   )
 
   let color = if ($color | is-empty) {
-    let kernels = (get-all-kernels)
+    let systems = (get-all-systems)
 
     $colors
     | filter {
         |color|
 
-        $color.configuration in $file and $color.configuration in $kernels
+        $color.configuration in $file and $color.configuration in $systems
       }
   } else {
     $color
@@ -237,21 +238,21 @@ def main [
           $files
         } else {
           $files
-          | filter {|file| not ($file | str contains kernels)}
+          | filter {|file| not ($file | str contains systems)}
         }
       } else {
-        let configuration_is_kernel_name = (
-          $configuration in (ls --short-names configuration/kernels).name
+        let configuration_is_system_name = (
+          $configuration in (ls --short-names configuration/systems).name
         )
 
         let configuration_is_host_name = (
           $configuration in (ls --short-names configuration/**/hosts/**).name
         )
 
-        let kernel_name = (
+        let system_name = (
           ls ($"configuration/**/($configuration)" | into glob)
           | get name
-          | split row "kernels/"
+          | split row "systems/"
           | last
           | path split
           | first
@@ -261,21 +262,21 @@ def main [
         | filter {
             |file|
 
-            $configuration_is_kernel_name and not $shared and (
-              matches_kernel_name $file $kernel_name
+            $configuration_is_system_name and not $shared and (
+              matches_system_name $file $system_name
             ) or (matches_configuration $file $configuration) and not (
               matches_hosts $file
-            ) or not (matches_kernels $file) or (
+            ) or not (matches_systems $file) or (
               $configuration_is_host_name
             ) and (matches_configuration $file $configuration) or not (
               matches_hosts $file
-            ) and (matches_kernel_name $file $kernel_name)
+            ) and (matches_system_name $file $system_name)
           }
       }
     }
   )
 
-  let is_kernel_configuration = ($configuration in (get-all-kernels))
+  let is_system_configuration = ($configuration in (get-all-systems))
   let is_host_configuration = ($configuration in (get-all-hosts))
   let colors = (get-colors)
 
@@ -292,18 +293,18 @@ def main [
                 |path|
 
                 $path not-in (
-                  [configuration kernels hosts] ++ (
-                    get-all-kernels
+                  [configuration systems hosts] ++ (
+                    get-all-systems
                   ) ++ (get-all-hosts)
                 )
               }
             | path join
           )
 
-          let kernel = if $no_colors or $unique_filenames {
-            get-configuration-name $file "kernel"
+          let system = if $no_colors or $unique_filenames {
+            get-configuration-name $file "system"
           } else {
-            colorize-configuration-name $file "kernel" $colors
+            colorize-configuration-name $file "system" $colors
           }
 
           let host = if $no_colors or $unique_filenames {
@@ -324,10 +325,10 @@ def main [
 
           $file
           | append (
-              if ($host | is-not-empty) and ($kernel | is-not-empty) {
-                $"($kernel) ($host)"
-              } else if ($kernel | is-not-empty) {
-                $kernel
+              if ($host | is-not-empty) and ($system | is-not-empty) {
+                $"($system) ($host)"
+              } else if ($system | is-not-empty) {
+                $system
               } else {
                 ""
               }
@@ -482,20 +483,20 @@ def main [
   } else if $group_by_configuration {
     let shared_files = (
       $files
-      | filter {|file| "kernels" not-in $file}
+      | filter {|file| "systems" not-in $file}
     )
 
-    let shared_kernel_files = (
+    let shared_system_files = (
       $files
-      | filter {|file| "kernels" in $file and "hosts" not-in $file}
+      | filter {|file| "systems" in $file and "hosts" not-in $file}
     )
 
-    let shared_kernel_files = if not $no_colors and (
+    let shared_system_files = if not $no_colors and (
       $configuration | is-empty
     ) {
-      colorize-files $shared_kernel_files $colors $unique $configuration
+      colorize-files $shared_system_files $colors $unique $configuration
     } else {
-      $shared_kernel_files
+      $shared_system_files
     }
 
     let shared_host_files = (
@@ -505,14 +506,14 @@ def main [
 
     let shared_host_files = if not $no_colors and (
       $configuration | is-empty
-    ) or $is_kernel_configuration {
+    ) or $is_system_configuration {
       colorize-files $shared_host_files $colors $unique $configuration
     } else {
       $shared_host_files
     }
 
     let files = (
-      [$shared_files $shared_kernel_files $shared_host_files]
+      [$shared_files $shared_system_files $shared_host_files]
       | filter {
           |files|
 
@@ -530,7 +531,7 @@ def main [
         if not no_labels and ($files | length) > 1 {
           let configuration_type = if "hosts" in $configuration_files {
             "Host"
-          } else if "kernel" in $configuration_files {
+          } else if "system" in $configuration_files {
             "Kernel"
           } else {
             null
@@ -557,7 +558,7 @@ def main [
     ) or (
       $configuration | is-empty
     ) and not $is_host_configuration and (
-      not $shared and $is_kernel_configuration or not $unique
+      not $shared and $is_system_configuration or not $unique
     )
   ) {
     colorize-files $files $colors $unique $configuration

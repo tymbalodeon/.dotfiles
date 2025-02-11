@@ -18,35 +18,35 @@ export def is-nixos [] {
   (get-current-system) == "NixOS"
 }
 
-export def get-all-kernels [] {
-  ls --short-names configuration/kernels
+export def get-all-systems [] {
+  ls --short-names configuration/systems
   | get name
 }
 
-def get-hosts [kernel: string] {
+def get-hosts [system: string] {
   ls --short-names (
     "configuration"
-    | path join kernels
-    | path join $kernel
+    | path join systems
+    | path join $system
     | path join hosts
   )
   | get name
 }
 
 export def get-all-hosts [] {
-  get-all-kernels
-  | each {|kernel| get-hosts $kernel}
+  get-all-systems
+  | each {|system| get-hosts $system}
   | flatten
   | sort
 }
 
 export def get-all-configurations [] {
-  let kernels = (get-all-kernels)
+  let systems = (get-all-systems)
 
-  $kernels
+  $systems
   | append (
-      $kernels
-    | each {|kernel| get-hosts $kernel}
+      $systems
+    | each {|system| get-hosts $system}
   )
   | flatten
   | sort
@@ -63,7 +63,7 @@ export def get-built-host-name [] {
           rg
             (git config user.email)
             (
-              ls ("**/kernels/darwin/hosts/work/git/.gitconfig" | into glob)
+              ls ("**/systems/darwin/hosts/work/git/.gitconfig" | into glob)
               | get name
               | first
             )
@@ -80,17 +80,17 @@ export def get-built-host-name [] {
   }
 }
 
-def raise_configuration_error [configuration: string --kernels] {
-  let available_configurations = if $kernels {
-    get-all-kernels
+def raise_configuration_error [configuration: string --systems] {
+  let available_configurations = if $systems {
+    get-all-systems
   } else {
     get-all-configurations
   }
   | each {|configuration| $"• ($configuration)"}
   | str join "\n"
 
-  let type = if $kernels {
-    "kernel"
+  let type = if $systems {
+    "system"
   } else {
     "configuration"
   }
@@ -105,29 +105,31 @@ Available ($type)s:
 
 export def validate-configuration-name [
   configuration?: string
-  --validate-kernel
+  --validate-system
 ] {
   if ($configuration | is-empty) {
     return
   }
 
-  if $validate_kernel and ($configuration not-in (get-all-kernels)) {
-    raise_configuration_error $configuration --kernels
+  if $validate_system and ($configuration not-in (get-all-systems)) {
+    raise_configuration_error $configuration --systems
   }
 
-  if not ($configuration in (get-all-hosts)) and not ($configuration in (get-all-kernels)) {
+  if not ($configuration in (get-all-hosts)) and not ($configuration in (get-all-systems)) {
     raise_configuration_error $configuration
   }
+
+  $configuration
 }
 
 # List hosts
 export def main [
-  kernel?: string # List hosts for $kernel
+  system?: string # List hosts for $system
   --current-system # List hosts available on the current platform only
 ] {
-  validate-configuration-name $kernel --validate-kernel
+  validate-configuration-name $system --validate-system
 
-  if ($kernel | is-empty) and not $current_system {
+  if ($system | is-empty) and not $current_system {
     return (
       get-all-hosts
       | str join "\n"
@@ -136,10 +138,10 @@ export def main [
 
   mut hosts = {}
 
-  for kernel in (get-all-kernels) {
+  for system in (get-all-systems) {
     $hosts = (
       $hosts
-      | insert $kernel (get-hosts $kernel)
+      | insert $system (get-hosts $system)
     )
   }
 
@@ -149,7 +151,7 @@ export def main [
       | get (get-current-system)
     } else {
       $hosts
-      | get $kernel
+      | get $system
     }
   )
 

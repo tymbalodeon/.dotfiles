@@ -15,7 +15,7 @@
       "${nushell_config_path}/src.nu".source = ../../nushell/src.nu;
       "${nushell_config_path}/theme.nu".source = ../../nushell/theme.nu;
       "${nushell_config_path}/theme-function.nu".source =
-        ../../kernels/darwin/nushell/theme-function.nu;
+        ../../systems/darwin/nushell/theme-function.nu;
       "${nushell_config_path}/themes.toml".source = ../../nushell/themes.toml;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
       "${tealdeer_config_path}/config.toml".source = ../../tealdeer/config.toml;
