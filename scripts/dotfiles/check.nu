@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
 # Check configuration flake
-def main [] {
-  nix flake check
+def --wrapped main [...$args: string] {
+  nix flake check ...$args
 }

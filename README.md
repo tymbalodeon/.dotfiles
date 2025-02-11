@@ -71,29 +71,19 @@ information about a particular recipe.
 ```nushell
 Available recipes:
     check *args              # Check flake and run pre-commit hooks
-    clean *all               # alias for `dotfiles clean`
     dependencies *args       # List dependencies (alias: `deps`) [alias: deps]
-    diff *args               # alias for `dotfiles diff`
     environment *args        # Manage environments [alias: env]
-    files *configuration     # alias for `dotfiles files`
     find-recipe *search_term # Search available `just` recipes [alias: find]
-    generations *help        # alias for `dotfiles generations`
     help *recipe             # View help text
     history *args            # View project history
-    hosts *help              # alias for `dotfiles hosts`
-    inputs *help             # alias for `dotfiles inputs`
     issue *args              # View issues
-    optimise *help           # alias for `dotfiles optimise`
-    prune *args              # alias for `dotfiles prune`
-    rebuild *args            # alias for `dotfiles rebuild`
     release *preview         # Create a new release
     remote *web              # View remote repository
-    shell *host              # alias for `dotfiles shell`
     stats *help              # View repository analytics
     test *args               # Run tests
-    update *help             # alias for `dotfiles update`
     view-source *recipe      # View the source code for a recipe [alias: src]
     dotfiles:
+        check *help          # Check configuration flake
         clean *all           # Run `prune` and `optimise`
         diff *args           # View the diff between hosts
         files *configuration # List configuration files

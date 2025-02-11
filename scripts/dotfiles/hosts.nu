@@ -1,7 +1,15 @@
 #!/usr/bin/env nu
 
+export def get-current-system [] {
+  open /etc/os-release
+  | parse "{key}={value}"
+  | where key == NAME
+  | first
+  | get value
+}
+
 export def is-nixos [] {
-  (uname).kernel-name == "Linux"
+  (get-current-system) == "NixOS"
 }
 
 export def get-all-kernels [] {
@@ -132,7 +140,7 @@ export def main [
   let hosts = (
     if $current_platform {
       $hosts
-      | get (uname).kernel-name
+      | get (get-current-system)
     } else {
       $hosts
       | get $kernel
