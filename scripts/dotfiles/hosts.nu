@@ -1,11 +1,17 @@
 #!/usr/bin/env nu
 
 export def get-current-system [] {
-  open /etc/os-release
-  | parse "{key}={value}"
-  | where key == NAME
-  | first
-  | get value
+  let release_file = "/etc/os-release"
+
+  if ($release_file | path exists) {
+    open /etc/os-release
+    | parse "{key}={value}"
+    | where key == NAME
+    | first
+    | get value
+  } else {
+    (uname).kernel-name
+  }
 }
 
 export def is-nixos [] {
@@ -117,11 +123,11 @@ export def validate-configuration-name [
 # List hosts
 export def main [
   kernel?: string # List hosts for $kernel
-  --current-platform # List hosts available on the current platform only
+  --current-system # List hosts available on the current platform only
 ] {
   validate-configuration-name $kernel --validate-kernel
 
-  if ($kernel | is-empty) and not $current_platform {
+  if ($kernel | is-empty) and not $current_system {
     return (
       get-all-hosts
       | str join "\n"
@@ -138,7 +144,7 @@ export def main [
   }
 
   let hosts = (
-    if $current_platform {
+    if $current_system {
       $hosts
       | get (get-current-system)
     } else {
