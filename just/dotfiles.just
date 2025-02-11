@@ -2,6 +2,11 @@
 @help *recipe:
     ../scripts/dotfiles/help.nu {{ recipe }}
 
+# Check configuration flake
+[working-directory: "../configuration"]
+@check *help:
+    ../scripts/dotfiles/check.nu {{ help }}
+
 # Run `prune` and `optimise`
 @clean *all:
     ../scripts/dotfiles/clean.nu {{ all }}
