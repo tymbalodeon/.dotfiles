@@ -7,6 +7,13 @@ use ./prune.nu
 use ./optimise.nu
 use ./update.nu
 
+def --wrapped darwin-rebuild [...$args: string] {
+  try {
+    /run/current-system/sw/bin/darwin-rebuild ...$args
+  } catch {
+    nix run "nix-darwin/master#darwin-rebuild" -- ...$args
+  }
+}
 
 # Rebuild and switch to (or --test) a configuration
 def main [
@@ -42,9 +49,9 @@ def main [
     }
   } else {
     if $debug {
-      /run/current-system/sw/bin/darwin-rebuild switch --flake $host --show-trace --verbose
+      darwin-rebuild switch --flake $host --show-trace --verbose
     } else {
-      /run/current-system/sw/bin/darwin-rebuild switch --flake $host
+      darwin-rebuild switch --flake $host
     }
   }
 

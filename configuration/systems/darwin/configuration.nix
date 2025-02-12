@@ -6,12 +6,13 @@
 
   imports = [inputs.home-manager.darwinModules.home-manager];
 
-  nix.extraOptions = ''
-    bash-prompt-prefix = (nix:$name)\040
-    experimental-features = flakes nix-command
-    extra-nix-path = nixpkgs=flake:nixpkgs
-    upgrade-nix-store-path-url = https://install.determinate.systems/nix-upgrade/stable/universal
-  '';
+  nix.enable = false;
+  # nix.extraOptions = ''
+  #   bash-prompt-prefix = (nix:$name)\040
+  #   experimental-features = flakes nix-command
+  #   extra-nix-path = nixpkgs=flake:nixpkgs
+  #   upgrade-nix-store-path-url = https://install.determinate.systems/nix-upgrade/stable/universal
+  # '';
 
   security.sudo.extraConfig = ''
     Defaults env_keep += "TERM TERMINFO"
