@@ -5,8 +5,8 @@ use ./prune.nu
 
 # Run `prune` and `optimise`
 def main [
-  --all
-  --older-than: string
+  --all # Remove all old generations
+  --older-than: string # Remove generations older than this amount
 ] {
   if $all {
     prune --all

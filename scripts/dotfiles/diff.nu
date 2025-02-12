@@ -69,8 +69,8 @@ def main [
   --side-by-side # Force side-by-side layout
 ] {
   let validated_args = (validate-source-and-target $source $target)
-  let source = ($validated_args | get source)
-  let target = ($validated_args | get target)
+  let source = $validated_args.source
+  let target = $validated_args.target
 
   if ($file | is-empty) {
     let source_files = (get-configuration-files $source)
@@ -125,8 +125,6 @@ def main [
       }
     }
   } else {
-    print $source
-    print $target
     print (get-configuration-file $source $file)
     print (get-configuration-file $target $file)
   }
