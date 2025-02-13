@@ -1,5 +1,6 @@
 #!/usr/bin/env nu
 
+use ./files.nu colorize
 use ./hosts.nu get-all-configurations
 use ./hosts.nu get-all-hosts
 use ./hosts.nu get-all-systems
@@ -98,10 +99,11 @@ def get-configuration-matching-files [
 # View the diff between configurations
 def main [
   file?: string # View the diff for a specific file
-  --source: string # Host or system name
-  --target: string # Host or system to compare to
+  --files # View diff of filenames rather than file contents
   --side-by-side # Force side-by-side layout
   --single-column # Force a single column layout
+  --source: string # Host or system name
+  --target: string # Host or system to compare to
 ] {
   let source = (validate-source $source)
   let target = (validate-target $target)
@@ -130,7 +132,11 @@ def main [
 
       for target_file in $target_files {
         if $source_file != $target_file {
-          diff $source_file $target_file $side_by_side
+          if $files {
+            print $"(colorize $source_file yellow) --> (colorize $target_file green)"
+          } else {
+            diff $source_file $target_file $side_by_side
+          }
         }
       }
     }

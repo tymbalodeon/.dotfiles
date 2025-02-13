@@ -110,7 +110,7 @@ def get-file-color [
   $color.name
 }
 
-def colorize [text: string color: string] {
+export def colorize [text: string color: string] {
   $"(ansi $color)($text)(ansi reset)"
 }
 
