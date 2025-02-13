@@ -1,44 +1,75 @@
 #!/usr/bin/env nu
 
 use ./hosts.nu get-all-configurations
+use ./hosts.nu get-all-hosts
 use ./hosts.nu get-all-systems
 use ./hosts.nu get-built-host-name
 use ./hosts.nu get-current-system
 use ./hosts.nu validate-configuration-name
 
-def validate-source-and-target [source?: string target?: string] {
-  let validated_source = if (
-    ($source | is-empty) or ($target | is-empty)
-  ) {
-    get-built-host-name
+def validate-source [source?: string] {
+  if ($source | is-empty) {
+    (get-current-system) | str downcase
   } else {
     validate-configuration-name $source
   }
+}
 
-  let validated_target = if ($target | is-empty) {
-    if ($source | is-empty) {
-      (get-current-system) | str downcase
-    } else {
-      validate-configuration-name $source
-    }
+def validate-target [target?: string] {
+  if ($target | is-empty) {
+    get-built-host-name
   } else {
     validate-configuration-name $target
-  }
-
-  {
-    source: $validated_source
-    target: $validated_target
   }
 }
 
 def get-configuration-files [configuration: string] {
-  fd --type file "" (fd --type directory $configuration)
-  | lines
+  let configuration_files = (
+    fd --hidden --type file "" (fd --type directory $configuration)
+    | lines
+  )
+
+  let configuration_files = if $configuration in (get-all-hosts) {
+    let system = (
+      $configuration_files
+      | first
+      | rg "systems/([^/]+)" --only-matching --replace "$1"
+    )
+
+    $configuration_files
+    | append (
+        fd --hidden --type file "" (fd --type directory $system)
+        | lines
+        | where $it !~ hosts
+      )
+  } else {
+    $configuration_files
+    | where $it !~ hosts
+  }
+
+  $configuration_files
+  | append (
+      fd --hidden --type file "" configuration
+      | lines
+      | where $it !~ system
+  )
+  | uniq
 }
 
-def get-configuration-file [configuration: string file: string] {
-  fd --type file $file (fd --type directory $configuration)
-  | lines
+def get-file-base [file: string] {
+  let pattern = "[^/]+/"
+
+  $file
+  | split row --regex $"hosts/($pattern)"
+  | split row --regex $"systems/($pattern)"
+  | last
+}
+
+def get-file-path [file: string] {
+  $file
+  | str replace configuration/ ""
+  | str replace --regex 'systems/[^/]+/' ""
+  | str replace --regex 'hosts/[^/]+/' ""
 }
 
 def diff [source: string target: string side_by_side: bool] {
@@ -51,13 +82,17 @@ def diff [source: string target: string side_by_side: bool] {
   }
 }
 
-def get-file-base [file: string] {
-  let pattern = "[^/]+/"
+def get-configuration-matching-files [
+  configuration_files: list<string>
+  file_path: string
+] {
+  $configuration_files
+  | filter {
+      |file|
 
-  $file
-  | split row --regex $"hosts/($pattern)"
-  | split row --regex $"systems/($pattern)"
-  | last
+      $file 
+      | str ends-with $file_path
+  }
 }
 
 # View the diff between configurations
@@ -65,67 +100,50 @@ def main [
   file?: string # View the diff for a specific file
   --source: string # Host or system name
   --target: string # Host or system to compare to
-  --single-column # Force a single column layout
   --side-by-side # Force side-by-side layout
+  --single-column # Force a single column layout
 ] {
-  let validated_args = (validate-source-and-target $source $target)
-  let source = $validated_args.source
-  let target = $validated_args.target
+  let source = (validate-source $source)
+  let target = (validate-target $target)
+
+  let source_files = (get-configuration-files $source)
+
+  let target_files = (
+    get-configuration-files $target
+    | where $it =~ $target
+  )
+
+  let side_by_side = $side_by_side or not $single_column and (
+    (tput cols | into int) > 158 
+  )
 
   if ($file | is-empty) {
-    let source_files = (get-configuration-files $source)
-    let target_files = (get-configuration-files $target)
-
-    let file_paths = (
-      $source_files
-      | str replace (fd $source) ""
-    )
-
-    let all_files = (
-      | append $target_files
-      | append (
-          fd --type file "" (fd --type directory configuration)
-          | lines
-          | filter {
-              |line|
-
-              "systems" not-in $line
-          }
-        )
-      | uniq
-      | filter {
-          |file|
-
-          (get-file-base $file) in $file_paths
-      }
-    )
-
     for source_file in $source_files {
-      let files = (
-        $all_files
+      let target_files = (
+        $target_files
         | filter {
             |target_file|
 
-            (get-file-base $source_file) in $target_file
-          }
+            (get-file-path $target_file) == (get-file-path $source_file)
+        }
       )
 
-      let side_by_side = if $single_column {
-        false
-      } else if $side_by_side {
-        $side_by_side
-      } else if (tput cols | into int) > 158 {
-        true
-      } else {
-        false
-      }
-
-      for target_file in $files {
-        diff $source_file $target_file $side_by_side
+      for target_file in $target_files {
+        if $source_file != $target_file {
+          diff $source_file $target_file $side_by_side
+        }
       }
     }
   } else {
-    print (get-configuration-file $source $file)
-    print (get-configuration-file $target $file)
+    let source_files = (get-configuration-matching-files $source_files $file)
+    let target_files = (get-configuration-matching-files $target_files $file)
+
+    for source_file in $source_files {
+      for target_file in $target_files {
+        if $source_file != $target_file {
+          diff $source_file $target_file $side_by_side
+        }
+      }
+    }
   }
 }
