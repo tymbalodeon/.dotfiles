@@ -120,21 +120,40 @@ def main [
   )
 
   if ($file | is-empty) {
-    for source_file in $source_files {
-      let target_files = (
-        $target_files
-        | filter {
-            |target_file|
+    if $files {
+      $source_files  
+      | each {
+          |source_file|
 
-            (get-file-path $target_file) == (get-file-path $source_file)
+          $target_files
+          | filter {
+              |target_file|
+
+              (get-file-path $target_file) == (get-file-path $source_file)
+            }
+          | where $it != $source_files
+          | each {
+              |target_file|
+
+              $"(colorize $source_file yellow) -> (colorize $target_file green)"
+            }
         }
-      )
+      | flatten
+      | to text
+      | column -t
+    } else {
+      for source_file in $source_files {
+        let target_files = (
+          $target_files
+          | filter {
+              |target_file|
 
-      for target_file in $target_files {
-        if $source_file != $target_file {
-          if $files {
-            print $"(colorize $source_file yellow) --> (colorize $target_file green)"
-          } else {
+              (get-file-path $target_file) == (get-file-path $source_file)
+            }
+        )
+
+        for target_file in $target_files {
+          if $source_file != $target_file {
             diff $source_file $target_file $side_by_side
           }
         }
