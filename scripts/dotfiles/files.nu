@@ -1,5 +1,6 @@
 #!/usr/bin/env nu
 
+use ./color.nu colorize
 use ./hosts.nu get-all-configurations
 use ./hosts.nu get-all-hosts
 use ./hosts.nu get-all-systems
@@ -108,10 +109,6 @@ def get-file-color [
   let color = ($color | first)
 
   $color.name
-}
-
-export def colorize [text: string color: string] {
-  $"(ansi $color)($text)(ansi reset)"
 }
 
 def colorize-files [

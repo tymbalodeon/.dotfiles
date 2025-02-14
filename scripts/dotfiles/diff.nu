@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-use ./files.nu colorize
+use ./color.nu colorize
 use ./hosts.nu get-all-configurations
 use ./hosts.nu get-all-hosts
 use ./hosts.nu get-all-systems
