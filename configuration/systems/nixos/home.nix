@@ -33,7 +33,6 @@
       cantarell-fonts
       equibop
       gforth
-      ghostty
       rofi-wayland
       waybar
       wev

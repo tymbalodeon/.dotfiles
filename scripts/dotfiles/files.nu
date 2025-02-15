@@ -525,11 +525,11 @@ def main [
 
         let configuration_files = ($configuration_files | to text)
 
-        if not no_labels and ($files | length) > 1 {
+        if not $no_labels and ($files | length) > 1 {
           let configuration_type = if "hosts" in $configuration_files {
             "Host"
           } else if "system" in $configuration_files {
-            "Kernel"
+            "System"
           } else {
             null
           }

@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
  
-export def colorize [text: string color: string] {
-  $"(ansi $color)($text)(ansi reset)"
+export def colorize [text: string style: string] {
+  $"(ansi $style)($text)(ansi reset)"
 }
 

@@ -73,12 +73,38 @@ def get-file-path [file: string] {
   | str replace --regex 'hosts/[^/]+/' ""
 }
 
+def colorize-file [file: string style: string] {
+  let file_path = (get-file-path $file)
+
+  $file
+  | str replace $file_path ""
+  | append (colorize $file_path $style)
+  | str join
+}
+
 def diff [source: string target: string side_by_side: bool] {
+  let width = (tput cols)
+
   do --ignore-errors {
     if $side_by_side {
-      ^delta --diff-so-fancy --paging never --side-by-side $source $target
+      (
+        ^delta
+          --diff-so-fancy
+          --paging never
+          --side-by-side
+          --width $width
+          $source
+          $target
+      )
     } else {
-      ^delta --diff-so-fancy --paging never $source $target
+      (
+        ^delta
+        --diff-so-fancy
+        --paging never
+        --width $width
+        $source
+        $target 
+      )
     }
   }
 }
@@ -102,13 +128,14 @@ def main [
   --files # View diff of filenames rather than file contents
   --side-by-side # Force side-by-side layout
   --single-column # Force a single column layout
+  --sort-by-source # Sort by source files
+  --sort-by-target # Sort by target files
   --source: string # Host or system name
   --target: string # Host or system to compare to
 ] {
   let source = (validate-source $source)
   let target = (validate-target $target)
-
-  let source_files = (get-configuration-files $source)
+  let source_files = (get-configuration-files $source | sort)
 
   let target_files = (
     get-configuration-files $target
@@ -119,8 +146,8 @@ def main [
     (tput cols | into int) > 158 
   )
 
-  if ($file | is-empty) {
-    if $files {
+  if $files and ($file | is-empty) {
+    return (
       $source_files  
       | each {
           |source_file|
@@ -135,14 +162,52 @@ def main [
           | each {
               |target_file|
 
+              colorize-file $target_file green_bold
+            }
+          | each {
+              |target_file|
+
+              let source_file_path = (
+                get-file-path $source_file
+              )
+
+              let source_file = (
+                colorize-file $source_file yellow_bold
+              )
+
               $"(colorize $source_file yellow) -> (colorize $target_file green)"
             }
         }
       | flatten
+      | sort-by --custom {
+          |a, b|
+
+          let index = if $sort_by_target {
+            2
+          } else {
+            0
+          }
+
+          (
+            $a
+            | split row " "
+            | get $index
+          ) < (
+            $b
+            | split row " "
+            | get $index
+          )
+      }
       | to text
       | column -t
-    } else {
-      for source_file in $source_files {
+    )
+  }
+
+  let output = if ($file | is-empty) {
+    $source_files
+    | each {
+        |source_file|
+
         let target_files = (
           $target_files
           | filter {
@@ -152,23 +217,70 @@ def main [
             }
         )
 
-        for target_file in $target_files {
-          if $source_file != $target_file {
-            diff $source_file $target_file $side_by_side
+        $target_files
+        | filter {
+            |target_file|
+
+            $target_file != $source_file
           }
-        }
+        | each {
+            |target_file|
+
+            diff $source_file $target_file $side_by_side
+            | complete
+            | get stdout
+          }
       }
-    }
   } else {
     let source_files = (get-configuration-matching-files $source_files $file)
     let target_files = (get-configuration-matching-files $target_files $file)
 
-    for source_file in $source_files {
-      for target_file in $target_files {
-        if $source_file != $target_file {
-          diff $source_file $target_file $side_by_side
-        }
+    $source_files
+    | each {
+        |source_file|
+
+        $target_files
+        | filter {
+            |target_file|
+
+            $target_file != $source_file
+          }
+        | each {
+            |target_file|
+
+            diff $source_file $target_file $side_by_side
+            | complete
+            | get stdout
+          }
       }
+    } 
+
+  $output
+  | flatten
+  | sort-by --custom {
+      |a, b|
+
+      let index = if $sort_by_target {
+        3
+      } else {
+        1
+      }
+
+      (
+        $a
+        | lines
+        | get 2
+        | split row " "
+        | where $it != ""
+        | get $index
+      ) < (
+        $b
+        | lines
+        | get 2
+        | split row " "
+        | where $it != ""
+        | get $index
+      )
     }
-  }
+  | str join "\n"
 }
