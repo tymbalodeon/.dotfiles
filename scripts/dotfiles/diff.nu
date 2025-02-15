@@ -73,6 +73,47 @@ def colorize-file [file: string style: string] {
   | str join
 }
 
+def get-diff-files-filename [file: string index: int] {
+  $file
+  | split row " "
+  | get $index
+}
+
+# TODO test me
+def sort-diff-files [a: string b: string sort_by_target: bool] {
+  let index = if $sort_by_target {
+    2
+  } else {
+    0
+  }
+
+  (get-diff-files-filename $a $index) < (
+    get-diff-files-filename $b $index
+  )
+}
+
+def get-delta-filename [diff: string index: int] {
+  $diff
+  | lines
+  | get 2
+  | split row " "
+  | where $it != ""
+  | get $index
+}
+
+# TODO test me
+def sort-delta-files [a: string b: string sort_by_target: bool] {
+  let index = if $sort_by_target {
+    3
+  } else {
+    1
+  }
+
+  (get-delta-filename $a $index) < (
+    get-delta-filename $b $index
+  )
+}
+
 export def list-files [
   source_files: list<string>
   target_files: list<string>
@@ -114,22 +155,8 @@ export def list-files [
     | sort-by --custom {
         |a, b|
 
-        let index = if $sort_by_target {
-          2
-        } else {
-          0
-        }
-
-        (
-          $a
-          | split row " "
-          | get $index
-        ) < (
-          $b
-          | split row " "
-          | get $index
-        )
-    }
+        sort-diff-files $a $b $sort_by_target
+      }
     | to text
     | column -t
   )
@@ -144,7 +171,7 @@ export def list-files [
   }
 }
 
-def get-diff-files [target_files: list<string> source_file: string] {
+def get-delta-args [target_files: list<string> source_file: string] {
   $target_files
   | filter {
       |target_file|
@@ -159,6 +186,42 @@ def get-diff-files [target_files: list<string> source_file: string] {
         target_file: $target_file
       }
     }
+}
+
+# TODO test me
+export def get-diff-files [
+  source_files: list<string>
+  target_files: list<string>
+  file?: string
+] {
+  if ($file | is-empty) {
+    $source_files
+    | each {
+        |source_file|
+
+        let target_files = (
+          $target_files
+          | filter {
+              |target_file|
+
+              (get-file-path $target_file) == (get-file-path $source_file)
+            }
+        )
+
+        get-delta-args $target_files $source_file
+      }
+  } else {
+    let source_files = (get-configuration-matching-files $source_files $file)
+    let target_files = (get-configuration-matching-files $target_files $file)
+
+    $source_files
+    | each {
+        |source_file|
+
+        get-delta-args $target_files $source_file
+      }
+  }
+  | flatten
 }
 
 def diff [source: string target: string side_by_side: bool] {
@@ -188,6 +251,7 @@ def diff [source: string target: string side_by_side: bool] {
   }
 }
 
+# TODO revisit this, is it necessary or use get-file-path
 def get-configuration-matching-files [
   configuration_files: list<string>
   file_path: string
@@ -230,78 +294,25 @@ def main [
     return (list-files $source_files $target_files $sort_by_target $file)
   }
 
-  let diff_files = if ($file | is-empty) {
-    $source_files
-    | each {
-        |source_file|
-
-        let target_files = (
-          $target_files
-          | filter {
-              |target_file|
-
-              (get-file-path $target_file) == (get-file-path $source_file)
-            }
-        )
-
-        get-diff-files $target_files $source_file
-      }
-  } else {
-    let source_files = (get-configuration-matching-files $source_files $file)
-    let target_files = (get-configuration-matching-files $target_files $file)
-
-    $source_files
-    | each {
-        |source_file|
-
-        get-diff-files $target_files $source_file
-      }
-  }
-  | flatten
-
-  let output = (
-    $diff_files
-    | each {
-        |files|
-
-        diff $files.source_file $files.target_file $side_by_side
-        | complete
-        | get stdout
-      }
-  )
-
   let paging = if ($paging | is-empty) {
     "auto"
   } else {
     $paging
   }
 
-  $output
+  get-diff-files $source_files $target_files $file
+  | each {
+      |files|
+
+      diff $files.source_file $files.target_file $side_by_side
+      | complete
+      | get stdout
+    }
   | flatten
   | sort-by --custom {
       |a, b|
 
-      let index = if $sort_by_target {
-        3
-      } else {
-        1
-      }
-
-      (
-        $a
-        | lines
-        | get 2
-        | split row " "
-        | where $it != ""
-        | get $index
-      ) < (
-        $b
-        | lines
-        | get 2
-        | split row " "
-        | where $it != ""
-        | get $index
-      )
+      sort-delta-files $a $b $sort_by_target
     }
   | str join "\n"
   | bat --paging $paging
