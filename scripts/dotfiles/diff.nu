@@ -126,6 +126,7 @@ def get-configuration-matching-files [
 def main [
   file?: string # View the diff for a specific file
   --files # View diff of filenames rather than file contents
+  --paging: string # When to use paging (*auto*, never, always)
   --side-by-side # Force side-by-side layout
   --single-column # Force a single column layout
   --sort-by-source # Sort by source files
@@ -255,6 +256,12 @@ def main [
       }
     } 
 
+  let paging = if ($paging | is-empty) {
+    "auto"
+  } else {
+    $paging
+  }
+
   $output
   | flatten
   | sort-by --custom {
@@ -283,4 +290,5 @@ def main [
       )
     }
   | str join "\n"
+  | bat --paging $paging
 }
