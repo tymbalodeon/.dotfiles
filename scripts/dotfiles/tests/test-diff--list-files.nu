@@ -81,4 +81,3 @@ for test in [
 ] {
   assert equal $test.actual $test.expected
 }
-

@@ -144,6 +144,23 @@ export def list-files [
   }
 }
 
+def get-diff-files [target_files: list<string> source_file: string] {
+  $target_files
+  | filter {
+      |target_file|
+
+      $target_file != $source_file
+    }
+  | each {
+      |target_file|
+
+      {
+        source_file: $source_file
+        target_file: $target_file
+      }
+    }
+}
+
 def diff [source: string target: string side_by_side: bool] {
   let width = (tput cols)
 
@@ -213,7 +230,7 @@ def main [
     return (list-files $source_files $target_files $sort_by_target $file)
   }
 
-  let output = if ($file | is-empty) {
+  let diff_files = if ($file | is-empty) {
     $source_files
     | each {
         |source_file|
@@ -227,19 +244,7 @@ def main [
             }
         )
 
-        $target_files
-        | filter {
-            |target_file|
-
-            $target_file != $source_file
-          }
-        | each {
-            |target_file|
-
-            diff $source_file $target_file $side_by_side
-            | complete
-            | get stdout
-          }
+        get-diff-files $target_files $source_file
       }
   } else {
     let source_files = (get-configuration-matching-files $source_files $file)
@@ -249,21 +254,21 @@ def main [
     | each {
         |source_file|
 
-        $target_files
-        | filter {
-            |target_file|
-
-            $target_file != $source_file
-          }
-        | each {
-            |target_file|
-
-            diff $source_file $target_file $side_by_side
-            | complete
-            | get stdout
-          }
+        get-diff-files $target_files $source_file
       }
-    }
+  }
+  | flatten
+
+  let output = (
+    $diff_files
+    | each {
+        |files|
+
+        diff $files.source_file $files.target_file $side_by_side
+        | complete
+        | get stdout
+      }
+  )
 
   let paging = if ($paging | is-empty) {
     "auto"
