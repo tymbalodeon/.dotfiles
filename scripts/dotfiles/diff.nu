@@ -103,7 +103,7 @@ def diff [source: string target: string side_by_side: bool] {
         --paging never
         --width $width
         $source
-        $target 
+        $target
       )
     }
   }
@@ -117,7 +117,7 @@ def get-configuration-matching-files [
   | filter {
       |file|
 
-      $file 
+      $file
       | str ends-with $file_path
   }
 }
@@ -144,12 +144,12 @@ def main [
   )
 
   let side_by_side = $side_by_side or not $single_column and (
-    (tput cols | into int) > 158 
+    (tput cols | into int) > 158
   )
 
-  if $files and ($file | is-empty) {
-    return (
-      $source_files  
+  if $files {
+    let output = (
+      $source_files
       | each {
           |source_file|
 
@@ -201,6 +201,17 @@ def main [
       }
       | to text
       | column -t
+    )
+
+    return (
+      if ($file | is-not-empty) {
+        $output
+        | lines
+        | where $it =~ $file 
+        | str join "\n"
+      } else {
+        $output
+      }
     )
   }
 
@@ -254,7 +265,7 @@ def main [
             | get stdout
           }
       }
-    } 
+    }
 
   let paging = if ($paging | is-empty) {
     "auto"

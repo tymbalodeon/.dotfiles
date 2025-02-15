@@ -74,7 +74,7 @@ Available recipes:
     dependencies *args       # List dependencies [alias: deps]
     environment *args        # Manage environments [alias: env]
     find-recipe *search_term # Search available `just` recipes [alias: find]
-    help *recipe             # View help text
+    help *args               # View full help text, or for a specific recipe
     history *args            # View project history
     issue *args              # View issues
     release *preview         # Create a new release
