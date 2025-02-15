@@ -57,15 +57,6 @@ def get-configuration-files [configuration: string] {
   | uniq
 }
 
-def get-file-base [file: string] {
-  let pattern = "[^/]+/"
-
-  $file
-  | split row --regex $"hosts/($pattern)"
-  | split row --regex $"systems/($pattern)"
-  | last
-}
-
 def get-file-path [file: string] {
   $file
   | str replace configuration/ ""
@@ -80,6 +71,77 @@ def colorize-file [file: string style: string] {
   | str replace $file_path ""
   | append (colorize $file_path $style)
   | str join
+}
+
+export def list-files [
+  source_files: list<string>
+  target_files: list<string>
+  sort_by_target: bool
+  file?: string
+] {
+  let output = (
+    $source_files
+    | each {
+        |source_file|
+
+        $target_files
+        | filter {
+            |target_file|
+
+            (get-file-path $target_file) == (get-file-path $source_file)
+          }
+        | where $it != $source_files
+        | each {
+            |target_file|
+
+            colorize-file $target_file green_bold
+          }
+        | each {
+            |target_file|
+
+            let source_file_path = (
+              get-file-path $source_file
+            )
+
+            let source_file = (
+              colorize-file $source_file yellow_bold
+            )
+
+            $"(colorize $source_file yellow) -> (colorize $target_file green)"
+          }
+      }
+    | flatten
+    | sort-by --custom {
+        |a, b|
+
+        let index = if $sort_by_target {
+          2
+        } else {
+          0
+        }
+
+        (
+          $a
+          | split row " "
+          | get $index
+        ) < (
+          $b
+          | split row " "
+          | get $index
+        )
+    }
+    | to text
+    | column -t
+  )
+
+  if ($file | is-not-empty) {
+    $output
+    | lines
+    | where $it =~ $file
+    | str join "\n"
+  } else {
+    $output
+  }
 }
 
 def diff [source: string target: string side_by_side: bool] {
@@ -148,71 +210,7 @@ def main [
   )
 
   if $files {
-    let output = (
-      $source_files
-      | each {
-          |source_file|
-
-          $target_files
-          | filter {
-              |target_file|
-
-              (get-file-path $target_file) == (get-file-path $source_file)
-            }
-          | where $it != $source_files
-          | each {
-              |target_file|
-
-              colorize-file $target_file green_bold
-            }
-          | each {
-              |target_file|
-
-              let source_file_path = (
-                get-file-path $source_file
-              )
-
-              let source_file = (
-                colorize-file $source_file yellow_bold
-              )
-
-              $"(colorize $source_file yellow) -> (colorize $target_file green)"
-            }
-        }
-      | flatten
-      | sort-by --custom {
-          |a, b|
-
-          let index = if $sort_by_target {
-            2
-          } else {
-            0
-          }
-
-          (
-            $a
-            | split row " "
-            | get $index
-          ) < (
-            $b
-            | split row " "
-            | get $index
-          )
-      }
-      | to text
-      | column -t
-    )
-
-    return (
-      if ($file | is-not-empty) {
-        $output
-        | lines
-        | where $it =~ $file 
-        | str join "\n"
-      } else {
-        $output
-      }
-    )
+    return (list-files $source_files $target_files $sort_by_target $file)
   }
 
   let output = if ($file | is-empty) {
