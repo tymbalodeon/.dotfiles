@@ -308,8 +308,6 @@ def main [
     $paging
   }
 
-  print (get-diff-files $source_files $target_files $source_file)
-
   get-diff-files $source_files $target_files $source_file
   | each {
       |files|
