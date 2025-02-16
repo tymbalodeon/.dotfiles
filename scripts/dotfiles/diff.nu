@@ -8,6 +8,35 @@ use ./hosts.nu get-built-host-name
 use ./hosts.nu get-current-system
 use ./hosts.nu validate-configuration-name
 
+def diff [source: string target: string side_by_side: bool] {
+  let width = (tput cols)
+
+  do --ignore-errors {
+    if $side_by_side {
+      (
+        ^delta
+          --diff-so-fancy
+          --paging never
+          --side-by-side
+          --width $width
+          $source
+          $target
+      )
+    } else {
+      (
+        ^delta
+        --diff-so-fancy
+        --paging never
+        --width $width
+        $source
+        $target
+      )
+    }
+  }
+  | complete
+  | get stdout
+}
+
 def validate-source [source?: string] {
   if ($source | is-empty) {
     (get-current-system) | str downcase
@@ -79,8 +108,7 @@ def get-diff-files-filename [file: string index: int] {
   | get $index
 }
 
-# TODO test me
-def sort-diff-files [a: string b: string sort_by_target: bool] {
+export def sort-diff-files [a: string b: string sort_by_target: bool] {
   let index = if $sort_by_target {
     2
   } else {
@@ -89,28 +117,6 @@ def sort-diff-files [a: string b: string sort_by_target: bool] {
 
   (get-diff-files-filename $a $index) < (
     get-diff-files-filename $b $index
-  )
-}
-
-def get-delta-filename [diff: string index: int] {
-  $diff
-  | lines
-  | get 2
-  | split row " "
-  | where $it != ""
-  | get $index
-}
-
-# TODO test me
-def sort-delta-files [a: string b: string sort_by_target: bool] {
-  let index = if $sort_by_target {
-    3
-  } else {
-    1
-  }
-
-  (get-delta-filename $a $index) < (
-    get-delta-filename $b $index
   )
 }
 
@@ -188,7 +194,19 @@ def get-delta-args [target_files: list<string> source_file: string] {
     }
 }
 
-# TODO test me
+def get-configuration-matching-files [
+  configuration_files: list<string>
+  file_path: string
+] {
+  $configuration_files
+  | filter {
+      |file|
+
+      $file
+      | str ends-with $file_path
+    }
+}
+
 export def get-diff-files [
   source_files: list<string>
   target_files: list<string>
@@ -211,7 +229,7 @@ export def get-diff-files [
         get-delta-args $target_files $source_file
       }
   } else {
-    let source_files = (get-configuration-matching-files $source_files $file)
+    let $source_files = (get-configuration-matching-files $source_files $file)
     let target_files = (get-configuration-matching-files $target_files $file)
 
     $source_files
@@ -224,50 +242,31 @@ export def get-diff-files [
   | flatten
 }
 
-def diff [source: string target: string side_by_side: bool] {
-  let width = (tput cols)
-
-  do --ignore-errors {
-    if $side_by_side {
-      (
-        ^delta
-          --diff-so-fancy
-          --paging never
-          --side-by-side
-          --width $width
-          $source
-          $target
-      )
-    } else {
-      (
-        ^delta
-        --diff-so-fancy
-        --paging never
-        --width $width
-        $source
-        $target
-      )
-    }
-  }
+def get-delta-filename [diff: string index: int] {
+  $diff
+  | lines
+  | get 2
+  | split row " "
+  | where $it != ""
+  | get $index
 }
 
-# TODO revisit this, is it necessary or use get-file-path
-def get-configuration-matching-files [
-  configuration_files: list<string>
-  file_path: string
-] {
-  $configuration_files
-  | filter {
-      |file|
-
-      $file
-      | str ends-with $file_path
+export def sort-delta-files [a: string b: string sort_by_target: bool] {
+  let index = if $sort_by_target {
+    3
+  } else {
+    1
   }
+
+  (get-delta-filename $a $index) < (
+    get-delta-filename $b $index
+  )
 }
 
 # View the diff between configurations
 def main [
-  file?: string # View the diff for a specific file
+  source_file?: string # View the diff for a specific file
+  target_file?: string # View the diff for a specific file
   --files # View diff of filenames rather than file contents
   --paging: string # When to use paging (*auto*, never, always)
   --side-by-side # Force side-by-side layout
@@ -275,8 +274,19 @@ def main [
   --sort-by-source # Sort by source files
   --sort-by-target # Sort by target files
   --source: string # Host or system name
-  --target: string # Host or system to compare to
+  --target: string # Host or system name
 ] {
+  let side_by_side = $side_by_side or not $single_column and (
+    (tput cols | into int) > 158
+  )
+
+  if (
+    [$source_file $target_file]
+    | all {|file| $file | is-not-empty}
+  ) {
+    return (diff $source_file $target_file $side_by_side)
+  }
+
   let source = (validate-source $source)
   let target = (validate-target $target)
   let source_files = (get-configuration-files $source | sort)
@@ -286,12 +296,10 @@ def main [
     | where $it =~ $target
   )
 
-  let side_by_side = $side_by_side or not $single_column and (
-    (tput cols | into int) > 158
-  )
-
   if $files {
-    return (list-files $source_files $target_files $sort_by_target $file)
+    return (
+      list-files $source_files $target_files $sort_by_target $source_file
+    )
   }
 
   let paging = if ($paging | is-empty) {
@@ -300,13 +308,13 @@ def main [
     $paging
   }
 
-  get-diff-files $source_files $target_files $file
+  print (get-diff-files $source_files $target_files $source_file)
+
+  get-diff-files $source_files $target_files $source_file
   | each {
       |files|
 
       diff $files.source_file $files.target_file $side_by_side
-      | complete
-      | get stdout
     }
   | flatten
   | sort-by --custom {
