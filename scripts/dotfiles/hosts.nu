@@ -125,8 +125,13 @@ export def validate-configuration-name [
 # List hosts
 export def main [
   system?: string # List hosts for $system
+  --current-host # View current host
   --current-system # List hosts available on the current platform only
 ] {
+  if $current_host {
+    return (get-built-host-name)
+  }
+
   validate-configuration-name $system --validate-system
 
   if ($system | is-empty) and not $current_system {
