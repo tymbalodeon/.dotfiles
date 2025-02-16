@@ -83,19 +83,19 @@ Available recipes:
     test *args               # Run tests
     view-source *recipe      # View the source code for a recipe [alias: src]
     dotfiles:
-        check *help          # Check configuration flake
-        clean *all           # Run `prune` and `optimise`
-        diff *args           # View the diff between hosts
-        files *configuration # List configuration files
-        generations *help    # View generations
-        help *recipe         # View help text
-        hosts *help          # List available hosts
-        inputs *help         # List flake inputs
-        optimise *help       # Replace identical files in the Nix store by hard links
-        prune *args          # Collect garbage and remove old generations
-        rebuild *args        # Rebuild and switch to (or --test) a configuration
-        shell *host          # Open Nix REPL with flake loaded
-        update *help         # Update dependencies
+        check *args       # Check configuration flake
+        clean *args       # Run `prune` and `optimise`
+        diff *args        # View the diff between hosts
+        files *args       # List configuration files
+        generations *help # View generations
+        help *args        # View help text
+        hosts *args       # List available hosts
+        inputs *help      # List flake inputs
+        optimise *help    # Replace identical files in the Nix store by hard links
+        prune *args       # Collect garbage and remove old generations
+        rebuild *args     # Rebuild and switch to (or --test) a configuration
+        shell *host       # Open Nix REPL with flake loaded
+        update *help      # Update dependencies
 ```
 
 <!-- `just` end -->

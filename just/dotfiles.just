@@ -1,15 +1,15 @@
 # View help text
-@help *recipe:
-    ../scripts/dotfiles/help.nu {{ recipe }}
+@help *args:
+    ../scripts/dotfiles/help.nu {{ args }}
 
 # Check configuration flake
 [working-directory: "../configuration"]
-@check *help:
-    ../scripts/dotfiles/check.nu {{ help }}
+@check *args:
+    ../scripts/dotfiles/check.nu {{ args }}
 
 # Run `prune` and `optimise`
-@clean *all:
-    ../scripts/dotfiles/clean.nu {{ all }}
+@clean *args:
+    ../scripts/dotfiles/clean.nu {{ args }}
 
 # View the diff between hosts
 [no-cd]
@@ -18,8 +18,8 @@
 
 # List configuration files
 [no-cd]
-@files *configuration:
-    ./scripts/dotfiles/files.nu {{ configuration }}
+@files *args:
+    ./scripts/dotfiles/files.nu {{ args }}
 
 # View generations
 @generations *help:
@@ -27,8 +27,8 @@
 
 # List available hosts
 [no-cd]
-@hosts *help:
-    ./scripts/dotfiles/hosts.nu {{ help }}
+@hosts *args:
+    ./scripts/dotfiles/hosts.nu {{ args }}
 
 # List flake inputs
 [working-directory: "../configuration"]
@@ -43,12 +43,6 @@
 @prune *args:
     ../scripts/dotfiles/prune.nu {{ args }}
 
-# Update README command output
-[no-cd]
-[private]
-@readme *help:
-    ./scripts/dotfiles/readme.nu {{ help }}
-
 # Rebuild and switch to (or --test) a configuration
 [working-directory: "../configuration"]
 @rebuild *args:
@@ -61,10 +55,10 @@
 
 # Open Nix REPL with flake loaded
 [no-cd]
-@shell *host:
-    ./scripts/dotfiles/shell.nu {{ host }}
+@shell *help:
+    ./scripts/dotfiles/shell.nu {{ help }}
 
 # Update dependencies
 [no-cd]
-@update *help:
-    ./scripts/dotfiles/update.nu {{ help }}
+@update *inputs:
+    ./scripts/dotfiles/update.nu {{ inputs }}
