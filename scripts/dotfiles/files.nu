@@ -1,6 +1,8 @@
 #!/usr/bin/env nu
 
 use ./color.nu colorize
+use ./diff.nu get-file-path
+use ./diff.nu colorize-file
 use ./hosts.nu get-all-configurations
 use ./hosts.nu get-all-hosts
 use ./hosts.nu get-all-systems
@@ -174,22 +176,37 @@ def strip-configuration-name [configuration: string] {
 
 # List configuration files
 def main [
-  configuration?: string # Configuration name
+  configuration?: string # Configuration (system or host) name
   --group-by-configuration # List configuration files sorted by configuration
   --group-by-file # List configuration files sorted by file
-  --color: string # When to use colored output
+  --color = "auto" # When to use colored output
+  --no-full-path # When --group-by-file, don't use the full path
   --no-labels # Don't show labels in output
   --shared # List only shared configuration files
   --tree # View file tree for $configuration
   --unique # List files unique to $configuration
   --unique-filenames # List unique filenames for $configuration
 ] {
+  let use_colors = (
+    $color == "always" or (
+      $color != "never"
+    ) and (
+      is-terminal --stdout
+    )
+  )
+
   if $tree {
     try {
       let configuration = if ($configuration | is-empty) {
         "configuration"
       } else {
         ($"configuration/**/($configuration)" | into glob)
+      }
+
+      let color = if $use_colors {
+        "always"
+      } else {
+        "never"
       }
 
       return (
@@ -277,34 +294,21 @@ def main [
   let is_host_configuration = ($configuration in (get-all-hosts))
   let colors = (get-colors)
 
-  let use_colors = (
-    $color == "always" or (
-      $color != "never"
-    ) and (
-      is-terminal --stdout
-    )
-  )
-
   let files = if $group_by_file or $unique_filenames {
     let files = (
       $files
       | par-each {
           |file|
 
-          let file_path = (
+          let file_path = if $group_by_file and $no_labels or not $no_full_path {
             $file
-            | path split
-            | filter {
-                |path|
+          } else {
+            get-file-path $file
+          }
 
-                $path not-in (
-                  [configuration systems hosts] ++ (
-                    get-all-systems
-                  ) ++ (get-all-hosts)
-                )
-              }
-            | path join
-          )
+          if $no_labels {
+            return $file
+          }
 
           let system = if not $use_colors or $unique_filenames {
             get-configuration-name $file "system"
@@ -443,47 +447,70 @@ def main [
         | str trim
       }
     } else {
-      $files
-      | sort-by --custom {
-          |a, b|
+      let files = (
+        $files
+        | sort-by --custom {
+            |a, b|
 
-          let a = ($a | ansi strip)
-          let b = ($b | ansi strip)
+            let a = ($a | ansi strip)
+            let b = ($b | ansi strip)
 
-          if $unique_filenames or not $group_by_configuration {
-            return ($a < $b)
-          }
-
-          let a_parts = ($a | split row " ")
-          let b_parts = ($b | split row " ")
-          let a_parts_length = ($a_parts | length)
-          let b_parts_length = ($b_parts | length)
-
-          if ([$a_parts_length $b_parts_length] | all {$in > 2}) {
-            $a_parts.2 < $b_parts.2
-          } else if ([$a_parts_length $b_parts_length] | all {$in > 1}) {
-            $a_parts.1 < $b_parts.1
-          }
-
-          if not (
-            [$a_parts_length $b_parts_length]
-            | any {$in > 1}
-          ) {
-            $a < $b
-          } else if $a_parts_length == 1 and $b_parts_length > 1 {
-            true
-          } else if $b_parts_length == 1 and $a_parts_length > 1 {
-            false
-          } else if $a_parts.1 == $b_parts.1 {
-             if ([$a_parts_length $b_parts_length] | all {$in == 3}) {
-              $a_parts.2 < $b_parts.2
-            } else {
-              $a_parts_length < $b_parts_length
+            if $unique_filenames or not $group_by_configuration {
+              if $group_by_file and not $no_full_path {
+                return (
+                  (get-file-path $a) < (get-file-path $b)
+                )
+              } else {
+                return ($a < $b)
+              }
             }
-          } else {
-            $a_parts.1 < $b_parts.1
+
+            let a_parts = ($a | split row " ")
+            let b_parts = ($b | split row " ")
+            let a_parts_length = ($a_parts | length)
+            let b_parts_length = ($b_parts | length)
+
+            if ([$a_parts_length $b_parts_length] | all {$in > 2}) {
+              $a_parts.2 < $b_parts.2
+            } else if ([$a_parts_length $b_parts_length] | all {$in > 1}) {
+              $a_parts.1 < $b_parts.1
+            }
+
+            if not (
+              [$a_parts_length $b_parts_length]
+              | any {$in > 1}
+            ) {
+              $a < $b
+            } else if $a_parts_length == 1 and $b_parts_length > 1 {
+              true
+            } else if $b_parts_length == 1 and $a_parts_length > 1 {
+              false
+            } else if $a_parts.1 == $b_parts.1 {
+               if ([$a_parts_length $b_parts_length] | all {$in == 3}) {
+                $a_parts.2 < $b_parts.2
+              } else {
+                $a_parts_length < $b_parts_length
+              }
+            } else {
+              $a_parts.1 < $b_parts.1
+            }
           }
+      )
+
+      if (
+        $group_by_file and (
+          not $no_full_path or $no_labels and $use_colors
+        )
+      ) {
+        $files
+        | each {
+            |file|
+
+            colorize-file $file default_bold
         }
+      } else {
+        $files
+      }
     }
   } else if $group_by_configuration {
     let shared_files = (
@@ -510,8 +537,8 @@ def main [
     )
 
     let shared_host_files = if $use_colors and (
-      $configuration | is-empty
-    ) or $is_system_configuration {
+      ($configuration | is-empty) or $is_system_configuration
+    ) {
       colorize-files $shared_host_files $colors $unique $configuration
     } else {
       $shared_host_files
@@ -528,10 +555,12 @@ def main [
     )
 
     $files
+    | enumerate
     | each {
         |configuration_files|
 
-        let configuration_files = ($configuration_files | to text)
+        let index = $configuration_files.index
+        let configuration_files = ($configuration_files.item | to text)
 
         if not $no_labels and ($files | length) > 1 {
           let configuration_type = if "hosts" in $configuration_files {
@@ -553,6 +582,10 @@ def main [
           } else {
             $configuration_files
           }
+        } else if $index > 0 {
+          $configuration_files
+          | prepend "---"
+          | str join "\n"
         } else {
           $configuration_files
         }
@@ -616,6 +649,9 @@ def main [
     } else {
       $files
     }
+  } else if $no_labels and $group_by_configuration {
+    $files
+    | str join
   } else {
     $files
     | str join "\n"

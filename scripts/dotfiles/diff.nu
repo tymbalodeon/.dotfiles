@@ -86,14 +86,14 @@ def get-configuration-files [configuration: string] {
   | uniq
 }
 
-def get-file-path [file: string] {
+export def get-file-path [file: string] {
   $file
   | str replace configuration/ ""
   | str replace --regex 'systems/[^/]+/' ""
   | str replace --regex 'hosts/[^/]+/' ""
 }
 
-def colorize-file [file: string style: string] {
+export def colorize-file [file: string style: string] {
   let file_path = (get-file-path $file)
 
   $file
