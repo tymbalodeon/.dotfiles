@@ -177,7 +177,7 @@ def main [
   configuration?: string # Configuration name
   --group-by-configuration # List configuration files sorted by configuration
   --group-by-file # List configuration files sorted by file
-  --no-colors # Don't colorize output
+  --color: string # When to use colored output
   --no-labels # Don't show labels in output
   --shared # List only shared configuration files
   --tree # View file tree for $configuration
@@ -195,7 +195,7 @@ def main [
       return (
         eza
           --all
-          --color always
+          --color $color
           --tree $configuration
           err> /dev/null
       )
@@ -277,6 +277,14 @@ def main [
   let is_host_configuration = ($configuration in (get-all-hosts))
   let colors = (get-colors)
 
+  let use_colors = (
+    $color == "always" or (
+      $color == "auto"
+    ) and (
+      is-terminal
+    )
+  )
+
   let files = if $group_by_file or $unique_filenames {
     let files = (
       $files
@@ -298,13 +306,13 @@ def main [
             | path join
           )
 
-          let system = if $no_colors or $unique_filenames {
+          let system = if not $use_colors or $unique_filenames {
             get-configuration-name $file "system"
           } else {
             colorize-configuration-name $file "system" $colors
           }
 
-          let host = if $no_colors or $unique_filenames {
+          let host = if not $use_colors or $unique_filenames {
             get-configuration-name $file "host"
           } else {
             colorize-configuration-name $file "host" $colors
@@ -314,7 +322,7 @@ def main [
             get-file-color $file $colors $unique $configuration
           )
 
-          let file = if not $no_colors and not $unique_filenames {
+          let file = if $use_colors and $unique_filenames {
             colorize $file_path $file_color
           } else {
             $file_path
@@ -488,7 +496,7 @@ def main [
       | filter {|file| "systems" in $file and "hosts" not-in $file}
     )
 
-    let shared_system_files = if not $no_colors and (
+    let shared_system_files = if $use_colors and (
       $configuration | is-empty
     ) {
       colorize-files $shared_system_files $colors $unique $configuration
@@ -501,7 +509,7 @@ def main [
       | filter {|file| "hosts" in $file}
     )
 
-    let shared_host_files = if not $no_colors and (
+    let shared_host_files = if $use_colors and (
       $configuration | is-empty
     ) or $is_system_configuration {
       colorize-files $shared_host_files $colors $unique $configuration
@@ -549,7 +557,7 @@ def main [
           $configuration_files
         }
     }
-  } else if not $no_colors and (
+  } else if $use_colors and (
     not $group_by_configuration and not (
       $unique and $is_host_configuration
     ) or (
