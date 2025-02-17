@@ -279,16 +279,16 @@ def main [
 
   let use_colors = (
     $color == "always" or (
-      $color == "auto"
+      $color != "never"
     ) and (
-      is-terminal
+      is-terminal --stdout
     )
   )
 
   let files = if $group_by_file or $unique_filenames {
     let files = (
       $files
-      | each {
+      | par-each {
           |file|
 
           let file_path = (
