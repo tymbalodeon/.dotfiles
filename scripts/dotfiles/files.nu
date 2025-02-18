@@ -14,6 +14,7 @@ def --wrapped eza [...$args: string] {
 }
 
 def get-tree [
+  shared: bool
   unique: bool
   use_colors: bool
   configuration?: string
@@ -39,8 +40,14 @@ def get-tree [
     let hosts = (get-all-hosts)
 
     if ($configuration in $systems) {
-      $systems
-      | where $it != $configuration
+      if $shared {
+        ["hosts"]
+      } else {
+        []
+      } | append (
+          $systems
+          | where $it != $configuration
+        )
       | str join "|"
     } else if ($configuration in $hosts) {
       $hosts
@@ -268,7 +275,7 @@ def main [
 
   if $tree {
     try {
-      return (get-tree $unique $use_colors $configuration)
+      return (get-tree $shared $unique $use_colors $configuration)
     } catch {
       return
     }
