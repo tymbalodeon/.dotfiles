@@ -62,7 +62,7 @@ def get-tree [
   let args = [
     --all
     --color $color
-    --tree configuration
+    --tree $configuration_directory
     err> /dev/null
   ]
 
@@ -270,7 +270,6 @@ def main [
     try {
       return (get-tree $unique $use_colors $configuration)
     } catch {
-      |e| print $e
       return
     }
   }
