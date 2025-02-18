@@ -6,7 +6,76 @@ use ./diff.nu colorize-file
 use ./hosts.nu get-all-configurations
 use ./hosts.nu get-all-hosts
 use ./hosts.nu get-all-systems
+use ./hosts.nu get-hosts
 use ./hosts.nu validate-configuration-name
+
+def --wrapped eza [...$args: string] {
+  ^eza ...$args
+}
+
+def get-tree [
+  unique: bool
+  use_colors: bool
+  configuration?: string
+] {
+  let configuration_directory = if (
+    $configuration | is-empty
+  ) or not $unique {
+    "configuration"
+  } else {
+    ($"configuration/**/($configuration)" | into glob)
+  }
+
+  let color = if $use_colors {
+    "always"
+  } else {
+    "never"
+  }
+
+  let ignore_glob = if ($configuration | is-empty) {
+    null
+  } else {
+    let systems = (get-all-systems)
+    let hosts = (get-all-hosts)
+
+    if ($configuration in $systems) {
+      $systems
+      | where $it != $configuration
+      | str join "|"
+    } else if ($configuration in $hosts) {
+      $hosts
+      | where $it != $configuration
+      | append (
+        $systems
+        | filter {
+            |system|
+
+            $configuration not-in (get-hosts $system)
+          }
+        )
+      | str join "|"
+    } else {
+      null
+    }
+  }
+
+  let args = [
+    --all
+    --color $color
+    --tree configuration
+    err> /dev/null
+  ]
+
+  let args = if ($ignore_glob | is-not-empty) {
+    $args
+    | append [--ignore-glob $ignore_glob]
+    | flatten
+  } else {
+    $args
+  }
+
+  eza ...$args
+}
 
 def matches_system_name [file: string system_name?: string] {
   if ($system_name | is-empty) {
@@ -187,6 +256,8 @@ def main [
   --unique # List files unique to $configuration
   --unique-filenames # List unique filenames for $configuration
 ] {
+  validate-configuration-name $configuration
+
   let use_colors = (
     $color == "always" or (
       $color != "never"
@@ -197,31 +268,12 @@ def main [
 
   if $tree {
     try {
-      let configuration = if ($configuration | is-empty) {
-        "configuration"
-      } else {
-        ($"configuration/**/($configuration)" | into glob)
-      }
-
-      let color = if $use_colors {
-        "always"
-      } else {
-        "never"
-      }
-
-      return (
-        eza
-          --all
-          --color $color
-          --tree $configuration
-          err> /dev/null
-      )
+      return (get-tree $unique $use_colors $configuration)
     } catch {
+      |e| print $e
       return
     }
   }
-
-  validate-configuration-name $configuration
 
   let files = (
     fd

@@ -23,7 +23,7 @@ export def get-all-systems [] {
   | get name
 }
 
-def get-hosts [system: string] {
+export def get-hosts [system: string] {
   ls --short-names (
     "configuration"
     | path join systems
