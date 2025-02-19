@@ -6,82 +6,59 @@ use ./diff.nu colorize-file
 use ./hosts.nu get-all-configurations
 use ./hosts.nu get-all-hosts
 use ./hosts.nu get-all-systems
+use ./hosts.nu get-configuration-data
 use ./hosts.nu get-hosts
 use ./hosts.nu validate-configuration-name
 
-def --wrapped eza [...$args: string] {
-  ^eza ...$args
-}
-
-def get-tree [
+export def get-tree-ignore-glob [
+  configuration_data: record<
+    systems: list<string>,
+    hosts: list<string>,
+    system_hosts: record
+  >
   shared: bool
-  unique: bool
-  use_colors: bool
   configuration?: string
 ] {
-  let configuration_directory = if (
-    $configuration | is-empty
-  ) or not $unique {
-    "configuration"
+  if ($configuration | is-empty) {
+    if $shared {
+      "hosts|systems"
+    } else {
+      null
+    }
   } else {
-    ($"configuration/**/($configuration)" | into glob)
-  }
-
-  let color = if $use_colors {
-    "always"
-  } else {
-    "never"
-  }
-
-  let ignore_glob = if ($configuration | is-empty) {
-    null
-  } else {
-    let systems = (get-all-systems)
-    let hosts = (get-all-hosts)
-
-    if ($configuration in $systems) {
+    if ($configuration in $configuration_data.systems) {
       if $shared {
-        ["hosts"]
+        [hosts]
       } else {
         []
       } | append (
-          $systems
+          $configuration_data.systems
           | where $it != $configuration
         )
       | str join "|"
-    } else if ($configuration in $hosts) {
-      $hosts
+    } else if ($configuration in $configuration_data.hosts) {
+      $configuration_data.hosts
       | where $it != $configuration
       | append (
-        $systems
-        | filter {
-            |system|
+          $configuration_data.systems
+          | filter {
+              |system|
 
-            $configuration not-in (get-hosts $system)
-          }
-        )
-      | str join "|"
+              $configuration not-in (
+                $configuration_data.system_hosts
+                | get $system
+              )
+            }
+          )
+        | str join "|"
     } else {
       null
     }
   }
+}
 
-  let args = [
-    --all
-    --color $color
-    --tree $configuration_directory
-    err> /dev/null
-  ]
-
-  let args = if ($ignore_glob | is-not-empty) {
-    $args
-    | append [--ignore-glob $ignore_glob]
-    | flatten
-  } else {
-    $args
-  }
-
-  eza ...$args
+def --wrapped eza [...$args: string] {
+  ^eza ...$args
 }
 
 def matches_system_name [file: string system_name?: string] {
@@ -125,6 +102,8 @@ def get-header [text?: string configuration?: string] {
 }
 
 def get-colors [] {
+  let all_configurations = (get-all-configurations)
+
   let colors = (
     ansi --list
     | get name
@@ -142,10 +121,10 @@ def get-colors [] {
         )
       }
     | sort-by {|a, b| "light" in $a}
-    | take (get-all-configurations | length)
+    | take ($all_configurations | length)
   )
 
-  get-all-configurations
+  $all_configurations
   | wrap configuration
   | merge ($colors | wrap name)
 }
@@ -250,6 +229,64 @@ def strip-configuration-name [configuration: string] {
   | str replace --all --regex '(\[|\])' ""
 }
 
+def use-colors [color: string] {
+  $color == "always" or (
+    $color != "never"
+  ) and (
+    is-terminal --stdout
+  )
+}
+
+# View files as a tree
+def "main tree" [
+  configuration?: string # Configuration (system or host) name
+  --color = "auto" # When to use colored output
+  --shared # List only shared configuration files
+  --unique # List files unique to $configuration
+] {
+  try {
+    let configuration_directory = if (
+      $configuration | is-empty
+    ) or not $unique {
+      "configuration"
+    } else {
+      ($"configuration/**/($configuration)" | into glob)
+    }
+
+    let color = if (use-colors $color) {
+      "always"
+    } else {
+      "never"
+    }
+
+    let ignore_glob = (
+      get-tree-ignore-glob
+        (get-configuration-data)
+        $shared
+        $configuration
+    )
+
+    let args = [
+      --all
+      --color $color
+      --tree $configuration_directory
+      err> /dev/null
+    ]
+
+    let args = if ($ignore_glob | is-not-empty) {
+      $args
+      | append [--ignore-glob $ignore_glob]
+      | flatten
+    } else {
+      $args
+    }
+
+    return (eza ...$args)
+  } catch {
+    return
+  }
+}
+
 # List configuration files
 def main [
   configuration?: string # Configuration (system or host) name
@@ -259,27 +296,12 @@ def main [
   --no-full-path # When --group-by-file, don't use the full path
   --no-labels # Don't show labels in output
   --shared # List only shared configuration files
-  --tree # View file tree for $configuration
   --unique # List files unique to $configuration
   --unique-filenames # List unique filenames for $configuration
 ] {
   validate-configuration-name $configuration
 
-  let use_colors = (
-    $color == "always" or (
-      $color != "never"
-    ) and (
-      is-terminal --stdout
-    )
-  )
-
-  if $tree {
-    try {
-      return (get-tree $shared $unique $use_colors $configuration)
-    } catch {
-      return
-    }
-  }
+  let use_colors = (use-colors $color)
 
   let files = (
     fd
@@ -348,6 +370,7 @@ def main [
     }
   )
 
+  let all_configurations = (get-all-configurations)
   let is_system_configuration = ($configuration in (get-all-systems))
   let is_host_configuration = ($configuration in (get-all-hosts))
   let colors = (get-colors)
@@ -404,8 +427,6 @@ def main [
           | str trim
         }
     )
-
-    let all_configurations = (get-all-configurations)
 
     if $unique_filenames {
       mut filenames = {}
@@ -670,8 +691,6 @@ def main [
     )
 
     if $unique_filenames {
-      let all_configurations = (get-all-configurations)
-
       $files
       | lines
       | each {
