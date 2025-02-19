@@ -225,8 +225,14 @@ def main [
         let hosts = (get-all-hosts)
 
         if ($configuration in $systems) {
-          $systems
-          | where $it != $configuration
+          if $shared {
+            ["hosts"]
+          } else {
+            []
+          } | append (
+              $systems
+              | where $it != $configuration
+            )
           | str join "|"
         } else if ($configuration in $hosts) {
           $hosts
