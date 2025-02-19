@@ -219,14 +219,18 @@ def main [
       }
 
       let ignore_glob = if ($configuration | is-empty) {
-        null
+        if $shared {
+          "hosts|systems"
+        } else {
+          null
+        }
       } else {
         let systems = (get-all-systems)
         let hosts = (get-all-hosts)
 
         if ($configuration in $systems) {
           if $shared {
-            ["hosts"]
+            [hosts]
           } else {
             []
           } | append (
