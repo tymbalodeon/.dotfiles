@@ -237,6 +237,7 @@ def use-colors [color: string] {
   )
 }
 
+# View files as a tree
 def "main tree" [
   configuration?: string # Configuration (system or host) name
   --color = "auto" # When to use colored output
