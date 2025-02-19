@@ -229,6 +229,63 @@ def strip-configuration-name [configuration: string] {
   | str replace --all --regex '(\[|\])' ""
 }
 
+def use-colors [color: string] {
+  $color == "always" or (
+    $color != "never"
+  ) and (
+    is-terminal --stdout
+  )
+}
+
+def "main tree" [
+  configuration?: string # Configuration (system or host) name
+  --color = "auto" # When to use colored output
+  --shared # List only shared configuration files
+  --unique # List files unique to $configuration
+] {
+  try {
+    let configuration_directory = if (
+      $configuration | is-empty
+    ) or not $unique {
+      "configuration"
+    } else {
+      ($"configuration/**/($configuration)" | into glob)
+    }
+
+    let color = if (use-colors $color) {
+      "always"
+    } else {
+      "never"
+    }
+
+    let ignore_glob = (
+      get-tree-ignore-glob
+        (get-configuration-data)
+        $shared
+        $configuration
+    )
+
+    let args = [
+      --all
+      --color $color
+      --tree $configuration_directory
+      err> /dev/null
+    ]
+
+    let args = if ($ignore_glob | is-not-empty) {
+      $args
+      | append [--ignore-glob $ignore_glob]
+      | flatten
+    } else {
+      $args
+    }
+
+    return (eza ...$args)
+  } catch {
+    return
+  }
+}
+
 # List configuration files
 def main [
   configuration?: string # Configuration (system or host) name
@@ -238,63 +295,12 @@ def main [
   --no-full-path # When --group-by-file, don't use the full path
   --no-labels # Don't show labels in output
   --shared # List only shared configuration files
-  --tree # View file tree for $configuration
   --unique # List files unique to $configuration
   --unique-filenames # List unique filenames for $configuration
 ] {
   validate-configuration-name $configuration
 
-  let use_colors = (
-    $color == "always" or (
-      $color != "never"
-    ) and (
-      is-terminal --stdout
-    )
-  )
-
-  if $tree {
-    try {
-      let configuration_directory = if (
-        $configuration | is-empty
-      ) or not $unique {
-        "configuration"
-      } else {
-        ($"configuration/**/($configuration)" | into glob)
-      }
-
-      let color = if $use_colors {
-        "always"
-      } else {
-        "never"
-      }
-
-      let ignore_glob = (
-        get-tree-ignore-glob
-          (get-configuration-data)
-          $shared
-          $configuration
-      )
-
-      let args = [
-        --all
-        --color $color
-        --tree $configuration_directory
-        err> /dev/null
-      ]
-
-      let args = if ($ignore_glob | is-not-empty) {
-        $args
-        | append [--ignore-glob $ignore_glob]
-        | flatten
-      } else {
-        $args
-      }
-
-      return (eza ...$args)
-    } catch {
-      return
-    }
-  }
+  let use_colors = (use-colors $color)
 
   let files = (
     fd
