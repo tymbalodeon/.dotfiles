@@ -13,70 +13,6 @@ def --wrapped eza [...$args: string] {
   ^eza ...$args
 }
 
-def get-tree [
-  unique: bool
-  use_colors: bool
-  configuration?: string
-] {
-  let configuration_directory = if (
-    $configuration | is-empty
-  ) or not $unique {
-    "configuration"
-  } else {
-    ($"configuration/**/($configuration)" | into glob)
-  }
-
-  let color = if $use_colors {
-    "always"
-  } else {
-    "never"
-  }
-
-  let ignore_glob = if ($configuration | is-empty) {
-    null
-  } else {
-    let systems = (get-all-systems)
-    let hosts = (get-all-hosts)
-
-    if ($configuration in $systems) {
-      $systems
-      | where $it != $configuration
-      | str join "|"
-    } else if ($configuration in $hosts) {
-      $hosts
-      | where $it != $configuration
-      | append (
-        $systems
-        | filter {
-            |system|
-
-            $configuration not-in (get-hosts $system)
-          }
-        )
-      | str join "|"
-    } else {
-      null
-    }
-  }
-
-  let args = [
-    --all
-    --color $color
-    --tree $configuration_directory
-    err> /dev/null
-  ]
-
-  let args = if ($ignore_glob | is-not-empty) {
-    $args
-    | append [--ignore-glob $ignore_glob]
-    | flatten
-  } else {
-    $args
-  }
-
-  eza ...$args
-}
-
 def matches_system_name [file: string system_name?: string] {
   if ($system_name | is-empty) {
     false
@@ -268,7 +204,63 @@ def main [
 
   if $tree {
     try {
-      return (get-tree $unique $use_colors $configuration)
+      let configuration_directory = if (
+        $configuration | is-empty
+      ) or not $unique {
+        "configuration"
+      } else {
+        ($"configuration/**/($configuration)" | into glob)
+      }
+
+      let color = if $use_colors {
+        "always"
+      } else {
+        "never"
+      }
+
+      let ignore_glob = if ($configuration | is-empty) {
+        null
+      } else {
+        let systems = (get-all-systems)
+        let hosts = (get-all-hosts)
+
+        if ($configuration in $systems) {
+          $systems
+          | where $it != $configuration
+          | str join "|"
+        } else if ($configuration in $hosts) {
+          $hosts
+          | where $it != $configuration
+          | append (
+            $systems
+            | filter {
+                |system|
+
+                $configuration not-in (get-hosts $system)
+              }
+            )
+          | str join "|"
+        } else {
+          null
+        }
+      }
+
+      let args = [
+        --all
+        --color $color
+        --tree $configuration_directory
+        err> /dev/null
+      ]
+
+      let args = if ($ignore_glob | is-not-empty) {
+        $args
+        | append [--ignore-glob $ignore_glob]
+        | flatten
+      } else {
+        $args
+      }
+
+      return (eza ...$args)
     } catch {
       return
     }
