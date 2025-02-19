@@ -6,8 +6,56 @@ use ./diff.nu colorize-file
 use ./hosts.nu get-all-configurations
 use ./hosts.nu get-all-hosts
 use ./hosts.nu get-all-systems
+use ./hosts.nu get-configuration-data
 use ./hosts.nu get-hosts
 use ./hosts.nu validate-configuration-name
+
+export def get-tree-ignore-glob [
+  configuration_data: record<
+    systems: list<string>,
+    hosts: list<string>,
+    system_hosts: record
+  >
+  shared: bool
+  configuration?: string
+] {
+  if ($configuration | is-empty) {
+    if $shared {
+      "hosts|systems"
+    } else {
+      null
+    }
+  } else {
+    if ($configuration in $configuration_data.systems) {
+      if $shared {
+        [hosts]
+      } else {
+        []
+      } | append (
+          $configuration_data.systems
+          | where $it != $configuration
+        )
+      | str join "|"
+    } else if ($configuration in $configuration_data.hosts) {
+      $configuration_data.hosts
+      | where $it != $configuration
+      | append (
+          $configuration_data.systems
+          | filter {
+              |system|
+
+              $configuration not-in (
+                $configuration_data.system_hosts
+                | get $system
+              )
+            }
+          )
+        | str join "|"
+    } else {
+      null
+    }
+  }
+}
 
 def --wrapped eza [...$args: string] {
   ^eza ...$args
@@ -54,6 +102,8 @@ def get-header [text?: string configuration?: string] {
 }
 
 def get-colors [] {
+  let all_configurations = (get-all-configurations)
+
   let colors = (
     ansi --list
     | get name
@@ -71,10 +121,10 @@ def get-colors [] {
         )
       }
     | sort-by {|a, b| "light" in $a}
-    | take (get-all-configurations | length)
+    | take ($all_configurations | length)
   )
 
-  get-all-configurations
+  $all_configurations
   | wrap configuration
   | merge ($colors | wrap name)
 }
@@ -218,42 +268,12 @@ def main [
         "never"
       }
 
-      let ignore_glob = if ($configuration | is-empty) {
-        if $shared {
-          "hosts|systems"
-        } else {
-          null
-        }
-      } else {
-        let systems = (get-all-systems)
-        let hosts = (get-all-hosts)
-
-        if ($configuration in $systems) {
-          if $shared {
-            [hosts]
-          } else {
-            []
-          } | append (
-              $systems
-              | where $it != $configuration
-            )
-          | str join "|"
-        } else if ($configuration in $hosts) {
-          $hosts
-          | where $it != $configuration
-          | append (
-            $systems
-            | filter {
-                |system|
-
-                $configuration not-in (get-hosts $system)
-              }
-            )
-          | str join "|"
-        } else {
-          null
-        }
-      }
+      let ignore_glob = (
+        get-tree-ignore-glob
+          (get-configuration-data)
+          $shared
+          $configuration
+      )
 
       let args = [
         --all
@@ -343,6 +363,7 @@ def main [
     }
   )
 
+  let all_configurations = (get-all-configurations)
   let is_system_configuration = ($configuration in (get-all-systems))
   let is_host_configuration = ($configuration in (get-all-hosts))
   let colors = (get-colors)
@@ -399,8 +420,6 @@ def main [
           | str trim
         }
     )
-
-    let all_configurations = (get-all-configurations)
 
     if $unique_filenames {
       mut filenames = {}
@@ -665,8 +684,6 @@ def main [
     )
 
     if $unique_filenames {
-      let all_configurations = (get-all-configurations)
-
       $files
       | lines
       | each {

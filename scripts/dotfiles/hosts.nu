@@ -52,6 +52,27 @@ export def get-all-configurations [] {
   | sort
 }
 
+export def get-configuration-data [] {
+  let systems = (get-all-systems)
+
+  mut system_hosts = {}
+
+  for system in $systems {
+    $system_hosts = (
+      $system_hosts
+      | insert $system (
+          get-hosts $system
+        )
+    )
+  }
+
+  {
+    systems: $systems
+    hosts: (get-all-hosts)
+    system_hosts: $system_hosts
+  }
+}
+
 export def get-built-host-name [] {
   if (is-nixos) {
     cat /etc/hostname
