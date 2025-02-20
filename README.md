@@ -94,8 +94,8 @@ Available recipes:
         optimise *help    # Replace identical files in the Nix store by hard links
         prune *args       # Collect garbage and remove old generations
         rebuild *args     # Rebuild and switch to (or --test) a configuration
-        shell *host       # Open Nix REPL with flake loaded
-        update *help      # Update dependencies
+        shell *help       # Open Nix REPL with flake loaded
+        update *inputs    # Update dependencies
 ```
 
 <!-- `just` end -->
