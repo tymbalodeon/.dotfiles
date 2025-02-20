@@ -61,6 +61,57 @@ def --wrapped eza [...$args: string] {
   ^eza ...$args
 }
 
+export def get-files [
+  files: list<string>
+  system_names: list<string>
+  host_names: list<string>
+  shared: bool
+  unique: bool
+  system_name?: string
+  configuration?: string
+] {
+  if $unique and ($configuration | is-not-empty) {
+    let files = (
+      $files
+      | filter {|file| $configuration in $file}
+    )
+
+    if $shared {
+      $files
+      | filter {|file| "hosts" not-in $file}
+    } else {
+      $files
+    }
+  } else {
+    if ($configuration | is-empty) {
+      if not $shared {
+        $files
+      } else {
+        $files
+        | filter {|file| not ($file | str contains systems)}
+      }
+    } else {
+      let configuration_is_system_name = ($configuration in $system_names)
+      let configuration_is_host_name = ($configuration in $host_names)
+
+      $files
+      | filter {
+          |file|
+
+          $configuration_is_system_name and not $shared and (
+            matches_system_name $file $system_name
+          ) or (matches_configuration $file $configuration) and not (
+            matches_hosts $file
+          ) or not (matches_systems $file) or (
+            $configuration_is_host_name
+          ) and (matches_configuration $file $configuration) or not (
+            matches_hosts $file
+          ) and (matches_system_name $file $system_name)
+        }
+    }
+  }
+}
+
 def matches_system_name [file: string system_name?: string] {
   if ($system_name | is-empty) {
     false
@@ -313,61 +364,42 @@ def main [
     | lines
   )
 
+  let system_names = (ls --short-names configuration/systems).name
+
+  let host_names = (
+    ^ls configuration/**/hosts/**
+    | rg '/hosts/[^/]+\w' --only-matching
+    | lines
+    | uniq
+    | each {
+        |line|
+
+        $line
+        | split row "/hosts/"
+        | last
+      }
+  )
+
+  let system_name = if ($configuration | is-empty) {
+    null
+  } else {
+    ls ($"configuration/**/($configuration)" | into glob)
+    | get name
+    | split row "systems/"
+    | last
+    | path split
+    | first
+  }
+
   let files = (
-    if $unique and ($configuration | is-not-empty) {
-      let files = (
-        $files
-        | filter {|file| $configuration in $file}
-      )
-
-      if $shared {
-        $files
-        | filter {|file| "hosts" not-in $file}
-      } else {
-        $files
-      }
-    } else {
-      if ($configuration | is-empty) {
-        if not $shared {
-          $files
-        } else {
-          $files
-          | filter {|file| not ($file | str contains systems)}
-        }
-      } else {
-        let configuration_is_system_name = (
-          $configuration in (ls --short-names configuration/systems).name
-        )
-
-        let configuration_is_host_name = (
-          $configuration in (ls --short-names configuration/**/hosts/**).name
-        )
-
-        let system_name = (
-          ls ($"configuration/**/($configuration)" | into glob)
-          | get name
-          | split row "systems/"
-          | last
-          | path split
-          | first
-        )
-
-        $files
-        | filter {
-            |file|
-
-            $configuration_is_system_name and not $shared and (
-              matches_system_name $file $system_name
-            ) or (matches_configuration $file $configuration) and not (
-              matches_hosts $file
-            ) or not (matches_systems $file) or (
-              $configuration_is_host_name
-            ) and (matches_configuration $file $configuration) or not (
-              matches_hosts $file
-            ) and (matches_system_name $file $system_name)
-          }
-      }
-    }
+    get-files
+    $files
+    $system_names
+    $host_names
+    $shared
+    $unique
+    $system_name
+    $configuration
   )
 
   let all_configurations = (get-all-configurations)
