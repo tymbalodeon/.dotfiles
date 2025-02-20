@@ -2,6 +2,11 @@ use std assert
 
 use ../diff.nu list-files
 
+def open-mock [filename: string] {
+  open ([$env.FILE_PWD mocks $filename] | path join)
+  | str trim
+}
+
 let source_files = [
   configuration/bat/config
   configuration/flake.lock
@@ -42,42 +47,28 @@ let target_files = [
   configuration/systems/darwin/hosts/benrosen/home.nix
 ]
 
-for test in [
+let tests = [
   {
-    expected: (
-      open ($env.FILE_PWD | path join mocks/diff--list-files.nu)
-      | str trim
-    )
-
+    expected: (open-mock diff--list-files.txt)
     actual: (list-files $source_files $target_files false)
   }
 
   {
-    expected: (
-      open ($env.FILE_PWD | path join mocks/diff--list-files--sort-by-target.nu)
-      | str trim
-    )
-
+    expected: (open-mock diff--list-files--sort-by-target.txt)
     actual: (list-files $source_files $target_files true)
   }
 
   {
-    expected: (
-      open ($env.FILE_PWD | path join mocks/diff--list-files--file.nu)
-      | str trim
-    )
-
+    expected: (open-mock diff--list-files--file.txt)
     actual: (list-files $source_files $target_files false configuration.nix)
   }
 
   {
-    expected: (
-      open ($env.FILE_PWD | path join mocks/diff--list-files--file--sort-by-target.nu)
-      | str trim
-    )
-
+    expected: (open-mock diff--list-files--file--sort-by-target.txt)
     actual: (list-files $source_files $target_files true home.nix)
   }
-] {
+]
+
+for test in $tests {
   assert equal $test.actual $test.expected
 }
