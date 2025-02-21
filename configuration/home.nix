@@ -52,6 +52,7 @@
       gnum4
       google-java-format
       gyre-fonts
+      harper
       helix
       hexyl
       hyperfine
