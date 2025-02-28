@@ -59,7 +59,7 @@ def get-mock-file [mocks: list<string> filename: string] {
         |file|
 
         ($file | path basename) == $filename
-      } 
+      }
     | first
   )
   | str trim

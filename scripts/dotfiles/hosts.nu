@@ -148,39 +148,64 @@ export def main [
   system?: string # List hosts for $system
   --current-host # View current host
   --current-system # List hosts available on the current platform only
+  --with-systems # List hosts with system information
 ] {
   if $current_host {
     return (get-built-host-name)
   }
 
-  validate-configuration-name $system --validate-system
+  let configuration_data = (get-configuration-data)
 
   if ($system | is-empty) and not $current_system {
-    return (
-      get-all-hosts
-      | str join "\n"
-    )
-  }
+    if $with_systems {
+      return (
+        $configuration_data.systems
+        | each {
+            |host_system|
 
-  mut hosts = {}
+            mut hosts = (
+              $configuration_data.system_hosts
+              | get $host_system
+              | wrap host
+            )
 
-  for system in (get-all-systems) {
-    $hosts = (
-      $hosts
-      | insert $system (get-hosts $system)
-    )
-  }
+            for system in $configuration_data.systems {
+              $hosts = (
+                $hosts
+                | insert $system (
+                    if $system == $host_system {
+                      "✅"
+                    } else {
+                      null
+                    }
+                  )
+              )
+            }
 
-  let hosts = (
-    if $current_system {
-      $hosts
-      | get (get-current-system)
+            $hosts
+          }
+        | flatten
+        | sort-by host
+        | table --index false
+      )
     } else {
-      $hosts
-      | get $system
+      return (
+        $configuration_data.hosts
+        | str join "\n"
+      )
     }
-  )
+  }
 
-  $hosts
+
+  let system = if $current_system {
+    get-current-system
+  } else {
+    validate-configuration-name $system --validate-system
+
+    $system
+  }
+
+  $configuration_data.system_hosts
+  | get $system
   | str join "\n"
 }
