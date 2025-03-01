@@ -86,8 +86,10 @@ mod dotfiles "just/dotfiles.just"
 
 # alias for `dotfiles hosts`
 [group("aliases")]
-@hosts *help:
-    just dotfiles hosts {{ help }}
+@configurations *help:
+    just dotfiles configurations {{ help }}
+
+alias configs := configurations
 
 # alias for `dotfiles inputs`
 [group("aliases")]

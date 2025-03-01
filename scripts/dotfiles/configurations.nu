@@ -144,68 +144,72 @@ export def validate-configuration-name [
 }
 
 # List hosts
-export def main [
-  system?: string # List hosts for $system
-  --current-host # View current host
-  --current-system # List hosts available on the current platform only
-  --with-systems # List hosts with system information
+def "main hosts" [
+  --current # View current host
+  --system: string # List hosts for $system
 ] {
-  if $current_host {
-    return (get-built-host-name)
-  }
+  if $current {
+    get-built-host-name
+  } else {
+    let configuration_data = (get-configuration-data)
 
+    let hosts = if ($system | is-not-empty) {
+      validate-configuration-name $system --validate-system
+
+      $configuration_data.system_hosts
+      | get $system
+    } else {
+      $configuration_data.hosts
+    }
+
+    $hosts
+    | str join "\n"
+  }
+}
+
+# List systems
+def "main systems" [
+  --current # View current system
+] {
+  if $current {
+    get-current-system
+    | str downcase
+  } else {
+    (get-configuration-data).systems
+    | str join "\n"
+  }
+}
+
+# List configurations
+export def main [] {
   let configuration_data = (get-configuration-data)
 
-  if ($system | is-empty) and not $current_system {
-    if $with_systems {
-      return (
-        $configuration_data.systems
-        | each {
-            |host_system|
+  $configuration_data.systems
+  | each {
+      |host_system|
 
-            mut hosts = (
-              $configuration_data.system_hosts
-              | get $host_system
-              | wrap host
+      mut hosts = (
+        $configuration_data.system_hosts
+        | get $host_system
+        | wrap host
+      )
+
+      for system in $configuration_data.systems {
+        $hosts = (
+          $hosts
+          | insert $system (
+              if $system == $host_system {
+                "✅"
+              } else {
+                null
+              }
             )
+        )
+      }
 
-            for system in $configuration_data.systems {
-              $hosts = (
-                $hosts
-                | insert $system (
-                    if $system == $host_system {
-                      "✅"
-                    } else {
-                      null
-                    }
-                  )
-              )
-            }
-
-            $hosts
-          }
-        | flatten
-        | sort-by host
-        | table --index false
-      )
-    } else {
-      return (
-        $configuration_data.hosts
-        | str join "\n"
-      )
+      $hosts
     }
-  }
-
-
-  let system = if $current_system {
-    get-current-system
-  } else {
-    validate-configuration-name $system --validate-system
-
-    $system
-  }
-
-  $configuration_data.system_hosts
-  | get $system
-  | str join "\n"
+  | flatten
+  | sort-by host
+  | table --index false
 }
