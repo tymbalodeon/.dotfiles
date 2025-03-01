@@ -1,12 +1,12 @@
 #!/usr/bin/env nu
 
 use ./color.nu colorize
-use ./hosts.nu get-all-configurations
-use ./hosts.nu get-all-hosts
-use ./hosts.nu get-all-systems
-use ./hosts.nu get-built-host-name
-use ./hosts.nu get-current-system
-use ./hosts.nu validate-configuration-name
+use ./configurations.nu get-all-configurations
+use ./configurations.nu get-all-hosts
+use ./configurations.nu get-all-systems
+use ./configurations.nu get-built-host-name
+use ./configurations.nu get-current-system
+use ./configurations.nu validate-configuration-name
 
 def diff [source: string target: string side_by_side: bool] {
   let width = (tput cols)

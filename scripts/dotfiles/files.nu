@@ -3,12 +3,12 @@
 use ./color.nu colorize
 use ./diff.nu get-file-path
 use ./diff.nu colorize-file
-use ./hosts.nu get-all-configurations
-use ./hosts.nu get-all-hosts
-use ./hosts.nu get-all-systems
-use ./hosts.nu get-configuration-data
-use ./hosts.nu get-hosts
-use ./hosts.nu validate-configuration-name
+use ./configurations.nu get-all-configurations
+use ./configurations.nu get-all-hosts
+use ./configurations.nu get-all-systems
+use ./configurations.nu get-configuration-data
+use ./configurations.nu get-hosts
+use ./configurations.nu validate-configuration-name
 
 export def get-tree-ignore-glob [
   configuration_data: record<

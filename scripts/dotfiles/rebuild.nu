@@ -1,8 +1,8 @@
 #!/usr/bin/env nu
 
-use ./hosts.nu get-all-hosts
-use ./hosts.nu get-built-host-name
-use ./hosts.nu is-nixos
+use ./configurations.nu get-all-hosts
+use ./configurations.nu get-built-host-name
+use ./configurations.nu is-nixos
 use ./prune.nu
 use ./optimise.nu
 use ./update.nu
