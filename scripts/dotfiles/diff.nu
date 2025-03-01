@@ -39,7 +39,7 @@ def diff [source: string target: string side_by_side: bool] {
 
 def validate-source [source?: string] {
   if ($source | is-empty) {
-    (get-current-system) | str downcase
+    get-current-system
   } else {
     validate-configuration-name $source
   }

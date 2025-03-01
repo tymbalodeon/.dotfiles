@@ -1,9 +1,13 @@
 #!/usr/bin/env nu
 
+use ./color.nu colorize
+use ./color.nu get-colorized-configuration-name
+use ./color.nu get-colors
+
 export def get-current-system [] {
   let release_file = "/etc/os-release"
 
-  if ($release_file | path exists) {
+  let system = if ($release_file | path exists) {
     open /etc/os-release
     | parse "{key}={value}"
     | where key == NAME
@@ -12,6 +16,9 @@ export def get-current-system [] {
   } else {
     (uname).kernel-name
   }
+
+  $system
+  | str downcase
 }
 
 export def is-nixos [] {
@@ -143,73 +150,61 @@ export def validate-configuration-name [
   $configuration
 }
 
-# List hosts
-def "main hosts" [
-  --current # View current host
-  --system: string # List hosts for $system
-] {
-  if $current {
-    get-built-host-name
-  } else {
-    let configuration_data = (get-configuration-data)
-
-    let hosts = if ($system | is-not-empty) {
-      validate-configuration-name $system --validate-system
-
-      $configuration_data.system_hosts
-      | get $system
-    } else {
-      $configuration_data.hosts
-    }
-
-    $hosts
-    | str join "\n"
-  }
-}
-
-# List systems
-def "main systems" [
-  --current # View current system
-] {
-  if $current {
-    get-current-system
-    | str downcase
-  } else {
-    (get-configuration-data).systems
-    | str join "\n"
-  }
-}
-
 # List configurations
-export def main [] {
+export def main [
+  system?: string # List hosts for $system
+  --current-host # View current host
+  --current-system # View current system
+  --current-system-hosts # List hosts for current system
+  --hosts # List hosts
+  --systems # List systems
+] {
+  if $current_host {
+    return (get-built-host-name)
+  }
+
+  if $current_system {
+    return (get-current-system)
+  }
+
   let configuration_data = (get-configuration-data)
+
+  let output = if $current_system_hosts {
+    $configuration_data.system_hosts
+    | get (get-current-system)
+  } else if $systems {
+    $configuration_data.systems
+  } else if ($system | is-not-empty) {
+    validate-configuration-name $system --validate-system
+
+    $configuration_data.system_hosts
+    | get $system
+  } else if $hosts {
+    $configuration_data.hosts 
+  } else {
+    null
+  }
+
+  if ($output | is-not-empty) {
+    return ($output | str join "\n")
+  }
+
+  let colors = (get-colors)
 
   $configuration_data.systems
   | each {
       |host_system|
 
-      mut hosts = (
-        $configuration_data.system_hosts
-        | get $host_system
-        | wrap host
-      )
+      $configuration_data.system_hosts
+      | get $host_system
+      | each {
+          |host|
 
-      for system in $configuration_data.systems {
-        $hosts = (
-          $hosts
-          | insert $system (
-              if $system == $host_system {
-                "✅"
-              } else {
-                null
-              }
-            )
-        )
-      }
-
-      $hosts
+          $"($host) (get-colorized-configuration-name $host_system $colors)"
+        }
     }
   | flatten
-  | sort-by host
-  | table --index false
+  | sort
+  | to text
+  | column -t
 }

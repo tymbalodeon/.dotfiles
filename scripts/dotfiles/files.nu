@@ -1,14 +1,16 @@
 #!/usr/bin/env nu
 
 use ./color.nu colorize
-use ./diff.nu get-file-path
-use ./diff.nu colorize-file
+use ./color.nu get-colorized-configuration-name
+use ./color.nu get-colors
 use ./configurations.nu get-all-configurations
 use ./configurations.nu get-all-hosts
 use ./configurations.nu get-all-systems
 use ./configurations.nu get-configuration-data
 use ./configurations.nu get-hosts
 use ./configurations.nu validate-configuration-name
+use ./diff.nu colorize-file
+use ./diff.nu get-file-path
 
 export def get-tree-ignore-glob [
   configuration_data: record<
@@ -141,24 +143,6 @@ def get-configuration-name [file: string configuration_type: string] {
     $file
     | rg $"($configuration_type)s/\([^/]+\)/" --only-matching --replace "$1"
   }
-}
-
-def get-colorized-configuration-name [
-  configuration_name: string
-  colors: table<configuration: string, name: string>
-] {
-  let color = (
-    $colors
-    | filter {
-        |color|
-
-        $color.configuration == $configuration_name
-      }
-    | first
-    | get name
-  )
-
-  colorize $configuration_name $color
 }
 
 def colorize-configuration-name [
@@ -695,34 +679,6 @@ def "main tree" [
   } catch {
     return
   }
-}
-
-def get-colors [] {
-  let all_configurations = (get-all-configurations)
-
-  let colors = (
-    ansi --list
-    | get name
-    | filter {
-        |color|
-
-        $color not-in [reset title identity escape size] and not (
-          [_bold _underline _italic _dimmed _reverse bg_]
-          | each {|name| $name in $color}
-          | any {|color| $color}
-        # TODO is it possible to programmatically detect which colors will work?
-        # `delta` seems able to do this--use that as an example!
-        ) and not ("black" in $color) and not ("purple" in $color) or (
-          "xterm" in $color
-        )
-      }
-    | sort-by {|a, b| "light" in $a}
-    | take ($all_configurations | length)
-  )
-
-  $all_configurations
-  | wrap configuration
-  | merge ($colors | wrap name)
 }
 
 # List configuration files
