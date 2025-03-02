@@ -8,6 +8,21 @@ use ./configurations.nu get-built-host-name
 use ./configurations.nu get-current-system
 use ./configurations.nu validate-configuration-name
 
+def validate-file [file: string] {
+  let file = if not ($file | str contains configuration/) {
+    "configuration"
+    | path join $file
+  } else {
+    $file
+  }
+
+  if not ($file | path exists) {
+    error make --unspanned {msg: $'"($file)" does not exist'}
+  }
+
+  $file
+}
+
 def diff [source: string target: string side_by_side: bool] {
   let width = (tput cols)
 
@@ -280,10 +295,24 @@ def main [
     (tput cols | into int) > 158
   )
 
-  if (
+  let full_paths = (
     [$source_file $target_file]
     | all {|file| $file | is-not-empty}
-  ) {
+  )
+
+  let source_file = if $full_paths {
+    validate-file $source_file
+  } else {
+    $source_file
+  }
+
+  let target_file = if $full_paths {
+    validate-file $target_file
+  } else {
+    $target_file
+  }
+
+  if $full_paths {
     return (diff $source_file $target_file $side_by_side)
   }
 
