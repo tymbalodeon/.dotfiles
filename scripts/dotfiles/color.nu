@@ -4,6 +4,13 @@ export def colorize [text: string style: string] {
   $"(ansi $style)($text)(ansi reset)"
 }
 
+export def colorize-file [file: string file_path: string style: string] {
+  $file
+  | str replace $file_path ""
+  | append (colorize $file_path $style)
+  | str join
+}
+
 export def get-colorized-configuration-name [
   configuration_name: string
   colors: table<configuration: string, name: string>
@@ -22,9 +29,7 @@ export def get-colorized-configuration-name [
   colorize $configuration_name $color
 }
 
-export def get-colors [] {
-  let all_configurations = (get-all-configurations)
-
+export def get-colors [all_configurations: list<string>] {
   let colors = (
     ansi --list
     | get name
@@ -49,4 +54,3 @@ export def get-colors [] {
   | wrap configuration
   | merge ($colors | wrap name)
 }
-

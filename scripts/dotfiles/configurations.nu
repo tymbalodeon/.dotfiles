@@ -150,6 +150,13 @@ export def validate-configuration-name [
   $configuration
 }
 
+export def get-file-path [file: string] {
+  $file
+  | str replace configuration/ ""
+  | str replace --regex 'systems/[^/]+/' ""
+  | str replace --regex 'hosts/[^/]+/' ""
+}
+
 # List configurations
 export def main [
   system?: string # List hosts for $system
@@ -180,7 +187,7 @@ export def main [
     $configuration_data.system_hosts
     | get $system
   } else if $hosts {
-    $configuration_data.hosts 
+    $configuration_data.hosts
   } else {
     null
   }
@@ -189,7 +196,7 @@ export def main [
     return ($output | str join "\n")
   }
 
-  let colors = (get-colors)
+  let colors = (get-colors (get-all-configurations))
 
   $configuration_data.systems
   | each {

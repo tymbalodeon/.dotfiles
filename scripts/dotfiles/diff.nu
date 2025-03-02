@@ -1,11 +1,13 @@
 #!/usr/bin/env nu
 
 use ./color.nu colorize
+use ./color.nu colorize-file
 use ./configurations.nu get-all-configurations
 use ./configurations.nu get-all-hosts
 use ./configurations.nu get-all-systems
 use ./configurations.nu get-built-host-name
 use ./configurations.nu get-current-system
+use ./configurations.nu get-file-path
 use ./configurations.nu validate-configuration-name
 
 def validate-file [file: string] {
@@ -101,22 +103,6 @@ def get-configuration-files [configuration: string] {
   | uniq
 }
 
-export def get-file-path [file: string] {
-  $file
-  | str replace configuration/ ""
-  | str replace --regex 'systems/[^/]+/' ""
-  | str replace --regex 'hosts/[^/]+/' ""
-}
-
-export def colorize-file [file: string style: string] {
-  let file_path = (get-file-path $file)
-
-  $file
-  | str replace $file_path ""
-  | append (colorize $file_path $style)
-  | str join
-}
-
 def get-diff-files-filename [file: string index: int] {
   $file
   | split row " "
@@ -156,7 +142,7 @@ export def list-files [
         | each {
             |target_file|
 
-            colorize-file $target_file green_bold
+            colorize-file $target_file (get-file-path $target_file) green_bold
           }
         | each {
             |target_file|
@@ -166,7 +152,10 @@ export def list-files [
             )
 
             let source_file = (
-              colorize-file $source_file yellow_bold
+              colorize-file
+                $source_file
+                (get-file-path $source_file)
+                yellow_bold
             )
 
             $"(colorize $source_file yellow) -> (colorize $target_file green)"
@@ -278,18 +267,13 @@ export def sort-delta-files [a: string b: string sort_by_target: bool] {
   )
 }
 
-# View the diff between configurations
-def main [
-  source_file?: string # View the diff for a specific file
-  target_file?: string # View the diff for a specific file
-  --files # View diff of filenames rather than file contents
-  --paging: string # When to use paging (*auto*, never, always)
-  --side-by-side # Force side-by-side layout
-  --single-column # Force a single column layout
-  --sort-by-source # Sort by source files
-  --sort-by-target # Sort by target files
-  --source: string # Host or system name
-  --target: string # Host or system name
+def parse-args [
+  side_by_side: bool
+  single_column: bool
+  source?: string
+  target?: string
+  source_file?: string
+  target_file?: string
 ] {
   let side_by_side = $side_by_side or not $single_column and (
     (tput cols | into int) > 158
@@ -325,11 +309,55 @@ def main [
     | where $it =~ $target
   )
 
-  if $files {
-    return (
-      list-files $source_files $target_files $sort_by_target $source_file
-    )
+  {
+    side_by_side: $side_by_side
+    source_file: $source_file
+    source_files: $source_files
+    target_file: $target_file
+    target_files: $target_files
   }
+}
+
+def "main filenames" [
+  filename?: string # Filter to a specific filename
+  --side-by-side # Force side-by-side layout
+  --single-column # Force a single column layout
+  --sort-by-target # Sort by target files
+  --source: string # Host or system name
+  --target: string # Host or system name
+] {
+  let args = (
+    parse-args
+      $side_by_side
+      $single_column
+      $source
+      $target
+      $filename
+  )
+
+  list-files $args.source_files $args.target_files $sort_by_target $filename
+}
+
+# View the diff between configurations
+def main [
+  source_file?: string # View the diff for a specific file
+  target_file?: string # View the diff for a specific file
+  --paging: string # When to use paging (*auto*, never, always)
+  --side-by-side # Force side-by-side layout
+  --single-column # Force a single column layout
+  --sort-by-target # Sort by target files
+  --source: string # Host or system name
+  --target: string # Host or system name
+] {
+  let args = (
+    parse-args
+      $side_by_side
+      $single_column
+      $source
+      $target
+      $source_file
+      $target_file
+  )
 
   let paging = if ($paging | is-empty) {
     "auto"
@@ -337,11 +365,11 @@ def main [
     $paging
   }
 
-  get-diff-files $source_files $target_files $source_file
+  get-diff-files $args.source_files $args.target_files $args.source_file
   | each {
       |files|
 
-      diff $files.source_file $files.target_file $side_by_side
+      diff $files.source_file $files.target_file $args.side_by_side
     }
   | flatten
   | sort-by --custom {

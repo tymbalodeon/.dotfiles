@@ -1,16 +1,16 @@
 #!/usr/bin/env nu
 
 use ./color.nu colorize
+use ./color.nu colorize-file
 use ./color.nu get-colorized-configuration-name
 use ./color.nu get-colors
 use ./configurations.nu get-all-configurations
 use ./configurations.nu get-all-hosts
 use ./configurations.nu get-all-systems
 use ./configurations.nu get-configuration-data
+use ./configurations.nu get-file-path
 use ./configurations.nu get-hosts
 use ./configurations.nu validate-configuration-name
-use ./diff.nu colorize-file
-use ./diff.nu get-file-path
 
 export def get-tree-ignore-glob [
   configuration_data: record<
@@ -512,7 +512,7 @@ def group-files-by-filenames [
     | each {
         |file|
 
-        colorize-file $file default_bold
+        colorize-file $file (get-file-path $file) default_bold
       }
   } else {
     $files
@@ -748,7 +748,7 @@ def main [
   let all_configurations = (get-all-configurations)
   let is_system_configuration = ($configuration in (get-all-systems))
   let is_host_configuration = ($configuration in (get-all-hosts))
-  let colors = (get-colors)
+  let colors = (get-colors $all_configurations)
 
   let files = (
     if $group_by_file or $unique_filenames {
