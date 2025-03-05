@@ -158,9 +158,16 @@
     };
 
     nushell = {
-      enable = true;
       configFile.source = ./nushell/config.nu;
+      enable = true;
       envFile.source = ./nushell/env.nu;
+
+      plugins = with pkgs.nushellPlugins; [
+        formats
+        gstat
+        polars
+        query
+      ];
     };
   };
 }
