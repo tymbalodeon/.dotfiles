@@ -1,6 +1,7 @@
 use std assert
 
 use ../diff.nu get-diff-files
+use ../diff.nu get-source-or-target-files
 use ../diff.nu list-files
 use ../diff.nu sort-delta-files
 use ../diff.nu sort-diff-files
@@ -114,6 +115,393 @@ def test-get-diff-files-when-in-one [] {
   )
 
   assert equal $actual_diff_files []
+}
+
+#[test]
+def test-get-source-or-target-files-source [] {
+  let all_files = [
+    configuration/bat/config
+    configuration/flake.lock
+    configuration/flake.nix
+    configuration/git/.gitconfig
+    configuration/helix/config.toml
+    configuration/helix/languages.toml
+    configuration/helix/themes/theme.toml
+    configuration/home.nix
+    configuration/jj/config.toml
+    configuration/kitty/theme.conf
+    configuration/nushell/aliases.nu
+    configuration/nushell/cloud.nu
+    configuration/nushell/colors.nu
+    configuration/nushell/config.nu
+    configuration/nushell/env.nu
+    configuration/nushell/f.nu
+    configuration/nushell/prompt.nu
+    configuration/nushell/src.nu
+    configuration/nushell/theme.nu
+    configuration/nushell/themes.toml
+    configuration/systems/darwin/.hushlogin
+    configuration/systems/darwin/configuration.nix
+    configuration/systems/darwin/home.nix
+    configuration/systems/darwin/nushell/theme-function.nu
+    configuration/systems/darwin/rustup/settings.toml
+    configuration/systems/darwin/tinty/fzf.toml
+    configuration/tealdeer/config.toml
+    configuration/tinty/helix.toml
+    configuration/tinty/kitty.toml
+    configuration/tinty/shell.toml
+    configuration/vivid/themes/theme.yml
+    configuration/zellij/themes/theme.kdl
+  ]
+
+  let all_other_files = [
+    configuration/systems/darwin/hosts/benrosen/configuration.nix
+    configuration/systems/darwin/hosts/benrosen/home.nix
+    configuration/systems/darwin/.hushlogin
+    configuration/systems/darwin/configuration.nix
+    configuration/systems/darwin/home.nix
+    configuration/systems/darwin/nushell/theme-function.nu
+    configuration/systems/darwin/rustup/settings.toml
+    configuration/systems/darwin/tinty/fzf.toml
+    configuration/bat/config
+    configuration/flake.lock
+    configuration/flake.nix
+    configuration/git/.gitconfig
+    configuration/helix/config.toml
+    configuration/helix/languages.toml
+    configuration/helix/themes/theme.toml
+    configuration/home.nix
+    configuration/jj/config.toml
+    configuration/kitty/theme.conf
+    configuration/nushell/aliases.nu
+    configuration/nushell/cloud.nu
+    configuration/nushell/colors.nu
+    configuration/nushell/config.nu
+    configuration/nushell/env.nu
+    configuration/nushell/f.nu
+    configuration/nushell/prompt.nu
+    configuration/nushell/src.nu
+    configuration/nushell/theme.nu
+    configuration/nushell/themes.toml
+    configuration/tealdeer/config.toml
+    configuration/tinty/helix.toml
+    configuration/tinty/kitty.toml
+    configuration/tinty/shell.toml
+    configuration/vivid/themes/theme.yml
+    configuration/zellij/themes/theme.kdl
+  ]
+
+  let comparing_to_shared = false
+  let other_configuration = "benrosen"
+
+  let actual_files = (
+    get-source-or-target-files
+      $all_files
+      $all_other_files
+      $comparing_to_shared
+      $other_configuration
+  )
+
+  let expected_files = []
+
+  assert equal $actual_files $expected_files
+}
+
+#[test]
+def test-get-source-or-target-files-target [] {
+  let all_files = [
+    configuration/systems/darwin/hosts/benrosen/configuration.nix
+    configuration/systems/darwin/hosts/benrosen/home.nix
+    configuration/systems/darwin/.hushlogin
+    configuration/systems/darwin/configuration.nix
+    configuration/systems/darwin/home.nix
+    configuration/systems/darwin/nushell/theme-function.nu
+    configuration/systems/darwin/rustup/settings.toml
+    configuration/systems/darwin/tinty/fzf.toml
+    configuration/bat/config
+    configuration/flake.lock
+    configuration/flake.nix
+    configuration/git/.gitconfig
+    configuration/helix/config.toml
+    configuration/helix/languages.toml
+    configuration/helix/themes/theme.toml
+    configuration/home.nix
+    configuration/jj/config.toml
+    configuration/kitty/theme.conf
+    configuration/nushell/aliases.nu
+    configuration/nushell/cloud.nu
+    configuration/nushell/colors.nu
+    configuration/nushell/config.nu
+    configuration/nushell/env.nu
+    configuration/nushell/f.nu
+    configuration/nushell/prompt.nu
+    configuration/nushell/src.nu
+    configuration/nushell/theme.nu
+    configuration/nushell/themes.toml
+    configuration/tealdeer/config.toml
+    configuration/tinty/helix.toml
+    configuration/tinty/kitty.toml
+    configuration/tinty/shell.toml
+    configuration/vivid/themes/theme.yml
+    configuration/zellij/themes/theme.kdl
+  ]
+
+  let all_other_files = [
+    configuration/bat/config
+    configuration/flake.lock
+    configuration/flake.nix
+    configuration/git/.gitconfig
+    configuration/helix/config.toml
+    configuration/helix/languages.toml
+    configuration/helix/themes/theme.toml
+    configuration/home.nix
+    configuration/jj/config.toml
+    configuration/kitty/theme.conf
+    configuration/nushell/aliases.nu
+    configuration/nushell/cloud.nu
+    configuration/nushell/colors.nu
+    configuration/nushell/config.nu
+    configuration/nushell/env.nu
+    configuration/nushell/f.nu
+    configuration/nushell/prompt.nu
+    configuration/nushell/src.nu
+    configuration/nushell/theme.nu
+    configuration/nushell/themes.toml
+    configuration/systems/darwin/.hushlogin
+    configuration/systems/darwin/configuration.nix
+    configuration/systems/darwin/home.nix
+    configuration/systems/darwin/nushell/theme-function.nu
+    configuration/systems/darwin/rustup/settings.toml
+    configuration/systems/darwin/tinty/fzf.toml
+    configuration/tealdeer/config.toml
+    configuration/tinty/helix.toml
+    configuration/tinty/kitty.toml
+    configuration/tinty/shell.toml
+    configuration/vivid/themes/theme.yml
+    configuration/zellij/themes/theme.kdl
+  ]
+
+  let comparing_to_shared = false
+  let other_configuration = "darwin"
+
+  let actual_files = (
+    get-source-or-target-files
+      $all_files
+      $all_other_files
+      $comparing_to_shared
+      $other_configuration
+  )
+
+  let expected_files = [
+    configuration/systems/darwin/hosts/benrosen/configuration.nix
+    configuration/systems/darwin/hosts/benrosen/home.nix
+  ]
+
+  assert equal $actual_files $expected_files
+}
+
+#[test]
+def test-get-source-or-target-files-source-shared [] {
+  let all_files = [
+    configuration/bat/config
+    configuration/flake.lock
+    configuration/flake.nix
+    configuration/git/.gitconfig
+    configuration/helix/config.toml
+    configuration/helix/languages.toml
+    configuration/helix/themes/theme.toml
+    configuration/home.nix
+    configuration/jj/config.toml
+    configuration/kitty/theme.conf
+    configuration/nushell/aliases.nu
+    configuration/nushell/cloud.nu
+    configuration/nushell/colors.nu
+    configuration/nushell/config.nu
+    configuration/nushell/env.nu
+    configuration/nushell/f.nu
+    configuration/nushell/prompt.nu
+    configuration/nushell/src.nu
+    configuration/nushell/theme.nu
+    configuration/nushell/themes.toml
+    configuration/tealdeer/config.toml
+    configuration/tinty/helix.toml
+    configuration/tinty/kitty.toml
+    configuration/tinty/shell.toml
+    configuration/vivid/themes/theme.yml
+    configuration/zellij/themes/theme.kdl
+  ]
+
+  let all_other_files = [
+    configuration/systems/darwin/hosts/benrosen/configuration.nix
+    configuration/systems/darwin/hosts/benrosen/home.nix
+    configuration/systems/darwin/.hushlogin
+    configuration/systems/darwin/configuration.nix
+    configuration/systems/darwin/home.nix
+    configuration/systems/darwin/nushell/theme-function.nu
+    configuration/systems/darwin/rustup/settings.toml
+    configuration/systems/darwin/tinty/fzf.toml
+    configuration/bat/config
+    configuration/flake.lock
+    configuration/flake.nix
+    configuration/git/.gitconfig
+    configuration/helix/config.toml
+    configuration/helix/languages.toml
+    configuration/helix/themes/theme.toml
+    configuration/home.nix
+    configuration/jj/config.toml
+    configuration/kitty/theme.conf
+    configuration/nushell/aliases.nu
+    configuration/nushell/cloud.nu
+    configuration/nushell/colors.nu
+    configuration/nushell/config.nu
+    configuration/nushell/env.nu
+    configuration/nushell/f.nu
+    configuration/nushell/prompt.nu
+    configuration/nushell/src.nu
+    configuration/nushell/theme.nu
+    configuration/nushell/themes.toml
+    configuration/tealdeer/config.toml
+    configuration/tinty/helix.toml
+    configuration/tinty/kitty.toml
+    configuration/tinty/shell.toml
+    configuration/vivid/themes/theme.yml
+    configuration/zellij/themes/theme.kdl
+  ]
+
+  let comparing_to_shared = true
+  let other_configuration = "benrosen"
+
+  let actual_files = (
+    get-source-or-target-files
+      $all_files
+      $all_other_files
+      $comparing_to_shared
+      $other_configuration
+  )
+
+  let expected_files = [
+    configuration/bat/config
+    configuration/flake.lock
+    configuration/flake.nix
+    configuration/git/.gitconfig
+    configuration/helix/config.toml
+    configuration/helix/languages.toml
+    configuration/helix/themes/theme.toml
+    configuration/home.nix
+    configuration/jj/config.toml
+    configuration/kitty/theme.conf
+    configuration/nushell/aliases.nu
+    configuration/nushell/cloud.nu
+    configuration/nushell/colors.nu
+    configuration/nushell/config.nu
+    configuration/nushell/env.nu
+    configuration/nushell/f.nu
+    configuration/nushell/prompt.nu
+    configuration/nushell/src.nu
+    configuration/nushell/theme.nu
+    configuration/nushell/themes.toml
+    configuration/tealdeer/config.toml
+    configuration/tinty/helix.toml
+    configuration/tinty/kitty.toml
+    configuration/tinty/shell.toml
+    configuration/vivid/themes/theme.yml
+    configuration/zellij/themes/theme.kdl
+  ]
+
+  assert equal $actual_files $expected_files
+}
+
+#[test]
+def test-get-source-or-target-files-target-shared [] {
+  let all_files = [
+    configuration/systems/darwin/hosts/benrosen/configuration.nix
+    configuration/systems/darwin/hosts/benrosen/home.nix
+    configuration/systems/darwin/.hushlogin
+    configuration/systems/darwin/configuration.nix
+    configuration/systems/darwin/home.nix
+    configuration/systems/darwin/nushell/theme-function.nu
+    configuration/systems/darwin/rustup/settings.toml
+    configuration/systems/darwin/tinty/fzf.toml
+    configuration/bat/config
+    configuration/flake.lock
+    configuration/flake.nix
+    configuration/git/.gitconfig
+    configuration/helix/config.toml
+    configuration/helix/languages.toml
+    configuration/helix/themes/theme.toml
+    configuration/home.nix
+    configuration/jj/config.toml
+    configuration/kitty/theme.conf
+    configuration/nushell/aliases.nu
+    configuration/nushell/cloud.nu
+    configuration/nushell/colors.nu
+    configuration/nushell/config.nu
+    configuration/nushell/env.nu
+    configuration/nushell/f.nu
+    configuration/nushell/prompt.nu
+    configuration/nushell/src.nu
+    configuration/nushell/theme.nu
+    configuration/nushell/themes.toml
+    configuration/tealdeer/config.toml
+    configuration/tinty/helix.toml
+    configuration/tinty/kitty.toml
+    configuration/tinty/shell.toml
+    configuration/vivid/themes/theme.yml
+    configuration/zellij/themes/theme.kdl
+  ]
+
+  let all_other_files = [
+    configuration/bat/config
+    configuration/flake.lock
+    configuration/flake.nix
+    configuration/git/.gitconfig
+    configuration/helix/config.toml
+    configuration/helix/languages.toml
+    configuration/helix/themes/theme.toml
+    configuration/home.nix
+    configuration/jj/config.toml
+    configuration/kitty/theme.conf
+    configuration/nushell/aliases.nu
+    configuration/nushell/cloud.nu
+    configuration/nushell/colors.nu
+    configuration/nushell/config.nu
+    configuration/nushell/env.nu
+    configuration/nushell/f.nu
+    configuration/nushell/prompt.nu
+    configuration/nushell/src.nu
+    configuration/nushell/theme.nu
+    configuration/nushell/themes.toml
+    configuration/tealdeer/config.toml
+    configuration/tinty/helix.toml
+    configuration/tinty/kitty.toml
+    configuration/tinty/shell.toml
+    configuration/vivid/themes/theme.yml
+    configuration/zellij/themes/theme.kdl
+  ]
+
+  let comparing_to_shared = true
+  let other_configuration = "shared"
+
+  let actual_files = (
+    get-source-or-target-files
+      $all_files
+      $all_other_files
+      $comparing_to_shared
+      $other_configuration
+  )
+
+  let expected_files = [
+    configuration/systems/darwin/hosts/benrosen/configuration.nix
+    configuration/systems/darwin/hosts/benrosen/home.nix
+    configuration/systems/darwin/.hushlogin
+    configuration/systems/darwin/configuration.nix
+    configuration/systems/darwin/home.nix
+    configuration/systems/darwin/nushell/theme-function.nu
+    configuration/systems/darwin/rustup/settings.toml
+    configuration/systems/darwin/tinty/fzf.toml
+  ]
+
+  assert equal $actual_files $expected_files
 }
 
 #[test]

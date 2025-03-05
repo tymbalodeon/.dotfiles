@@ -53,8 +53,9 @@ export def get-all-configurations [] {
   $systems
   | append (
       $systems
-    | each {|system| get-hosts $system}
-  )
+      | each {|system| get-hosts $system}
+    )
+  | append shared
   | flatten
   | sort
 }
@@ -131,6 +132,16 @@ Available ($type)s:
     }
 }
 
+def validate-system-name [system?: string] {
+  if ($system | is-empty) {
+    return
+  }
+  
+  if ($system not-in (get-all-systems)) {
+    raise_configuration_error $system --systems
+  }
+}
+
 export def validate-configuration-name [
   configuration?: string
   --validate-system
@@ -139,11 +150,7 @@ export def validate-configuration-name [
     return
   }
 
-  if $validate_system and ($configuration not-in (get-all-systems)) {
-    raise_configuration_error $configuration --systems
-  }
-
-  if not ($configuration in (get-all-hosts)) and not ($configuration in (get-all-systems)) {
+  if ($configuration not-in (get-all-configurations)) {
     raise_configuration_error $configuration
   }
 
@@ -182,7 +189,7 @@ export def main [
   } else if $systems {
     $configuration_data.systems
   } else if ($system | is-not-empty) {
-    validate-configuration-name $system --validate-system
+    validate-system-name $system
 
     $configuration_data.system_hosts
     | get $system

@@ -71,12 +71,21 @@ def validate-target [target?: string] {
 }
 
 def get-configuration-files [configuration: string] {
+  let base_directory = if ($configuration == "shared") {
+    "configuration"
+  } else {
+    $configuration
+  }
+
   let configuration_files = (
-    fd --hidden --type file "" (fd --type directory $configuration)
+    fd --hidden --type file "" (fd --type directory $base_directory)
     | lines
   )
 
-  let configuration_files = if $configuration in (get-all-hosts) {
+  let configuration_files = if ($configuration == "shared") {
+    $configuration_files
+    | where $it !~ hosts and $it !~ systems
+  } else if ($configuration in (get-all-hosts)) {
     let system = (
       $configuration_files
       | first
@@ -267,6 +276,20 @@ export def sort-delta-files [a: string b: string sort_by_target: bool] {
   )
 }
 
+export def get-source-or-target-files [
+  all_files: list<string>
+  all_other_files: list<string>
+  comparing_to_shared: bool
+  other_configuration: string
+] {
+  if not $comparing_to_shared or ($other_configuration == "shared") {
+    $all_files
+    | where not ($it in $all_files and $it in $all_other_files)
+  } else {
+    $all_files
+  }
+}
+
 def parse-args [
   side_by_side: bool
   single_column: bool
@@ -302,11 +325,24 @@ def parse-args [
 
   let source = (validate-source $source)
   let target = (validate-target $target)
-  let source_files = (get-configuration-files $source | sort)
+  let all_source_files = (get-configuration-files $source | sort)
+  let all_target_files = (get-configuration-files $target)
+  let comparing_to_shared = ([$source $target] | any {$in == "shared"})
+
+  let source_files = (
+    get-source-or-target-files
+      $all_source_files
+      $all_target_files
+      $comparing_to_shared
+      $target
+  )
 
   let target_files = (
-    get-configuration-files $target
-    | where $it =~ $target
+    get-source-or-target-files
+      $all_target_files
+      $all_source_files
+      $comparing_to_shared
+      $source
   )
 
   {
