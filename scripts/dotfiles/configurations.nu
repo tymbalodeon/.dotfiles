@@ -136,7 +136,7 @@ def validate-system-name [system?: string] {
   if ($system | is-empty) {
     return
   }
-  
+
   if ($system not-in (get-all-systems)) {
     raise_configuration_error $system --systems
   }
