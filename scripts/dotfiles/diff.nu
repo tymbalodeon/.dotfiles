@@ -276,17 +276,51 @@ export def sort-delta-files [a: string b: string sort_by_target: bool] {
   )
 }
 
-export def get-source-or-target-files [
-  all_files: list<string>
-  all_other_files: list<string>
-  comparing_to_shared: bool
-  other_configuration: string
+def get-configuration-rank [
+  configuration: string
+  hosts: list<string>
+  systems: list<string>
 ] {
-  if not $comparing_to_shared or ($other_configuration == "shared") {
-    $all_files
-    | where not ($it in $all_files and $it in $all_other_files)
+  let type = if ($configuration in (get-all-hosts)) {
+    "host"
+  } else if ($configuration in (get-all-systems)) {
+    "system"
   } else {
-    $all_files
+    "shared"
+  }
+
+  [
+    shared
+    system
+    host
+  ]
+  | enumerate
+  | where $it.item == $type
+  | get index
+}
+
+export def get-files-to-diff [
+  self: string
+  other: string
+  all_self_files: list<string>
+  all_other_files: list<string>
+] {
+  let hosts = (get-all-hosts)
+  let systems = (get-all-systems)
+
+  let self_configuration_rank = (
+    get-configuration-rank $self $hosts $systems
+  )
+
+  let other_configuration_rank = (
+    get-configuration-rank $other $hosts $systems
+  )
+
+  if $self_configuration_rank > $other_configuration_rank {
+    $all_self_files
+    | where not ($it in $all_self_files and $it in $all_other_files)
+  } else {
+    $all_self_files
   }
 }
 
@@ -327,22 +361,21 @@ def parse-args [
   let target = (validate-target $target)
   let all_source_files = (get-configuration-files $source | sort)
   let all_target_files = (get-configuration-files $target)
-  let comparing_to_shared = ([$source $target] | any {$in == "shared"})
 
   let source_files = (
-    get-source-or-target-files
+      get-files-to-diff
+      $source
+      $target
       $all_source_files
       $all_target_files
-      $comparing_to_shared
-      $target
   )
 
   let target_files = (
-    get-source-or-target-files
+      get-files-to-diff
+      $target
+      $source
       $all_target_files
       $all_source_files
-      $comparing_to_shared
-      $source
   )
 
   {
