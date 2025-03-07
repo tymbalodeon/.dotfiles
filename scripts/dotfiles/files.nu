@@ -12,52 +12,6 @@ use ./configurations.nu get-file-path
 use ./configurations.nu get-hosts
 use ./configurations.nu validate-configuration-name
 
-export def get-tree-ignore-glob [
-  configuration_data: record<
-    systems: list<string>,
-    hosts: list<string>,
-    system_hosts: record
-  >
-  shared: bool
-  configuration?: string
-] {
-  if ($configuration | is-empty) {
-    if $shared {
-      "hosts|systems"
-    } else {
-      null
-    }
-  } else {
-    if ($configuration in $configuration_data.systems) {
-      if $shared {
-        [hosts]
-      } else {
-        []
-      } | append (
-          $configuration_data.systems
-          | where $it != $configuration
-        )
-      | str join "|"
-    } else if ($configuration in $configuration_data.hosts) {
-      $configuration_data.hosts
-      | where $it != $configuration
-      | append (
-          $configuration_data.systems
-          | filter {
-              |system|
-
-              $configuration not-in (
-                $configuration_data.system_hosts
-                | get $system
-              )
-            }
-          )
-        | str join "|"
-    } else {
-      null
-    }
-  }
-}
 
 def --wrapped eza [...$args: string] {
   ^eza ...$args
@@ -502,11 +456,60 @@ def group-files-by-filenames [
         }
       }
   )
+  | each {
+      |line|
 
-  if (
-    $use_colors and $group_by_file and (
-      not $no_full_path or $no_labels
+      let parts = (
+        $line
+        | split row " "
+      )
+
+      let file = (
+        $parts
+        | first
+        | str replace --regex 'hosts/[^/]+/' ""
+        | str replace --regex 'systems/[^/]+/' ""
+        | str replace "configuration/" ""
+      )
+
+      $file
+      | append ($parts | drop nth 0)
+      | str join " "
+  }
+
+  mut lines = {}
+
+  for file in $files {
+    let parts = ($file | split row " ")
+    let filename = ($parts | first)
+    let configurations = ($parts | drop nth 0)
+
+    if ($filename in ($lines | columns)) {
+      $lines = ($lines | update $filename $configurations)
+    } else {
+      $lines = ($lines | insert $filename $configurations)
+
+    }
+  }
+
+  mut files = []
+
+  for column in ($lines | columns) {
+    $files = (
+      $files | append (
+        $column
+        | path split
+        | append (
+          $lines
+          | get $column
+        )
+        | str join " "
+      )
     )
+  }
+
+  if $use_colors and $group_by_file and (
+      not $no_full_path or $no_labels
   ) {
     $files
     | each {
@@ -631,6 +634,61 @@ def use-colors [color: string] {
   )
 }
 
+export def get-tree-ignore-glob [
+  configuration_data: record<
+    systems: list<string>,
+    hosts: list<string>,
+    system_hosts: record
+  >
+  shared: bool
+  configuration?: string
+] {
+  if ($configuration | is-empty) {
+    if $shared {
+      "hosts|systems"
+    } else {
+      null
+    }
+  } else {
+    if ($configuration in $configuration_data.systems) {
+      if $shared {
+        [hosts]
+      } else {
+        []
+      } | append (
+          $configuration_data.systems
+          | where $it != $configuration
+        )
+      | str join "|"
+    } else if ($configuration in $configuration_data.hosts) {
+      $configuration_data.hosts
+      | where $it != $configuration
+      | append (
+          $configuration_data.systems
+          | filter {
+              |system|
+
+              $configuration not-in (
+                $configuration_data.system_hosts
+                | get $system
+              )
+            }
+          )
+        | str join "|"
+    } else {
+      null
+    }
+  }
+}
+
+# def "main by-configuration" [
+
+# ] {
+#   print YO
+# }
+
+# alias "main by-configs" = main by-configuration
+
 # View files as a tree
 def "main tree" [
   configuration?: string # Configuration (system or host) name
@@ -676,8 +734,6 @@ def "main tree" [
     }
 
     return (eza ...$args)
-  } catch {
-    return
   }
 }
 
