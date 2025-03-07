@@ -87,7 +87,7 @@ def matches_systems [file: string] {
   | str contains systems
 }
 
-export def get-files [
+export def filter-files [
   files: list<string>
   system_names: list<string>
   host_names: list<string>
@@ -102,7 +102,7 @@ export def get-files [
       | filter {|file| $configuration in $file}
     )
 
-    if $shared {
+    if $shared and ($configuration not-in $host_names) {
       $files
       | filter {|file| "hosts" not-in $file}
     } else {
@@ -707,22 +707,6 @@ def main [
     | lines
   )
 
-  let system_names = (ls --short-names configuration/systems).name
-
-  let host_names = (
-    ^ls configuration/**/hosts/**
-    | rg '/hosts/[^/]+\w' --only-matching
-    | lines
-    | uniq
-    | each {
-        |line|
-
-        $line
-        | split row "/hosts/"
-        | last
-      }
-  )
-
   let system_name = if ($configuration | is-empty) {
     null
   } else {
@@ -734,20 +718,23 @@ def main [
     | first
   }
 
+  let all_systems = (get-all-systems)
+  let all_hosts = (get-all-hosts)
+
   let files = (
-    get-files
+    filter-files
     $files
-    $system_names
-    $host_names
+    $all_systems
+    $all_hosts
     $shared
     $unique
     $system_name
     $configuration
-  )
+ )
 
   let all_configurations = (get-all-configurations)
-  let is_system_configuration = ($configuration in (get-all-systems))
-  let is_host_configuration = ($configuration in (get-all-hosts))
+  let is_system_configuration = ($configuration in $all_systems)
+  let is_host_configuration = ($configuration in $all_hosts)
   let colors = (get-colors $all_configurations)
 
   let files = (
@@ -798,14 +785,12 @@ def main [
           $unique
           $configuration
       )
-    } else if $use_colors and (
-      not $group_by_configuration and not (
-        $unique and $is_host_configuration
+    } else if $use_colors and not $group_by_configuration and (
+        $is_host_configuration and not $unique
+      ) or (
+        $is_system_configuration and not ($shared and $unique)
       ) or (
         $configuration | is-empty
-      ) and not $is_host_configuration and (
-        not $shared and $is_system_configuration or not $unique
-      )
     ) {
       colorize-files $files $colors $unique $configuration
     } else {

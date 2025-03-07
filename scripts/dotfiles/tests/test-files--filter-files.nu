@@ -1,6 +1,6 @@
 use std assert
 
-use ../files.nu get-files
+use ../files.nu filter-files
 
 let files = [
   configuration/bat/config
@@ -544,13 +544,19 @@ let tests = [
     unique: true
     system_name: darwin
     configuration: work
-    expected: []
+
+    expected: [
+      configuration/systems/darwin/hosts/work/configuration.nix
+      configuration/systems/darwin/hosts/work/git/.gitconfig
+      configuration/systems/darwin/hosts/work/home.nix
+      configuration/systems/darwin/hosts/work/jj/config.toml
+    ]
   }
 ]
 
 for test in $tests {
   let actual = (
-    get-files
+    filter-files
     $files
     $system_names
     $host_names
