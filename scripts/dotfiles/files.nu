@@ -781,8 +781,8 @@ def main [
           $colors
           $is_system_configuration
           $no_labels
-          $use_colors
           $unique
+          $use_colors
           $configuration
       )
     } else if $use_colors and not $group_by_configuration and (
