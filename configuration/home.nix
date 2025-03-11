@@ -73,7 +73,7 @@
       noto-fonts
       openjdk
       ov
-      pandoc
+      pandoc # TODO nb (possibly others?)
       pipx
       pup
       pyright
@@ -87,7 +87,9 @@
       rustup
       sd
       shfmt
+      socat # TODO nb
       tealdeer
+      tig # TODO nb
       tinty
       tinymist
       typst
@@ -95,7 +97,7 @@
       ubuntu_font_family
       unison-ucm
       vivid
-      w3m
+      w3m # TODO nb
       xh
       yazi
       yq-go
@@ -156,9 +158,16 @@
     };
 
     nushell = {
-      enable = true;
       configFile.source = ./nushell/config.nu;
+      enable = true;
       envFile.source = ./nushell/env.nu;
+
+      plugins = with pkgs.nushellPlugins; [
+        formats
+        gstat
+        polars
+        query
+      ];
     };
   };
 }

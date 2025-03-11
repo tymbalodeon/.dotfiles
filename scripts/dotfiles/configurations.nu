@@ -1,9 +1,13 @@
 #!/usr/bin/env nu
 
+use ./color.nu colorize
+use ./color.nu get-colorized-configuration-name
+use ./color.nu get-colors
+
 export def get-current-system [] {
   let release_file = "/etc/os-release"
 
-  if ($release_file | path exists) {
+  let system = if ($release_file | path exists) {
     open /etc/os-release
     | parse "{key}={value}"
     | where key == NAME
@@ -12,6 +16,9 @@ export def get-current-system [] {
   } else {
     (uname).kernel-name
   }
+
+  $system
+  | str downcase
 }
 
 export def is-nixos [] {
@@ -46,8 +53,9 @@ export def get-all-configurations [] {
   $systems
   | append (
       $systems
-    | each {|system| get-hosts $system}
-  )
+      | each {|system| get-hosts $system}
+    )
+  | append shared
   | flatten
   | sort
 }
@@ -124,6 +132,16 @@ Available ($type)s:
     }
 }
 
+def validate-system-name [system?: string] {
+  if ($system | is-empty) {
+    return
+  }
+
+  if ($system not-in (get-all-systems)) {
+    raise_configuration_error $system --systems
+  }
+}
+
 export def validate-configuration-name [
   configuration?: string
   --validate-system
@@ -132,55 +150,75 @@ export def validate-configuration-name [
     return
   }
 
-  if $validate_system and ($configuration not-in (get-all-systems)) {
-    raise_configuration_error $configuration --systems
-  }
-
-  if not ($configuration in (get-all-hosts)) and not ($configuration in (get-all-systems)) {
+  if ($configuration not-in (get-all-configurations)) {
     raise_configuration_error $configuration
   }
 
   $configuration
 }
 
-# List hosts
+export def get-file-path [file: string] {
+  $file
+  | str replace configuration/ ""
+  | str replace --regex 'systems/[^/]+/' ""
+  | str replace --regex 'hosts/[^/]+/' ""
+}
+
+# List configurations
 export def main [
   system?: string # List hosts for $system
   --current-host # View current host
-  --current-system # List hosts available on the current platform only
+  --current-system # View current system
+  --current-system-hosts # List hosts for current system
+  --hosts # List hosts
+  --systems # List systems
 ] {
   if $current_host {
     return (get-built-host-name)
   }
 
-  validate-configuration-name $system --validate-system
-
-  if ($system | is-empty) and not $current_system {
-    return (
-      get-all-hosts
-      | str join "\n"
-    )
+  if $current_system {
+    return (get-current-system)
   }
 
-  mut hosts = {}
+  let configuration_data = (get-configuration-data)
 
-  for system in (get-all-systems) {
-    $hosts = (
-      $hosts
-      | insert $system (get-hosts $system)
-    )
+  let output = if $current_system_hosts {
+    $configuration_data.system_hosts
+    | get (get-current-system)
+  } else if $systems {
+    $configuration_data.systems
+  } else if ($system | is-not-empty) {
+    validate-system-name $system
+
+    $configuration_data.system_hosts
+    | get $system
+  } else if $hosts {
+    $configuration_data.hosts
+  } else {
+    null
   }
 
-  let hosts = (
-    if $current_system {
-      $hosts
-      | get (get-current-system)
-    } else {
-      $hosts
-      | get $system
+  if ($output | is-not-empty) {
+    return ($output | str join "\n")
+  }
+
+  let colors = (get-colors (get-all-configurations))
+
+  $configuration_data.systems
+  | each {
+      |host_system|
+
+      $configuration_data.system_hosts
+      | get $host_system
+      | each {
+          |host|
+
+          $"($host) (get-colorized-configuration-name $host_system $colors)"
+        }
     }
-  )
-
-  $hosts
-  | str join "\n"
+  | flatten
+  | sort
+  | to text
+  | column -t
 }

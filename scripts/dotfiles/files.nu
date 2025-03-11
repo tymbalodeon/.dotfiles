@@ -1,61 +1,17 @@
 #!/usr/bin/env nu
 
 use ./color.nu colorize
-use ./diff.nu get-file-path
-use ./diff.nu colorize-file
-use ./hosts.nu get-all-configurations
-use ./hosts.nu get-all-hosts
-use ./hosts.nu get-all-systems
-use ./hosts.nu get-configuration-data
-use ./hosts.nu get-hosts
-use ./hosts.nu validate-configuration-name
+use ./color.nu colorize-file
+use ./color.nu get-colorized-configuration-name
+use ./color.nu get-colors
+use ./configurations.nu get-all-configurations
+use ./configurations.nu get-all-hosts
+use ./configurations.nu get-all-systems
+use ./configurations.nu get-configuration-data
+use ./configurations.nu get-file-path
+use ./configurations.nu get-hosts
+use ./configurations.nu validate-configuration-name
 
-export def get-tree-ignore-glob [
-  configuration_data: record<
-    systems: list<string>,
-    hosts: list<string>,
-    system_hosts: record
-  >
-  shared: bool
-  configuration?: string
-] {
-  if ($configuration | is-empty) {
-    if $shared {
-      "hosts|systems"
-    } else {
-      null
-    }
-  } else {
-    if ($configuration in $configuration_data.systems) {
-      if $shared {
-        [hosts]
-      } else {
-        []
-      } | append (
-          $configuration_data.systems
-          | where $it != $configuration
-        )
-      | str join "|"
-    } else if ($configuration in $configuration_data.hosts) {
-      $configuration_data.hosts
-      | where $it != $configuration
-      | append (
-          $configuration_data.systems
-          | filter {
-              |system|
-
-              $configuration not-in (
-                $configuration_data.system_hosts
-                | get $system
-              )
-            }
-          )
-        | str join "|"
-    } else {
-      null
-    }
-  }
-}
 
 def --wrapped eza [...$args: string] {
   ^eza ...$args
@@ -85,7 +41,7 @@ def matches_systems [file: string] {
   | str contains systems
 }
 
-export def get-files [
+export def filter-files [
   files: list<string>
   system_names: list<string>
   host_names: list<string>
@@ -100,7 +56,7 @@ export def get-files [
       | filter {|file| $configuration in $file}
     )
 
-    if $shared {
+    if $shared and ($configuration not-in $host_names) {
       $files
       | filter {|file| "hosts" not-in $file}
     } else {
@@ -141,24 +97,6 @@ def get-configuration-name [file: string configuration_type: string] {
     $file
     | rg $"($configuration_type)s/\([^/]+\)/" --only-matching --replace "$1"
   }
-}
-
-def get-colorized-configuration-name [
-  configuration_name: string
-  colors: table<configuration: string, name: string>
-] {
-  let color = (
-    $colors
-    | filter {
-        |color|
-
-        $color.configuration == $configuration_name
-      }
-    | first
-    | get name
-  )
-
-  colorize $configuration_name $color
 }
 
 def colorize-configuration-name [
@@ -518,17 +456,66 @@ def group-files-by-filenames [
         }
       }
   )
+  | each {
+      |line|
 
-  if (
-    $use_colors and $group_by_file and (
-      not $no_full_path or $no_labels
+      let parts = (
+        $line
+        | split row " "
+      )
+
+      let file = (
+        $parts
+        | first
+        | str replace --regex 'hosts/[^/]+/' ""
+        | str replace --regex 'systems/[^/]+/' ""
+        | str replace "configuration/" ""
+      )
+
+      $file
+      | append ($parts | drop nth 0)
+      | str join " "
+  }
+
+  mut lines = {}
+
+  for file in $files {
+    let parts = ($file | split row " ")
+    let filename = ($parts | first)
+    let configurations = ($parts | drop nth 0)
+
+    if ($filename in ($lines | columns)) {
+      $lines = ($lines | update $filename $configurations)
+    } else {
+      $lines = ($lines | insert $filename $configurations)
+
+    }
+  }
+
+  mut files = []
+
+  for column in ($lines | columns) {
+    $files = (
+      $files | append (
+        $column
+        | path split
+        | append (
+          $lines
+          | get $column
+        )
+        | str join " "
+      )
     )
+  }
+
+  if $use_colors and $group_by_file and (
+      not $no_full_path or $no_labels
   ) {
     $files
     | each {
         |file|
 
-        colorize-file $file default_bold
+        colorize-file $file (get-file-path $file) default_bold
       }
   } else {
     $files
@@ -647,6 +634,61 @@ def use-colors [color: string] {
   )
 }
 
+export def get-tree-ignore-glob [
+  configuration_data: record<
+    systems: list<string>,
+    hosts: list<string>,
+    system_hosts: record
+  >
+  shared: bool
+  configuration?: string
+] {
+  if ($configuration | is-empty) {
+    if $shared {
+      "hosts|systems"
+    } else {
+      null
+    }
+  } else {
+    if ($configuration in $configuration_data.systems) {
+      if $shared {
+        [hosts]
+      } else {
+        []
+      } | append (
+          $configuration_data.systems
+          | where $it != $configuration
+        )
+      | str join "|"
+    } else if ($configuration in $configuration_data.hosts) {
+      $configuration_data.hosts
+      | where $it != $configuration
+      | append (
+          $configuration_data.systems
+          | filter {
+              |system|
+
+              $configuration not-in (
+                $configuration_data.system_hosts
+                | get $system
+              )
+            }
+          )
+        | str join "|"
+    } else {
+      null
+    }
+  }
+}
+
+# def "main by-configuration" [
+
+# ] {
+#   print YO
+# }
+
+# alias "main by-configs" = main by-configuration
+
 # View files as a tree
 def "main tree" [
   configuration?: string # Configuration (system or host) name
@@ -692,37 +734,7 @@ def "main tree" [
     }
 
     return (eza ...$args)
-  } catch {
-    return
   }
-}
-
-def get-colors [] {
-  let all_configurations = (get-all-configurations)
-
-  let colors = (
-    ansi --list
-    | get name
-    | filter {
-        |color|
-
-        $color not-in [reset title identity escape size] and not (
-          [_bold _underline _italic _dimmed _reverse bg_]
-          | each {|name| $name in $color}
-          | any {|color| $color}
-        # TODO is it possible to programmatically detect which colors will work?
-        # `delta` seems able to do this--use that as an example!
-        ) and not ("black" in $color) and not ("purple" in $color) or (
-          "xterm" in $color
-        )
-      }
-    | sort-by {|a, b| "light" in $a}
-    | take ($all_configurations | length)
-  )
-
-  $all_configurations
-  | wrap configuration
-  | merge ($colors | wrap name)
 }
 
 # List configuration files
@@ -751,22 +763,6 @@ def main [
     | lines
   )
 
-  let system_names = (ls --short-names configuration/systems).name
-
-  let host_names = (
-    ^ls configuration/**/hosts/**
-    | rg '/hosts/[^/]+\w' --only-matching
-    | lines
-    | uniq
-    | each {
-        |line|
-
-        $line
-        | split row "/hosts/"
-        | last
-      }
-  )
-
   let system_name = if ($configuration | is-empty) {
     null
   } else {
@@ -778,21 +774,24 @@ def main [
     | first
   }
 
+  let all_systems = (get-all-systems)
+  let all_hosts = (get-all-hosts)
+
   let files = (
-    get-files
+    filter-files
     $files
-    $system_names
-    $host_names
+    $all_systems
+    $all_hosts
     $shared
     $unique
     $system_name
     $configuration
-  )
+ )
 
   let all_configurations = (get-all-configurations)
-  let is_system_configuration = ($configuration in (get-all-systems))
-  let is_host_configuration = ($configuration in (get-all-hosts))
-  let colors = (get-colors)
+  let is_system_configuration = ($configuration in $all_systems)
+  let is_host_configuration = ($configuration in $all_hosts)
+  let colors = (get-colors $all_configurations)
 
   let files = (
     if $group_by_file or $unique_filenames {
@@ -838,18 +837,16 @@ def main [
           $colors
           $is_system_configuration
           $no_labels
-          $use_colors
           $unique
+          $use_colors
           $configuration
       )
-    } else if $use_colors and (
-      not $group_by_configuration and not (
-        $unique and $is_host_configuration
+    } else if $use_colors and not $group_by_configuration and (
+        $is_host_configuration and not $unique
+      ) or (
+        $is_system_configuration and not ($shared and $unique)
       ) or (
         $configuration | is-empty
-      ) and not $is_host_configuration and (
-        not $shared and $is_system_configuration or not $unique
-      )
     ) {
       colorize-files $files $colors $unique $configuration
     } else {

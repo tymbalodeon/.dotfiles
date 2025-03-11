@@ -25,10 +25,12 @@
 @generations *help:
     ../scripts/dotfiles/generations.nu {{ help }}
 
-# List available hosts
+# List available configurations
 [no-cd]
-@hosts *args:
-    ./scripts/dotfiles/hosts.nu {{ args }}
+@configurations *args:
+    ./scripts/dotfiles/configurations.nu {{ args }}
+
+alias configs := configurations
 
 # List flake inputs
 [working-directory: "../configuration"]

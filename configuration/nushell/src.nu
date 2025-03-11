@@ -876,7 +876,11 @@ def "src sync" [
         try {
           let result = (git pull out+err> /dev/null)
         } catch {
-          print --stderr $"(ansi y)Skipping \"($repo)\"(ansi reset)"
+          try {
+            jj git fetch out+err> /dev/null
+          } catch {
+            print --stderr $"(ansi y)Skipping \"($repo)\"(ansi reset)"
+          }
         }
 
         print $"  (ansi green_bold)Synced(ansi reset) ($repo)"
