@@ -22,7 +22,7 @@ export def get-current-system [] {
 }
 
 export def is-nixos [] {
-  (get-current-system) == "NixOS"
+  (get-current-system) == "nixos"
 }
 
 export def get-all-systems [] {
