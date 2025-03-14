@@ -41,6 +41,18 @@ def matches_systems [file: string] {
   | str contains systems
 }
 
+def get-files [] {
+  (  
+    fd
+      --exclude "flake.lock"
+      --hidden
+      --type "file"
+      ""
+      "configuration"
+    | lines
+  )
+}
+
 export def filter-files [
   files: list<string>
   system_names: list<string>
@@ -90,6 +102,36 @@ export def filter-files [
         }
     }
   }
+}
+
+def get-filtered-files [
+  all_systems: list<string>
+  all_hosts: list<string>
+  shared: bool
+  unique: bool
+  configuration?: string
+] {
+  let system_name = if ($configuration | is-empty) {
+    null
+  } else {
+    ls ($"configuration/**/($configuration)" | into glob)
+    | get name
+    | split row "systems/"
+    | last
+    | path split
+    | first
+  }
+
+  (
+    filter-files
+      (get-files)
+      $all_systems
+      $all_hosts
+      $shared
+      $unique
+      $system_name
+      $configuration
+  )
 }
 
 def get-configuration-name [file: string configuration_type: string] {
@@ -241,7 +283,7 @@ export def annotate-files-with-configurations [
             ) {
               $host
             } else {
-              ""
+              colorize "shared" "dark_gray"
             }
           )
         | str join " "
@@ -681,13 +723,62 @@ export def get-tree-ignore-glob [
   }
 }
 
-# def "main by-configuration" [
+def "main by-file" [
+  configuration?: string # Configuration (system or host) name
+  --color = "auto" # When to use colored output
+  --no-labels # Don't show labels in output
+  --shared # List only shared configuration files
+  --unique # List files unique to $configuration
+] {
+  let all_systems = (get-all-systems)
+  let all_hosts = (get-all-hosts)
+  let all_configurations = (get-all-configurations)
+  let colors = (get-colors $all_configurations)
+  let is_host_configuration = ($configuration in $all_hosts)
+  let is_system_configuration = ($configuration in $all_systems)
+  let use_colors = (use-colors $color)
 
-# ] {
-#   print YO
-# }
+  let files = (
+    get-filtered-files
+      $all_systems
+      $all_hosts
+      $shared
+      $unique
+      $configuration
+  )
 
-# alias "main by-configs" = main by-configuration
+  let files = (
+    annotate-files-with-configurations
+    $files
+    $colors
+    true
+    $is_host_configuration
+    $is_system_configuration
+    true
+    $no_labels
+    $use_colors
+    $unique
+    false
+    $configuration
+  )
+
+  print $files
+
+  let files = (
+    group-files-by-filenames
+      $files
+      false
+      true
+      true
+      $no_labels
+      false
+      $use_colors
+  )
+
+  $files
+  | to text
+  | column -t
+}
 
 # View files as a tree
 def "main tree" [
@@ -751,47 +842,23 @@ def main [
 ] {
   validate-configuration-name $configuration
 
-  let use_colors = (use-colors $color)
-
-  let files = (
-    fd
-      --exclude "flake.lock"
-      --hidden
-      --type "file"
-      ""
-      "configuration"
-    | lines
-  )
-
-  let system_name = if ($configuration | is-empty) {
-    null
-  } else {
-    ls ($"configuration/**/($configuration)" | into glob)
-    | get name
-    | split row "systems/"
-    | last
-    | path split
-    | first
-  }
-
   let all_systems = (get-all-systems)
   let all_hosts = (get-all-hosts)
 
   let files = (
-    filter-files
-    $files
-    $all_systems
-    $all_hosts
-    $shared
-    $unique
-    $system_name
-    $configuration
- )
+    get-filtered-files
+      $all_systems
+      $all_hosts
+      $shared
+      $unique
+      $configuration
+  )
 
   let all_configurations = (get-all-configurations)
-  let is_system_configuration = ($configuration in $all_systems)
-  let is_host_configuration = ($configuration in $all_hosts)
   let colors = (get-colors $all_configurations)
+  let is_host_configuration = ($configuration in $all_hosts)
+  let is_system_configuration = ($configuration in $all_systems)
+  let use_colors = (use-colors $color)
 
   let files = (
     if $group_by_file or $unique_filenames {
