@@ -15,7 +15,9 @@ export def get-colorized-configuration-name [
   configuration_name: string
   colors: table<configuration: string, name: string>
 ] {
-  let color = (
+  let color = if $configuration_name == "shared" {
+    "dark_gray"
+  } else {
     $colors
     | filter {
         |color|
@@ -24,7 +26,7 @@ export def get-colorized-configuration-name [
       }
     | first
     | get name
-  )
+  }
 
   colorize $configuration_name $color
 }

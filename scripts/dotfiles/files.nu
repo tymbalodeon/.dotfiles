@@ -748,36 +748,190 @@ def "main by-file" [
   )
 
   let files = (
-    annotate-files-with-configurations
     $files
-    $colors
-    true
-    $is_host_configuration
-    $is_system_configuration
-    true
-    $no_labels
-    $use_colors
-    $unique
-    false
-    $configuration
+    | par-each {
+        |file|
+
+        mut configuration = "shared"
+
+        for name in [host system] {
+          let name = (get-configuration-name $file $name)
+
+          if ($name | is-not-empty) {
+            $configuration = $name            
+
+            break
+          }
+        }
+
+        { file: $file configuration: $configuration }
+    }
   )
 
-  print $files
+  mut filenames = {}
+  mut max_configurations = 1
 
-  let files = (
-    group-files-by-filenames
+  for file in $files {
+    let path = (get-file-path $file.file)
+
+    if $path in ($filenames | columns) {
+      $filenames = (
+        $filenames 
+        | update $path ($filenames | get $path | append $file.configuration)
+      )
+
+      let length = (
+        $filenames
+        | get $path
+        | length
+      )
+
+      if $length > $max_configurations {
+        $max_configurations = $length
+      }
+    } else {
+      $filenames = (
+        $filenames
+        | insert $path [$file.configuration]
+      )
+    }
+  }
+
+  for filename in ($filenames | columns) {
+    while (($filenames | get $filename | length) < $max_configurations) {
+      $filenames = (
+        $filenames
+        | update $filename (
+            $filenames
+            | get $filename
+            | append "-"
+        )
+      )
+    }
+
+    $filenames = (
+      $filenames
+      | update $filename (
+          $filenames
+          | get $filename
+          | sort-by --custom {
+              |a, b|
+
+              if $a == "shared" {
+                return true
+              }
+
+              if $b == "shared" {
+                return false
+              }
+
+              let systems = (get-all-systems)
+              let hosts = (get-all-hosts)
+
+              if $a in $systems and $b in $hosts {
+                return true
+              }
+
+              if $b in $systems and $a in $hosts {
+                return false
+              }
+
+              $a < $b
+            }
+          | str join " "
+      )
+    )
+  }
+
+  mut files = []
+
+  for filename in ($filenames | columns) {
+    $files = (
       $files
-      false
-      true
-      true
-      $no_labels
-      false
-      $use_colors
+      | append {
+          paths: ($filename | path split)
+          configurations: ($filenames | get $filename)
+        }
+    )
+  }
+
+  mut max_paths = 0
+
+  for file in $files {
+    let length = ($file.paths | length)
+
+    if $length > $max_paths {
+      $max_paths = $length  
+    }
+  }
+
+  mut files = (
+    $files
+    | transpose --ignore-titles
+    | transpose --ignore-titles
+    | rename paths configurations
   )
 
-  $files
+  for file in ($files | enumerate) {
+    while (($files | get $file.index | get paths | length) < $max_paths) {
+      $files = (
+        $files
+        | update $file.index (
+            {
+              paths: (
+                $files
+                | get $file.index
+                | get paths
+                | append "-"
+              )
+
+              configurations: $file.item.configurations
+            }
+        )
+      )
+    }
+
+
+    $files = (
+      $files
+      | update $file.index (
+          {
+            paths: (
+              $files
+              | get $file.index
+              | get paths
+              | str join " "
+            )
+
+            configurations: $file.item.configurations
+          }
+        )
+    )
+  }
+
+  mut paths_and_configurations = []
+
+  for file in ($files | sort-by paths) {
+    $paths_and_configurations = (
+      $paths_and_configurations
+      | append (
+          (
+            $file.paths
+            | split row " "
+            | append (
+                $file.configurations
+                | split row " "
+            )
+          )
+          | str join " "
+        )
+    )
+  }
+
+  $paths_and_configurations
   | to text
   | column -t
+  | str replace --all "-" " "
 }
 
 # View files as a tree
