@@ -396,7 +396,7 @@ export def get-unique-filenames [
 
               $a < $b
             }
-          | str replace --regex '\[.+\]' "•"
+          | str replace --regex '\[.+\]' "|"
           | str join " "
         )
         | str join " "
@@ -722,12 +722,16 @@ export def get-tree-ignore-glob [
   }
 }
 
+def get-all-configuration-names [] {
+  [shared] ++ (get-all-systems) ++ (get-all-hosts)
+}
+
 # TODO can this be done earlier in the process?
 def fill-configuration-columns [configurations: list<string>] {
-  let configuration_indices = [shared] ++ (get-all-systems) ++ (get-all-hosts)
-  mut filled_columns = 1..($configuration_indices | length) | each {|| "-"}
+  let configuration_names = (get-all-configuration-names)
+  mut filled_columns = 1..($configuration_names | length) | each {|| "|"}
 
-  for configuration in ($configuration_indices | enumerate) {
+  for configuration in ($configuration_names | enumerate) {
     if $configuration.item in $configurations {
       $filled_columns = (
         $filled_columns 
@@ -737,6 +741,24 @@ def fill-configuration-columns [configurations: list<string>] {
   }
 
   $filled_columns
+}
+
+def colorize-configuration-names [
+  line: string
+  colors: table<configuration: string, name: string>
+] {
+  mut colorized_line = $line
+
+  for configuration in (get-all-configuration-names) {
+    $colorized_line = (
+      $colorized_line
+      | str replace --all $configuration (
+          get-colorized-configuration-name $configuration $colors
+        )
+    )
+  }
+
+  $colorized_line
 }
 
 def "main by-file" [
@@ -868,12 +890,12 @@ def "main by-file" [
                   $files
                   | get $file.index
                   | get paths
-                  | insert 1 "-"
+                  | insert 1 "|"
                 } else {
                   $files
                   | get $file.index
                   | get paths
-                  | prepend "-"
+                  | prepend "|"
                 }
               )
 
@@ -900,19 +922,19 @@ def "main by-file" [
     )
   }
 
-  mut paths_and_configurations = []
-
   let sorted_files = (
     $files
     | sort-by --custom {
         |a, b|
 
-        let a = ($a.paths | str replace --all "- " "")
-        let b = ($b.paths | str replace --all "- " "")
+        let a = ($a.paths | str replace --all "| " "")
+        let b = ($b.paths | str replace --all "| " "")
 
         $a < $b
       }
   )
+
+  mut paths_and_configurations = []
 
   for file in ($sorted_files) {
     $paths_and_configurations = (
@@ -935,7 +957,14 @@ def "main by-file" [
   $paths_and_configurations
   | to text
   | column -t
-  | str replace --all "-" " "
+  | str replace --all "|" " "
+  | lines
+  | each {
+      |line|
+
+      colorize-configuration-names $line $colors
+  }
+  | to text
 }
 
 # View files as a tree
@@ -1089,7 +1118,7 @@ def main [
     if $unique_filenames {
       $files
       | str join "\n"
-      | str replace --all "•" " "
+      | str replace --all "|" " "
     } else {
       $files
     }
