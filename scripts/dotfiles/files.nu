@@ -803,6 +803,7 @@ def "main by-file" [
         | update $filename (
             $filenames
             | get $filename
+            # FIXME insert or append in order to keep the configurations in the correct column
             | append "-"
         )
       )
@@ -950,6 +951,7 @@ def "main by-file" [
     )
   }
 
+  # TODO colorize configuration names
   $paths_and_configurations
   | to text
   | column -t
