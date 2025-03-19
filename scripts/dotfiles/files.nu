@@ -953,18 +953,36 @@ def "main by-file" [
     )
   }
 
-  # TODO colorize configuration names
-  $paths_and_configurations
-  | to text
-  | column -t
-  | str replace --all "|" " "
-  | lines
-  | each {
+  let files = (
+    $paths_and_configurations
+    | to text
+    | column -t
+    | str replace --all "|" " "
+    | lines
+  )
+
+  let files = if $use_colors {
+    $files
+    | each {
       |line|
 
+      let first_item = ($line | split row " " | filter {is-not-empty} | first)
+
+      let line = (
+        $line
+        | str replace
+            $first_item
+            $"(ansi default_bold)($first_item)(ansi reset)"
+      )
+
       colorize-configuration-names $line $colors
+    }
+  } else {
+    $files
   }
-  | to text
+
+  $files
+  | str join "\n"
 }
 
 # View files as a tree
