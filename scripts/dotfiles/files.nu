@@ -1060,30 +1060,30 @@ def main [
   let is_system_configuration = ($configuration in $all_systems)
   let use_colors = (use-colors $color)
 
-  let files = (
-    if $group_by_configuration {
-      (
-        group-files-by-configuration
-          $files
-          $colors
-          $is_system_configuration
-          $no_labels
-          $unique
-          $use_colors
-          $configuration
-      )
-    } else if $use_colors and not $group_by_configuration and (
+  let files = if $group_by_configuration {
+    (
+      group-files-by-configuration
+        $files
+        $colors
+        $is_system_configuration
+        $no_labels
+        $unique
+        $use_colors
+        $configuration
+    )
+  } else if $use_colors and (
+    not $group_by_configuration and (
         $is_host_configuration and not $unique
       ) or (
         $is_system_configuration and not ($shared and $unique)
       ) or (
         $configuration | is-empty
-    ) {
-      colorize-files $files $colors $unique $configuration
-    } else {
-      $files
-    }
-  )
+    )
+  ) {
+    colorize-files $files $colors $unique $configuration
+  } else {
+    $files
+  }
 
   if $no_labels and $group_by_configuration {
     $files
