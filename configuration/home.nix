@@ -62,7 +62,6 @@
       jq
       just
       liberation_ttf
-      lilypond-unstable-with-fonts
       lldb
       marksman
       nb
