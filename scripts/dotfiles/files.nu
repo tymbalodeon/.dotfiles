@@ -41,7 +41,7 @@ def matches_systems [file: string] {
 }
 
 def get-files [] {
-  (  
+  (
     fd
       --exclude "flake.lock"
       --hidden
@@ -218,10 +218,8 @@ def colorize-files [
 export def annotate-files-with-configurations [
   files: list<string>
   colors: table<configuration: string, name: string>
-  group_by_file: bool
   is_host_configuration: bool
   is_system_configuration: bool
-  no_full_path: bool
   no_labels: bool
   use_colors: bool
   unique: bool
@@ -232,7 +230,7 @@ export def annotate-files-with-configurations [
   | par-each {
       |file|
 
-      let file_path = if $group_by_file and $no_labels or not $no_full_path {
+      let file_path = if $no_labels {
         $file
       } else {
         get-file-path $file
@@ -734,7 +732,7 @@ def fill-configuration-columns [configurations: list<string>] {
   for configuration in ($configuration_names | enumerate) {
     if $configuration.item in $configurations {
       $filled_columns = (
-        $filled_columns 
+        $filled_columns
         | update $configuration.index $configuration.item
       )
     }
@@ -796,7 +794,7 @@ def "main by-file" [
           let name = (get-configuration-name $file $name)
 
           if ($name | is-not-empty) {
-            $configuration = $name            
+            $configuration = $name
 
             break
           }
@@ -814,7 +812,7 @@ def "main by-file" [
 
     if $path in ($filenames | columns) {
       $filenames = (
-        $filenames 
+        $filenames
         | update $path ($filenames | get $path | append $file.configuration)
       )
 
@@ -863,7 +861,7 @@ def "main by-file" [
     let length = ($file.paths | length)
 
     if $length > $max_paths {
-      $max_paths = $length  
+      $max_paths = $length
     }
   }
 
@@ -1038,12 +1036,9 @@ def main [
   configuration?: string # Configuration (system or host) name
   --color = "auto" # When to use colored output
   --group-by-configuration # List configuration files sorted by configuration
-  --group-by-file # List configuration files sorted by file
-  --no-full-path # When --group-by-file, don't use the full path
   --no-labels # Don't show labels in output
   --shared # List only shared configuration files
   --unique # List files unique to $configuration
-  --unique-filenames # List unique filenames for $configuration
 ] {
   validate-configuration-name $configuration
 
@@ -1066,43 +1061,7 @@ def main [
   let use_colors = (use-colors $color)
 
   let files = (
-    if $group_by_file or $unique_filenames {
-      let files = (
-        annotate-files-with-configurations
-        $files
-        $colors
-        $group_by_file
-        $is_host_configuration
-        $is_system_configuration
-        $no_full_path
-        $no_labels
-        $use_colors
-        $unique
-        $unique_filenames
-        $configuration
-      )
-
-      if $unique_filenames {
-        (
-          get-unique-filenames
-            $files
-            $colors
-            $all_configurations
-            $use_colors
-        )
-      } else {
-        (
-          group-files-by-filenames
-            $files
-            $group_by_configuration
-            $group_by_file
-            $no_full_path
-            $no_labels
-            $unique_filenames
-            $use_colors
-        )
-      }
-    } else if $group_by_configuration {
+    if $group_by_configuration {
       (
         group-files-by-configuration
           $files
@@ -1126,21 +1085,7 @@ def main [
     }
   )
 
-  if $group_by_file or $unique_filenames {
-    let files = (
-      $files
-      | to text
-      | column -t
-    )
-
-    if $unique_filenames {
-      $files
-      | str join "\n"
-      | str replace --all "|" " "
-    } else {
-      $files
-    }
-  } else if $no_labels and $group_by_configuration {
+  if $no_labels and $group_by_configuration {
     $files
     | str join
   } else {
