@@ -12,7 +12,6 @@ use ./configurations.nu get-file-path
 use ./configurations.nu get-hosts
 use ./configurations.nu validate-configuration-name
 
-
 def --wrapped eza [...$args: string] {
   ^eza ...$args
 }
@@ -879,10 +878,22 @@ def "main by-file" [
         | update $file.index (
             {
               paths: (
-                $files
-                | get $file.index
-                | get paths
-                | append "-"
+                if (
+                  $files
+                  | get $file.index
+                  | get paths
+                  | length
+                ) == ($max_paths - 1) {
+                  $files
+                  | get $file.index
+                  | get paths
+                  | insert 1 "-"
+                } else {
+                  $files
+                  | get $file.index
+                  | get paths
+                  | prepend "-"
+                }
               )
 
               configurations: $file.item.configurations
@@ -890,7 +901,6 @@ def "main by-file" [
         )
       )
     }
-
 
     $files = (
       $files
@@ -911,7 +921,19 @@ def "main by-file" [
 
   mut paths_and_configurations = []
 
-  for file in ($files | sort-by paths) {
+  let sorted_files = (
+    $files
+    | sort-by --custom {
+        |a, b|
+
+        let a = ($a.paths | str replace --all "- " "")
+        let b = ($b.paths | str replace --all "- " "")
+
+        $a < $b
+      }
+  )
+
+  for file in ($sorted_files) {
     $paths_and_configurations = (
       $paths_and_configurations
       | append (
