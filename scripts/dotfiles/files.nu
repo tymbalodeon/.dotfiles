@@ -722,6 +722,23 @@ export def get-tree-ignore-glob [
   }
 }
 
+# TODO can this be done earlier in the process?
+def fill-configuration-columns [configurations: list<string>] {
+  let configuration_indices = [shared] ++ (get-all-systems) ++ (get-all-hosts)
+  mut filled_columns = 1..($configuration_indices | length) | each {|| "-"}
+
+  for configuration in ($configuration_indices | enumerate) {
+    if $configuration.item in $configurations {
+      $filled_columns = (
+        $filled_columns 
+        | update $configuration.index $configuration.item
+      )
+    }
+  }
+
+  $filled_columns
+}
+
 def "main by-file" [
   configuration?: string # Configuration (system or host) name
   --color = "auto" # When to use colored output
@@ -797,49 +814,12 @@ def "main by-file" [
   }
 
   for filename in ($filenames | columns) {
-    while (($filenames | get $filename | length) < $max_configurations) {
-      $filenames = (
-        $filenames
-        | update $filename (
-            $filenames
-            | get $filename
-            # FIXME insert or append in order to keep the configurations in the correct column
-            | append "-"
-        )
-      )
-    }
-
     $filenames = (
       $filenames
       | update $filename (
-          $filenames
-          | get $filename
-          | sort-by --custom {
-              |a, b|
-
-              if $a == "shared" {
-                return true
-              }
-
-              if $b == "shared" {
-                return false
-              }
-
-              let systems = (get-all-systems)
-              let hosts = (get-all-hosts)
-
-              if $a in $systems and $b in $hosts {
-                return true
-              }
-
-              if $b in $systems and $a in $hosts {
-                return false
-              }
-
-              $a < $b
-            }
+          fill-configuration-columns ($filenames | get $filename)
           | str join " "
-      )
+        )
     )
   }
 
