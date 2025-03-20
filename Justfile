@@ -64,64 +64,16 @@ alias src := view-source
 
 mod dotfiles "just/dotfiles.just"
 
-# alias for `dotfiles clean`
-[group("aliases")]
-@clean *all:
-    just dotfiles clean {{ all }}
-
-# alias for `dotfiles diff`
-[group("aliases")]
-@diff *args:
-    just dotfiles diff {{ args }}
-
-# alias for `dotfiles files`
-[group("aliases")]
-@files *configuration:
-    just dotfiles files {{ configuration }}
-
-# alias for `dotfiles generations`
-[group("aliases")]
-@generations *help:
-    just dotfiles generations {{ help }}
-
-# alias for `dotfiles hosts`
-[group("aliases")]
-@configurations *help:
-    just dotfiles configurations {{ help }}
-
-alias configs := configurations
-
-# alias for `dotfiles inputs`
-[group("aliases")]
-@inputs *help:
-    just dotfiles inputs {{ help }}
-
-# alias for `dotfiles optimise`
-[group("aliases")]
-@optimise *help:
-    just dotfiles optimise {{ help }}
-
-# alias for `dotfiles prune`
-[group("aliases")]
-@prune *args:
-    just dotfiles prune {{ args }}
-
-# alias for `dotfiles rebuild`
-[group("aliases")]
-@rebuild *args:
-    just dotfiles rebuild {{ args }}
-
-# alias for `dotfiles rollback`
-[group("aliases")]
-@rollback *id:
-    just dotfiles rollback {{ id }}
-
-# alias for `dotfiles shell`
-[group("aliases")]
-@shell *host:
-    just dotfiles shell {{ host }}
-
-# alias for `dotfiles update`
-[group("aliases")]
-@update *help:
-    just dotfiles update {{ help }}
+alias clean := dotfiles::clean
+alias configurations := dotfiles::configurations
+alias configs := dotfiles::configurations
+alias diff := dotfiles::diff
+alias files := dotfiles::files
+alias generations := dotfiles::generations
+alias inputs := dotfiles::inputs
+alias optimise := dotfiles::optimise
+alias prune := dotfiles::prune
+alias rebuild := dotfiles::rebuild
+alias rollback := dotfiles::rollback
+alias shell := dotfiles::shell
+alias update := dotfiles::update
