@@ -61,6 +61,6 @@ alias configs := configurations
     ./scripts/dotfiles/shell.nu {{ help }}
 
 # Update dependencies
-[no-cd]
+[working-directory: "../configuration"]
 @update *inputs:
-    ./scripts/dotfiles/update.nu {{ inputs }}
+    ../scripts/dotfiles/update.nu {{ inputs }}
