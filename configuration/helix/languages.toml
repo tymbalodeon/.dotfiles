@@ -31,16 +31,6 @@ auto-format = true
 formatter = { command = "prettier", args = ["--parser", "jsonc"] }
 
 [[language]]
-name = "lilypond"
-comment-token = "%"
-file-types = ["ly", "ily"]
-scope = "source.lilypond"
-
-[[grammar]]
-name = "lilypond"
-source = { git = "https://github.com/nwhetsell/tree-sitter-lilypond", rev = "49682b4a4dc163016a43d70f7e3d0182f438fad0" }
-
-[[language]]
 name = "markdown"
 auto-format = true
 formatter = { command = "prettier", args = ["--parser", "markdown"] }
