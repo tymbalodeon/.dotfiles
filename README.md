@@ -80,7 +80,6 @@ Available recipes:
     release *preview         # Create a new release
     remote *web              # View remote repository
     stats *help              # View repository analytics
-    test *args               # Run tests
     view-source *recipe      # View the source code for a recipe [alias: src]
     dotfiles:
         check *args          # Check configuration flake
