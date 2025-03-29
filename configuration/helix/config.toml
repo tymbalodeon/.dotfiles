@@ -1,4 +1,4 @@
-theme = "tokyonight_moon"
+theme = "catpuccin_mocha"
 
 [editor]
 bufferline = "multiple"

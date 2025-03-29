@@ -97,17 +97,17 @@ def theme [
         return ($themes | fzf --preview 'tinty info {}')
     }
 
-    let theme = if ((not $update) and ($theme | is-empty)) {
+    let theme = if $update {
+        null
+    } else if ($theme | is-empty) {
         tinty list | fzf | str trim
+    } else if ($theme | find --regex "base\\d{2}-" | is-empty) {
+        $"base16-($theme)"
     } else {
-        if ($theme | find --regex "base\\d{2}-" | is-empty) {
-            $"base16-($theme)"
-        } else {
-            $theme
-        }
+        $theme
     }
 
-    if (not $update) and ($theme | is-empty) {
+    if not $update and ($theme | is-empty) {
         return
     }
 
