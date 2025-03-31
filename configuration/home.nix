@@ -27,7 +27,6 @@
       bat
       bat-extras.batman
       bottom
-      chuck
       clang
       clang-tools
       coreutils
