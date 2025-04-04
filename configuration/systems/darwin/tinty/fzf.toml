@@ -11,7 +11,7 @@ FZF_DEFAULT_OPTS="$( \
   | sed "s/FZF_DEFAULT_OPTS=//g" \
 )"; \
 \
-themes_file="${HOME}/.dotfiles/nushell/themes.toml"; \
+themes_file="${HOME}/.dotfiles/configuration/nushell/themes.toml"; \
 \
 sed -i "s/FZF_DEFAULT_OPTS = \\".*\\"//g" "${themes_file}"; \
 \

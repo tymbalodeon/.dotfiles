@@ -4,7 +4,7 @@ def run-theme [
     --update
 ] {
     let config_file = (
-        ($env.HOME | path join ".config/tinty")
+        ($env.HOME | path join .config/tinty)
         | path join $"($application).toml"
     )
 
@@ -145,7 +145,8 @@ def theme [
 
     if (not $update) and ($all or $shell) {
         let themes_file = (
-            $env.HOME | path join ".dotfiles/nushell/themes.toml"
+            $env.HOME
+            | path join .dotfiles/configuration/nushell/themes.toml
         )
 
         (
