@@ -387,6 +387,7 @@ def parse-args [
   }
 }
 
+# View the diff of filenames rather than file contents
 def "main filenames" [
   filename?: string # Filter to a specific filename
   --side-by-side # Force side-by-side layout
@@ -407,7 +408,7 @@ def "main filenames" [
   list-files $args.source_files $args.target_files $sort_by_target $filename
 }
 
-# View the diff between configurations
+# View the (file contents) diff between configurations
 def main [
   source_file?: string # View the diff for a specific file
   target_file?: string # View the diff for a specific file
