@@ -55,8 +55,6 @@ def main [
     }
   }
 
-  rustup update
-
   bat cache --build
 
   if $clean or $prune {
