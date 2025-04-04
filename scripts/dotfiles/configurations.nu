@@ -203,7 +203,7 @@ export def main [
     return ($output | str join "\n")
   }
 
-  let colors = (get-colors (get-all-configurations))
+  let colors = (get-colors (get-all-configurations) (get-all-systems))
 
   $configuration_data.systems
   | each {

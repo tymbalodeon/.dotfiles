@@ -769,7 +769,7 @@ def "main by-file" [
   let all_systems = (get-all-systems)
   let all_hosts = (get-all-hosts)
   let all_configurations = (get-all-configurations)
-  let colors = (get-colors $all_configurations)
+  let colors = (get-colors $all_configurations $all_systems)
   let is_host_configuration = ($configuration in $all_hosts)
   let is_system_configuration = ($configuration in $all_systems)
   let use_colors = (use-colors $color)
@@ -1055,7 +1055,7 @@ def main [
   )
 
   let all_configurations = (get-all-configurations)
-  let colors = (get-colors $all_configurations)
+  let colors = (get-colors $all_configurations $all_systems)
   let is_host_configuration = ($configuration in $all_hosts)
   let is_system_configuration = ($configuration in $all_systems)
   let use_colors = (use-colors $color)
