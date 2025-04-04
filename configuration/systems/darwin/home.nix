@@ -29,6 +29,7 @@
   };
 
   imports = [../../home.nix];
+  nixpkgs.config.allowUnfree = true;
 
   programs = {
     kitty.settings = {

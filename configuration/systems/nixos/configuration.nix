@@ -59,7 +59,6 @@
     settings.experimental-features = ["nix-command" "flakes"];
   };
 
-  # FIXME should this be removed per the "evaluation warning"?
   nixpkgs.config.allowUnfree = true;
 
   programs = {

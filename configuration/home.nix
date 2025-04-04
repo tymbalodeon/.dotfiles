@@ -111,7 +111,6 @@
   };
 
   news.display = "silent";
-  nixpkgs.config.allowUnfree = true;
 
   programs = {
     direnv = {
