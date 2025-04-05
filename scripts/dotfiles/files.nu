@@ -133,6 +133,52 @@ def get-filtered-files [
   )
 }
 
+def pull-top-level-files-left [path: string] {
+  let number_of_columns = (
+    $path
+    | split row " "
+    | length
+  )
+
+  mut parts = (
+    $path
+    | str replace --all "|" ""
+    | str trim
+    | split row " "
+  )
+
+  if (
+    $parts
+    | length
+  ) == 1 {
+    while ($parts | length) < $number_of_columns {
+     $parts = ($parts | append "|")
+    }
+
+    $parts
+    | str join " "
+  } else {
+    $path
+  }
+}
+
+# TODO can this be done earlier in the process?
+def fill-configuration-columns [configurations: list<string>] {
+  let configuration_names = (get-all-configuration-names)
+  mut filled_columns = 1..($configuration_names | length) | each {|| "|"}
+
+  for configuration in ($configuration_names | enumerate) {
+    if $configuration.item in $configurations {
+      $filled_columns = (
+        $filled_columns
+        | update $configuration.index $configuration.item
+      )
+    }
+  }
+
+  $filled_columns
+}
+
 def get-configuration-name [file: string configuration_type: string] {
   try {
     $file
@@ -724,23 +770,6 @@ def get-all-configuration-names [] {
   [shared] ++ (get-all-systems) ++ (get-all-hosts)
 }
 
-# TODO can this be done earlier in the process?
-def fill-configuration-columns [configurations: list<string>] {
-  let configuration_names = (get-all-configuration-names)
-  mut filled_columns = 1..($configuration_names | length) | each {|| "|"}
-
-  for configuration in ($configuration_names | enumerate) {
-    if $configuration.item in $configurations {
-      $filled_columns = (
-        $filled_columns
-        | update $configuration.index $configuration.item
-      )
-    }
-  }
-
-  $filled_columns
-}
-
 def colorize-configuration-names [
   line: string
   colors: table<configuration: string, name: string>
@@ -834,6 +863,7 @@ def "main by-file" [
         | str join " "
       }
     | uniq
+    | each {pull-top-level-files-left $in}
   } else {
     let files = (
       $files
@@ -971,9 +1001,18 @@ def "main by-file" [
         }
     )
 
+    let files = (
+      $sorted_files
+      | update paths {
+          |row|
+
+          pull-top-level-files-left  $row.paths
+        }
+    )
+
     mut paths_and_configurations = []
 
-    for file in ($sorted_files) {
+    for file in ($files) {
       $paths_and_configurations = (
         $paths_and_configurations
         | append (
@@ -983,12 +1022,12 @@ def "main by-file" [
               | append (
                   $file.configurations
                   | split row " "
-              )
+                )
+              | str join " "
             )
-            | str join " "
           )
-      )
-    }
+        )
+      }
 
     $paths_and_configurations
   }
