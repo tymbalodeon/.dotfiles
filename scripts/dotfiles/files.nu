@@ -759,6 +759,16 @@ def colorize-configuration-names [
   $colorized_line
 }
 
+def fill-path [path: list<string> max_paths: int] {
+  if ($path | length) == ($max_paths - 1) {
+    $path
+    | insert 1 "|"
+  } else {
+    $path
+    | prepend "|"
+  }
+}
+
 def "main by-file" [
   configuration?: string # Configuration (system or host) name
   --color = "auto" # When to use colored output
@@ -783,176 +793,208 @@ def "main by-file" [
       $configuration
   )
 
-  let files = (
-    $files
-    | par-each {
-        |file|
-
-        mut configuration = "shared"
-
-        for name in [host system] {
-          let name = (get-configuration-name $file $name)
-
-          if ($name | is-not-empty) {
-            $configuration = $name
-
-            break
-          }
-        }
-
-        { file: $file configuration: $configuration }
-    }
-  )
-
-  mut filenames = {}
-  mut max_configurations = 1
-
-  for file in $files {
-    let path = (get-file-path $file.file)
-
-    if $path in ($filenames | columns) {
-      $filenames = (
-        $filenames
-        | update $path ($filenames | get $path | append $file.configuration)
-      )
-
-      let length = (
-        $filenames
-        | get $path
-        | length
-      )
-
-      if $length > $max_configurations {
-        $max_configurations = $length
-      }
-    } else {
-      $filenames = (
-        $filenames
-        | insert $path [$file.configuration]
-      )
-    }
-  }
-
-  for filename in ($filenames | columns) {
-    $filenames = (
-      $filenames
-      | update $filename (
-          fill-configuration-columns ($filenames | get $filename)
-          | str join " "
-        )
-    )
-  }
-
-  mut files = []
-
-  for filename in ($filenames | columns) {
-    $files = (
+  let files = if $no_labels {
+    let files = (
       $files
-      | append {
-          paths: ($filename | path split)
-          configurations: ($filenames | get $filename)
+      | each {
+          |file|
+
+          get-file-path $file
         }
+      | path split
+      | sort-by --custom {
+          |a, b|
+
+          ($a | first) < ($b | first)
+      }
     )
-  }
 
-  mut max_paths = 0
+    let max_columns = (
+      $files
+      | each {
+          |path|
 
-  for file in $files {
-    let length = ($file.paths | length)
+          $path
+          | length
+        }
+      | math max
+    )
 
-    if $length > $max_paths {
-      $max_paths = $length
-    }
-  }
-
-  mut files = (
     $files
-    | transpose --ignore-titles
-    | transpose --ignore-titles
-    | rename paths configurations
-  )
+    | each {
+        |path|
 
-  for file in ($files | enumerate) {
-    while (($files | get $file.index | get paths | length) < $max_paths) {
+        mut filled_path = $path
+
+        while ($filled_path | length) < $max_columns {
+          $filled_path = (fill-path $filled_path $max_columns)
+        }
+
+        $filled_path
+        | str join " "
+      }
+    | uniq
+  } else {
+    let files = (
+      $files
+      | par-each {
+          |file|
+
+          mut configuration = "shared"
+
+          for name in [host system] {
+            let name = (get-configuration-name $file $name)
+
+            if ($name | is-not-empty) {
+              $configuration = $name
+
+              break
+            }
+          }
+
+          { file: $file configuration: $configuration }
+      }
+    )
+
+    mut filenames = {}
+    mut max_configurations = 1
+
+    for file in $files {
+      let path = (get-file-path $file.file)
+
+      if $path in ($filenames | columns) {
+        $filenames = (
+          $filenames
+          | update $path ($filenames | get $path | append $file.configuration)
+        )
+
+        let length = (
+          $filenames
+          | get $path
+          | length
+        )
+
+        if $length > $max_configurations {
+          $max_configurations = $length
+        }
+      } else {
+        $filenames = (
+          $filenames
+          | insert $path [$file.configuration]
+        )
+      }
+    }
+
+    for filename in ($filenames | columns) {
+      $filenames = (
+        $filenames
+        | update $filename (
+            fill-configuration-columns ($filenames | get $filename)
+            | str join " "
+          )
+      )
+    }
+
+    mut files = []
+
+    for filename in ($filenames | columns) {
+      $files = (
+        $files
+        | append {
+            paths: ($filename | path split)
+            configurations: ($filenames | get $filename)
+          }
+      )
+    }
+
+    mut max_paths = 0
+
+    for file in $files {
+      let length = ($file.paths | length)
+
+      if $length > $max_paths {
+        $max_paths = $length
+      }
+    }
+
+    mut files = (
+      $files
+      | transpose --ignore-titles
+      | transpose --ignore-titles
+      | rename paths configurations
+    )
+
+    for file in ($files | enumerate) {
+      while (($files | get $file.index | get paths | length) < $max_paths) {
+        $files = (
+          $files
+          | update $file.index (
+              {
+                paths: (
+                  fill-path
+                    ($files | get $file.index | get paths)
+                    $max_paths
+                )
+
+                configurations: $file.item.configurations
+              }
+          )
+        )
+      }
+
       $files = (
         $files
         | update $file.index (
             {
               paths: (
-                if (
-                  $files
-                  | get $file.index
-                  | get paths
-                  | length
-                ) == ($max_paths - 1) {
-                  $files
-                  | get $file.index
-                  | get paths
-                  | insert 1 "|"
-                } else {
-                  $files
-                  | get $file.index
-                  | get paths
-                  | prepend "|"
-                }
+                $files
+                | get $file.index
+                | get paths
+                | str join " "
               )
 
               configurations: $file.item.configurations
             }
-        )
+          )
       )
     }
 
-    $files = (
+    let sorted_files = (
       $files
-      | update $file.index (
-          {
-            paths: (
-              $files
-              | get $file.index
-              | get paths
-              | str join " "
-            )
+      | sort-by --custom {
+          |a, b|
 
-            configurations: $file.item.configurations
-          }
-        )
+          let a = ($a.paths | str replace --all "| " "")
+          let b = ($b.paths | str replace --all "| " "")
+
+          $a < $b
+        }
     )
-  }
 
-  let sorted_files = (
-    $files
-    | sort-by --custom {
-        |a, b|
+    mut paths_and_configurations = []
 
-        let a = ($a.paths | str replace --all "| " "")
-        let b = ($b.paths | str replace --all "| " "")
-
-        $a < $b
-      }
-  )
-
-  mut paths_and_configurations = []
-
-  for file in ($sorted_files) {
-    $paths_and_configurations = (
-      $paths_and_configurations
-      | append (
-          (
-            $file.paths
-            | split row " "
-            | append (
-                $file.configurations
-                | split row " "
+    for file in ($sorted_files) {
+      $paths_and_configurations = (
+        $paths_and_configurations
+        | append (
+            (
+              $file.paths
+              | split row " "
+              | append (
+                  $file.configurations
+                  | split row " "
+              )
             )
+            | str join " "
           )
-          | str join " "
-        )
-    )
+      )
+    }
+
+    $paths_and_configurations
   }
 
   let files = (
-    $paths_and_configurations
+    $files
     | to text
     | column -t
     | str replace --all "|" " "
@@ -973,7 +1015,11 @@ def "main by-file" [
             $"(ansi default_bold)($first_item)(ansi reset)"
       )
 
-      colorize-configuration-names $line $colors
+      if $no_labels {
+        $line
+      } else {
+        colorize-configuration-names $line $colors
+      }
     }
   } else {
     $files
