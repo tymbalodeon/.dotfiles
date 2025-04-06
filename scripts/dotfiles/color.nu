@@ -16,7 +16,7 @@ export def get-colorized-configuration-name [
   colors: table<configuration: string, name: string>
 ] {
   let color = if $configuration_name == "shared" {
-    "dark_gray"
+    "light_gray_dimmed"
   } else {
     $colors
     | filter {
@@ -31,10 +31,14 @@ export def get-colorized-configuration-name [
   colorize $configuration_name $color
 }
 
-export def get-colors [all_configurations: list<string>] {
+export def get-colors [
+  all_configurations: list<string>
+  all_systems: list<string>
+] {
+  let color_names = (ansi --list | get name)
+
   let colors = (
-    ansi --list
-    | get name
+    $color_names
     | filter {
         |color|
 
@@ -52,7 +56,26 @@ export def get-colors [all_configurations: list<string>] {
     | take ($all_configurations | length)
   )
 
-  $all_configurations
-  | wrap configuration
-  | merge ($colors | wrap name)
+  let colors = (
+    $all_configurations
+    | wrap configuration
+    | merge ($colors | wrap name)
+  )
+
+  $colors
+  | update name {
+      |row|
+
+      if $row.configuration in $all_systems {
+        let reverse_color = $"($row.name)_reverse"
+
+        if $reverse_color in $color_names {
+          $reverse_color
+        } else {
+          $row.name
+        }
+      } else {
+        $row.name
+      }
+  }
 }
