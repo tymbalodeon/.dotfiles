@@ -1051,7 +1051,7 @@ def "main by-file" [
         $line
         | str replace
             $first_item
-            $"(ansi default_bold)($first_item)(ansi reset)"
+            $"(ansi light_gray_bold)($first_item)(ansi reset)"
       )
 
       if $no_labels {
