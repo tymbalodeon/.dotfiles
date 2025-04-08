@@ -1072,6 +1072,7 @@ def "main by-file" [
 def "main tree" [
   configuration?: string # Configuration (system or host) name
   --color = "auto" # When to use colored output
+  --search: string # filter by a search term
   --shared # List only shared configuration files
   --unique # List files unique to $configuration
 ] {
@@ -1112,7 +1113,104 @@ def "main tree" [
       $args
     }
 
-    return (eza ...$args)
+    let tree = (eza ...$args)
+
+    if ($search | is-not-empty) {
+      mut lines = ($tree | lines)
+      mut indices_to_drop = []
+      mut nest_level = 0
+      mut matched = false
+      mut directory_is_match = false
+      mut nested_directories = []
+      
+      for line in ($tree | lines | enumerate) {
+        let item = ($line.item | ansi strip)
+
+        let current_nest_level = if (
+          $item
+          | split chars
+          | first
+        ) in ["├", "└"] {
+          1
+        } else if ($item | str starts-with "│") {
+          (
+            $item
+            | split chars
+            | where $it in [" " ─ │ └ ├]
+            | length
+          ) / 4
+        } else {
+          0
+        }
+
+        if $current_nest_level > $nest_level {
+          if $line.index > 1 {
+            $nested_directories = (
+              $nested_directories
+              | append {index: ($line.index - 1) matched: $matched}
+            )
+
+            $directory_is_match = $matched
+          }
+        } else if $current_nest_level < $nest_level {
+          $directory_is_match = false
+
+          if ($nested_directories | length) > 0 {
+            if not ($nested_directories.matched | last) {
+              $indices_to_drop = (
+                $indices_to_drop
+                | append ($nested_directories.index | last)
+                | uniq
+              )
+
+              $nested_directories = ($nested_directories | drop)
+            }
+
+            if $current_nest_level == 1 {
+              for directory in $nested_directories {
+                if $directory.matched {
+                  $indices_to_drop = (
+                    $indices_to_drop
+                    | where $it != $directory.index
+                  )
+                } else {
+                  $indices_to_drop = (
+                    $indices_to_drop
+                    | append $directory.index
+                  )
+                }
+              }
+
+              $indices_to_drop = ($indices_to_drop | uniq)
+              $nested_directories = []
+            }
+          }
+        }
+
+        if ($item | str contains $search) {
+          $matched = true
+          $nested_directories = ($nested_directories | drop)
+
+          $nested_directories = (
+            $nested_directories
+            | update matched true
+          )
+        } else if not $directory_is_match and $line.index > 0 {
+          $matched = false
+          $indices_to_drop = ($indices_to_drop | append $line.index | uniq)
+        }
+
+        $nest_level = $current_nest_level
+      }
+
+      $lines
+      | enumerate
+      | where $it.index not-in $indices_to_drop
+      | get item
+      | to text
+    } else {
+      $tree
+    }
   }
 }
 
