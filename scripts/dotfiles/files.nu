@@ -1138,7 +1138,7 @@ def "main tree" [
             | split chars
             | where $it in [" " ─ │ └ ├]
             | length
-          ) / 4
+          ) // 4
         } else {
           0
         }
@@ -1147,7 +1147,11 @@ def "main tree" [
           if $line.index > 1 {
             $nested_directories = (
               $nested_directories
-              | append {index: ($line.index - 1) matched: $matched}
+              | append {
+                  index: ($line.index - 1)
+                  nest_level: $current_nest_level
+                  matched: $matched
+                }
             )
 
             $directory_is_match = $matched
@@ -1156,44 +1160,51 @@ def "main tree" [
           $directory_is_match = false
 
           if ($nested_directories | length) > 0 {
-            if not ($nested_directories.matched | last) {
-              $indices_to_drop = (
-                $indices_to_drop
-                | append ($nested_directories.index | last)
-                | uniq
-              )
+            let directories_to_drop = (
+              $nested_directories
+              | filter {
+                  |directory|
 
-              $nested_directories = ($nested_directories | drop)
-            }
-
-            if $current_nest_level == 1 {
-              for directory in $nested_directories {
-                if $directory.matched {
-                  $indices_to_drop = (
-                    $indices_to_drop
-                    | where $it != $directory.index
+                  $directory.nest_level > $current_nest_level and (
+                    not $directory.matched
                   )
-                } else {
-                  $indices_to_drop = (
-                    $indices_to_drop
-                    | append $directory.index
-                  )
-                }
               }
+            )
 
-              $indices_to_drop = ($indices_to_drop | uniq)
-              $nested_directories = []
-            }
+            $indices_to_drop = (
+              $indices_to_drop
+              | append $directories_to_drop.index
+              | uniq
+            )
+
+            $nested_directories = (
+              $nested_directories
+              | where $it not-in $directories_to_drop
+            )
           }
         }
 
         if ($item | str contains $search) {
           $matched = true
-          $nested_directories = ($nested_directories | drop)
+          $directory_is_match = true
 
           $nested_directories = (
             $nested_directories
-            | update matched true
+            | each {
+                |directory|
+
+                if $directory.nest_level <= $current_nest_level {
+                  $directory
+                  | update matched true
+                } else {
+                  $directory
+                }
+            }
+          )
+
+          $indices_to_drop = (
+            $indices_to_drop
+            | where $it not-in $nested_directories.index
           )
         } else if not $directory_is_match and $line.index > 0 {
           $matched = false
