@@ -71,15 +71,23 @@
         font-size = 8;
 
         keybind = [
-          "ctrl+shift+l=new_split:right"
+          "ctrl+shift+h=new_split:left"
           "ctrl+shift+j=new_split:down"
-          "ctrl+alt+k=goto_split:top"
-          "ctrl+alt+j=goto_split:bottom"
+          "ctrl+shift+k=new_split:up"
+          "ctrl+shift+l=new_split:right"
+          "ctrl+shift+enter=new_split:auto"
           "ctrl+alt+h=goto_split:left"
+          "ctrl+alt+j=goto_split:bottom"
+          "ctrl+alt+k=goto_split:top"
           "ctrl+alt+l=goto_split:right"
-          "ctrl+alt+p=scroll_page_up"
+          "ctrl+alt+[=goto_split:previous"
+          "ctrl+alt+]=goto_split:next"
           "ctrl+alt+n=scroll_page_down"
+          "ctrl+alt+p=scroll_page_up"
+          "ctrl+al+o=toggle_split_zoom"
         ];
+
+        resize-overlay = "never";
 
         window-decoration = false;
       };
