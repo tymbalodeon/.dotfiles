@@ -84,7 +84,7 @@
           "ctrl+alt+]=goto_split:next"
           "ctrl+alt+n=scroll_page_down"
           "ctrl+alt+p=scroll_page_up"
-          "ctrl+al+o=toggle_split_zoom"
+          "ctrl+alt+o=toggle_split_zoom"
         ];
 
         resize-overlay = "never";
