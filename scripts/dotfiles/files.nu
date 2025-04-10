@@ -1122,7 +1122,7 @@ def "main tree" [
       mut matched = false
       mut directory_is_match = false
       mut nested_directories = []
-      
+
       for line in ($tree | lines | enumerate) {
         let item = ($line.item | ansi strip)
 
