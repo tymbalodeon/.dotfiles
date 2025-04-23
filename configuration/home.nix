@@ -81,7 +81,7 @@
       rclone
       repgrep
       ripgrep
-      ruff-lsp
+      ruff
       rustup
       sd
       shfmt
