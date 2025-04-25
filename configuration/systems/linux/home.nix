@@ -22,6 +22,7 @@
   };
 
   imports = [../../home.nix];
+  nixpkgs.config.allowUnfree = true;
 
   programs = {
     ghostty = {
