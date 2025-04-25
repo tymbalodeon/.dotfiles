@@ -67,9 +67,13 @@
       };
     };
 
-    kitty.settings = {
-      font_size = "8.0";
-      kitty_mod = "ctrl+shift";
+    kitty = {
+      enable = true;
+
+      settings = {
+        font_size = "8.0";
+        kitty_mod = "ctrl+shift";
+      };
     };
   };
 }
