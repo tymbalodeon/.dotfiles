@@ -21,6 +21,7 @@
   };
 
   outputs = {
+    home-manager,
     nix-darwin,
     nixpkgs,
     ...
@@ -42,6 +43,17 @@
         };
       })
       "darwin";
+
+    homeConfigurations =
+      mkHosts
+      (hostName: {
+        ${hostName} = home-manager.lib.homeManagerConfiguration {
+          extraSpecialArgs = {inherit inputs;};
+          modules = [./systems/linux/hosts/${hostName}/home.nix];
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        };
+      })
+      "linux";
 
     nixosConfigurations =
       mkHosts (hostName: {

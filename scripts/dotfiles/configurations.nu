@@ -7,6 +7,7 @@ use ./color.nu get-colors
 export def get-current-system [] {
   let release_file = "/etc/os-release"
 
+  # TODO: use ID instead?
   let system = if ($release_file | path exists) {
     open /etc/os-release
     | parse "{key}={value}"
@@ -19,6 +20,10 @@ export def get-current-system [] {
 
   $system
   | str downcase
+}
+
+export def is-linux [] {
+  "linux" in (get-current-system)
 }
 
 export def is-nixos [] {
@@ -82,27 +87,25 @@ export def get-configuration-data [] {
 }
 
 export def get-built-host-name [] {
-  if (is-nixos) {
-    cat /etc/hostname
-    | str trim
-  } else {
-    if (
-      try {
-        (
-          rg
-            (git config user.email)
-            (
-              ls ("**/systems/darwin/hosts/work/git/.gitconfig" | into glob)
-              | get name
-              | first
-            )
+  if (
+    try {
+      (
+        rg (git config user.email) (
+          # TODO: can the work email be stored more globally?
+          ls ("**/systems/darwin/hosts/work/git/.gitconfig" | into glob)
+          | get name
+          | first
         )
-        | is-not-empty
-      } catch {
-        false
-      }
-    ) {
-      "work"
+      ) | is-not-empty
+    } catch {
+      false
+    }
+  ) {
+    "work"
+  } else {
+    if (is-nixos) {
+      cat /etc/hostname
+      | str trim
     } else {
       whoami
     }

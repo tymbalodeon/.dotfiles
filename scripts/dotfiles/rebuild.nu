@@ -2,6 +2,7 @@
 
 use ./configurations.nu get-all-hosts
 use ./configurations.nu get-built-host-name
+use ./configurations.nu is-linux
 use ./configurations.nu is-nixos
 use ./prune.nu
 use ./optimise.nu
@@ -42,10 +43,17 @@ def main [
   git add .
 
   if (is-nixos) {
+    # TODO: is there a --debug here? If not, make a note in the help text above
     if $test {
         sudo nixos-rebuild test --flake $host
     } else {
         sudo nixos-rebuild switch --flake $host
+    }
+  } else if (is-linux) {
+    if $debug {
+      home-manager switch --flake $host --show-trace --verbose
+    } else {
+      home-manager switch --flake $host
     }
   } else {
     if $debug {
