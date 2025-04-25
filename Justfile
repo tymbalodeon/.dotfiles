@@ -62,6 +62,7 @@ mod dotfiles "just/dotfiles.just"
 
 alias clean := dotfiles::clean
 alias configurations := dotfiles::configurations
+alias configs := dotfiles::configurations
 alias diff := dotfiles::diff
 alias files := dotfiles::files
 alias generations := dotfiles::generations
