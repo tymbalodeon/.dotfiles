@@ -50,6 +50,8 @@ def main [
         sudo nixos-rebuild switch --flake $host
     }
   } else if (is-linux) {
+    # TODO: handle what to do if home-manager is not yet installed. Does this
+    # apply to darwin too?
     if $debug {
       home-manager switch --flake $host --show-trace --verbose
     } else {
