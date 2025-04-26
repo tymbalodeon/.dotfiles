@@ -48,7 +48,7 @@
       gitui
       glab
       glow
-      gnum4
+      gnupg
       google-java-format
       gyre-fonts
       harper
