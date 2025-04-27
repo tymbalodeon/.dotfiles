@@ -44,6 +44,7 @@
       })
       "darwin";
 
+    # TODO: fix kitty with https://aalbacetef.io/blog/nix-using-overlays-to-fix-opengl-apps-on-linux/
     homeConfigurations =
       mkHosts
       (hostName: {
