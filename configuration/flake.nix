@@ -10,6 +10,7 @@
       url = "github:LnL7/nix-darwin/master";
     };
 
+    nixgl.url = "github:nix-community/nixGL";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nushell-syntax = {
@@ -23,6 +24,7 @@
   outputs = {
     home-manager,
     nix-darwin,
+    nixgl,
     nixpkgs,
     ...
   } @ inputs: let
@@ -49,7 +51,11 @@
       mkHosts
       (hostName: {
         ${hostName} = home-manager.lib.homeManagerConfiguration {
-          extraSpecialArgs = {inherit inputs;};
+          extraSpecialArgs = {
+            inherit inputs;
+            inherit nixgl;
+          };
+
           modules = [./systems/linux/hosts/${hostName}/home.nix];
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
         };

@@ -1,4 +1,9 @@
-{pkgs, ...}: {
+{
+  config,
+  nixgl,
+  pkgs,
+  ...
+}: {
   home = {
     file = {
       ".config/nushell/aliases.nu".source = ../../nushell/aliases.nu;
@@ -15,13 +20,11 @@
     };
 
     homeDirectory = "/home/benrosen";
-
-    packages = with pkgs; [
-      cantarell-fonts
-    ];
+    packages = with pkgs; [cantarell-fonts];
   };
 
   imports = [../../home.nix];
+  nixGL.packages = nixgl.packages;
   nixpkgs.config.allowUnfree = true;
 
   programs = {
@@ -63,13 +66,13 @@
         ];
 
         resize-overlay = "never";
-
         window-decoration = false;
       };
     };
 
     kitty = {
       enable = true;
+      package = config.lib.nixGL.wrap pkgs.kitty;
 
       settings = {
         font_size = "8.0";
