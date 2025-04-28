@@ -22,7 +22,15 @@
     };
 
     homeDirectory = "/home/benrosen";
-    packages = with pkgs; [cantarell-fonts];
+
+    packages = with pkgs; [
+      cantarell-fonts
+      # TODO: find a way to add this to known programs
+      teams-for-linux
+      xclip
+      # FIXME: this doesn't work.
+      # zoom-us
+    ];
   };
 
   imports = [../../home.nix];
