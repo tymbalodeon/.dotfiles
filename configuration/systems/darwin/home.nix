@@ -33,7 +33,7 @@
 
   programs = {
     kitty.settings = {
-      font_size = "11.0";
+      font_size = "11";
       hide_window_decorations = "yes";
       macos_quit_when_last_window_closed = "yes";
       shell = "${home.homeDirectory}/.nix-profile/bin/nu";

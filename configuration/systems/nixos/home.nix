@@ -94,7 +94,7 @@
     };
 
     kitty.settings = {
-      font_size = "8.0";
+      font_size = "8";
       kitty_mod = "ctrl+shift";
     };
   };

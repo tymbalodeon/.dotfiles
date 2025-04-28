@@ -1,3 +1,5 @@
+# TODO: some of these settings are the same as elsewhere. Consolidate them and
+# pull them in rather than copy them here.
 {
   config,
   nixgl,
@@ -31,8 +33,10 @@
     ghostty = {
       enable = true;
       installBatSyntax = true;
+      package = config.lib.nixGL.wrap pkgs.ghostty;
 
       settings = {
+        command = "nu";
         font-family = "Fira Code";
 
         font-feature = [
@@ -46,7 +50,7 @@
           "+ss07"
         ];
 
-        font-size = 8;
+        font-size = 11;
 
         keybind = [
           "ctrl+shift+h=new_split:left"
@@ -66,7 +70,6 @@
         ];
 
         resize-overlay = "never";
-        window-decoration = false;
       };
     };
 
@@ -75,7 +78,7 @@
       package = config.lib.nixGL.wrap pkgs.kitty;
 
       settings = {
-        font_size = "8.0";
+        font_size = "11";
         kitty_mod = "ctrl+shift";
       };
     };
