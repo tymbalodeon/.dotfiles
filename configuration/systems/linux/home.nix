@@ -1,11 +1,4 @@
-# TODO: some of these settings are the same as elsewhere. Consolidate them and
-# pull them in rather than copy them here.
-{
-  config,
-  nixgl,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   home = {
     file = {
       ".config/nushell/aliases.nu".source = ../../nushell/aliases.nu;
@@ -22,31 +15,19 @@
     };
 
     homeDirectory = "/home/benrosen";
-
-    packages = with pkgs; [
-      cantarell-fonts
-      # TODO: find a way to add this to known programs
-      teams-for-linux
-      xclip
-      # FIXME: this doesn't work.
-      # zoom-us
-    ];
+    packages = [pkgs.cantarell-fonts];
   };
 
   imports = [../../home.nix];
-  nixGL.packages = nixgl.packages;
-  nixpkgs.config.allowUnfree = true;
 
   programs = {
     ghostty = {
       enable = true;
       installBatSyntax = true;
-      package = config.lib.nixGL.wrap pkgs.ghostty;
 
       settings = {
-        command = "nu";
         font-family = "Fira Code";
-
+        command = "nu";
         font-feature = [
           "+zero"
           "+onum"
@@ -60,6 +41,8 @@
 
         font-size = 11;
 
+        # FIXME: some of these conflict with Linux Mint's defaults for
+        # workspaces. Re-consider these?
         keybind = [
           "ctrl+shift+h=new_split:left"
           "ctrl+shift+j=new_split:down"
@@ -81,19 +64,6 @@
       };
     };
 
-    kitty = {
-      enable = true;
-      package = config.lib.nixGL.wrap pkgs.kitty;
-
-      settings = {
-        font_size = "11";
-        kitty_mod = "ctrl+shift";
-      };
-    };
+    kitty.settings.kitty_mod = "ctrl+shift";
   };
-
-  targets.genericLinux.enable = true;
-  xdg.mime.enable = true;
-  # FIXME: get this to show up in the login screen
-  # xsession.windowManager.i3.enable = true;
 }

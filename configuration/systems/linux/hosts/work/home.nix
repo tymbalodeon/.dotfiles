@@ -4,5 +4,5 @@
     ".gitconfig".source = ./git/.gitconfig;
   };
 
-  imports = [../../home.nix];
+  imports = [../../standalone-home.nix];
 }

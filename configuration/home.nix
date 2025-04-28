@@ -146,7 +146,8 @@
         enable_audio_bell = "no";
         enabled_layouts = "grid, stack, vertical, horizontal, tall";
         font_family = "Fira Code";
-        inactive_text_alpha = "0.5";
+        font_size = 11;
+        inactive_text_alpha = 0.5;
         include = "theme.conf";
         tab_bar_edge = "top";
         tab_bar_style = "powerline";
