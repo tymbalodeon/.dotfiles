@@ -91,4 +91,9 @@
       };
     };
   };
+
+  targets.genericLinux.enable = true;
+  xdg.mime.enable = true;
+  # FIXME: get this to show up in the login screen
+  # xsession.windowManager.i3.enable = true;
 }
