@@ -107,6 +107,8 @@
 
     sessionVariables = {EDITOR = "hx";};
     stateVersion = "23.11";
+    # TODO: separate anything personal from anything else, to make non-personal
+    # configurations shareable to other people
     username = "benrosen";
   };
 

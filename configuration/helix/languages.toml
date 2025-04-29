@@ -1,3 +1,7 @@
+# TODO: language configurations should move to project repos, via the
+# `environments` project. Decide which of the following still need to stay in a
+# global configuration...
+
 [[language]]
 name = "bash"
 auto-format = true

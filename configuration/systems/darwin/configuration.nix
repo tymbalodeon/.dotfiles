@@ -27,7 +27,6 @@
       controlcenter = {
         Bluetooth = true;
         FocusModes = true;
-        NowPlaying = true;
         Sound = true;
       };
 
