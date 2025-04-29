@@ -24,11 +24,12 @@
     };
 
     packages = with pkgs; [
+      # TODO: move commented packages to `environments` configurations
       bat
       bat-extras.batman
       bottom
-      clang
-      clang-tools
+      # clang
+      # clang-tools
       coreutils
       dejavu_fonts
       delta
@@ -38,62 +39,61 @@
       eza
       fastfetch
       fd
-      fh
+      # fh
       fira-code
       font-awesome
       fzf
       gh
-      ghc
-      git
+      # ghc
       gitui
-      glab
+      # TODO: used by `src`, but remove this when rust version is implemented
+      # glab
       glow
       gnupg
-      google-java-format
+      # google-java-format
       gyre-fonts
       harper
-      helix
       hexyl
       hyperfine
       ibm-plex
       inconsolata
-      jdt-language-server
+      # jdt-language-server
       jq
       just
       liberation_ttf
-      lldb
+      # lldb
       marksman
       nb
       nerd-fonts.jetbrains-mono
       nix-search-cli
-      nodePackages.bash-language-server
-      nodePackages.typescript-language-server
+      # nodePackages.bash-language-server
+      # nodePackages.typescript-language-server
       noto-fonts
-      openjdk
+      # openjdk
       ov
       pandoc # TODO nb (possibly others?)
       pipx
       pup
-      pyright
+      # pyright
       python313
       rainfrog
-      rakudo
+      # rakudo
       rclone
       repgrep
       ripgrep
-      ruff
-      rustup
+      # ruff
+      # rustup
       sd
-      shfmt
+      # shfmt
       socat # TODO nb
       tealdeer
       tig # TODO nb
       tinty
-      tinymist
-      typst
-      typstyle
+      # tinymist
+      # typst
+      # typstyle
       ubuntu_font_family
-      unison-ucm
+      # unison-ucm
       vivid
       w3m # TODO nb
       xh
@@ -101,7 +101,7 @@
       yq-go
       zathura
       zellij
-      zola
+      # zola
       zoxide
     ];
 
