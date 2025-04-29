@@ -28,7 +28,7 @@
     ];
   };
 
-  imports = [../linux/home.nix];
+  imports = [../../home.nix];
   nixpkgs.config.allowUnfree = true;
 
   programs = {

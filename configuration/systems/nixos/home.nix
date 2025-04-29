@@ -33,7 +33,7 @@
     };
   };
 
-  imports = [../../home.nix];
+  imports = [../linux/home.nix];
 
   programs = {
     ghostty.settings = {
