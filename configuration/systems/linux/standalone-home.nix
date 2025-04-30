@@ -1,5 +1,3 @@
-# TODO: some of these settings are the same as elsewhere. Consolidate them and
-# pull them in rather than copy them here.
 {
   config,
   nixgl,
@@ -28,5 +26,8 @@
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
   # FIXME: get this to show up in the login screen
-  # xsession.windowManager.i3.enable = true;
+  # xsession = {
+  #   enable = true;
+  #   windowManager.xmonad.enable = true;
+  # };
 }

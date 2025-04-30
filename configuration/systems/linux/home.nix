@@ -7,7 +7,7 @@
       ".config/nushell/f.nu".source = ../../nushell/f.nu;
       ".config/nushell/prompt.nu".source = ../../nushell/prompt.nu;
       ".config/nushell/src.nu".source = ../../nushell/src.nu;
-      ".config/nushell/theme-function.nu".source = ../../systems/nixos/nushell/theme-function.nu;
+      ".config/nushell/theme-function.nu".source = ./nushell/theme-function.nu;
       ".config/nushell/theme.nu".source = ../../nushell/theme.nu;
       ".config/nushell/themes.toml".source = ../../nushell/themes.toml;
       ".config/tealdeer/config.toml".source = ../../tealdeer/config.toml;
