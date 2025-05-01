@@ -1,30 +1,7 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   home = {
-    file = {
-      ".config/bat/config".source = ./bat/config;
-
-      ".config/bat/syntaxes/nushell.sublime-syntax".source =
-        inputs.nushell-syntax + "/nushell.sublime-syntax";
-
-      ".config/helix/config.toml".source = ./helix/config.toml;
-      ".config/helix/languages.toml".source = ./helix/languages.toml;
-      ".config/helix/themes/theme.toml".source = ./helix/themes/theme.toml;
-      ".config/kitty/theme.conf".source = ./kitty/theme.conf;
-      ".config/tinty/helix.toml".source = ./tinty/helix.toml;
-      ".config/tinty/kitty.toml".source = ./tinty/kitty.toml;
-      ".config/tinty/shell.toml".source = ./tinty/shell.toml;
-      ".config/vivid/themes/theme.yml".source = ./vivid/themes/theme.yml;
-      ".config/zellij/themes/theme.kdl".source = ./zellij/themes/theme.kdl;
-    };
-
     packages = with pkgs; [
       # TODO: move commented packages to `environments` configurations
-      bat
-      bat-extras.batman
       bottom
       # clang
       # clang-tools
@@ -77,18 +54,15 @@
       socat # TODO nb
       tealdeer
       tig # TODO nb
-      tinty
       # tinymist
       # typst
       # typstyle
       # unison-ucm
-      vivid
       w3m # TODO nb
       xh
       yazi
       yq-go
       zathura
-      zellij
       # zola
       zoxide
     ];
@@ -100,7 +74,17 @@
     username = "benrosen";
   };
 
-  imports = [./fonts.nix ./kitty ./nushell];
+  imports = [
+    ./bat
+    ./fonts.nix
+    ./helix
+    ./kitty
+    ./nushell
+    ./tinty
+    ./vivid
+    ./zellij
+  ];
+
   news.display = "silent";
 
   programs = {
@@ -114,11 +98,6 @@
       enable = true;
       userName = "Ben Rosen";
       userEmail = "benjamin.j.rosen@gmail.com";
-    };
-
-    helix = {
-      enable = true;
-      defaultEditor = true;
     };
 
     home-manager.enable = true;

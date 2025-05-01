@@ -1,4 +1,6 @@
 {
+  home.file.".config/kitty/theme.conf".source = ./theme.conf;
+
   programs.kitty = {
     enable = true;
 
