@@ -1,6 +1,6 @@
 [user]
 name = "Ben Rosen"
-email = "brosen@upenn.edu"
+email = "benrosen@upenn.edu"
 
 [ui]
 default-command = ["log"]
