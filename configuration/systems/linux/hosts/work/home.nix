@@ -1,8 +1,4 @@
 {
-  home.file = {
-    ".config/jj/config.toml".source = ./jj/config.toml;
-    ".gitconfig".source = ./git/.gitconfig;
-  };
-
-  imports = [../../home-standalone.nix];
+  home.file .".config/jj/config.toml".source = ./jj/config.toml;
+  imports = [../../home-standalone.nix ../../../../modules/git/work.nix];
 }

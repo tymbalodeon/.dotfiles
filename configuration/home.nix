@@ -56,8 +56,10 @@
   };
 
   imports = [
+    # TODO: loop over the modules directory instead
     ./modules/bat
     ./modules/fonts
+    ./modules/git
     ./modules/helix
     ./modules/kitty
     ./modules/nushell
@@ -73,12 +75,6 @@
       enable = true;
       enableNushellIntegration = true;
       nix-direnv.enable = true;
-    };
-
-    git = {
-      enable = true;
-      userName = "Ben Rosen";
-      userEmail = "benjamin.j.rosen@gmail.com";
     };
 
     home-manager.enable = true;
