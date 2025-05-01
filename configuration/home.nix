@@ -31,7 +31,6 @@
       # clang
       # clang-tools
       coreutils
-      dejavu_fonts
       delta
       dogdns
       duf
@@ -40,8 +39,6 @@
       fastfetch
       fd
       # fh
-      fira-code
-      font-awesome
       fzf
       gh
       # ghc
@@ -51,24 +48,18 @@
       glow
       gnupg
       # google-java-format
-      gyre-fonts
       harper
       hexyl
       hyperfine
-      ibm-plex
-      inconsolata
       # jdt-language-server
       jq
       just
-      liberation_ttf
       # lldb
       marksman
       nb
-      nerd-fonts.jetbrains-mono
       nix-search-cli
       # nodePackages.bash-language-server
       # nodePackages.typescript-language-server
-      noto-fonts
       # openjdk
       ov
       pandoc # TODO nb (possibly others?)
@@ -92,7 +83,6 @@
       # tinymist
       # typst
       # typstyle
-      ubuntu_font_family
       # unison-ucm
       vivid
       w3m # TODO nb
@@ -112,6 +102,7 @@
     username = "benrosen";
   };
 
+  imports = [./fonts.nix];
   news.display = "silent";
 
   programs = {
