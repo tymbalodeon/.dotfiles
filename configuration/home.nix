@@ -1,10 +1,7 @@
 {pkgs, ...}: {
   home = {
     packages = with pkgs; [
-      # TODO: move commented packages to `environments` configurations
       bottom
-      # clang
-      # clang-tools
       coreutils
       delta
       dogdns
@@ -13,37 +10,27 @@
       eza
       fastfetch
       fd
-      # fh
       fzf
       gh
-      # ghc
       gitui
       # TODO: used by `src`, but remove this when rust version is implemented
       # glab
       glow
       gnupg
-      # google-java-format
       harper
       hexyl
       hyperfine
-      # jdt-language-server
       jq
       just
-      # lldb
       marksman
       nb
       nix-search-cli
-      # nodePackages.bash-language-server
-      # nodePackages.typescript-language-server
-      # openjdk
       ov
       pandoc # TODO nb (possibly others?)
       pipx
       pup
-      # pyright
       python313
       rainfrog
-      # rakudo
       rclone
       repgrep
       ripgrep
@@ -54,20 +41,14 @@
       socat # TODO nb
       tealdeer
       tig # TODO nb
-      # tinymist
-      # typst
-      # typstyle
-      # unison-ucm
       w3m # TODO nb
       xh
       yazi
       yq-go
       zathura
-      # zola
       zoxide
     ];
 
-    sessionVariables = {EDITOR = "hx";};
     stateVersion = "23.11";
     # TODO: separate anything personal from anything else, to make non-personal
     # configurations shareable to other people
@@ -75,14 +56,14 @@
   };
 
   imports = [
-    ./bat
-    ./fonts.nix
-    ./helix
-    ./kitty
-    ./nushell
-    ./tinty
-    ./vivid
-    ./zellij
+    ./modules/bat
+    ./modules/fonts
+    ./modules/helix
+    ./modules/kitty
+    ./modules/nushell
+    ./modules/tinty
+    ./modules/vivid
+    ./modules/zellij
   ];
 
   news.display = "silent";
