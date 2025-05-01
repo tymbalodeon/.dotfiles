@@ -3,8 +3,6 @@
   pkgs,
   ...
 }: {
-  fonts.fontconfig.enable = true;
-
   home = {
     file = {
       ".config/bat/config".source = ./bat/config;
