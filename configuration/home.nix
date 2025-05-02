@@ -61,6 +61,7 @@
     ./modules/fonts
     ./modules/git
     ./modules/helix
+    ./modules/jujutsu
     ./modules/kitty
     ./modules/nushell
     ./modules/tinty

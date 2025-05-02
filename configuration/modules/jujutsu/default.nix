@@ -8,7 +8,7 @@
         paginate = "never";
       };
 
-      user = "Ben Rosen";
+      user.name = "Ben Rosen";
     };
   };
 }
