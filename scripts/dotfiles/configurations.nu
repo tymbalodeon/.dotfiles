@@ -87,19 +87,10 @@ export def get-configuration-data [] {
 }
 
 export def get-built-host-name [] {
-  if (
-    try {
-      (
-        rg (git config user.email) (
-          # TODO: can the work email be stored more globally?
-          ls ("**/systems/darwin/hosts/work/git/.gitconfig" | into glob)
-          | get name
-          | first
-        )
-      ) | is-not-empty
-    } catch {
-      false
-    }
+  if (git config user.email) == (
+    nix eval --file modules/git/work.nix --json
+    | from json
+    | get programs.git.userEmail
   ) {
     "work"
   } else {
