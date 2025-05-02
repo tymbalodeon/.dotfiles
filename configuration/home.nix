@@ -54,11 +54,9 @@
     username = "benrosen";
   };
 
-  imports =
-    map (module: ./modules/${module})
-    (builtins.attrNames (builtins.readDir ./modules));
-
+  imports = [./modules];
   news.display = "silent";
+  nixpkgs.config.allowUnfree = true;
 
   programs = {
     direnv = {

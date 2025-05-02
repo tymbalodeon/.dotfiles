@@ -1,47 +1,21 @@
-{pkgs, ...}: rec {
+rec {
   home = {
-    file = let
-      darwin_config_path = "Library/Application Support";
-      nushell_config_path = "${darwin_config_path}/nushell";
-      tealdeer_config_path = "${darwin_config_path}/tealdeer";
-    in {
-      ".config/tinty/fzf.toml".source = ./tinty/fzf.toml;
+    file = {
       ".hushlogin".source = ./.hushlogin;
-      "${nushell_config_path}/aliases.nu".source = ../../nushell/aliases.nu;
-      "${nushell_config_path}/cloud.nu".source = ../../nushell/cloud.nu;
-      "${nushell_config_path}/colors.nu".source = ../../nushell/colors.nu;
-      "${nushell_config_path}/f.nu".source = ../../nushell/f.nu;
-      "${nushell_config_path}/prompt.nu".source = ../../nushell/prompt.nu;
-      "${nushell_config_path}/src.nu".source = ../../nushell/src.nu;
-      "${nushell_config_path}/theme.nu".source = ../../nushell/theme.nu;
-      "${nushell_config_path}/theme-function.nu".source =
-        ../../systems/darwin/nushell/theme-function.nu;
-      "${nushell_config_path}/themes.toml".source = ../../nushell/themes.toml;
       ".rustup/settings.toml".source = ./rustup/settings.toml;
-      "${tealdeer_config_path}/config.toml".source = ../../tealdeer/config.toml;
     };
 
     homeDirectory = "/Users/benrosen";
-
-    packages = with pkgs; [
-      pforth
-    ];
   };
 
-  imports = [../../home.nix];
-  nixpkgs.config.allowUnfree = true;
+  imports = [
+    ../../home.nix
+    {programs.nushell.configDirectory = "Library/Application Support/nushell";}
+  ];
 
-  programs = {
-    kitty.settings = {
-      hide_window_decorations = "yes";
-      macos_quit_when_last_window_closed = "yes";
-      shell = "${home.homeDirectory}/.nix-profile/bin/nu";
-    };
-
-    nushell.extraEnv = ''
-      $env.FONTCONFIG_FILE = "${
-        pkgs.makeFontsConf {fontDirectories = [pkgs.freefont_ttf];}
-      }"
-    '';
+  programs.kitty.settings = {
+    hide_window_decorations = "yes";
+    macos_quit_when_last_window_closed = "yes";
+    shell = "${home.homeDirectory}/.nix-profile/bin/nu";
   };
 }
