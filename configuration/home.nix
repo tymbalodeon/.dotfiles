@@ -35,7 +35,6 @@
       repgrep
       ripgrep
       # ruff
-      # rustup
       sd
       # shfmt
       socat # TODO nb

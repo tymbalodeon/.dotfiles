@@ -2,7 +2,7 @@
   lib,
   pkgs,
   ...
-}: {
+}: rec {
   home.file.".config/kitty/theme.conf".source = ./theme.conf;
 
   programs.kitty = {
@@ -26,6 +26,11 @@
         tab_bar_edge = "top";
         tab_bar_style = "powerline";
         tab_powerline_style = "slanted";
+      }
+      // lib.optionalAttrs pkgs.stdenv.isDarwin {
+        hide_window_decorations = "yes";
+        macos_quit_when_last_window_closed = "yes";
+        shell = "${home.homeDirectory}/.nix-profile/bin/nu";
       }
       // lib.optionalAttrs pkgs.stdenv.isLinux {kitty_mod = "ctrl+shift";};
   };
