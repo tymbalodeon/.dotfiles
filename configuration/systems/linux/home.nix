@@ -8,7 +8,5 @@
     ./modules/fonts
     ./modules/ghostty
     ./modules/kitty
-    ./modules/nushell
-    ./modules/tinty
   ];
 }
