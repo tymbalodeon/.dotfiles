@@ -39,7 +39,6 @@
       sd
       # shfmt
       socat # TODO nb
-      tealdeer
       tig # TODO nb
       w3m # TODO nb
       xh
@@ -55,19 +54,9 @@
     username = "benrosen";
   };
 
-  imports = [
-    # TODO: loop over the modules directory instead
-    ./modules/bat
-    ./modules/fonts
-    ./modules/git
-    ./modules/helix
-    ./modules/jujutsu
-    ./modules/kitty
-    ./modules/nushell
-    ./modules/tinty
-    ./modules/vivid
-    ./modules/zellij
-  ];
+  imports =
+    map (module: ./modules/${module})
+    (builtins.attrNames (builtins.readDir ./modules));
 
   news.display = "silent";
 
