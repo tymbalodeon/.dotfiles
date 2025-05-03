@@ -14,7 +14,7 @@
       gh
       gitui
       # TODO: used by `src`, but remove this when rust version is implemented
-      # glab
+      glab
       glow
       gnupg
       harper

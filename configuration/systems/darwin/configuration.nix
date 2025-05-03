@@ -18,9 +18,7 @@
   #   upgrade-nix-store-path-url = https://install.determinate.systems/nix-upgrade/stable/universal
   # '';
 
-  security.sudo.extraConfig = ''
-    Defaults env_keep += "TERM TERMINFO"
-  '';
+  security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
 
   system = {
     activationScripts.postUserActivation.text = ''
