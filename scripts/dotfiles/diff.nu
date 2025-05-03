@@ -1,14 +1,14 @@
 #!/usr/bin/env nu
 
-use ./color.nu colorize
-use ./color.nu colorize-file
-use ./configurations.nu get-all-configurations
-use ./configurations.nu get-all-hosts
-use ./configurations.nu get-all-systems
-use ./configurations.nu get-built-host-name
-use ./configurations.nu get-current-system
-use ./configurations.nu get-file-path
-use ./configurations.nu validate-configuration-name
+use color.nu colorize
+use color.nu colorize-file
+use configurations.nu get-all-configurations
+use configurations.nu get-all-hosts
+use configurations.nu get-all-systems
+use configurations.nu get-built-host-name
+use configurations.nu get-current-system
+use configurations.nu get-file-path
+use configurations.nu validate-configuration-name
 
 def validate-file [file: string] {
   let file = if not ($file | str contains configuration/) {

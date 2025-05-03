@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-use ./configurations.nu is-nixos
+use configurations.nu is-nixos
 
 # View generations
 def main [] {

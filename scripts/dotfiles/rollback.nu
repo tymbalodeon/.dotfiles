@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-use ./configurations.nu is-nixos
+use configurations.nu is-nixos
 
 # Rollback to a previous generation
 def main [

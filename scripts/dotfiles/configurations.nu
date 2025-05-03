@@ -1,8 +1,8 @@
 #!/usr/bin/env nu
 
-use ./color.nu colorize
-use ./color.nu get-colorized-configuration-name
-use ./color.nu get-colors
+use color.nu colorize
+use color.nu get-colorized-configuration-name
+use color.nu get-colors
 
 export def get-current-system [] {
   let release_file = "/etc/os-release"

@@ -1,7 +1,7 @@
 #!/usr/bin/env nu
 
-use ./optimise.nu
-use ./prune.nu
+use optimise.nu
+use prune.nu
 
 # Run `prune` and `optimise`
 def main [

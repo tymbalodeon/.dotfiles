@@ -1,12 +1,12 @@
 #!/usr/bin/env nu
 
-use ./configurations.nu get-all-hosts
-use ./configurations.nu get-built-host-name
-use ./configurations.nu is-linux
-use ./configurations.nu is-nixos
-use ./prune.nu
-use ./optimise.nu
-use ./update.nu
+use configurations.nu get-all-hosts
+use configurations.nu get-built-host-name
+use configurations.nu is-linux
+use configurations.nu is-nixos
+use prune.nu
+use optimise.nu
+use update.nu
 
 def --wrapped darwin-rebuild [...$args: string] {
   try {
@@ -19,12 +19,13 @@ def --wrapped darwin-rebuild [...$args: string] {
 # Rebuild and switch to (or --test) a configuration
 def main [
     host?: string # The target host configuration (auto-detected if not specified)
-    --all # (with `--clean` or `--prune`)
     --clean # Run `just prune` and `just optimise` after rebuilding
+    --clean-all # Clean, removing all old generations
     --debug # Run and show verbose trace
     --older-than: string # (with `--clean` or `--prune`)
     --optimise # Run `just optimise` after rebuilding
     --prune # Run `just prune` after rebuilding
+    --prune-all # Prune, removing all old generations
     --test # Apply the configuration without adding it to the boot menu
     --update # Update the flake lock before rebuilding
 ] {
@@ -67,8 +68,8 @@ def main [
 
   bat cache --build
 
-  if $clean or $prune {
-    if $all {
+  if $clean or $clean_all or $prune or $prune_all {
+    if $clean_all or $prune_all {
       prune --all
     } else if not ($older_than | is-empty) {
       prune --older-than $older_than
@@ -77,7 +78,7 @@ def main [
     }
   }
 
-  if $clean or $optimise {
+  if $clean or $clean_all or $optimise {
     optimise
   }
 
