@@ -1,5 +1,6 @@
 {
   inputs,
+  isNixOS,
   pkgs,
   ...
 }: {
@@ -26,7 +27,7 @@
   hardware.bluetooth.enable = true;
 
   home-manager = {
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = {inherit inputs isNixOS;};
     useGlobalPkgs = true;
   };
 

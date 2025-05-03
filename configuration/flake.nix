@@ -38,7 +38,12 @@
       (hostName: {
         ${hostName} = nix-darwin.lib.darwinSystem {
           modules = [./systems/darwin/hosts/${hostName}/configuration.nix];
-          specialArgs = {inherit inputs;};
+
+          specialArgs = {
+            inherit inputs;
+            isNixOS = false;
+          };
+
           system = "x86_64-darwin";
         };
       })
@@ -49,8 +54,8 @@
       (hostName: {
         ${hostName} = home-manager.lib.homeManagerConfiguration {
           extraSpecialArgs = {
-            inherit inputs;
-            inherit nixgl;
+            inherit inputs nixgl;
+            isNixOS = false;
           };
 
           modules = [./systems/linux/hosts/${hostName}/home.nix];
@@ -67,7 +72,10 @@
             {networking.hostName = hostName;}
           ];
 
-          specialArgs = {inherit inputs;};
+          specialArgs = {
+            inherit inputs;
+            isNixOS = true;
+          };
         };
       })
       "nixos";

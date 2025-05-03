@@ -23,6 +23,4 @@
     ../../modules/swaync
     ../../modules/waybar
   ];
-
-  isNixOS = true;
 }

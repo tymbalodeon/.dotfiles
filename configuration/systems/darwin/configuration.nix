@@ -1,6 +1,10 @@
-{inputs, ...}: {
+{
+  inputs,
+  isNixOS,
+  ...
+}: {
   home-manager = {
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = {inherit inputs isNixOS;};
     users.benrosen = import ./home.nix;
   };
 
