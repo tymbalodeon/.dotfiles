@@ -29,9 +29,7 @@
     ...
   } @ inputs: let
     mkHosts = mkHost: system:
-      builtins.foldl'
-      (a: b: a // b)
-      {}
+      builtins.foldl' (a: b: a // b) {}
       (map mkHost
         (builtins.attrNames (builtins.readDir ./systems/${system}/hosts)));
   in {
