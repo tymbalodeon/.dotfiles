@@ -7,7 +7,7 @@
   options.programs.nushell.configDirectory = lib.mkOption {
     type = lib.types.str;
     default = ".config/nushell";
-    example = ".config/nushell";
+    example = "Library/Application Support/nushell";
     description = "The value of `$nu.default-config-dir`";
   };
 

@@ -1,24 +1,9 @@
 {pkgs, ...}: {
   home = {
-    file = {
-      ".config/hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
-      ".config/hypr/wallpaper".source = ./hypr/wallpaper;
-      ".config/jj/config.toml".source = ../../jj/config.toml;
-      ".config/rofi/config.rasi".source = ./rofi/config.rasi;
-      ".config/swaync/style.css".source = ./swaync/style.css;
-      ".config/tinty/rofi.toml".source = ./tinty/rofi.toml;
-      ".config/tinty/waybar.toml".source = ./tinty/waybar.toml;
-      ".config/waybar/colors.css".source = ./waybar/colors.css;
-      ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
-      ".config/waybar/style.css".source = ./waybar/style.css;
-    };
-
     packages = with pkgs; [
       brightnessctl
       equibop
       gforth
-      rofi-wayland
-      waybar
       wev
       wl-clipboard
     ];
@@ -31,16 +16,13 @@
     };
   };
 
-  imports = [../linux/home.nix];
+  imports = [
+    ../linux/home.nix
+    ../../modules/hypr
+    ../../modules/rofi
+    ../../modules/swaync
+    ../../modules/waybar
+  ];
 
-  programs = {
-    ghostty.settings = {
-      font-size = 8;
-      window-decoration = false;
-    };
-
-    kitty.settings.font_size = 8;
-  };
-
-  services.swaync.enable = true;
+  isNixOS = true;
 }
