@@ -5,7 +5,12 @@
   ...
 }: {
   home.packages = [pkgs.xclip];
-  imports = [./home.nix];
+
+  imports = [
+    ./home.nix
+    ../../modules/xmonad
+  ];
+
   nixGL.packages = nixgl.packages;
   nixpkgs.config.allowUnfree = true;
 
