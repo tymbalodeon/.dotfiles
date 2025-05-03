@@ -1,4 +1,11 @@
-{
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    # TODO: find a way to add this to known programs
+    teams-for-linux
+    # FIXME: this doesn't work.
+    # zoom-us
+  ];
+
   imports = [
     ../../home-standalone.nix
     ../../../../modules/work

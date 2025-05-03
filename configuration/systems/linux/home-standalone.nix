@@ -4,16 +4,7 @@
   pkgs,
   ...
 }: {
-  home = {
-    packages = with pkgs; [
-      # TODO: find a way to add this to known programs
-      teams-for-linux
-      xclip
-      # FIXME: this doesn't work.
-      # zoom-us
-    ];
-  };
-
+  home.packages = [pkgs.xclip];
   imports = [./home.nix];
   nixGL.packages = nixgl.packages;
   nixpkgs.config.allowUnfree = true;
