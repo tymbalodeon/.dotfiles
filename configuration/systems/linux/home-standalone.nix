@@ -21,9 +21,4 @@
 
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
-  # FIXME: get this to show up in the login screen
-  # xsession = {
-  #   enable = true;
-  #   windowManager.xmonad.enable = true;
-  # };
 }
