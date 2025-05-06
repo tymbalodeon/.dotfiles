@@ -37,9 +37,9 @@
         "ctrl+alt+l=goto_split:right"
         "ctrl+shift+[=goto_split:previous"
         "ctrl+shift+]=goto_split:next"
-        "ctrl+alt+n=scroll_page_down"
-        "ctrl+alt+p=scroll_page_up"
-        "ctrl+alt+o=toggle_split_zoom"
+        "ctrl+shift+n=scroll_page_lines:1"
+        "ctrl+shift+p=scroll_page_lines:-1"
+        "ctrl+shift+o=toggle_split_zoom"
       ];
 
       resize-overlay = "never";
