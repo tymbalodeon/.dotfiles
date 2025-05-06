@@ -15,7 +15,6 @@
     home.file = let
       nu_default_config_dir = config.programs.nushell.configDirectory;
     in {
-      "${nu_default_config_dir}/aliases.nu".source = ./aliases.nu;
       "${nu_default_config_dir}/cloud.nu".source = ./cloud.nu;
       "${nu_default_config_dir}/colors.nu".source = ./colors.nu;
       "${nu_default_config_dir}/f.nu".source = ./f.nu;
@@ -43,13 +42,37 @@
           polars
           query
         ];
+
+        settings = {
+          color_config = "$theme";
+
+          cursor_shape = {
+            vi_insert = "line";
+            vi_normal = "block";
+          };
+
+          datetime_format = {normal = "%A, %B %d, %Y %H:%M:%S";};
+          edit_mode = "vi";
+          show_banner = false;
+        };
+
+        shellAliases = {
+          l = "ls --long";
+          la = "ls --long --all";
+          lsa = "ls --all";
+          ssh = "kitten ssh";
+          todos = "nb todos open";
+          treei = "eza --tree --level=2";
+          tree = "treei --git-ignore";
+          treea = "treei --all";
+        };
       }
       // lib.optionalAttrs pkgs.stdenv.isDarwin {
-        extraEnv = ''
-          $env.FONTCONFIG_FILE = "${
+        environmentVariables = {
+          FONTCONFIG_FILE = "${
             pkgs.makeFontsConf {fontDirectories = [pkgs.freefont_ttf];}
-          }"
-        '';
+          }";
+        };
       };
   };
 }

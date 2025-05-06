@@ -38,6 +38,6 @@
       }
       // lib.optionalAttrs pkgs.stdenv.isLinux {kitty_mod = "ctrl+shift";};
 
-    themeFile = "catppuccin_mocha";
+    themeFile = "Catppuccin-Mocha";
   };
 }

@@ -6,16 +6,6 @@ source ($nu.default-config-dir | path join "theme-function.nu")
 source ($nu.default-config-dir | path join "theme.nu")
 
 $env.config = {
-    color_config: $theme
-
-    cursor_shape: {
-        vi_insert: line
-        vi_normal: block
-    }
-
-    datetime_format: { normal: '%A, %B %d, %Y %H:%M:%S' }
-    edit_mode: vi
-
     hooks: {
         env_change: {
             PWD: [
@@ -29,8 +19,6 @@ $env.config = {
             ]
         }
     }
-
-    show_banner: false
 }
 
 let themes = (open ($nu.default-config-dir | path join "themes.toml"))
