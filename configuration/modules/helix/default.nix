@@ -2,15 +2,24 @@
   home = {
     file = {
       ".config/helix/config.toml".source = ./config.toml;
-      ".config/helix/languages.toml".source = ./languages.toml;
       ".config/helix/themes/theme.toml".source = ./themes/theme.toml;
     };
 
     sessionVariables = {EDITOR = "hx";};
   };
 
+  imports = [
+    ./bash
+    ./json
+    ./markdown
+    ./nix
+    ./toml
+    ./txt
+    ./yaml
+  ];
+
   programs.helix = {
-    enable = true;
     defaultEditor = true;
+    enable = true;
   };
 }

@@ -6,6 +6,7 @@
     ./helix
     ./jujutsu
     ./kitty
+    ./nb
     ./nushell
     ./tealdeer
     ./tinty

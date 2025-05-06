@@ -22,8 +22,7 @@
       hyperfine
       jq
       just
-      marksman
-      nb
+      # marksman
       nix-search-cli
       ov
       pandoc # TODO nb (possibly others?)
