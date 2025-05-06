@@ -6,6 +6,7 @@
     settings = {
       font-family = "Fira Code";
       command = "nu";
+
       font-feature = [
         "+zero"
         "+onum"

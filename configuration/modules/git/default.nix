@@ -8,6 +8,7 @@
       cl = "clone";
       d = "diff";
       ds = "diff --staged";
+      # TODO: is there a better way to format this so the line isn't so long?
       l = "log --graph --pretty=format:'%C(auto)%h%d%C(reset) %C(dim)%ar%C(reset) %C(bold)%s%C(reset) %C(dim blue)(%an)%C(reset)'";
       last = "log -1 HEAD --stat";
       m = "merge";
