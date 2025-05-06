@@ -1,15 +1,24 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
-  home = {
-    file = {
-      ".config/bat/config".source = ./config;
-      ".config/bat/syntaxes/nushell.sublime-syntax".source =
-        inputs.nushell-syntax + "/nushell.sublime-syntax";
+{pkgs, ...}: {
+  programs.bat = {
+    config = {
+      style = "plain";
+      theme = "base16";
     };
 
-    packages = with pkgs; [bat bat-extras.batman];
+    enable = true;
+    extraPackages = [pkgs.bat-extras.batman];
+
+    syntaxes = {
+      nushell = {
+        file = "nushell.sublime-syntax";
+
+        src = pkgs.fetchFromGitHub {
+          hash = "sha256-paayZP6P+tzGnla7k+HrF+dcTKUyU806MTtUeurhvdg=";
+          owner = "stevenxxiu";
+          repo = "sublime_text_nushell";
+          rev = "66b00ff639dc8cecb688a0e1d81d13613b772f66";
+        };
+      };
+    };
   };
 }

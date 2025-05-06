@@ -12,13 +12,6 @@
 
     nixgl.url = "github:nix-community/nixGL";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    nushell-syntax = {
-      type = "github";
-      owner = "stevenxxiu";
-      repo = "sublime_text_nushell";
-      flake = false;
-    };
   };
 
   outputs = {
