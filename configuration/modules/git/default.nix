@@ -1,4 +1,9 @@
-{
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    gh
+    glab
+  ];
+
   programs.git = {
     aliases = {
       a = "add";

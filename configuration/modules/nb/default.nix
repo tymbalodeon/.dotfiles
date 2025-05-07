@@ -1,4 +1,11 @@
 {pkgs, ...}: {
-  home.packages = [pkgs.nb];
+  home.packages = with pkgs; [
+    nb
+    pandoc
+    socat
+    tig
+    w3m
+  ];
+
   imports = [../helix/markdown];
 }

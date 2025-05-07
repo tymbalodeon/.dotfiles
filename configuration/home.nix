@@ -3,7 +3,6 @@
     packages = with pkgs; [
       bottom
       coreutils
-      delta
       dogdns
       duf
       dust
@@ -11,10 +10,7 @@
       fastfetch
       fd
       fzf
-      gh
       gitui
-      # TODO: used by `src`, but remove this when rust version is implemented
-      glab
       glow
       gnupg
       hexyl
@@ -23,7 +19,6 @@
       just
       nix-search-cli
       ov
-      pandoc # TODO nb (possibly others?)
       pipx
       pup
       python313
@@ -32,9 +27,6 @@
       repgrep
       ripgrep
       sd
-      socat # TODO nb
-      tig # TODO nb
-      w3m # TODO nb
       xh
       yazi
       yq-go
