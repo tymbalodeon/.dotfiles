@@ -39,5 +39,9 @@
     stateVersion = 6;
   };
 
-  users.users.benrosen.home = "/Users/benrosen";
+  users.users = let
+    home = import ../../home.nix;
+  in {
+    ${home.username}.home = home.homeDirectory;
+  };
 }
