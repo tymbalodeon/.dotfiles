@@ -39,9 +39,5 @@
     stateVersion = 6;
   };
 
-  users.users = let
-    home = import ../../home.nix;
-  in {
-    ${home.username}.home = home.homeDirectory;
-  };
+  users.users.benrosen.home = /Users/benrosen;
 }
