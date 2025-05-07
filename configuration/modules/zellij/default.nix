@@ -1,6 +1,19 @@
-{pkgs, ...}: {
-  home = {
-    file.".config/zellij/themes/theme.kdl".source = ./themes/theme.kdl;
-    packages = [pkgs.zellij];
+{
+  programs.zellij = {
+    enable = true;
+
+    settings.themes.default = {
+      fg = "#d3c6aa";
+      bg = "#2f383e";
+      black = "#2f383e";
+      red = "#e67e80";
+      green = "#a7c080";
+      yellow = "#dbbc7f";
+      blue = "#7fbbb3";
+      magenta = "#d699b6";
+      cyan = "#83c092";
+      white = "#fdf6e3";
+      orange = "#e69875";
+    };
   };
 }

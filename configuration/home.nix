@@ -17,12 +17,10 @@
       glab
       glow
       gnupg
-      harper
       hexyl
       hyperfine
       jq
       just
-      # marksman
       nix-search-cli
       ov
       pandoc # TODO nb (possibly others?)
@@ -33,9 +31,7 @@
       rclone
       repgrep
       ripgrep
-      # ruff
       sd
-      # shfmt
       socat # TODO nb
       tig # TODO nb
       w3m # TODO nb
