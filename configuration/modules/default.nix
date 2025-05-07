@@ -10,6 +10,7 @@
     ./nushell
     ./tealdeer
     ./tinty
+    ./users
     ./vivid
     ./zellij
   ];
