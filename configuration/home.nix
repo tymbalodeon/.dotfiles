@@ -10,7 +10,6 @@
       fastfetch
       fd
       fzf
-      gitui
       glow
       gnupg
       hexyl
