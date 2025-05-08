@@ -3,7 +3,9 @@
   isNixOS,
   pkgs,
   ...
-}: {
+}: let
+  defaultUser = import ../../modules/users/default-user.nix;
+in {
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
@@ -89,7 +91,7 @@
 
         settings = {
           Autologin = {
-            User = "benrosen";
+            User = defaultUser.username;
           };
 
           Theme = {
@@ -113,9 +115,9 @@
   system.stateVersion = "23.11";
   time.timeZone = "America/New_York";
 
-  users.users.benrosen = {
+  users.users.${defaultUser.username} = {
     isNormalUser = true;
-    description = "Ben Rosen";
+    description = defaultUser.name;
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.nushell;
   };

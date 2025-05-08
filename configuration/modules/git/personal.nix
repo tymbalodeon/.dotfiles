@@ -1,12 +1,14 @@
 {
-  programs.git = {
+  programs.git = let
+    defaultUser = import ../users/default-user.nix;
+  in {
     extraConfig = let
-      remoteUser = "tymbalodeon";
+      remoteUser = defaultUser.gitlabUserPersonal;
     in {
       github.user = remoteUser;
       gitlab.user = remoteUser;
     };
 
-    userEmail = "benjamin.j.rosen@gmail.com";
+    userEmail = defaultUser.emailPersonal;
   };
 }

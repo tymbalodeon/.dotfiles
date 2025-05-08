@@ -1,5 +1,7 @@
-{
-  home-manager.users.benrosen = import ./home.nix;
+let
+  defaultUser = ../../../../modules/users/default-user.nix;
+in {
+  home-manager.users.${defaultUser.username} = import ./home.nix;
 
   imports = [
     ../../configuration.nix
