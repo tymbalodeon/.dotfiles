@@ -1,10 +1,12 @@
 {pkgs, ...}: {
-  home = rec {
+  home = let
+    defaultUser = import ./default-user.nix;
+  in {
     homeDirectory =
-      if pkgs.stdenv.isLinux
-      then /home/${username}
-      else /Users/${username};
+      if pkgs.stdenv.isDarwin
+      then defaultUser.homeDirectoryDarwin
+      else defaultUser.homeDirectoryLinux;
 
-    username = "benrosen";
+    username = defaultUser.username;
   };
 }

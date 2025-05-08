@@ -39,5 +39,9 @@
     stateVersion = 6;
   };
 
-  users.users.benrosen.home = /Users/benrosen;
+  users.users = let
+    defaultUser = import ../../modules/users/default-user.nix;
+  in {
+    ${defaultUser.username}.home = defaultUser.homeDirectoryDarwin;
+  };
 }
