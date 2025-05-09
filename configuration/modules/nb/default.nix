@@ -15,15 +15,35 @@
         else "";
     in
       lib.hm.dag.entryAfter ["writeBoundary"] ''
-        NB_DIR="$HOME/.nb/home"
+        NB_DIRECTORY=$HOME/.nb
+        NB_HOME_NOTEBOOK=$NB_DIRECTORY/home
+        NB_CURRENT_NOTEBOOK=$NB_DIRECTORY/.current
 
-        if [[ ! -d $NB_DIR ]]; then
-        	mkdir --parents $NB_DIR
-        elif [[ -n "${nbRemote}" ]] &&
-        	! eval "${git} -C $NB_DIR remote get-url origin"; then
-        	${git} -C $NB_DIR remote add origin "${nbRemote}"
-        elif [[ $(${git} -C $NB_DIR remote get-url origin) != "${nbRemote}" ]]; then
-        	${git} -C $NB_DIR remote set-url origin "${nbRemote}"
+        if [[ ! -d $NB_HOME_NOTEBOOK ]]; then
+        	echo Creating "$NB_HOME_NOTEBOOK"
+        	mkdir --parents "$NB_HOME_NOTEBOOK"
+        	${git} -C "$NB_HOME_NOTEBOOK" init
+        fi
+
+        if [[ ! -f $NB_CURRENT_NOTEBOOK ]]; then
+          echo Setting the current notebook to \"home\"
+        	echo home >"$NB_CURRENT_NOTEBOOK"
+        fi
+
+        if [[ -n ${nbRemote} ]]; then
+        	origin=$(
+            ${git} -C "$NB_HOME_NOTEBOOK" remote get-url origin 2>/dev/null ||
+              echo ""
+          )
+
+        	if [[ -n $origin ]] && [[ $origin != "${nbRemote}" ]]; then
+        		echo Setting nb remote to "${nbRemote}"
+        		${git} -C "$NB_HOME_NOTEBOOK" remote set-url origin "${nbRemote}"
+        	elif [[ -z $origin ]]; then
+        		echo Adding nb remote "${nbRemote}"
+        		${git} -C "$NB_HOME_NOTEBOOK" remote add origin "${nbRemote}" &&
+        			${git} -C "$NB_HOME_NOTEBOOK" pull origin trunk
+        	fi
         fi
       '';
 
