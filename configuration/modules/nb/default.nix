@@ -5,6 +5,7 @@
 }: {
   home = {
     # TODO: handle $VERBOSE and $DRY_RUN
+    # TODO: is it possible to git pull the remote notes here?
     activation.nb = let
       defaultUser = import ../users/default-user.nix;
       git = "${pkgs.git}/bin/git";
