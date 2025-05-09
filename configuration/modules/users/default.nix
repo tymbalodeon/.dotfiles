@@ -9,5 +9,5 @@
     {
       username = defaultUser.username;
     }
-    // lib.optionalAttrs pkgs.stdenv.isDarwin {homeDirectory = defaultUser.homeDirectoryDarwin;};
+    // lib.mkIf pkgs.stdenv.isDarwin {homeDirectory = defaultUser.homeDirectoryDarwin;};
 }
