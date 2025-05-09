@@ -4,7 +4,6 @@
       bottom
       coreutils
       dogdns
-      duf
       dust
       eza
       fastfetch
