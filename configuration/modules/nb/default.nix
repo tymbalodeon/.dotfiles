@@ -41,8 +41,7 @@
         		${git} -C "$nb_home_notebook" remote set-url origin "${nbRemote}"
         	elif [[ -z $origin ]]; then
         		echo Adding nb remote "${nbRemote}"
-        		${git} -C "$nb_home_notebook" remote add origin "${nbRemote}" &&
-        			${git} -C "$nb_home_notebook" pull origin trunk
+        		${git} -C "$nb_home_notebook" remote add origin "${nbRemote}"
         	fi
         fi
       '';
