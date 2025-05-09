@@ -15,7 +15,6 @@
     font = {
       name = "Fira Code";
       package = pkgs.fira-code;
-      size = 11;
     };
 
     keybindings."kitty_mod+enter" = "launch --cwd=current --type=window";
