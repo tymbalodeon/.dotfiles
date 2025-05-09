@@ -1,4 +1,5 @@
 {
+  hostName,
   inputs,
   isNixOS,
   pkgs,
@@ -29,7 +30,10 @@ in {
   hardware.bluetooth.enable = true;
 
   home-manager = {
-    extraSpecialArgs = {inherit inputs isNixOS;};
+    extraSpecialArgs = {
+      inherit hostName inputs isNixOS;
+    };
+
     useGlobalPkgs = true;
   };
 
@@ -50,7 +54,11 @@ in {
   };
 
   imports = [inputs.home-manager.nixosModules.default];
-  networking = {networkmanager.enable = true;};
+
+  networking = {
+    inherit hostName;
+    networkmanager.enable = true;
+  };
 
   nix = {
     gc = {

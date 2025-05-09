@@ -1,4 +1,4 @@
 {
-  home.file.".config/swaync/style.css".source = ./swaync/style.css;
+  home.file.".config/swaync/style.css".source = ./style.css;
   services.swaync.enable = true;
 }

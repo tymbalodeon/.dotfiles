@@ -6,7 +6,6 @@ rec {
   gitlabUserPersonal = "benjaminrosen";
   gitlabUserWork = "benrosen";
   homeDirectoryDarwin = /Users/${username};
-  homeDirectoryLinux = /home/${username};
   name = "Ben Rosen";
   nbRemote = "git@github.com:tymbalodeon/notes.git";
   username = "benrosen";

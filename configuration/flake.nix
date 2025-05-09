@@ -60,13 +60,10 @@
     nixosConfigurations =
       mkHosts (hostName: {
         ${hostName} = nixpkgs.lib.nixosSystem {
-          modules = [
-            ./systems/nixos/hosts/${hostName}/configuration.nix
-            {networking.hostName = hostName;}
-          ];
+          modules = [./systems/nixos/hosts/${hostName}/configuration.nix];
 
           specialArgs = {
-            inherit inputs;
+            inherit hostName inputs;
             isNixOS = true;
           };
         };

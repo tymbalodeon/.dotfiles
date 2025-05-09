@@ -1,8 +1,10 @@
 {pkgs, ...}: {
-  home.file = {
-    ".config/waybar/colors.css".source = ./waybar/colors.css;
-    ".config/waybar/config.jsonc".source = ./waybar/config.jsonc;
-    ".config/waybar/style.css".source = ./waybar/style.css;
+  home = {
+    file = {
+      ".config/waybar/colors.css".source = ./colors.css;
+      ".config/waybar/config.jsonc".source = ./config.jsonc;
+      ".config/waybar/style.css".source = ./style.css;
+    };
 
     packages = [pkgs.waybar];
   };

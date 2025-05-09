@@ -1,5 +1,5 @@
 let
-  defaultUser = ../../../../modules/users/default-user.nix;
+  defaultUser = import ../../../../modules/users/default-user.nix;
 in {
   home-manager.users.${defaultUser.username} = import ./home.nix;
 
