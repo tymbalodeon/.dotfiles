@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   ...
@@ -33,7 +32,7 @@
       // lib.optionalAttrs pkgs.stdenv.isDarwin {
         hide_window_decorations = "yes";
         macos_quit_when_last_window_closed = "yes";
-        shell = "${config.home.homeDirectory}/.nix-profile/bin/nu";
+        shell = "${pkgs.nushell}/bin/nu";
       }
       // lib.optionalAttrs pkgs.stdenv.isLinux {kitty_mod = "ctrl+shift";};
 

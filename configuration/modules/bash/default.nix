@@ -1,11 +1,10 @@
-{pkgs, ...}: {
+{
   programs.bash = {
     enable = true;
     historyControl = ["erasedups"];
     historyIgnore = ["cd" "exit" "ls"];
     # TODO: conditionally include darwin
     initExtra = builtins.readFile ./.bashrc;
-    package = pkgs.bashInteractive;
 
     # TODO: store these with nushell aliases in one place
     shellAliases = {
