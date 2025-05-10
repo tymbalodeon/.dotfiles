@@ -9,7 +9,7 @@
       # zoom-us
     ];
 
-    username = defaultUser.username;
+    inherit (defaultUser) username;
   };
 
   imports = [

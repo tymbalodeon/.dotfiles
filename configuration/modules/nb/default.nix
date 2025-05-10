@@ -9,11 +9,9 @@
     activation.nb = let
       defaultUser = import ../users/default-user.nix;
       git = "${pkgs.git}/bin/git";
-    in let
+
       nbRemote =
-        if defaultUser ? nbRemote
-        then defaultUser.nbRemote
-        else "";
+        defaultUser.nbRemote or "";
     in
       lib.hm.dag.entryAfter ["writeBoundary"] ''
         nb_directory=$HOME/.nb

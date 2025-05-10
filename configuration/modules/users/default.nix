@@ -7,7 +7,7 @@
     defaultUser = import ./default-user.nix;
   in
     {
-      username = defaultUser.username;
+      inherit (defaultUser) username;
     }
     // lib.mkIf pkgs.stdenv.isDarwin {homeDirectory = defaultUser.homeDirectoryDarwin;};
 }
