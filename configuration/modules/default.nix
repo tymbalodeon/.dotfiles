@@ -1,5 +1,6 @@
 {
   imports = [
+    ./bash
     ./bat
     ./fonts
     ./git

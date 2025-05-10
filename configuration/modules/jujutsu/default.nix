@@ -3,11 +3,7 @@
     enable = true;
 
     settings = {
-      ui = {
-        default-command = ["log"];
-        paginate = "never";
-      };
-
+      # ui.default-command = ["log"];
       user.name = "Ben Rosen";
     };
   };

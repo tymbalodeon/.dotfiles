@@ -54,10 +54,12 @@
           show_banner = false;
         };
 
+        # TODO: store these with bash aliases in one place
         shellAliases = {
           l = "ls --long";
           la = "ls --long --all";
           lsa = "ls --all";
+          # TODO: only use this when in kitty
           ssh = "kitten ssh";
           todos = "nb todos open";
           treei = "eza --tree --level=2";
