@@ -7,13 +7,14 @@
 
     # TODO: store these with nushell aliases in one place
     shellAliases = {
-      l = "ls -l";
-      la = "ls -a -l";
-      lsa = "ls -a";
+      l = "eza --long";
+      la = "eza --all --long";
+      ls = "eza --oneline";
+      lsa = "eza --all --oneline";
       todos = "nb todos open";
-      treei = "eza --tree --level=2";
-      tree = "treei --git-ignore";
-      treea = "treei --all";
+      treei = "eza --level 2 --tree";
+      tree = "eza --git-ignore --level 2 --tree";
+      treea = "eza --all --level 2 --tree";
     };
   };
 }

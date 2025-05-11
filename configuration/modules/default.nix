@@ -2,6 +2,7 @@
   imports = [
     ./bash
     ./bat
+    ./eza
     ./fonts
     ./git
     ./helix
