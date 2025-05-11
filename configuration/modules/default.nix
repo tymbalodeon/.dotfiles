@@ -2,18 +2,27 @@
   imports = [
     ./bash
     ./bat
+    ./bottom
     ./eza
+    ./fastfetch
     ./fonts
+    ./fzf
     ./git
+    ./gpg
     ./helix
+    ./jq
     ./jujutsu
     ./kitty
     ./nb
     ./nushell
+    ./rclone
+    ./ripgrep
     ./tealdeer
     ./tinty
     ./users
     ./vivid
+    ./yazi
+    ./zathura
     ./zellij
     ./zoxide
   ];

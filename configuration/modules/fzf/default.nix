@@ -1,8 +1,6 @@
 {
-  programs.eza = {
+  programs.fzf = {
     enable = true;
     enableBashIntegration = true;
-    git = true;
-    icons = "auto";
   };
 }

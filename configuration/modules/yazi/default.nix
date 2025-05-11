@@ -1,8 +1,7 @@
 {
-  programs.eza = {
+  programs.yazi = {
     enable = true;
     enableBashIntegration = true;
-    git = true;
-    icons = "auto";
+    enableNushellIntegration = true;
   };
 }

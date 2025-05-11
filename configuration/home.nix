@@ -1,19 +1,13 @@
 {pkgs, ...}: {
   home = {
     packages = with pkgs; [
-      bottom # has hm option
       coreutils
       dogdns
       dust
-      eza # has hm option
-      fastfetch # has hm option
-      fd # hs hm option
-      fzf # has hm option
+      fd
       glow
-      gnupg # has hm option
       hexyl
       hyperfine
-      jq # has hm option
       just
       nix-search-cli
       ov
@@ -21,14 +15,10 @@
       pup
       python313
       rainfrog
-      rclone # has hm option
       repgrep
-      ripgrep # has hm option
       sd
       xh
-      yazi # has hm option
       yq-go
-      zathura # has hm option
     ];
 
     stateVersion = "23.11";
