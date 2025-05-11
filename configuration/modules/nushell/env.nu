@@ -34,9 +34,3 @@ $env.NU_PLUGIN_DIRS = [($nu.default-config-dir | path join 'plugins')]
 if (uname).kernel-name == "Darwin" {
     $env.SHELL = "nu"
 }
-
-# TODO: can this just be symlinked by Nix?
-(
-    zoxide init nushell
-    | save --force ($nu.default-config-dir | path join "zoxide.nu")
-)
