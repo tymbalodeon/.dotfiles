@@ -22,4 +22,6 @@
     ../../modules/swaync
     ../../modules/waybar
   ];
+
+  programs.kitty.font.size = 8;
 }
