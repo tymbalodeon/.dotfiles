@@ -10,9 +10,9 @@ use update.nu
 
 def --wrapped darwin-rebuild [...$args: string] {
   try {
-    /run/current-system/sw/bin/darwin-rebuild ...$args
+    sudo /run/current-system/sw/bin/darwin-rebuild ...$args
   } catch {
-    nix run "nix-darwin/master#darwin-rebuild" -- ...$args
+    sudo nix run "nix-darwin/master#darwin-rebuild" -- ...$args
   }
 }
 
