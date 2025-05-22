@@ -1,12 +1,34 @@
 {
   "nodes": {
+    "environments": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dir": "src",
+        "lastModified": 1747936056,
+        "narHash": "sha256-jxewf52uIf7yxl682OW3OldwPSZ9X5NIU+ArukUhOc4=",
+        "owner": "tymbalodeon",
+        "repo": "environments",
+        "rev": "9ce9d33690076c6913c7b98432f4eaa789b90721",
+        "type": "github"
+      },
+      "original": {
+        "dir": "src",
+        "owner": "tymbalodeon",
+        "repo": "environments",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1747542820,
-        "narHash": "sha256-GaOZntlJ6gPPbbkTLjbd8BMWaDYafhuuYRNrxCGnPJw=",
+        "lastModified": 1747744144,
+        "narHash": "sha256-W7lqHp0qZiENCDwUZ5EX/lNhxjMdNapFnbErcbnP11Q=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "292fa7d4f6519c074f0a50394dbbe69859bb6043",
+        "rev": "2795c506fe8fb7b03c36ccb51f75b6df0ab2553f",
         "type": "github"
       },
       "original": {
@@ -34,6 +56,7 @@
     },
     "root": {
       "inputs": {
+        "environments": "environments",
         "nixpkgs": "nixpkgs",
         "nutest": "nutest"
       }

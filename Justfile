@@ -10,12 +10,6 @@
 @check *args:
     ./scripts/check.nu {{ args }}
 
-# List dependencies
-@dependencies *args:
-    ./scripts/dependencies.nu {{ args }}
-
-alias deps := dependencies
-
 # Manage environments
 @environment *args:
     ./scripts/environment.nu {{ args }}
@@ -59,16 +53,5 @@ alias find := find-recipe
 alias src := view-source
 
 mod dotfiles "just/dotfiles.just"
+mod haskell "just/haskell.just"
 
-alias clean := dotfiles::clean
-alias configurations := dotfiles::configurations
-alias configs := dotfiles::configurations
-alias diff := dotfiles::diff
-alias files := dotfiles::files
-alias generations := dotfiles::generations
-alias inputs := dotfiles::inputs
-alias optimise := dotfiles::optimise
-alias prune := dotfiles::prune
-alias rebuild := dotfiles::rebuild
-alias shell := dotfiles::shell
-alias update := dotfiles::update
