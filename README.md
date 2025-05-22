@@ -71,7 +71,6 @@ information about a particular recipe.
 ```nushell
 Available recipes:
     check *args              # Check flake and run pre-commit hooks
-    dependencies *args       # List dependencies [alias: deps]
     environment *args        # Manage environments [alias: env]
     find-recipe *search_term # Search available `just` recipes [alias: find]
     help *args               # View full help text, or for a specific recipe
@@ -95,6 +94,8 @@ Available recipes:
         rebuild *args        # Rebuild and switch to (or --test) a configuration
         shell *help          # Open Nix REPL with flake loaded
         update *inputs       # Update dependencies
+
+    haskell:
 ```
 
 <!-- `just` end -->

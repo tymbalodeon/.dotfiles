@@ -55,3 +55,14 @@ alias src := view-source
 mod dotfiles "just/dotfiles.just"
 mod haskell "just/haskell.just"
 
+alias clean := dotfiles::clean
+alias configurations := dotfiles::configurations
+alias diff := dotfiles::diff
+alias generations := dotfiles::generations
+alias inputs := dotfiles::inputs
+alias optimise := dotfiles::optimise
+alias prune := dotfiles::prune
+alias rebuild := dotfiles::rebuild
+alias rollback := dotfiles::rollback
+alias shell := dotfiles::shell
+alias update := dotfiles::update
