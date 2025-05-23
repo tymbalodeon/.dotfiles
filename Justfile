@@ -63,6 +63,5 @@ alias inputs := dotfiles::inputs
 alias optimise := dotfiles::optimise
 alias prune := dotfiles::prune
 alias rebuild := dotfiles::rebuild
-alias rollback := dotfiles::rollback
 alias shell := dotfiles::shell
 alias update := dotfiles::update
