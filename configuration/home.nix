@@ -9,15 +9,19 @@
       hexyl
       hyperfine
       just
+      mprocs
       nix-search-cli
       ov
       pipx
+      # TODO: make its own module?
+      presenterm
       pup
       python313
       rainfrog
       repgrep
       sd
       uutils-coreutils-noprefix
+      wiki-tui
       xh
       yq-go
     ];
