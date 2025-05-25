@@ -1,8 +1,8 @@
 {pkgs, ...}: {
   home = {
     packages = with pkgs; [
-      coreutils
       dogdns
+      dua
       dust
       fd
       glow
@@ -17,6 +17,7 @@
       rainfrog
       repgrep
       sd
+      uutils-coreutils-noprefix
       xh
       yq-go
     ];
