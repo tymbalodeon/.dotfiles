@@ -9,6 +9,8 @@
       hexyl
       hyperfine
       just
+      # TODO: add module with rmpc
+      mpd
       mprocs
       nix-search-cli
       ov
@@ -19,6 +21,8 @@
       python313
       rainfrog
       repgrep
+      # TODO: add module with mpd
+      rmpc
       sd
       uutils-coreutils-noprefix
       wiki-tui
