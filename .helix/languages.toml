@@ -1,4 +1,9 @@
-# haskell
+[[language]]
+name = "nix"
+auto-format = true
+formatter = { command = "alejandra" }
+
+
 [[language]]
 name = "haskell"
 auto-format = true
