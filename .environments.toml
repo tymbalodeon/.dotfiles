@@ -1,1 +1,8 @@
-environments = ["haskell"]
+environments = [
+    "generic",
+    "git",
+    "haskell",
+    "nix",
+    "toml",
+    "yaml",
+]
