@@ -76,13 +76,13 @@ repos:
   # dotfiles
   - repo: local
     hooks:
-    - id: readme
-      name: readme
-      entry: nu scripts/dotfiles/readme.nu
-      language: system
-      pass_filenames: false
-    - id: test
-      name: test
-      entry: just env test
-      language: system
-      pass_filenames: false
+      - id: readme
+        name: readme
+        entry: nu scripts/dotfiles/readme.nu
+        language: system
+        pass_filenames: false
+      - id: test
+        name: test
+        entry: just env test
+        language: system
+        pass_filenames: false
