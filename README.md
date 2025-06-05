@@ -78,7 +78,9 @@ Available recipes:
     issue *args              # View issues
     release *preview         # Create a new release
     remote *web              # View remote repository
+    replace *help            # Find/replace
     stats *help              # View repository analytics
+    todo *args               # List TODO-style comments [alias: todos]
     view-source *recipe      # View the source code for a recipe [alias: src]
     dotfiles:
         check *args          # Check configuration flake
@@ -96,6 +98,7 @@ Available recipes:
         update *inputs       # Update dependencies
 
     haskell:
+        help # View help text
 ```
 
 <!-- `just` end -->

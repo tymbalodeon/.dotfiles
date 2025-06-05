@@ -65,6 +65,7 @@ mod haskell "just/haskell.just"
 alias clean := dotfiles::clean
 alias configurations := dotfiles::configurations
 alias diff := dotfiles::diff
+alias files := dotfiles::files
 alias generations := dotfiles::generations
 alias inputs := dotfiles::inputs
 alias optimise := dotfiles::optimise
