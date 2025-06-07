@@ -3,23 +3,28 @@
 # TODO: move this to its own module? Since not every generic project has
 # "releases"
 
-use ./check.nu
-
 # Create a new release
 def main [
-  --preview # Preview new additions to the CHANGELOG without modifyiing anything
+  --preview # Preview changes without altering anything 
 ] {
-  if not $preview {
-    if not ((git branch --show-current) == "trunk") {
-      return "Can only release from the trunk branch."
-    }
+  # TODO check if there are working copy changes and if so exit
+  
+  if ("CHANGELOG.md" | path exists) {
+    open CHANGELOG.md
+    | str replace --all "\n---\n" "\n- - -n"
+    | save --force CHANGELOG.md
 
-    if (git status --short | is-not-empty) {
-      return "Please commit all changes before releasing."
-    }
-
-    check
+    jj describe --message "chore: prepare CHANGELOG.md for release"
+    jj new
   }
 
-  cog changelog
+  if $preview {
+    cog bump --auto --dry-run
+  } else {
+    cog bump --auto
+  }
+
+  prettier CHANGELOG.md
+  jj describe --message "chore: format CHANGELOG.md after release"
+  jj new; jj bookmark set trunk --to @-; jj git push
 }
