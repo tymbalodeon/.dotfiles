@@ -9,8 +9,17 @@ def "main list" [] {
 
 # Create a new release
 def main [
-  --preview # Preview changes without altering anything 
+  --preview # Preview changes without altering anything
 ] {
+  if not $preview {
+    if (
+      input --numchar 1 "Are you sure you want to proceed [y/N]? "
+      | str downcase
+    ) != "y" {
+      exit
+    }
+  }
+
   if (git status --porcelain=1 | lines | length) > 0 {
     let message = (
       [
@@ -37,9 +46,8 @@ def main [
     cog bump --auto --dry-run
   } else {
     cog bump --auto
+    prettier --write CHANGELOG.md
+    jj describe --message "chore: format CHANGELOG.md after release"
+    jj new; jj bookmark set trunk --to @-; jj git push
   }
-
-  prettier CHANGELOG.md
-  jj describe --message "chore: format CHANGELOG.md after release"
-  jj new; jj bookmark set trunk --to @-; jj git push
 }
