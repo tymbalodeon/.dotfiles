@@ -1,6 +1,10 @@
 {
   programs.jujutsu = {
     enable = true;
-    settings.user.name = "Ben Rosen";
+
+    settings = {
+      ui.default-command = "log";
+      user.name = "Ben Rosen";
+    };
   };
 }
