@@ -3,6 +3,7 @@ name = "just"
 auto-format = true
 formatter = { command = "just", args = ["--justfile", "/dev/stdin", "--dump"] }
 
+# haskell
 [[language]]
 name = "haskell"
 auto-format = true
@@ -10,11 +11,13 @@ auto-format = true
 [language-server.haskell-language-server.config]
 formattingProvider = "fourmolu"
 
+# nix
 [[language]]
 name = "nix"
 auto-format = true
 formatter = { command = "alejandra" }
 
+# toml
 [[language]]
 name = "toml"
 auto-format = true
