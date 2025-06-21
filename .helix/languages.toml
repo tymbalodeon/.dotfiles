@@ -1,24 +1,29 @@
 [[language]]
 name = "just"
 auto-format = true
-formatter = { command = "just", args = ["--justfile", "/dev/stdin", "--dump"] }
 
-# haskell
+[language.formatter]
+command = "just"
+args = ["--justfile", "/dev/stdin", "--dump"]
+
 [[language]]
 name = "haskell"
 auto-format = true
 
-[language-server.haskell-language-server.config]
-formattingProvider = "fourmolu"
-
-# nix
 [[language]]
 name = "nix"
 auto-format = true
-formatter = { command = "alejandra" }
 
-# toml
+[language.formatter]
+command = "alejandra"
+
 [[language]]
 name = "toml"
 auto-format = true
-formatter = { command = "taplo", args = ["format", "-"] }
+
+[language.formatter]
+command = "taplo"
+args = ["format", "-"]
+
+[language-server.haskell-language-server.config]
+formattingProvider = "fourmolu"
