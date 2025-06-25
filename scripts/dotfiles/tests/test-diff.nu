@@ -56,7 +56,7 @@ def get-mock-files [] {
 def get-mock-file [mocks: list<string> filename: string] {
   open (
     $mocks
-    | filter {
+    | where {
         |file|
 
         ($file | path basename) == $filename

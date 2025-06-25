@@ -19,7 +19,7 @@ export def get-colorized-configuration-name [
     "light_gray_dimmed"
   } else {
     $colors
-    | filter {
+    | where {
         |color|
 
         $color.configuration == $configuration_name
@@ -39,7 +39,7 @@ export def get-colors [
 
   let colors = (
     $color_names
-    | filter {
+    | where {
         |color|
 
         $color not-in [reset title identity escape size] and not (

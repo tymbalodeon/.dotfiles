@@ -10,7 +10,7 @@ def --env f [
     } else {
         cd (
             fd --type directory --hidden . $env.HOME
-            | fzf --exact --filter $directory --scheme path
+            | fzf --exact --where $directory --scheme path
             | head -n 1
         )
     }

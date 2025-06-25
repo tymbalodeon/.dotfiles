@@ -33,7 +33,7 @@ def create_left_prompt [] {
         mut branch_info = (
             git branch --list
                 | lines
-                | filter {|branch| $branch | str contains "*" }
+                | where {|branch| $branch | str contains "*" }
                 | each {|branch| $branch | str replace "* " ""}
         )
 

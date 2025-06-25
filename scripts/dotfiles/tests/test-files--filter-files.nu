@@ -1,6 +1,6 @@
 use std assert
 
-use ../files.nu filter-files
+use ../files.nu where-files
 
 let files = [
   configuration/bat/config
@@ -556,7 +556,7 @@ let tests = [
 
 for test in $tests {
   let actual = (
-    filter-files
+    where-files
     $files
     $system_names
     $host_names

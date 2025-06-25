@@ -110,7 +110,7 @@ def get_local_repo_paths [args: record] {
 
   return (
     $repos
-    | filter {
+    | where {
         |item|
 
         (
@@ -182,7 +182,7 @@ def get_local_repos [args: record] {
 
           $repo_data
         }
-      | filter {
+      | where {
           |repo|
 
           (
@@ -317,7 +317,7 @@ def --env "src cd" [
           ls $directory
           | par-each {|domain| ls $domain.name | get name}
           | flatten
-          | filter {|found_user| ($found_user | path basename) =~ $user}
+          | where {|found_user| ($found_user | path basename) =~ $user}
         )
 
         if not ($matching_users | length | into bool) {
@@ -363,7 +363,7 @@ def --env "src cd" [
 
   let matching_repos = (
     get_local_repos $args
-    | filter {
+    | where {
         |repo|
 
         let matches_domain = (matches $search_repo $repo "domain")
@@ -517,7 +517,7 @@ def get_gitlab_repos [
   return (
     glab repo list err> /dev/null
     | lines
-    | filter {|line| $line | str starts-with $remote_user}
+    | where {|line| $line | str starts-with $remote_user}
     | par-each {
         |repo|
 
@@ -589,7 +589,7 @@ def get_domain [domain?: string] {
   } else {
     let available_domains = (
       ["github.com" "gitlab.com"]
-      | filter {|available_domain| $available_domain =~ $domain}
+      | where {|available_domain| $available_domain =~ $domain}
     )
 
     if not ($available_domains | length | into bool) {
@@ -815,7 +815,7 @@ def "src list" [
     let users = (get_remote_users)
 
     $repos
-    | filter {|repo| $repo.user in $users}
+    | where {|repo| $repo.user in $users}
   } else {
     $repos
   }
@@ -857,7 +857,7 @@ def "src sync" [
       let users = (get_remote_users)
 
       $repos
-      | filter {
+      | where {
           |repo|
 
           ($repo | path dirname | path basename) in $users
@@ -899,7 +899,7 @@ def "src sync" [
 
       (
         get_remote_repos $args
-        | filter {|repo| not ($repo in $synced_repos)}
+        | where {|repo| not ($repo in $synced_repos)}
       )
     ) {
       (

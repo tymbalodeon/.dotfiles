@@ -142,7 +142,7 @@ export def list-files [
         |source_file|
 
         $target_files
-        | filter {
+        | where {
             |target_file|
 
             (get-file-path $target_file) == (get-file-path $source_file)
@@ -192,7 +192,7 @@ export def list-files [
 
 def get-delta-args [target_files: list<string> source_file: string] {
   $target_files
-  | filter {
+  | where {
       |target_file|
 
       $target_file != $source_file
@@ -212,7 +212,7 @@ def get-configuration-matching-files [
   file_path: string
 ] {
   $configuration_files
-  | filter {
+  | where {
       |file|
 
       $file
@@ -232,7 +232,7 @@ export def get-diff-files [
 
         let target_files = (
           $target_files
-          | filter {
+          | where {
               |target_file|
 
               (get-file-path $target_file) == (get-file-path $source_file)

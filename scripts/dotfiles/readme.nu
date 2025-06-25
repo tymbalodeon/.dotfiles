@@ -3,7 +3,7 @@
 export def get-macos-recipes [justfile: string] {
   $justfile
   | split row "\n\n"
-  | filter {
+  | where {
       |recipe|
 
       "macos" in $recipe
@@ -58,7 +58,7 @@ def main [] {
   let just_output = (
     $just_output
     | lines
-    | filter {
+    | where {
         |line|
 
         (

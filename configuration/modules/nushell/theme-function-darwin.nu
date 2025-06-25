@@ -17,15 +17,14 @@ def run-theme [
     }
 }
 
-def filter_themes [themes: string type: number] {
+def filter-themes [themes: string type: number] {
     let base = $"base($type)"
-    return (
-        $themes
-        | lines
-        | filter {|theme| $base in $theme}
-        | each {|theme| $theme | str replace $"($base)-" ""}
-        | to text
-    )
+
+    $themes
+    | lines
+    | where {|theme| $base in $theme}
+    | each {|theme| $theme | str replace $"($base)-" ""}
+    | to text
 }
 
 # Set theme for various applications. See `--help` for options. When no options
@@ -49,9 +48,9 @@ def theme [
         let themes = (tinty list)
 
         if $base16 {
-            return (filter_themes $themes 16)
+            return (filter-themes $themes 16)
         } else if $base24 {
-            return (filter_themes $themes 24)
+            return (filter-themes $themes 24)
         } else {
             mut themes_and_bases = {}
 

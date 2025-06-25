@@ -64,12 +64,12 @@ export def filter-files [
   if $unique and ($configuration | is-not-empty) {
     let files = (
       $files
-      | filter {|file| $configuration in $file}
+      | where {|file| $configuration in $file}
     )
 
     if $shared and ($configuration not-in $host_names) {
       $files
-      | filter {|file| "hosts" not-in $file}
+      | where {|file| "hosts" not-in $file}
     } else {
       $files
     }
@@ -79,14 +79,14 @@ export def filter-files [
         $files
       } else {
         $files
-        | filter {|file| not ($file | str contains systems)}
+        | where {|file| not ($file | str contains systems)}
       }
     } else {
       let configuration_is_system_name = ($configuration in $system_names)
       let configuration_is_host_name = ($configuration in $host_names)
 
       $files
-      | filter {
+      | where {
           |file|
 
           $configuration_is_system_name and not $shared and (
@@ -212,7 +212,7 @@ def get-file-color [
 
   let color = (
     $colors
-    | filter {
+    | where {
         |color|
 
         $color.configuration in $file and $color.configuration in $hosts
@@ -223,7 +223,7 @@ def get-file-color [
     let systems = (get-all-systems)
 
     $colors
-    | filter {
+    | where {
         |color|
 
         $color.configuration in $file and $color.configuration in $systems
@@ -390,7 +390,7 @@ export def get-unique-filenames [
         $existing_configurations
         | append (
             $configurations
-            | filter {
+            | where {
                 |configuration|
 
                 $configuration not-in $existing_configurations
@@ -402,7 +402,7 @@ export def get-unique-filenames [
         $filenames
         | update $filename (
             $updated_configurations
-            | filter {
+            | where {
                 |configuration|
 
                 not ($configuration | str starts-with "[") or (
@@ -634,12 +634,12 @@ export def group-files-by-configuration [
 ] {
   let shared_files = (
     $files
-    | filter {|file| "systems" not-in $file}
+    | where {|file| "systems" not-in $file}
   )
 
   let shared_system_files = (
     $files
-    | filter {|file| "systems" in $file and "hosts" not-in $file}
+    | where {|file| "systems" in $file and "hosts" not-in $file}
   )
 
   let shared_system_files = if $use_colors and (
@@ -652,7 +652,7 @@ export def group-files-by-configuration [
 
   let shared_host_files = (
     $files
-    | filter {|file| "hosts" in $file}
+    | where {|file| "hosts" in $file}
   )
 
   let shared_host_files = if $use_colors and (
@@ -665,7 +665,7 @@ export def group-files-by-configuration [
 
   let files = (
     [$shared_files $shared_system_files $shared_host_files]
-    | filter {
+    | where {
         |files|
 
         $files
@@ -750,7 +750,7 @@ export def get-tree-ignore-glob [
       | where $it != $configuration
       | append (
           $configuration_data.systems
-          | filter {
+          | where {
               |system|
 
               $configuration not-in (
@@ -1045,7 +1045,7 @@ def "main by-file" [
     | each {
       |line|
 
-      let first_item = ($line | split row " " | filter {is-not-empty} | first)
+      let first_item = ($line | split row " " | where {is-not-empty} | first)
 
       let line = (
         $line
@@ -1072,7 +1072,7 @@ def "main by-file" [
 def "main tree" [
   configuration?: string # Configuration (system or host) name
   --color = "auto" # When to use colored output
-  --search: string # filter by a search term
+  --search: string # where by a search term
   --shared # List only shared configuration files
   --unique # List files unique to $configuration
 ] {
@@ -1162,7 +1162,7 @@ def "main tree" [
           if ($nested_directories | length) > 0 {
             let directories_to_drop = (
               $nested_directories
-              | filter {
+              | where {
                   |directory|
 
                   $directory.nest_level > $current_nest_level and (
