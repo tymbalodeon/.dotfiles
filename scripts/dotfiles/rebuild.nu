@@ -9,10 +9,10 @@ use optimise.nu
 use update.nu
 
 def --wrapped darwin-rebuild [...$args: string] {
-  try {
-    sudo /run/current-system/sw/bin/darwin-rebuild ...$args
-  } catch {
+  if (which /run/current-system/sw/bin/darwin-rebuild | is-empty) {
     sudo nix run "nix-darwin/master#darwin-rebuild" -- ...$args
+  } else {
+    sudo /run/current-system/sw/bin/darwin-rebuild ...$args
   }
 }
 
