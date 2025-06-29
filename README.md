@@ -70,18 +70,18 @@ information about a particular recipe.
 
 ```nushell
 Available recipes:
-    check *args              # Check flake and run pre-commit hooks
-    environment *args        # Manage environments [alias: env]
-    find-recipe *search_term # Search available `just` recipes [alias: find]
-    help *args               # View full help text, or for a specific recipe
-    history *args            # View project history
-    issue *args              # View issues
-    release *preview         # Create a new release
-    remote *web              # View remote repository
-    replace *help            # Find/replace
-    stats *help              # View repository analytics
-    todo *args               # List TODO-style comments [alias: todos]
-    view-source *recipe      # View the source code for a recipe [alias: src]
+    check *args       # Check flake and run pre-commit hooks
+    environment *args # Manage environments [alias: env]
+    find-recipe *args # Search available `just` recipes [alias: find]
+    help *args        # View full help text, or for a specific recipe
+    history *args     # View project history
+    issue *args       # View issues
+    remote *args      # View remote repository
+    replace *args     # Find/replace
+    stats *args       # View repository analytics
+    theme *args       # Set helix theme
+    todo *args        # List TODO-style comments [alias: todos]
+    view-source *args # View the source code for a recipe [alias: src]
     dotfiles:
         check *args          # Check configuration flake
         clean *args          # Run `prune` and `optimise`
