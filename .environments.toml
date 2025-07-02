@@ -1,14 +1,2 @@
 [[environments]]
-name = "git"
-
-[[environments]]
 name = "haskell"
-
-[[environments]]
-name = "nix"
-
-[[environments]]
-name = "toml"
-
-[[environments]]
-name = "yaml"
