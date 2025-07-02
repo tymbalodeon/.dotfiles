@@ -347,6 +347,24 @@ def get-local-environment-name [directory: string] {
   | get stem
 }
 
+def get-default-environments [] {
+  [
+    generic
+    git
+    just
+    markdown
+    nix
+    toml
+    yaml
+  ]
+  | each {
+    {
+      name: $in
+      features: []
+    }
+  }
+}
+
 # List installed environments
 def "main list active" [
   --all # Show all installed environments
@@ -376,25 +394,12 @@ def "main list active" [
     []
   }
 
-  let default_environments = (
-    [
-      generic
-      git
-      just
-      markdown
-      nix
-      toml
-      yaml
-    ]
-    | each {|environment| {name: $environment}}
-  )
-
   let environments = if $all {
     $environments
     | append $local_environments
-    | append $default_environments
+    | append (get-default-environments)
   } else if $default {
-    $default_environments
+    get-default-environments
   } else if $local {
     $local_environments
   } else {
@@ -495,13 +500,23 @@ def get-environment-files [
 # Remove features with <environment-name>[+<feature>...], e.g. "python+build"
 def "main remove" [
   ...environments: string # Environments to remove
+  --force # Force removal even if environment(s) not currently active
 ] {
-  if not (".environments.toml" | path exists) {
+  if not $force and (
+    not (".environments.toml" | path exists) or (
+      $environments | is-empty
+    )
+  ) {
+    return
+  }
+
+  let environments = (parse-environments $environments)
+
+  if ($environments | is-empty) {
     return
   }
 
   let existing_environments = (open .environments.toml).environments
-  let environments = (parse-environments $environments)
 
   let environments_to_remove = (
     $existing_environments
@@ -578,7 +593,22 @@ def "main remove" [
       | into record
       | save --force .helix/languages.toml
 
-      taplo format .helix/languages.toml
+      taplo format .helix/languages.toml out+err> /dev/null
+    }
+
+    for hook_file in (
+      get-environment-path $"($environment.name)/hook.nu"
+      | append (
+          ls (get-environment-path $"($environment.name)/features")
+          | get name
+          | each {
+              get-environment-path $"($environment.name)/features/($in)/hook.nu"
+            }
+        )
+      | flatten
+      | where {path exists}
+    ) {
+      nu $hook_file remove
     }
 
     if (".pre-commit-config.yaml" | path exists) {
@@ -600,7 +630,7 @@ def "main remove" [
   }
 
   if ($environments_to_remove | is-not-empty) {
-    convert-to-toml (
+    let user_environments = (
       $existing_environments
       | where name not-in (
           $environments_to_remove
@@ -623,9 +653,24 @@ def "main remove" [
           } else {
             $environment
           }
-      }
+        }
+      | where {
+          not (
+            (
+              ("features" not-in ($in | columns)) or (
+                $in.features | is-empty
+              )
+            ) and ($in in (get-default-environments))
+          )
+        }
     )
-    | save --force .environments.toml
+
+    if ($user_environments | is-not-empty) {
+      convert-to-toml $user_environments
+      | save --force .environments.toml
+    } else {
+      rm .environments.toml
+    }
 
     main activate
   }
