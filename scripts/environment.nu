@@ -257,6 +257,14 @@ export def "main add" [
   main activate
 }
 
+def "main inputs" [] {
+  nix flake info --json err> /dev/null
+  | from json
+  | get locks.nodes.root.inputs
+  | columns
+  | to text --no-newline 
+}
+
 def get-available-environments [] {
   ls --short-names (get-environment-path)
   | where type == dir
@@ -596,15 +604,24 @@ def "main remove" [
       taplo format .helix/languages.toml out+err> /dev/null
     }
 
+    let features_directory = (
+      get-environment-path $"($environment.name)/features"
+    )
+
+    let feature_hooks = if ($features_directory | path exists) {
+      ls $features_directory
+      | get name
+      | each {
+          print $in
+          get-environment-path $"($features_directory)/($in)/hook.nu"
+        }
+    } else {
+      []
+    }
+
     for hook_file in (
       get-environment-path $"($environment.name)/hook.nu"
-      | append (
-          ls (get-environment-path $"($environment.name)/features")
-          | get name
-          | each {
-              get-environment-path $"($environment.name)/features/($in)/hook.nu"
-            }
-        )
+      | append $feature_hooks
       | flatten
       | where {path exists}
     ) {
@@ -775,21 +792,25 @@ def "main test" [
 
 # Update environment dependencies
 def "main update" [
-  --all # Update all flake inputs
+  ...inputs: string # The name of the input(s) to update (leave blank to update all)
 ] {
-  let remote_url = (
-    "https://raw.githubusercontent.com/tymbalodeon/environments/trunk"
-  )
+  let update_environments = [environments env] | any {$in in $inputs}
 
-  let project_root = (git rev-parse --show-toplevel)
+  if ($inputs | is-empty) or $update_environments {
+    let remote_url = (
+      "https://raw.githubusercontent.com/tymbalodeon/environments/trunk"
+    )
 
-  http get $"($remote_url)/src/generic/flake.nix"
-  | save --force $"($project_root)/flake.nix"
+    let project_root = (git rev-parse --show-toplevel)
 
-  if $all {
+    http get $"($remote_url)/src/generic/flake.nix"
+    | save --force $"($project_root)/flake.nix"
+  }
+
+  if ($inputs | is-empty) {
     nix flake update
   } else {
-    nix flake update environments
+    nix flake update ...$inputs
   }
 
   main activate

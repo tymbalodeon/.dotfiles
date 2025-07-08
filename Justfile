@@ -1,6 +1,6 @@
 [private]
 @default:
-    just help --default
+    just help
 
 # View full help text, or for a specific recipe
 @help *args:
@@ -63,6 +63,7 @@ mod dotfiles "just/dotfiles.just"
 mod haskell "just/haskell.just"
 
 alias clean := dotfiles::clean
+alias configs := dotfiles::configurations
 alias configurations := dotfiles::configurations
 alias diff := dotfiles::diff
 alias files := dotfiles::files
