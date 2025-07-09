@@ -59,6 +59,10 @@ alias todos := todo
 
 alias src := view-source
 
+[private]
+@hs *args:
+    just haskell {{ args }}
+
 mod dotfiles "just/dotfiles.just"
 mod haskell "just/haskell.just"
 
