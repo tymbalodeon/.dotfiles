@@ -68,7 +68,7 @@ repos:
     hooks:
       - id: readme
         name: readme
-        entry: nu scripts/dotfiles/readme.nu
+        entry: nu .environments/dotfiles/scripts/readme.nu
         language: system
         pass_filenames: false
       - id: test

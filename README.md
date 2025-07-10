@@ -82,22 +82,22 @@ Available recipes:
     theme *args       # Set helix theme
     todo *args        # List TODO-style comments [alias: todos]
     view-source *args # View the source code for a recipe [alias: src]
-    dotfiles:
+    dotfiles: [alias: dot]
         check *args          # Check configuration flake
-        clean *args          # Run `prune` and `optimise`
-        configurations *args # List available configurations [alias: configs]
-        diff *args           # View the diff between hosts
-        files *args          # List configuration files
-        generations *help    # View generations
+        clean *args          # Run `prune` and `optimise` [main alias]
+        configurations *args # List available configurations [alias: configs] [main alias]
+        diff *args           # View the diff between hosts [main alias]
+        files *args          # List configuration files [main alias]
+        generations *help    # View generations [main alias]
         help *args           # View help text
-        inputs *help         # List flake inputs
-        optimise *help       # Replace identical files in the Nix store by hard links
-        prune *args          # Collect garbage and remove old generations
-        rebuild *args        # Rebuild and switch to (or --test) a configuration
-        shell *help          # Open Nix REPL with flake loaded
-        update *inputs       # Update dependencies
+        inputs *help         # List flake inputs [main alias]
+        optimise *help       # Replace identical files in the Nix store by hard links [main alias]
+        prune *args          # Collect garbage and remove old generations [main alias]
+        rebuild *args        # Rebuild and switch to (or --test) a configuration [main alias]
+        shell *help          # Open Nix REPL with flake loaded [main alias]
+        update *inputs       # Update dependencies [main alias]
 
-    haskell:
+    haskell: [alias: hs]
         help # View help text
 ```
 

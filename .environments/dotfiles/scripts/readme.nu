@@ -53,7 +53,9 @@ def main [] {
       )\n```"
   )
 
-  let macos_recipes = (get-macos-recipes (open just/dotfiles.just))
+  let macos_recipes = (
+    get-macos-recipes (open .environments/dotfiles/Justfile)
+  )
 
   let just_output = (
     $just_output
