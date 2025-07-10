@@ -128,13 +128,13 @@ def validate-environments [
   | each {
       |environment|
 
-      let name = if ($environment not-in $valid_environments.name) {
+      let name = if ($environment.name not-in $valid_environments.name) {
         $valid_environments
         | where {$environment.name in $in.aliases}
         | get name
         | first
       } else {
-        $environment
+        $environment.name
       }
 
       $environment
@@ -269,6 +269,12 @@ export def "main add" [
   main activate
 }
 
+# Open .environments/environments.toml file
+def "main edit" [] {
+  ^$env.EDITOR .environments/environments.toml
+}
+
+# List flake inputs
 def "main inputs" [] {
   nix flake info --json err> /dev/null
   | from json
@@ -410,16 +416,9 @@ export def "main list" [
   | str join "\n"
 }
 
-def get-local-environment-name [directory: string] {
-  ls --short-names $directory
-  | get name
-  | path parse
-  | get stem
-}
-
 def get-default-environments [] {
   [
-    generic
+    default
     git
     just
     markdown
@@ -455,11 +454,9 @@ def "main list active" [
     [$all $default $user]
     | any {$in}
   ) {
-    get-local-environment-name .environments/just
-    | append (
-        get-local-environment-name .environments/nix
-      )
-    | uniq
+    ls --short-names .environments
+    | where type == dir
+    | get name
     | where {$in not-in $valid_environments.name}
     | each {{name: $in}}
   } else {
@@ -499,13 +496,59 @@ def "main list active" [
     $environments.name
   }
 
+  let environments = if $aliases {
+    $environments
+    | each {
+        |environment|
+
+        let name = if ($environment | describe) == string {
+          $environment
+        } else {
+          $environment.name
+        }
+
+        let aliases = (
+          $valid_environments
+          | where name == $name
+          | get aliases
+          | flatten
+        )
+
+        if ($aliases | is-not-empty) {
+          let display = (
+            append-aliases {
+              name: $name
+              aliases: $aliases
+            }
+          )
+
+          if $features {
+            {
+              name: $display
+              features: $environment.features
+            }
+          } else {
+            $display
+          }
+        } else {
+          $environment
+        }
+    }
+  } else {
+    $environments
+  }
+
   let environments = if $features {
     mut unique_environments = []
 
     for environment in $environments {
       if $environment.name in $unique_environments.name {
         if (
-          ($unique_environments | where name == $environment.name | first).features
+          (
+            $unique_environments
+            | where name == $environment.name
+            | first
+          ).features
           | length
         ) == 0 {
           $unique_environments = (
@@ -530,6 +573,7 @@ def "main list active" [
         )
 
         $environment.name
+        | append •
         | append $features
         | str join " "
       }
@@ -537,32 +581,11 @@ def "main list active" [
     $environments
   }
 
-  let environments = if $aliases {
-    $environments
-    | each {
-        |environment|
-
-        let aliases = (
-          $valid_environments
-          | where name == $environment
-          | get aliases
-          | flatten
-        )
-
-        if ($aliases | is-not-empty) {
-          append-aliases {name: $environment aliases: $aliases}
-        } else {
-          $environment
-        }
-    }
-  } else {
-    $environments
-  }
-
   $environments
   | uniq
   | sort
-  | str join "\n"
+  | to text
+  | column -t -s •
 }
 
 def get-environment-files [
@@ -923,7 +946,7 @@ def "main update" [
 
     let project_root = (git rev-parse --show-toplevel)
 
-    http get $"($remote_url)/src/generic/flake.nix"
+    http get $"($remote_url)/src/default/flake.nix"
     | save --force $"($project_root)/flake.nix"
   }
 
