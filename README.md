@@ -94,11 +94,15 @@ Available recipes:
         optimise *help       # Replace identical files in the Nix store by hard links [main alias]
         prune *args          # Collect garbage and remove old generations [main alias]
         rebuild *args        # Rebuild and switch to (or --test) a configuration [main alias]
-        shell *help          # Open Nix REPL with flake loaded [main alias]
+        shell *help          # Open Nix REPL with flake loaded
         update *inputs       # Update dependencies [main alias]
 
     haskell: [alias: hs]
         help # View help text
+
+    nix:
+        help *args  # View help text
+        shell *args # Open an interactive nix shell
 ```
 
 <!-- `just` end -->
