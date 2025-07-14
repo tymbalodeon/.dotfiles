@@ -9,11 +9,11 @@
       },
       "locked": {
         "dir": "src",
-        "lastModified": 1752461002,
-        "narHash": "sha256-LbXAGmSLgIGImSCPFsksbVVpFuzyYzb8t0uphWKBhz8=",
+        "lastModified": 1752527269,
+        "narHash": "sha256-+wXTT7j4xwhV26hBWejsfl61GjKzrAI0bcKjVKSPDAA=",
         "owner": "tymbalodeon",
         "repo": "environments",
-        "rev": "706e4adbddc622755639ba08eafda09688c854c8",
+        "rev": "5fbe141f13155f7144f5fc787ed1446449976831",
         "type": "github"
       },
       "original": {
@@ -84,11 +84,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1752374969,
-        "narHash": "sha256-Ky3ynEkJXih7mvWyt9DWoiSiZGqPeHLU1tlBU4b0mcc=",
+        "lastModified": 1752461263,
+        "narHash": "sha256-f4XVgqkWF1vSzPbOG5xvi4aAd/n1GwSNsji3mLMFwYQ=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "75fb000638e6d0f57cb1e8b7a4550cbdd8c76f1d",
+        "rev": "9cc51d100d24fb7ea13a0bee1480ee84fa12a0ad",
         "type": "github"
       },
       "original": {
