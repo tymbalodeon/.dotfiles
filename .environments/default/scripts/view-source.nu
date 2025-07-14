@@ -13,12 +13,17 @@ def main [
 ] {
   let recipe = if ($recipe | is-not-empty) {
     $"($recipe_or_environment)/($recipe)"
+  } else if ($recipe_or_environment | is-not-empty) {
+    $recipe_or_environment
   } else {
-    match $recipe_or_environment {
-      null => (choose-recipe)
-      _ => $recipe_or_environment
-    }
+    choose-recipe
   }
 
-  try { bat (find-script $recipe) }
+  let script = (find-script $recipe)
+
+  if ($script | is-empty) {
+    return
+  }
+
+  bat $script
 }

@@ -1,9 +1,16 @@
 #!/usr/bin/env nu
 
-export def choose-recipe [] {
-  # TODO: get correct filename
-  just --summary
-  | split row " "
+export def choose-recipe [environment?: string] {
+  let recipes = (just --summary | split row " ")
+
+  let recipes = if ($environment | is-not-empty) {
+    $recipes
+    | where {$"($environment)::" in $in}
+  } else {
+    $recipes
+  }
+
+  $recipes
   | each {
       |recipe|
 
