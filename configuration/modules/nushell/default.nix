@@ -11,15 +11,16 @@
     description = "The value of `$nu.default-config-dir`";
   };
 
-  config = {
-    home.file = let
-      nu_default_config_dir = config.programs.nushell.configDirectory;
-    in {
+  config = let
+    nu_default_config_dir = config.programs.nushell.configDirectory;
+  in {
+    home.file = {
       "${nu_default_config_dir}/cloud.nu".source = ./cloud.nu;
       "${nu_default_config_dir}/colors.nu".source = ./colors.nu;
       "${nu_default_config_dir}/f.nu".source = ./f.nu;
       "${nu_default_config_dir}/prompt.nu".source = ./prompt.nu;
       "${nu_default_config_dir}/src.nu".source = ./src.nu;
+      "${nu_default_config_dir}/ssh.nu".source = ./ssh.nu;
       "${nu_default_config_dir}/theme.nu".source = ./theme.nu;
 
       "${nu_default_config_dir}/theme-function.nu".source =
@@ -59,8 +60,15 @@
           l = "ls --long";
           la = "ls --long --all";
           lsa = "ls --all";
-          # TODO: only use this when in kitty
-          ssh = "kitten ssh";
+          ssh = let
+            defaultUser = import ../../modules/users/default-user.nix;
+            filename = "${nu_default_config_dir}/ssh.nu";
+          in let
+            homeDirectory =
+              if pkgs.stdenv.isLinux
+              then defaultUser.homeDirectoryLinux
+              else defaultUser.homeDirectoryDarwin;
+          in "${builtins.toString homeDirectory}/${filename}";
           todos = "nb todos open";
           treei = "eza --tree --level=2";
           tree = "treei --git-ignore";

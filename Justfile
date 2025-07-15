@@ -54,10 +54,10 @@ alias todos := todo
     .environments/default/scripts/theme.nu {{ args }}
 
 # View the source code for a recipe
-@view-source *args:
-    .environments/default/scripts/view-source.nu {{ args }}
+@source *args:
+    .environments/default/scripts/source.nu {{ args }}
 
-alias src := view-source
+alias src := source
 
 [private]
 @dot *args:
