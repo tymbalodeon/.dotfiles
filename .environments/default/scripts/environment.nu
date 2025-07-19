@@ -273,6 +273,23 @@ export def "main add" [
   main activate
 }
 
+# Open local shell(s) in $EDITOR
+def "main edit shell" [] {
+  let shells = (fd --extension nix shell .environments | lines)
+
+  let shell = if ($shells | length) > 1 {
+    $shells
+    | to text
+    | fzf
+  } else {
+    $shells
+    | first
+  }
+
+  
+  ^$env.EDITOR $shell
+}
+
 # Open .environments/environments.toml file
 def "main edit" [] {
   ^$env.EDITOR .environments/environments.toml
@@ -309,19 +326,29 @@ export def get-aliases-files [environment: string] {
   | sort
 }
 
-def get-available-environments [] {
-  ls --short-names (get-environment-path)
-  | where type == dir
-  | get name
-  | append (
-      if (".environments" | path exists) {
-        ls --short-names .environments
-        | where type == dir
-        | get name
-      } else {
-        []
-      }
-    )
+export def get-available-environments [--exclude-local] {
+  let environments = (
+    ls --short-names (get-environment-path)
+    | where type == dir
+    | get name
+  )
+
+  let environments = if $exclude_local {
+    $environments
+  } else {
+    $environments
+    | append (
+        if (".environments" | path exists) {
+          ls --short-names .environments
+          | where type == dir
+          | get name
+        } else {
+          []
+        }
+      )
+  }
+
+  $environments
   | uniq
   | each {
       |environment|
