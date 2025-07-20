@@ -28,10 +28,9 @@ def main [
 ] {
   (
     display-just-help
+      dotfiles
       $recipe
       $subcommands
       --color $color
-      --environment dotfiles
-      --justfile .environments/dotfiles/Justfile
   )
 }
