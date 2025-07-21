@@ -72,16 +72,16 @@ information about a particular recipe.
 Available recipes:
     check *args       # Check flake and run pre-commit hooks
     environment *args # Manage environments [alias: env]
-    find-recipe *args # Search available `just` recipes [alias: find]
     help *args        # View full help text, or for a specific recipe
     history *args     # View project history
     issue *args       # View issues
+    readme *args      # View README file
+    recipe *args      # View or open recipes
     remote *args      # View remote repository
     replace *args     # Find/replace
     stats *args       # View repository analytics
     theme *args       # Set helix theme
     todo *args        # List TODO-style comments [alias: todos]
-    view-source *args # View the source code for a recipe [alias: src]
     dotfiles: [alias: dot]
         check *args          # Check configuration flake
         clean *args          # Run `prune` and `optimise` [main alias]
@@ -102,7 +102,7 @@ Available recipes:
 
     nix:
         help *args  # View help text
-        shell *args # Open an interactive nix shell
+        shell *args # Open an interactive nix shell [alias: sh]
 ```
 
 <!-- `just` end -->

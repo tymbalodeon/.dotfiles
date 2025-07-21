@@ -13,7 +13,7 @@ $env.config = {
       PWD: [
         {
           # TODO: auto-pull from https://github.com/nushell/nu_scripts/blob/main/nu-hooks/nu-hooks/direnv/config.nu
-          
+
           if (which direnv | is-empty) {
             return
           }

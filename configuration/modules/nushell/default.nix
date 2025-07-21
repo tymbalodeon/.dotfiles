@@ -63,7 +63,7 @@
           ssh = let
             defaultUser = import ../../modules/users/default-user.nix;
             filename = "${nu_default_config_dir}/ssh.nu";
-          in let
+
             homeDirectory =
               if pkgs.stdenv.isLinux
               then defaultUser.homeDirectoryLinux
