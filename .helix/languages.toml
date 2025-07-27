@@ -1,4 +1,19 @@
 [[language]]
+name = "haskell"
+auto-format = true
+
+[language.formatter]
+command = "alejandra"
+args = ["format", "-"]
+
+[[language]]
+name = "haskell"
+auto-format = true
+
+[language.formatter]
+command = "alejandra"
+
+[[language]]
 name = "just"
 auto-format = true
 
@@ -7,15 +22,12 @@ command = "just"
 args = ["--justfile", "/dev/stdin", "--dump"]
 
 [[language]]
-name = "haskell"
-auto-format = true
-
-[[language]]
 name = "nix"
 auto-format = true
 
 [language.formatter]
 command = "alejandra"
+args = [".md"]
 
 [[language]]
 name = "toml"
