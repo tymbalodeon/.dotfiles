@@ -6,7 +6,7 @@
 @help *args:
     .environments/default/scripts/help.nu {{ args }}
 
-# Check flake and run pre-commit hooks
+# Check flake
 @check *args:
     .environments/default/scripts/check.nu {{ args }}
 
@@ -15,6 +15,10 @@
     .environments/default/scripts/environment.nu {{ args }}
 
 alias env := environment
+
+# Format files
+@format *args:
+    .environments/default/scripts/format.nu {{ args }}
 
 # View project history
 @history *args:
@@ -73,6 +77,7 @@ alias diff := dotfiles::diff
 alias files := dotfiles::files
 alias generations := dotfiles::generations
 alias inputs := dotfiles::inputs
+alias lint := nix::lint
 alias optimise := dotfiles::optimise
 alias prune := dotfiles::prune
 alias rebuild := dotfiles::rebuild

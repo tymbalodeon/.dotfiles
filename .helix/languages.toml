@@ -7,19 +7,20 @@ command = "alejandra"
 args = ["format", "-"]
 
 [[language]]
-name = "haskell"
-auto-format = true
-
-[language.formatter]
-command = "alejandra"
-
-[[language]]
 name = "just"
 auto-format = true
 
 [language.formatter]
 command = "just"
 args = ["--justfile", "/dev/stdin", "--dump"]
+
+[[language]]
+name = "markdown"
+auto-format = true
+
+[language.formatter]
+command = "prettierd"
+args = [".md"]
 
 [[language]]
 name = "nix"
