@@ -1,6 +1,5 @@
 [private]
-@default:
-    just help
+@default: help
 
 # View full help text, or for a specific recipe
 @help *args:
@@ -19,6 +18,8 @@ alias env := environment
 # Format files
 @format *args:
     .environments/default/scripts/format.nu {{ args }}
+
+alias fmt := format
 
 # View project history
 @history *args:
@@ -66,9 +67,21 @@ alias todos := todo
 @hs *args:
     just haskell {{ args }}
 
+[private]
+@md *args:
+    just markdown {{ args }}
+
+[private]
+@yml *args:
+    just yaml {{ args }}
+
 mod dotfiles ".environments/dotfiles/Justfile"
+mod git ".environments/git/Justfile"
 mod haskell ".environments/haskell/Justfile"
+mod just ".environments/just/Justfile"
+mod markdown ".environments/markdown/Justfile"
 mod nix ".environments/nix/Justfile"
+mod yaml ".environments/yaml/Justfile"
 
 alias clean := dotfiles::clean
 alias configs := dotfiles::configurations
@@ -77,7 +90,7 @@ alias diff := dotfiles::diff
 alias files := dotfiles::files
 alias generations := dotfiles::generations
 alias inputs := dotfiles::inputs
-alias lint := nix::lint
+alias leaks := git::leaks
 alias optimise := dotfiles::optimise
 alias prune := dotfiles::prune
 alias rebuild := dotfiles::rebuild
