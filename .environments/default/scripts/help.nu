@@ -1,6 +1,7 @@
 #!/usr/bin/env nu
 
 use environment.nu get-aliases-files
+use environment.nu get-default-environments
 use environment.nu parse-environments
 use environment.nu print-warning
 use environment.nu use-colors
@@ -164,16 +165,32 @@ def main-help [environment?: string --color: string] {
       )
   )
 
-  let submodules = (
+  let environments = if (".environments/environments.toml" | path exists) {
     open .environments/environments.toml
+  }
+
+  let hidden_submodules = if ($environments | is-not-empty) {
+    $environments
     | get environments
     | where {"hide" in ($in | columns) and $in.hide}
     | get name
-  )
+  }
+
+  let hidden_submodules = if (
+    $environments
+    | is-not-empty
+  ) and hide_default in ($environments | columns) and (
+    $environments.hide_default
+  ) {
+    $hidden_submodules
+    | append (get-default-environments).name
+  } else {
+    $hidden_submodules
+  }
 
   let text = (just ...$args | lines | enumerate)
 
-  let text = if ($submodules | is-empty) {
+  let text = if ($hidden_submodules | is-empty) {
     $text.item
     | to text
   } else {
@@ -188,7 +205,7 @@ def main-help [environment?: string --color: string] {
       ) {
         if (
           $line.item
-          | find --regex $"\(($submodules | str join '|')\):"
+          | find --regex $"\(($hidden_submodules | str join '|')\):"
           | is-not-empty
         ) {
           $remove_line = true
@@ -205,13 +222,26 @@ def main-help [environment?: string --color: string] {
     $text
     | where {$in.index not-in $lines_to_remove}
     | get item
-    | to text
+    | to text --no-newline
+  }
+
+  let text = if ($environments | is-not-empty) and (
+    "hide_help" in ($environments | columns)
+  ) and (
+    $environments.hide_help
+  ) {
+    $text
+    | lines
+    | where {$in | ansi strip | find --regex ' +help \*args' | is-empty}
+    | str join "\n"
+  } else {
+    $text
   }
 
   append-main-aliases $text --color $color
 }
 
-export def display-just-help [
+def get-help-text [
   environment_or_recipe?: string
   recipe_or_subcommand?: string
   subcommands?: list<string>
@@ -345,12 +375,8 @@ export def display-just-help [
         }
       }
     }
-  } else {
-    if ($environments | is-not-empty) {
-      print (main-help $environment --color $color)
-    }
-
-    return
+  } else if ($environments | is-not-empty) {
+    return (main-help $environment --color $color)
   }
 
   if ($environment | is-not-empty) and (
@@ -392,6 +418,27 @@ export def display-just-help [
     } else {
       nu $script ...$subcommands --help
     }
+  }
+}
+
+export def display-just-help [
+  environment_or_recipe?: string
+  recipe_or_subcommand?: string
+  subcommands?: list<string>
+  --color: string
+  --paging = "auto" # When to use pager {always|auto|never}
+] {
+  let help_text = (
+    get-help-text
+      $environment_or_recipe
+      $recipe_or_subcommand
+      $subcommands
+      --color $color
+  )
+
+  match $paging {
+    "never" => $help_text,
+    _ => ($help_text | bat)
   }
 }
 
@@ -616,6 +663,7 @@ def main [
   recipe_or_subcommand?: string # View help text for recipe
   ...subcommands: string  # View help for a recipe subcommand
   --color = "always" # When to use colored output {always|auto|never}
+  --paging = "auto" # When to use pager {always|auto|never}
 ] {
   (
     display-just-help
@@ -623,5 +671,6 @@ def main [
       $recipe_or_subcommand
       $subcommands
       --color $color
+      --paging $paging
   )
 }
