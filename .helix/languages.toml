@@ -2,10 +2,6 @@
 name = "haskell"
 auto-format = true
 
-[language.formatter]
-command = "alejandra"
-args = ["format", "-"]
-
 [[language]]
 name = "just"
 auto-format = true
@@ -28,7 +24,6 @@ auto-format = true
 
 [language.formatter]
 command = "alejandra"
-args = [".md"]
 
 [[language]]
 name = "toml"
