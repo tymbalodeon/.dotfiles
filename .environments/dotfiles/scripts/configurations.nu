@@ -7,7 +7,7 @@ use color.nu get-colors
 export def get-current-system [] {
   let release_file = "/etc/os-release"
 
-  # TODO: use ID instead?
+  # TODO (nixos): use ID instead?
   let system = if ($release_file | path exists) {
     open /etc/os-release
     | parse "{key}={value}"

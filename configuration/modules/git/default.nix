@@ -3,6 +3,7 @@
     gh
     gitui
     glab
+    siketyan-ghr
   ];
 
   programs.git = {
