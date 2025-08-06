@@ -226,6 +226,7 @@ def update-configuration-environments [environments: list<record>] {
 # Add features with <environment-name>[+<feature>...], e.g. "python+build"
 export def "main add" [
   ...environments: string # Environments to add
+  --skip-activation # Update the configuration file, but skip activating the new environments
 ] {
   let environments = (parse-environments $environments)
 
@@ -272,7 +273,10 @@ export def "main add" [
 
   mkdir .environments
   update-configuration-environments $environments
-  main activate
+
+  if not $skip_activation {
+    main activate
+  }
 }
 
 # Open local helix configuration in $EDITOR [alias: `edit languages`]
@@ -359,7 +363,13 @@ def "main edit shell" [] {
     | first
   }
 
+  let existing_file = (open $shell)
   ^$env.EDITOR $shell
+  let new_file = (open $shell)
+
+  if $new_file != $existing_file {
+    main activate
+  }
 }
 
 def get-environments-file-with-features [] {
@@ -392,7 +402,7 @@ def update-environments-configuration [environments: record] {
   let default_environments = (get-default-environments).name
   let local_environments = (get-available-environments --only-local).name
 
-  open-configuration-file
+  $environments
   | update environments (
       $environments.environments
       | where {
@@ -418,6 +428,8 @@ def update-environments-configuration [environments: record] {
 
 def update-hide [environments: list<string> value: bool] {
   let environments = (parse-environments $environments).name
+  let default = ("default" in $environments)
+  let environments = ($environments | where {$in != default})
 
   let configuration = if (".environments/environments.toml" | path exists) {
     open-configuration-file
@@ -472,7 +484,7 @@ def update-hide [environments: list<string> value: bool] {
     $configuration
   }
 
-  let configuration = if default in $environments {
+  let configuration = if $default {
     if $value {
       $configuration
       | upsert hide_default true

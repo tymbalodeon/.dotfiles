@@ -2,21 +2,22 @@
 
 use ../../git/scripts/leaks.nu
 
-export def run-check [name: string paths: list<string>] {
-  let justfiles = (
-    open Justfile
-    | lines
-    | where {str starts-with mod}
-    | each {
-        let environment = (
-          split row "mod "
-          | last
-          | split row " "
-          | first
-        )
+def get-submodules [] {
+  open Justfile
+  | lines
+  | where {str starts-with mod}
+  | each {
+      split row "mod "
+      | last
+      | split row " "
+      | first
+    }
+}
 
-        $".environments/($environment)/Justfile"
-      }
+export def run-check [type: string paths: list<string>] {
+  let justfiles = (
+    get-submodules
+    | each {$".environments/($in)/Justfile"}
     | where {path exists}
     | each {
         |environment|
@@ -26,7 +27,7 @@ export def run-check [name: string paths: list<string>] {
           | split row " "
         )
 
-        if $name in $recipes {
+        if type in $recipes {
           $environment
         }
       }
@@ -35,32 +36,55 @@ export def run-check [name: string paths: list<string>] {
 
   for justfile in $justfiles {
     let environment = ($justfile | path split | get 1)
-    print $"($name | str capitalize)ing ($environment) files..."
-    just --justfile $justfile $name ...$paths
+    print $"($type | str capitalize)ing ($environment) files..."
+    just --justfile $justfile $type ...$paths
   }
 }
 
+def get-default-checks [] {
+  ls .environments/default/scripts/check-*
+  | get name
+  | each {
+      {
+        file: $in
+        name: ($in | path parse | get stem | str replace check- "")
+      }
+    }
+}
+
+# TODO: add highlight comment function
+# TODO: add --color option
+
 # List checks
 def "main list" [] {
-  ls .environments/default/scripts/check-*.nu
-  | get name
-  | path basename
-  | path parse
-  | get stem
+  # TODO: add list default
+  get-default-checks
+  | each {
+      $"($in.name) • (ansi blue)# (
+        nu $in.file --help
+        | split row "\n\n"
+        | first
+      )(ansi reset)"
+    }
   | append [
-      flake-check
+      default
       leaks
     ]
   | sort
-  | to text --no-newline
+  | to text
+  | column -t -s •
 }
 
 # Run checks
-export def main [] {
-  leaks
-  nix flake check
+export def main [...checks: string] {
+  let checks = ($checks | str downcase)
+  let all = ($checks | is-empty)
 
-  let checks = (
+  if $all or ("leaks" in $checks) {
+    leaks
+  }
+
+  for check in (
     just --summary
     | split row " "
     | where {
@@ -72,9 +96,29 @@ export def main [] {
           | str starts-with lint
         )
       }
-  )
+  ) {
+    if $all or $check in $checks {
+      just $check
+    }
+  }
 
-  for check in $checks {
-    just $check
+  let default_checks = (get-default-checks)
+
+  let checks = if $all or ("default" in $checks) {
+    $default_checks.name
+  } else {
+    $checks
+  }
+
+  let submodules = (get-submodules)
+
+  for check_name in $checks {
+    if $check_name in $default_checks.name {
+      for check in ($default_checks | where name == $check_name) {
+        nu $check.file
+      }
+    } else if $check_name in $submodules {
+      just $check_name check
+    }
   }
 }
