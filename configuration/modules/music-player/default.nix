@@ -7,7 +7,7 @@
       if stdenv.isLinux
       then [rmpc]
       else if stdenv.isDarwin
-      then [ncmpcpp]
+      then [mpc ncmpcpp]
       else []
     );
 }
