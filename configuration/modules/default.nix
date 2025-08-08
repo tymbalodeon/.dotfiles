@@ -13,6 +13,7 @@
     ./jq
     ./jujutsu
     ./kitty
+    ./music-player
     ./nb
     ./nushell
     ./rclone
