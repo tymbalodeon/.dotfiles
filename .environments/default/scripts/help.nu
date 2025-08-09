@@ -24,7 +24,12 @@ def append-main-aliases [
 
   for alias in $aliases {
     for line in $help_text {
-      let words = ($line.item | split words)
+      let words = (
+        $line.item
+        | ansi strip
+        | split row " "
+        | where {is-not-empty}
+      )
 
       if ($words | is-not-empty) and ($words | first) == $alias.alias {
         $help_text = (
@@ -193,7 +198,9 @@ def main-help [all: bool environment?: string --color: string] {
       )
   )
 
-  let hidden_submodules = if ($environments | is-not-empty) {
+  let hidden_submodules = if ($environments | is-not-empty) and (
+    "environemnts" in ($environments | columns)
+  ) {
     $environments
     | get environments
     | where {"hide" in ($in | columns) and $in.hide}

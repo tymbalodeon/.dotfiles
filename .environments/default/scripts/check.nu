@@ -1,6 +1,27 @@
 #!/usr/bin/env nu
 
 use ../../git/scripts/leaks.nu
+use environment.nu use-colors
+
+export def get-files [paths: list<string>] {
+  if ($paths | is-empty) {
+    jj file list
+    | lines
+  } else {
+    let directories = (
+      $paths
+      | where {($in | path type) == dir}
+    )
+
+    $paths
+    | where {($in | path type) == file}
+    | append (
+        $directories
+        | each {ls ($"($in)/**/*" | into glob) | get name}
+      )
+    | flatten
+  }
+}
 
 def get-submodules [] {
   open Justfile
@@ -52,34 +73,58 @@ def get-default-checks [] {
     }
 }
 
-# TODO: add highlight comment function
-# TODO: add --color option
+def append-comment [check_name: string comment: string color: string] {
+  let comment = if (use-colors $color) {
+    $"(ansi blue)# ($comment)(ansi reset)"
+  } else {
+    $"# ($comment)"
+  }
 
-def list-default-checks [] {
+  $"($check_name) • ($comment)"
+}
+
+def list-default-checks [color: string] {
   get-default-checks
   | each {
-      $"($in.name) • (ansi blue)# (
+      let comment = (
         nu $in.file --help
         | split row "\n\n"
         | first
-      )(ansi reset)"
+      )
+
+      append-comment $in.name $comment $color
     }
 }
 
 # List default checks
-def "main list default" [] {
-  list-default-checks
+def "main list default" [
+  --color = "auto" # When to use colored output {always|auto|never}
+] {
+  list-default-checks $color
   | to text
   | column -t -s •
 }
 
 # List checks
-def "main list" [] {
-  list-default-checks
-  | append [
-      default
-      leaks
-    ]
+def "main list" [
+  --color = "auto" # When to use colored output {always|auto|never}
+] {
+  # TODO: add cyan note next to default checks?
+  list-default-checks $color
+  | append (
+      [
+        {
+          name: default
+          comment: "Run default checks (see `check list default`)"
+        }
+
+        {
+          name: leaks
+          comment: "Scan code for secrets"
+        }
+      ]
+      | each {append-comment $in.name $in.comment $color}
+    )
   | sort
   | to text
   | column -t -s •
