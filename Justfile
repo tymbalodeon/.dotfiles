@@ -86,16 +86,3 @@ mod just ".environments/just/Justfile"
 mod markdown ".environments/markdown/Justfile"
 mod nix ".environments/nix/Justfile"
 mod yaml ".environments/yaml/Justfile"
-
-alias clean := dotfiles::clean
-alias configs := dotfiles::configurations
-alias configurations := dotfiles::configurations
-alias diff := dotfiles::diff
-alias files := dotfiles::files
-alias generations := dotfiles::generations
-alias inputs := dotfiles::inputs
-alias leaks := git::leaks
-alias optimise := dotfiles::optimise
-alias prune := dotfiles::prune
-alias rebuild := dotfiles::rebuild
-alias update := dotfiles::update
