@@ -18,6 +18,7 @@
       "${nu_default_config_dir}/cloud.nu".source = ./cloud.nu;
       "${nu_default_config_dir}/colors.nu".source = ./colors.nu;
       "${nu_default_config_dir}/f.nu".source = ./f.nu;
+      "${nu_default_config_dir}/music.nu".source = ./music.nu;
       "${nu_default_config_dir}/prompt.nu".source = ./prompt.nu;
       "${nu_default_config_dir}/src.nu".source = ./src.nu;
       "${nu_default_config_dir}/ssh.nu".source = ./ssh.nu;
