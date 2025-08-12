@@ -14,6 +14,10 @@
         defaultUser.nbRemote or "";
     in
       lib.hm.dag.entryAfter ["writeBoundary"] ''
+        echo "--------------------------------"
+        echo "${nbRemote}"
+        echo "--------------------------------"
+
         nb_directory=$HOME/.nb
         nb_home_notebook=$nb_directory/home
         nb_current_notebook=$nb_directory/.current
@@ -48,11 +52,18 @@
     packages = with pkgs; [
       nb
       pandoc
+      ripgrep
       socat
       tig
       w3m
     ];
   };
 
-  imports = [../helix/markdown];
+  imports = [
+    ../bash
+    ../bat
+    ../git
+    ../helix
+    ../helix/markdown
+  ];
 }
