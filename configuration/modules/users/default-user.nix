@@ -8,6 +8,7 @@ rec {
   homeDirectoryDarwin = /Users/${username};
   homeDirectoryLinux = /home/${username};
   name = "Ben Rosen";
-  nbRemote = "git@github.com:tymbalodeon/notes.git";
+  nbRemotePersonal = "git@github.com:tymbalodeon/notes.git";
+  nbRemoteWork = "git@github.com:benjaminrosen/notes.git";
   username = "benrosen";
 }
