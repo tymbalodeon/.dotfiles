@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+_subcommands add "tags"
+
+_subcommands describe "example" <<HEREDOC
+Usage:
+  nb tags
+
+Description:
+  List all tags in alphabetical order
+HEREDOC
+
+_tags() {
+	nb --tags | sd "#" "" | sort
+}
