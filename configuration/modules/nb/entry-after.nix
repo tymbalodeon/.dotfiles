@@ -23,7 +23,7 @@ in ''
   	echo home >"$nb_current_notebook"
   fi
 
-  if [[ -n ${nbRemote} ]]; then
+  if [[ -n "${nbRemote}" ]]; then
   	origin=$(
       ${git} -C "$nb_home_notebook" remote get-url origin 2>/dev/null ||
         echo ""
