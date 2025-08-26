@@ -1,7 +1,8 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     gh
-    gitui
+    # FIXME: broken (maybe remove because I never use it?)
+    # gitui
     glab
     siketyan-ghr
   ];
