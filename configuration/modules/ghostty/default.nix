@@ -37,8 +37,8 @@
         "ctrl+alt+l=goto_split:right"
         "ctrl+shift+[=goto_split:previous"
         "ctrl+shift+]=goto_split:next"
-        "ctrl+shift+n=scroll_page_lines:1"
-        "ctrl+shift+p=scroll_page_lines:-1"
+        "ctrl+shift+j=scroll_page_lines:1"
+        "ctrl+shift+k=scroll_page_lines:-1"
         "ctrl+shift+o=toggle_split_zoom"
       ];
 
