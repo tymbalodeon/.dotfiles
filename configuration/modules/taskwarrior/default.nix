@@ -1,3 +1,7 @@
 {pkgs, ...}: {
-  home.packages = [pkgs.taskwarrior3];
+  programs.taskwarrior = {
+    colorTheme = "dark-16";
+    enable = true;
+    package = pkgs.taskwarrior3;
+  };
 }
