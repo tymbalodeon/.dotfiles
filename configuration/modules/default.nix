@@ -18,6 +18,7 @@
     ./nushell
     ./rclone
     ./ripgrep
+    ./taskwarrior
     ./tealdeer
     ./tinty
     ./users
