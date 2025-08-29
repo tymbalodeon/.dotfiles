@@ -3,6 +3,7 @@
     packages = with pkgs; [
       brightnessctl
       equibop
+      hyprlock
       hyprpicker
       wev
       wl-clipboard
