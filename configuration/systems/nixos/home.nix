@@ -1,9 +1,9 @@
 {pkgs, ...}: {
   home = {
     packages = with pkgs; [
-      brave
       brightnessctl
       equibop
+      hyprpicker
       wev
       wl-clipboard
     ];

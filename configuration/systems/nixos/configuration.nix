@@ -117,6 +117,8 @@ in {
       };
     };
 
+    hypridle.enable = true;
+
     pipewire = {
       enable = true;
       alsa.enable = true;
