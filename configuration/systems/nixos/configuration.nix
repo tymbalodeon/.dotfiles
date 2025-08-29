@@ -12,20 +12,24 @@ in {
     efi.canTouchEfiVariables = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    bibata-cursors
-    (catppuccin-sddm.override
-      {
-        flavor = "mocha";
-        font = "Cantarell";
-        fontSize = "12";
-      })
-    firefox
-    git
-    helix
-    hyprpaper
-    xdg-utils
-  ];
+  environment = {
+    sessionVariables.NIXOS_OZONE_WL = "1";
+
+    systemPackages = with pkgs; [
+      bibata-cursors
+      (catppuccin-sddm.override
+        {
+          flavor = "mocha";
+          font = "Cantarell";
+          fontSize = "12";
+        })
+      firefox
+      git
+      helix
+      hyprpaper
+      xdg-utils
+    ];
+  };
 
   hardware.bluetooth.enable = true;
 
@@ -118,6 +122,8 @@ in {
       alsa.enable = true;
       pulse.enable = true;
     };
+
+    solaar.enable = true;
   };
 
   system.stateVersion = "23.11";

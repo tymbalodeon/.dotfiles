@@ -12,6 +12,11 @@
 
     nixgl.url = "github:nix-community/nixGL";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    solaar = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:Svenum/Solaar-Flake/main";
+    };
   };
 
   outputs = {
@@ -19,6 +24,7 @@
     nix-darwin,
     nixgl,
     nixpkgs,
+    solaar,
     ...
   } @ inputs: let
     mkHosts = mkHost: system:
@@ -60,7 +66,10 @@
     nixosConfigurations =
       mkHosts (hostName: {
         ${hostName} = nixpkgs.lib.nixosSystem {
-          modules = [./systems/nixos/hosts/${hostName}/configuration.nix];
+          modules = [
+            solaar.nixosModules.default
+            ./systems/nixos/hosts/${hostName}/configuration.nix
+          ];
 
           specialArgs = {
             inherit hostName inputs;
