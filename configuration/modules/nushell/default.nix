@@ -56,25 +56,23 @@
           show_banner = false;
         };
 
-        # TODO: store these with bash aliases in one place
-        shellAliases = {
-          l = "ls --long";
-          la = "ls --long --all";
-          lsa = "ls --all";
-          ssh = let
-            defaultUser = import ../../modules/users/default-user.nix;
-            filename = "${nu_default_config_dir}/ssh.nu";
+        shellAliases =
+          {
+            l = "ls --long";
+            la = "ls --long --all";
+            lsa = "ls --all";
 
-            homeDirectory =
-              if pkgs.stdenv.isLinux
-              then defaultUser.homeDirectoryLinux
-              else defaultUser.homeDirectoryDarwin;
-          in "${builtins.toString homeDirectory}/${filename}";
-          todos = "nb todos open";
-          treei = "eza --tree --level=2";
-          tree = "treei --git-ignore";
-          treea = "treei --all";
-        };
+            ssh = let
+              defaultUser = import ../users/default-user.nix;
+              filename = "${nu_default_config_dir}/ssh.nu";
+
+              homeDirectory =
+                if pkgs.stdenv.isLinux
+                then defaultUser.homeDirectoryLinux
+                else defaultUser.homeDirectoryDarwin;
+            in "nu '${builtins.toString homeDirectory}/${filename}'";
+          }
+          // (import ../aliases.nix);
       }
       // lib.optionalAttrs pkgs.stdenv.isDarwin {
         environmentVariables = {

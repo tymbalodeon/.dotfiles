@@ -13,7 +13,6 @@
       nix-search-cli
       ov
       pipx
-      # TODO: make its own module?
       presenterm
       pup
       python313

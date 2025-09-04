@@ -1,20 +1,33 @@
 {
+  # TODO: need for ssh below
+  pkgs,
+  ...
+}: {
   programs.bash = {
     enable = true;
     historyControl = ["erasedups"];
     historyIgnore = ["cd" "exit" "ls"];
     initExtra = builtins.readFile ./.bashrc;
 
-    # TODO: store these with nushell aliases in one place
-    shellAliases = {
-      l = "eza --long";
-      la = "eza --all --long";
-      ls = "eza --oneline";
-      lsa = "eza --all --oneline";
-      todos = "nb todos open";
-      treei = "eza --level 2 --tree";
-      tree = "eza --git-ignore --level 2 --tree";
-      treea = "eza --all --level 2 --tree";
-    };
+    shellAliases =
+      {
+        l = "eza --long";
+        la = "eza --all --long";
+        ls = "eza --oneline";
+        lsa = "eza --all --oneline";
+
+        # TODO: make bash version of this (see ./ssh.sh)
+        ssh = let
+          defaultUser = import ../users/default-user.nix;
+          filename = builtins.toString ./ssh.sh;
+
+          homeDirectory = builtins.toString (
+            if pkgs.stdenv.isLinux
+            then defaultUser.homeDirectoryLinux
+            else defaultUser.homeDirectoryDarwin
+          );
+        in ". '${homeDirectory}/${filename}'";
+      }
+      // (import ../aliases.nix);
   };
 }
