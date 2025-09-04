@@ -30,7 +30,7 @@
 
   imports = [./modules];
   news.display = "silent";
-  nixpkgs.config.allowUnfree = true;
+  # nixpkgs.config.allowUnfree = true;
 
   programs = {
     direnv = {
