@@ -1,6 +1,22 @@
 [[language]]
+name = "css"
+auto-format = true
+
+[language.formatter]
+command = "prettierd"
+args = [".css"]
+
+[[language]]
 name = "haskell"
 auto-format = true
+
+[[language]]
+name = "html"
+auto-format = true
+
+[language.formatter]
+command = "prettierd"
+args = [".html"]
 
 [[language]]
 name = "just"
@@ -24,6 +40,14 @@ auto-format = true
 
 [language.formatter]
 command = "alejandra"
+
+[[language]]
+name = "scss"
+auto-format = true
+
+[language.formatter]
+command = "prettierd"
+args = [".scss"]
 
 [[language]]
 name = "toml"
