@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+_subcommands add "csv"
+
+_subcommands describe "example" <<HEREDOC
+Usage:
+  nb csv
+
+Description:
+  Open nb-managed csv files in a csv file viewer
+HEREDOC
+
+_csv() {
+	nu -c "\
+  	csvlens (
+    	nb --path ${1}
+    	| split row ' '
+    	| last
+    )"
+}

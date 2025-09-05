@@ -11,5 +11,10 @@ Description:
 HEREDOC
 
 _tags() {
-	nb --tags | sd "#" "" | sort
+	nu -c "\
+  	nb --tags
+  	| str replace --all '#' ''
+  	| lines
+  	| sort
+  	| to text --no-newline"
 }

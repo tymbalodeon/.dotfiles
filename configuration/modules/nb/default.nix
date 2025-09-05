@@ -1,10 +1,12 @@
 {pkgs, ...}: {
   home = {
     file = {
+      ".nb/.plugins/csv.nb-plugin".source = ./csv.nb-plugin;
       ".nb/.plugins/tags.nb-plugin".source = ./tags.nb-plugin;
     };
 
     packages = with pkgs; [
+      csvlens
       nb
       pandoc
       readability-cli
