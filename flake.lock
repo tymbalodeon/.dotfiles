@@ -9,11 +9,11 @@
       },
       "locked": {
         "dir": "src",
-        "lastModified": 1757039213,
-        "narHash": "sha256-iPSzG+92hNmWqo4is9uNCbELsK9Z751brxMLckDC4J4=",
+        "lastModified": 1757294182,
+        "narHash": "sha256-UZkyXEpfagoyVxkWaHf4GnIRtUR46n2T6EciY6aL/8M=",
         "owner": "tymbalodeon",
         "repo": "environments",
-        "rev": "be0cc4940379654654d74591425758a53b8c0681",
+        "rev": "1d8a6ab2bbd34199bad053243f99bef018a8ef11",
         "type": "github"
       },
       "original": {
@@ -107,8 +107,9 @@
         "type": "github"
       },
       "original": {
-        "id": "systems",
-        "type": "indirect"
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
       }
     }
   },
