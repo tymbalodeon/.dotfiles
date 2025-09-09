@@ -1,6 +1,6 @@
 # List fonts
 def fonts [] {
-  fc-list ": family"
+  run-external fc-list : family
   | lines
   | sort
   | to text --no-newline
