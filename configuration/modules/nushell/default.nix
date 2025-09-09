@@ -14,22 +14,27 @@
   config = let
     nu_default_config_dir = config.programs.nushell.configDirectory;
   in {
-    home.file = {
-      "${nu_default_config_dir}/cloud.nu".source = ./cloud.nu;
-      "${nu_default_config_dir}/colors.nu".source = ./colors.nu;
-      "${nu_default_config_dir}/f.nu".source = ./f.nu;
-      "${nu_default_config_dir}/music.nu".source = ./music.nu;
-      "${nu_default_config_dir}/prompt.nu".source = ./prompt.nu;
-      "${nu_default_config_dir}/src.nu".source = ./src.nu;
-      "${nu_default_config_dir}/ssh.nu".source = ./ssh.nu;
-      "${nu_default_config_dir}/theme.nu".source = ./theme.nu;
+    home = {
+      file = {
+        "${nu_default_config_dir}/cloud.nu".source = ./cloud.nu;
+        "${nu_default_config_dir}/colors.nu".source = ./colors.nu;
+        "${nu_default_config_dir}/f.nu".source = ./f.nu;
+        "${nu_default_config_dir}/fonts.nu".source = ./fonts.nu;
+        "${nu_default_config_dir}/music.nu".source = ./music.nu;
+        "${nu_default_config_dir}/prompt.nu".source = ./prompt.nu;
+        "${nu_default_config_dir}/src.nu".source = ./src.nu;
+        "${nu_default_config_dir}/ssh.nu".source = ./ssh.nu;
+        "${nu_default_config_dir}/theme.nu".source = ./theme.nu;
 
-      "${nu_default_config_dir}/theme-function.nu".source =
-        if pkgs.stdenv.isDarwin
-        then ./theme-function-darwin.nu
-        else ./theme-function-linux.nu;
+        "${nu_default_config_dir}/theme-function.nu".source =
+          if pkgs.stdenv.isDarwin
+          then ./theme-function-darwin.nu
+          else ./theme-function-linux.nu;
 
-      "${nu_default_config_dir}/themes.toml".source = ./themes.toml;
+        "${nu_default_config_dir}/themes.toml".source = ./themes.toml;
+      };
+
+      packages = [pkgs.fontconfig];
     };
 
     programs.nushell =
