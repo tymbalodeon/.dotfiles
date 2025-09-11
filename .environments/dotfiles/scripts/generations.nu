@@ -10,6 +10,6 @@ def main [] {
     | reject specialisations configurationRevision
     | table --index false
   } else {
-    /run/current-system/sw/bin/darwin-rebuild --list-generations
+    sudo /run/current-system/sw/bin/darwin-rebuild --list-generations
   }
 }
