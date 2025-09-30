@@ -2,19 +2,27 @@
 
 _subcommands add "tags"
 
-_subcommands describe "example" <<HEREDOC
+_subcommands describe "tags" <<HEREDOC
 Usage:
-  nb tags
+  nb tags <search?>
 
 Description:
-  List all tags in alphabetical order
+  List all tags in alphabetical order, or search tags for <search>
 HEREDOC
 
 _tags() {
-	nu -c "\
-  	nb --tags
-  	| str replace --all '#' ''
-  	| lines
-  	| sort
-  	| to text --no-newline"
+	tags="$(
+		nu -c "\
+	    	nb --tags
+	    	| str replace --all '#' ''
+	    	| lines
+	    	| sort
+	    	| to text --no-newline"
+	)"
+
+	if [ "$#" -ne 1 ]; then
+		echo "$tags"
+	else
+		echo "$tags" | grep "$1"
+	fi
 }

@@ -2,19 +2,24 @@
 
 _subcommands add "csv"
 
-_subcommands describe "example" <<HEREDOC
+_subcommands describe "csv" <<HEREDOC
 Usage:
-  nb csv
+  nb csv <filename?>
+  nb csv list
 
 Description:
-  Open nb-managed csv files in a csv file viewer
+  Open nb-managed csv files in a csv file viewer, or list nb-managed csv files
 HEREDOC
 
 _csv() {
-	nu -c "\
-  	csvlens (
-    	nb --path ${1}
-    	| split row ' '
-    	| last
-    )"
+	if [ -z "$1" ] || [ "$1" == list ]; then
+		nb list | grep \.csv
+	else
+		nu -c "\
+	  	csvlens (
+	    	nb --path ${1}
+	    	| split row ' '
+	    	| last
+	    )"
+	fi
 }

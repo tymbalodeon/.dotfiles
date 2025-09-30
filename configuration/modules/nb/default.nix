@@ -23,5 +23,6 @@
     ../git
     ../helix
     ../helix/markdown
+    ../nushell
   ];
 }
