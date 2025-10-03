@@ -1,4 +1,6 @@
 {
+  inputs,
+  isNixOS,
   lib,
   pkgs,
   ...
@@ -17,6 +19,12 @@
     };
 
     keybindings."kitty_mod+enter" = "launch --cwd=current --type=window";
+
+    # TODO: remove when kitty > 0.42.1 works on Darwin
+    package =
+      if isNixOS
+      then pkgs.kitty
+      else inputs.nixpkgs-kitty.legacyPackages.x86_64-darwin.kitty;
 
     settings =
       {

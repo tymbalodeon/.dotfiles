@@ -13,6 +13,9 @@
     nixgl.url = "github:nix-community/nixGL";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # TODO: remove when kitty > 0.42.1 works on Darwin
+    nixpkgs-kitty.url = "github:nixos/nixpkgs/dab3a6e781554f965bde3def0aa2fda4eb8f1708";
+
     solaar = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:Svenum/Solaar-Flake/main";
