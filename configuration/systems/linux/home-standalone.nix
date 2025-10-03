@@ -19,12 +19,7 @@
 
   nixGL.packages = nixgl.packages;
   nixpkgs.config.allowUnfree = true;
-
-  programs = {
-    ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
-    kitty.package = config.lib.nixGL.wrap pkgs.kitty;
-  };
-
+  programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
   targets.genericLinux.enable = true;
   xdg.mime.enable = true;
 }
