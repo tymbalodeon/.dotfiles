@@ -6,6 +6,10 @@
       ".config/waybar/style.css".source = ./style.css;
     };
 
-    packages = [pkgs.waybar];
+    packages = with pkgs; [
+      cantarell-fonts
+      font-awesome
+      waybar
+    ];
   };
 }
