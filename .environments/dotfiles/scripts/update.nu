@@ -9,7 +9,7 @@ export def main [
 ] {
   let inputs = if ($inputs | is-empty) {
     let inputs = (
-      nix flake info --json
+      nix flake metadata --json
       | from json
       | get locks.nodes.root.inputs
       | columns
