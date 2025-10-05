@@ -127,6 +127,7 @@ in {
     };
 
     solaar.enable = true;
+    udisks2.enable = true;
   };
 
   system.stateVersion = "23.11";
