@@ -1,4 +1,10 @@
 {pkgs, ...}: {
+  dconf.settings = {
+    "org/nemo/preferences" = {
+      default-folder-viewer = "list-view";
+    };
+  };
+
   gtk = let
     gnomeTheme = pkgs.gnome-themes-extra;
   in {
