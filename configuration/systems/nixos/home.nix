@@ -1,10 +1,27 @@
 {pkgs, ...}: {
+  gtk = let
+    gnomeTheme = pkgs.gnome-themes-extra;
+  in {
+    enable = true;
+
+    iconTheme = {
+      name = "Adwaita";
+      package = gnomeTheme;
+    };
+
+    theme = {
+      name = "Adwaita-dark";
+      package = gnomeTheme;
+    };
+  };
+
   home = {
     packages = with pkgs; [
       brightnessctl
       equibop
       hyprlock
       hyprpicker
+      nemo
       wev
       wl-clipboard
     ];
