@@ -2,6 +2,7 @@
   dconf.settings = {
     "org/nemo/preferences" = {
       default-folder-viewer = "list-view";
+      show-hidden-files = true;
     };
   };
 
