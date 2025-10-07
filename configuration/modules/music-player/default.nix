@@ -3,10 +3,17 @@
   pkgs,
   ...
 }: {
-  home.packages = with pkgs; [
-    mpc
-    mpd
-  ];
+  home = {
+    file = {
+      ".config/rmpc/notify.sh".source = ./notify.sh;
+      ".config/rmpc/default_album_art.jpg".source = ./default_album_art.jpg;
+    };
+
+    packages = with pkgs; [
+      mpc
+      mpd
+    ];
+  };
 
   programs = {
     ncmpcpp = {
@@ -39,6 +46,16 @@
     };
 
     rmpc = {
+      config = ''
+        #![enable(implicit_some)]
+        #![enable(unwrap_newtypes)]
+        #![enable(unwrap_variant_newtypes)]
+
+        (
+          on_song_change: ["~/.config/rmpc/notify.sh"],
+        )
+      '';
+
       enable =
         if isNixOS
         then true
