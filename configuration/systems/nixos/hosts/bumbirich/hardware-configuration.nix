@@ -7,8 +7,6 @@
   modulesPath,
   ...
 }: {
-  imports = [(modulesPath + "/installer/scan/not-detected.nix")];
-
   boot = {
     initrd.availableKernelModules = ["xhci_pci" "nvme" "uas" "usb_storage" "sd_mod"];
     initrd.kernelModules = [];
@@ -25,6 +23,8 @@
     device = "/dev/disk/by-uuid/EEF0-CB37";
     fsType = "vfat";
   };
+
+  imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 
   swapDevices = [];
 

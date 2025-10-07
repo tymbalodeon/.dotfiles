@@ -7,8 +7,6 @@
   modulesPath,
   ...
 }: {
-  imports = [(modulesPath + "/installer/scan/not-detected.nix")];
-
   boot = {
     extraModulePackages = [];
 
@@ -38,6 +36,8 @@
       options = ["fmask=0022" "dmask=0022"];
     };
   };
+
+  imports = [(modulesPath + "/installer/scan/not-detected.nix")];
 
   swapDevices = [
     {device = "/dev/disk/by-uuid/83f4b435-d72e-40e4-a8c6-fb67e871950e";}
