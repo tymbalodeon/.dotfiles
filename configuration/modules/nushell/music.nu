@@ -1,6 +1,24 @@
 def running [] {
-  $"(music pid)"
+  $"(pid)"
   | is-not-empty
+}
+
+def "music status" [] {
+  if (running) {
+    "running"
+  } else {
+    "stopped"
+  }
+}
+
+def is-nixos [ ] {
+  (
+    cat /etc/os-release
+    | parse "{key}={value}"
+    | where key == "ID"
+    | first
+    | get value 
+  ) == nixos
 }
 
 # Show the track currently playing
@@ -9,11 +27,15 @@ def "music current" [] {
     return
   }
 
-  ncmpcpp --current-song
+  if (is-nixos) {
+    rmpc song
+  } else {
+    ncmpcpp --current-song
+  }
 }
 
 # Get pid of music server, if running
-def "music pid" [] {
+def pid [] {
   let pid =  (ps | where name == mpd | get pid)
 
   if ($pid | is-not-empty) {
@@ -24,14 +46,28 @@ def "music pid" [] {
 
 # Stop music server
 def "music stop" [] {
-  pkill mpd
+  if (is-nixos) {
+    systemctl --user stop mpd.service
+  } else {
+    pkill mpd
+  }
 }
 
 # Open music player
 def "music" [] {
+  let is_nixos = (is-nixos)
+
   if not (running) {
-    mpd
+    if $is_nixos {
+      systemctl --user restart mpd.service
+    } else {
+      mpd
+    }
   }
 
-  ncmpcpp
+  if $is_nixos {
+    rmpc
+  } else {
+    ncmpcpp
+  }
 }
