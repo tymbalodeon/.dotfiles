@@ -22,13 +22,21 @@ def is-nixos [ ] {
 }
 
 # Show the track currently playing
-def "music current" [] {
+def "music current" [
+  --all # Show all track information
+] {
   if not (running) {
     return
   }
 
   if (is-nixos) {
-    rmpc song
+    let data = (rmpc song | from json)
+
+    if $all {
+      $data
+    } else {
+      $"($data.metadata.albumartist) - ($data.metadata.title)"
+    }
   } else {
     ncmpcpp --current-song
   }
