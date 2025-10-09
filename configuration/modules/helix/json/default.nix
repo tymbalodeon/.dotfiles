@@ -1,7 +1,9 @@
 {pkgs, ...}: {
   programs.helix = {
-    # TODO: figure out where vscode-json-language-server comes from
-    extraPackages = [pkgs.prettierd];
+    extraPackages = with pkgs; [
+      prettierd
+      vscode-langservers-extracted
+    ];
 
     languages.language = [
       {

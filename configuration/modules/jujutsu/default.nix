@@ -1,5 +1,4 @@
 {pkgs, ...}: {
-  # TODO: see if this is useful...
   home.packages = [pkgs.jjui];
 
   programs.jujutsu = {
