@@ -14,8 +14,15 @@
       cl = "clone";
       d = "diff";
       ds = "diff --staged";
-      # TODO: is there a better way to format this so the line isn't so long?
-      l = "log --graph --pretty=format:'%C(auto)%h%d%C(reset) %C(dim)%ar%C(reset) %C(bold)%s%C(reset) %C(dim blue)(%an)%C(reset)'";
+
+      l = let
+        commit = "%C(auto)%h%d%C(reset)";
+        time = "%C(dim)%ar%C(reset)";
+        message = "%C(bold)%s%C(reset)";
+        author = "%C(dim blue)(%an)%C(reset)";
+        format = "${commit} ${time} ${message} ${author}";
+      in "log --graph --pretty=format:'${format}'";
+
       last = "log -1 HEAD --stat";
       m = "merge";
       p = "push";
@@ -40,6 +47,7 @@
         diff-so-fancy = true;
         navigate = true;
         # TODO: tie this theme to the others
+        # https://github.com/catppuccin/delta
         syntax-theme = "gruvbox-dark";
       };
     };

@@ -1,8 +1,4 @@
-{
-  # TODO: need for ssh below
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   programs.bash = {
     enable = true;
     historyControl = ["erasedups"];
@@ -16,7 +12,6 @@
         ls = "eza --oneline";
         lsa = "eza --all --oneline";
 
-        # TODO: make bash version of this (see ./ssh.sh)
         ssh = let
           defaultUser = import ../users/default-user.nix;
           filename = builtins.toString ./ssh.sh;
