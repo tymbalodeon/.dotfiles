@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  home.packages = with pkgs; [brave dysk];
+  home.packages = [pkgs.brave];
 
   imports = [
     ../../home.nix

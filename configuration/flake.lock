@@ -194,6 +194,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-nix-search-cli": {
+      "locked": {
+        "lastModified": 1752596105,
+        "narHash": "sha256-lFNVsu/mHLq3q11MuGkMhUUoSXEdQjCHvpReaGP1S2k=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "dab3a6e781554f965bde3def0aa2fda4eb8f1708",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "dab3a6e781554f965bde3def0aa2fda4eb8f1708",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1759831965,
@@ -218,6 +234,7 @@
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-kitty": "nixpkgs-kitty",
         "nixpkgs-mpd": "nixpkgs-mpd",
+        "nixpkgs-nix-search-cli": "nixpkgs-nix-search-cli",
         "solaar": "solaar"
       }
     },
