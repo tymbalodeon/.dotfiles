@@ -18,7 +18,7 @@
         if isNixOS
         then []
         else [
-          # TODO: remove when mpd works on Darwin
+          # FIXME: pinned packages that are broken in more recent commits
           inputs.nixpkgs-mpd.legacyPackages.x86_64-darwin.mpd
         ]
       );

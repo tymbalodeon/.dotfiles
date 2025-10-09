@@ -26,7 +26,7 @@
       then pkgs.kitty
       else if pkgs.stdenv.isLinux
       then config.lib.nixGL.wrap pkgs.kitty
-      # TODO: remove when kitty > 0.42.1 works on Darwin
+      # FIXME: pinned packages that are broken in more recent commits
       else inputs.nixpkgs-kitty.legacyPackages.x86_64-darwin.kitty;
 
     settings =
