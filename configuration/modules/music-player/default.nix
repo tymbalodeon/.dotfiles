@@ -1,4 +1,5 @@
 {
+  inputs,
   isNixOS,
   pkgs,
   ...
@@ -9,10 +10,18 @@
       ".config/rmpc/default_album_art.jpg".source = ./default_album_art.jpg;
     };
 
-    packages = with pkgs; [
-      mpc
-      mpd
-    ];
+    packages = with pkgs;
+      [
+        mpc
+      ]
+      ++ (
+        if isNixOS
+        then []
+        else [
+          # TODO: remove when mpd works on Darwin
+          inputs.nixpkgs-mpd.legacyPackages.x86_64-darwin.mpd
+        ]
+      );
   };
 
   programs = {
