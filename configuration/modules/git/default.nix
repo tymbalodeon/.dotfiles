@@ -46,9 +46,7 @@
       options = {
         diff-so-fancy = true;
         navigate = true;
-        # TODO: tie this theme to the others
-        # https://github.com/catppuccin/delta
-        syntax-theme = "gruvbox-dark";
+        syntax-theme = "base16";
       };
     };
 
