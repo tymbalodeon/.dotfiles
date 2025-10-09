@@ -13,7 +13,8 @@
         lsa = "eza --all --oneline";
 
         ssh = let
-          defaultUser = import ../users/default-user.nix;
+          # FIXME
+          defaultUser = import ../users/shared.nix;
           filename = builtins.toString ./ssh.sh;
 
           homeDirectory = builtins.toString (

@@ -88,9 +88,12 @@ export def get-configuration-data [] {
 
 export def get-built-host-name [] {
   if (git config user.email) == (
-    nix eval --file modules/git/work.nix --json
-    | from json
-    | get programs.git.userEmail
+    open modules/users/work.nix
+    | lines
+    | find --regex "\\s+email ="
+    | first
+    | split row '"'
+    | get 1
   ) {
     "work"
   } else {

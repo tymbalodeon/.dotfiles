@@ -12,7 +12,8 @@
         pager = "less -FRX";
       };
 
-      user.name = "Ben Rosen";
+      # TODO: remove me if this works via the users module
+      # user.name = "Ben Rosen";
     };
   };
 }

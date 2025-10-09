@@ -5,12 +5,7 @@
   pkgs,
   ...
 }: {
-  home = let
-    defaultUser = import ../../modules/users/default-user.nix;
-  in {
-    homeDirectory = defaultUser.homeDirectoryLinux;
-    packages = [pkgs.xclip];
-  };
+  home.packages = [pkgs.xclip];
 
   imports = [
     ./home.nix

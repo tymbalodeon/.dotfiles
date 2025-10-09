@@ -68,7 +68,8 @@
             lsa = "ls --all";
 
             ssh = let
-              defaultUser = import ../users/default-user.nix;
+              # FIXME
+              defaultUser = import ../users/shared.nix;
               filename = "${nu_default_config_dir}/ssh.nu";
 
               homeDirectory =

@@ -4,9 +4,7 @@
   isNixOS,
   pkgs,
   ...
-}: let
-  defaultUser = import ../../modules/users/default-user.nix;
-in {
+}: {
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
@@ -58,7 +56,9 @@ in {
     };
   };
 
-  imports = [inputs.home-manager.nixosModules.default];
+  imports = [
+    inputs.home-manager.nixosModules.default
+  ];
 
   networking = {
     inherit hostName;
@@ -103,15 +103,9 @@ in {
         enable = true;
         package = pkgs.kdePackages.sddm;
 
-        settings = {
-          Autologin = {
-            User = defaultUser.username;
-          };
-
-          Theme = {
-            CursorTheme = "Bibata-Modern-Classic";
-            CursorSize = 16;
-          };
+        settings.Theme = {
+          CursorTheme = "Bibata-Modern-Classic";
+          CursorSize = 16;
         };
 
         theme = "catppuccin-mocha-lavender";
@@ -133,11 +127,4 @@ in {
 
   system.stateVersion = "23.11";
   time.timeZone = "America/New_York";
-
-  users.users.${defaultUser.username} = {
-    isNormalUser = true;
-    description = defaultUser.name;
-    extraGroups = ["networkmanager" "wheel"];
-    shell = pkgs.nushell;
-  };
 }

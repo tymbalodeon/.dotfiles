@@ -24,6 +24,8 @@
       );
   };
 
+  imports = [../users/nixos.nix];
+
   programs = {
     ncmpcpp = {
       bindings = [
@@ -72,15 +74,12 @@
     };
   };
 
-  services.mpd = let
-    defaultUser = import ../../modules/users/default-user.nix;
-  in {
+  services.mpd = {
     enable =
       if isNixOS
       then true
       else false;
 
-    musicDirectory = defaultUser.musicDirectory;
     network.startWhenNeeded = true;
   };
 }

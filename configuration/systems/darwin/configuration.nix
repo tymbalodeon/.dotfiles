@@ -32,13 +32,6 @@
       remapCapsLockToEscape = true;
     };
 
-    primaryUser = (import ../../modules/users/default-user.nix).username;
     stateVersion = 6;
-  };
-
-  users.users = let
-    defaultUser = import ../../modules/users/default-user.nix;
-  in {
-    ${defaultUser.username}.home = defaultUser.homeDirectoryDarwin;
   };
 }

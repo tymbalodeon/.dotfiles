@@ -1,7 +1,5 @@
 {pkgs, ...}: {
-  home = let
-    defaultUser = import ../../../../modules/users/default-user.nix;
-  in {
+  home = {
     packages = with pkgs; [
       # TODO: find a way to add this to known programs
       teams-for-linux
@@ -9,8 +7,6 @@
       # FIXME: this doesn't work.
       # zoom-us
     ];
-
-    inherit (defaultUser) username;
   };
 
   imports = [
