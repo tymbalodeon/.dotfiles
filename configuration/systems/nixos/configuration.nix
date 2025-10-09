@@ -19,6 +19,7 @@ in {
       bibata-cursors
       (catppuccin-sddm.override
         {
+          accent = "lavender";
           flavor = "mocha";
           font = "Cantarell";
           fontSize = "12";
@@ -113,7 +114,7 @@ in {
           };
         };
 
-        theme = "catppuccin-mocha";
+        theme = "catppuccin-mocha-lavender";
         wayland.enable = true;
       };
     };
