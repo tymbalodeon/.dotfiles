@@ -1,4 +1,4 @@
 {
   imports = [../../configuration.nix];
-  users.benrosen.enable = true;
+  users-benrosen.enable = true;
 }

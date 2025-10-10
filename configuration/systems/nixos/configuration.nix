@@ -57,8 +57,9 @@
   };
 
   imports = [
-    inputs.home-manager.nixosModules.default
-    ../../modules/users
+    inputs.home-manager.nixosModules.home-manager
+    ../../modules/users/users.nix
+    ../../modules/users/users-nixos.nix
   ];
 
   networking = {
@@ -128,5 +129,5 @@
 
   system.stateVersion = "23.11";
   time.timeZone = "America/New_York";
-  users.nixos.enable = true;
+  users-nixos.enable = true;
 }

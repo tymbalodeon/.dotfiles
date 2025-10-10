@@ -1,4 +1,4 @@
 {
   imports = [../../configuration.nix];
-  users.work.enable = true;
+  users.work-enable = true;
 }

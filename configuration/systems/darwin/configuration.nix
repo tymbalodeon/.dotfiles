@@ -7,7 +7,8 @@
 
   imports = [
     inputs.home-manager.darwinModules.home-manager
-    ../../modules/users
+    ../../modules/users/users.nix
+    ../../modules/users/users-darwin.nix
   ];
 
   nix.enable = false;
@@ -39,5 +40,5 @@
     stateVersion = 6;
   };
 
-  users.darwin.enable = true;
+  users-darwin.enable = true;
 }

@@ -67,16 +67,16 @@
             la = "ls --long --all";
             lsa = "ls --all";
 
-            ssh = let
-              # FIXME
-              defaultUser = import ../users/shared.nix;
-              filename = "${nu_default_config_dir}/ssh.nu";
+            # FIXME
+            # ssh = let
+            #   defaultUser = import ../users/shared.nix;
+            #   filename = "${nu_default_config_dir}/ssh.nu";
 
-              homeDirectory =
-                if pkgs.stdenv.isLinux
-                then defaultUser.homeDirectoryLinux
-                else defaultUser.homeDirectoryDarwin;
-            in "nu '${builtins.toString homeDirectory}/${filename}'";
+            #   homeDirectory =
+            #     if pkgs.stdenv.isLinux
+            #     then defaultUser.homeDirectoryLinux
+            #     else defaultUser.homeDirectoryDarwin;
+            # in "nu '${builtins.toString homeDirectory}/${filename}'";
           }
           // (import ../aliases.nix);
       }

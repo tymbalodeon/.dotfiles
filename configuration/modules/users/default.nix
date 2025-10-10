@@ -1,32 +1,12 @@
-{
-  hostName,
-  isNixOS,
-  pkgs,
-  ...
-}: rec {
-  home.username = username;
-
-  home-manager.users.${username} = let
-    system = with pkgs.stdenv;
-      if isDarwin
-      then "darwin"
-      else if isLinux
-      then "linux"
-      else if isNixOS
-      then "nixos"
-      else "";
-  in
-    import ../../systems/${system}/hosts/${hostName}/home.nix;
+let
+  user = import ./user.nix;
+in {
+  home.username = user.username;
 
   imports = [
-    ./benrosen.nix
-    ./darwin.nix
-    ./linux.nix
-    ./nixos.nix
-    ./work.nix
+    ./users-benrosen.nix
+    ./users-work.nix
   ];
 
-  name = "Ben Rosen";
-  programs.jujutsu.settings.user.name = name;
-  username = "benrosen";
+  programs.jujutsu.settings.user.name = user.name;
 }

@@ -5,21 +5,21 @@
   ...
 }:
 with lib; {
-  config = mkIf config.users.work.enable {
+  config = mkIf config.users-benrosen.enable {
     home.activation.nb = hm.dag.entryAfter ["writeBoundary"] (
       import ../nb/entry-after.nix {
         inherit pkgs;
-        nbRemote = "git@github.com:benjaminrosen/notes.git";
+        nbRemote = "git@github.com:tymbalodeon/notes.git";
       }
     );
 
     programs = let
-      email = "benrosen@upenn.edu";
+      email = "benjamin.j.rosen@gmail.com";
     in {
       git = {
         extraConfig = {
-          github.user = "benjaminrosen";
-          gitlab.user = "benrosen";
+          github.user = "tymbalodeon";
+          gitlab.user = "benjaminrosen";
         };
 
         userEmail = email;
@@ -29,6 +29,6 @@ with lib; {
     };
   };
 
-  options.users.work.enable =
-    mkEnableOption "enables user configuration for \"work\"";
+  options.users-benrosen.enable =
+    mkEnableOption "enables user configuration for \"benrosen\"";
 }

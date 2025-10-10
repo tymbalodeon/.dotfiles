@@ -5,6 +5,4 @@
     ../../home.nix
     ../../modules/ghostty
   ];
-
-  users.linux.enable = true;
 }

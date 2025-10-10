@@ -24,8 +24,6 @@
       );
   };
 
-  imports = [../users/nixos.nix];
-
   programs = {
     ncmpcpp = {
       bindings = [
@@ -80,6 +78,8 @@
       then true
       else false;
 
+    # FIXME: pull this from users?
+    musicDirectory = "";
     network.startWhenNeeded = true;
   };
 }

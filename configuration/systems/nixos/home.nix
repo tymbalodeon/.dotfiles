@@ -1,5 +1,10 @@
 {pkgs, ...}: {
   dconf.settings = {
+    # TODO: test this!
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
+
     "org/nemo/preferences" = {
       default-folder-viewer = "list-view";
       show-hidden-files = true;
@@ -46,6 +51,7 @@
     ../../modules/hypr
     ../../modules/rofi
     ../../modules/swaync
+    ../../modules/users/users-nixos-home.nix
     ../../modules/waybar
   ];
 

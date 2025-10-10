@@ -5,21 +5,21 @@
   ...
 }:
 with lib; {
-  config = mkIf config.users.benrosen.enable {
+  config = mkIf config.users-work.enable {
     home.activation.nb = hm.dag.entryAfter ["writeBoundary"] (
       import ../nb/entry-after.nix {
         inherit pkgs;
-        nbRemote = "git@github.com:tymbalodeon/notes.git";
+        nbRemote = "git@github.com:benjaminrosen/notes.git";
       }
     );
 
     programs = let
-      email = "benjamin.j.rosen@gmail.com";
+      email = "benrosen@upenn.edu";
     in {
       git = {
         extraConfig = {
-          github.user = "tymbalodeon";
-          gitlab.user = "benjaminrosen";
+          github.user = "benjaminrosen";
+          gitlab.user = "benrosen";
         };
 
         userEmail = email;
@@ -27,8 +27,8 @@ with lib; {
 
       jujutsu.settings.user.email = email;
     };
-
-    options.users.benrosen.emable =
-      mkEnableOption "enables user configuration for \"benrosen\"";
   };
+
+  options.users-work.enable =
+    mkEnableOption "enables user configuration for \"work\"";
 }

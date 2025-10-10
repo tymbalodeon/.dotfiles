@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{
   programs.bash = {
     enable = true;
     historyControl = ["erasedups"];
@@ -12,17 +12,17 @@
         ls = "eza --oneline";
         lsa = "eza --all --oneline";
 
-        ssh = let
-          # FIXME
-          defaultUser = import ../users/shared.nix;
-          filename = builtins.toString ./ssh.sh;
+        # FIXME
+        # ssh = let
+        #   defaultUser = import ../users/shared.nix;
+        #   filename = builtins.toString ./ssh.sh;
 
-          homeDirectory = builtins.toString (
-            if pkgs.stdenv.isLinux
-            then defaultUser.homeDirectoryLinux
-            else defaultUser.homeDirectoryDarwin
-          );
-        in ". '${homeDirectory}/${filename}'";
+        #   homeDirectory = builtins.toString (
+        #     if pkgs.stdenv.isLinux
+        #     then defaultUser.homeDirectoryLinux
+        #     else defaultUser.homeDirectoryDarwin
+        #   );
+        # in ". '${homeDirectory}/${filename}'";
       }
       // (import ../aliases.nix);
   };
