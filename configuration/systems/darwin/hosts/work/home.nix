@@ -1,6 +1,3 @@
 {
-  imports = [
-    ../../home.nix
-    ../../../../modules/work
-  ];
+  imports = [../../home.nix];
 }

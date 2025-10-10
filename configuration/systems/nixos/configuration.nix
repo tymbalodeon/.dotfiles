@@ -58,6 +58,7 @@
 
   imports = [
     inputs.home-manager.nixosModules.default
+    ../../modules/users
   ];
 
   networking = {
@@ -127,4 +128,5 @@
 
   system.stateVersion = "23.11";
   time.timeZone = "America/New_York";
+  users.nixos.enable = true;
 }

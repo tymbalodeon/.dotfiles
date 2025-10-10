@@ -7,44 +7,51 @@
   modulesPath,
   ...
 }: {
-  boot = {
-    extraModulePackages = [];
+  boot.extraModulePackages = [];
 
-    initrd = {
-      availableKernelModules = [
-        "nvme"
-        "xhci_pci"
-        "thunderbolt"
-        "usbhid"
-      ];
+  boot.initrd.availableKernelModules = [
+    "nvme"
+    "sd_mod"
+    "thunderbolt"
+    "uas"
+    "usbhid"
+    "xhci_pci"
+  ];
 
-      kernelModules = [];
-    };
-
-    kernelModules = ["kvm-amd"];
-  };
+  boot.initrd.kernelModules = [];
+  boot.kernelModules = ["kvm-amd"];
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-uuid/c4b8b2b1-7e05-4649-805e-a568db569a31";
+      device = "/dev/disk/by-uuid/9f554bb6-a7ce-4445-9ffe-7e3abc0c5e6f";
       fsType = "ext4";
     };
 
     "/boot" = {
-      device = "/dev/disk/by-uuid/1EC6-4FE0";
+      device = "/dev/disk/by-uuid/CAC4-06A7";
       fsType = "vfat";
-      options = ["fmask=0022" "dmask=0022"];
+      options = ["fmask=0077" "dmask=0077"];
     };
   };
 
-  imports = [(modulesPath + "/installer/scan/not-detected.nix")];
+  hardware.cpu.amd.updateMicrocode =
+    lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  swapDevices = [
-    {device = "/dev/disk/by-uuid/83f4b435-d72e-40e4-a8c6-fb67e871950e";}
+  imports = [
+    (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  hardware.cpu.amd.updateMicrocode =
-    lib.mkDefault config.hardware.enableRedistributableFirmware;
+  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+  # (the default) this is the recommended approach. When using systemd-networkd it's
+  # still possible to use this option, but it's recommended to use it in conjunction
+  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+  networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp1s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp2s0.useDHCP = lib.mkDefault true;
+
+  swapDevices = [
+    {device = "/dev/disk/by-uuid/65f0e769-c601-4800-b197-cdc71acd83df";}
+  ];
 }

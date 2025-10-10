@@ -4,7 +4,11 @@
   ...
 }: {
   home-manager.extraSpecialArgs = {inherit inputs isNixOS;};
-  imports = [inputs.home-manager.darwinModules.home-manager];
+
+  imports = [
+    inputs.home-manager.darwinModules.home-manager
+    ../../modules/users
+  ];
 
   nix.enable = false;
   security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
@@ -34,4 +38,6 @@
 
     stateVersion = 6;
   };
+
+  users.darwin.enable = true;
 }

@@ -11,6 +11,7 @@
 
   imports = [
     ../../home-standalone.nix
-    ../../../../modules/work
   ];
+
+  users.work.enable = true;
 }
