@@ -3,7 +3,6 @@ source ($nu.default-config-dir | path join f.nu)
 source ($nu.default-config-dir | path join fonts.nu)
 source ($nu.default-config-dir | path join music.nu)
 source ($nu.default-config-dir | path join src.nu)
-source ($nu.default-config-dir | path join ssh.nu)
 source ($nu.default-config-dir | path join theme-function.nu)
 source ($nu.default-config-dir | path join theme.nu)
 

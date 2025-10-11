@@ -11,9 +11,6 @@
         default-command = "log";
         pager = "less -FRX";
       };
-
-      # TODO: remove me if this works via the users module
-      # user.name = "Ben Rosen";
     };
   };
 }

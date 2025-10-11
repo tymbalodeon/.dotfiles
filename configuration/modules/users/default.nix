@@ -8,5 +8,21 @@ in {
     ./users-work.nix
   ];
 
-  programs.jujutsu.settings.user.name = user.name;
+  programs = let
+    email = "benjamin.j.rosen@gmail.com";
+  in {
+    git = {
+      extraConfig = {
+        github.user = "tymbalodeon";
+        gitlab.user = "benjaminrosen";
+      };
+
+      userEmail = email;
+    };
+
+    jujutsu.settings.user = {
+      email = email;
+      name = user.name;
+    };
+  };
 }

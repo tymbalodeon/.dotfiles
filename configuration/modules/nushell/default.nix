@@ -23,7 +23,6 @@
         "${nu_default_config_dir}/music.nu".source = ./music.nu;
         "${nu_default_config_dir}/prompt.nu".source = ./prompt.nu;
         "${nu_default_config_dir}/src.nu".source = ./src.nu;
-        "${nu_default_config_dir}/ssh.nu".source = ./ssh.nu;
         "${nu_default_config_dir}/theme.nu".source = ./theme.nu;
 
         "${nu_default_config_dir}/theme-function.nu".source =
@@ -66,18 +65,9 @@
             l = "ls --long";
             la = "ls --long --all";
             lsa = "ls --all";
-
-            # FIXME
-            # ssh = let
-            #   defaultUser = import ../users/shared.nix;
-            #   filename = "${nu_default_config_dir}/ssh.nu";
-
-            #   homeDirectory =
-            #     if pkgs.stdenv.isLinux
-            #     then defaultUser.homeDirectoryLinux
-            #     else defaultUser.homeDirectoryDarwin;
-            # in "nu '${builtins.toString homeDirectory}/${filename}'";
+            ssh = "nu '${./ssh.nu}'";
           }
+          # FIXME: use imports
           // (import ../aliases.nix);
       }
       // lib.optionalAttrs pkgs.stdenv.isDarwin {
