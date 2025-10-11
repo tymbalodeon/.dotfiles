@@ -3,7 +3,9 @@
   pkgs,
   ...
 }: {
-  home = {
+  home = let
+    user = import ./modules/users/user.nix;
+  in {
     packages = with pkgs;
       [
         dogdns
@@ -36,6 +38,7 @@
       );
 
     stateVersion = "23.11";
+    username = user.username;
   };
 
   imports = [./modules];

@@ -21,7 +21,6 @@
     ./taskwarrior
     ./tealdeer
     ./tinty
-    ./users
     ./vivid
     ./yazi
     ./zathura

@@ -51,7 +51,6 @@
     ../../modules/hypr
     ../../modules/rofi
     ../../modules/swaync
-    ../../modules/users/users-nixos-home.nix
     ../../modules/waybar
   ];
 

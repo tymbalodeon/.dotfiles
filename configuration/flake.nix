@@ -44,7 +44,6 @@
           modules = [./systems/darwin/hosts/${hostName}/configuration.nix];
 
           specialArgs = {
-            # TODO: confirm hostName is used
             inherit hostName inputs;
             isNixOS = false;
           };
@@ -59,8 +58,7 @@
       (hostName: {
         ${hostName} = home-manager.lib.homeManagerConfiguration {
           extraSpecialArgs = {
-            # TODO: confirm hostName is used
-            inherit hostName inputs nixgl;
+            inherit inputs nixgl;
             isNixOS = false;
           };
 

@@ -4,5 +4,6 @@
 
   imports = [
     ../../home.nix
+    ../../../../hosts/ruzia.nix
   ];
 }

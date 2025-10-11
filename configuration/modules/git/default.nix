@@ -1,72 +1,109 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
-    gh
-    glab
-    siketyan-ghr
-  ];
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
+  cfg = config.git;
+in {
+  config = {
+    home.packages = with pkgs; [
+      gh
+      glab
+      siketyan-ghr
+    ];
 
-  programs.git = {
-    aliases = {
-      a = "add";
-      b = "branch";
-      cm = "commit -m";
-      ch = "checkout";
-      cl = "clone";
-      d = "diff";
-      ds = "diff --staged";
+    programs.git = {
+      aliases = {
+        a = "add";
+        b = "branch";
+        cm = "commit -m";
+        ch = "checkout";
+        cl = "clone";
+        d = "diff";
+        ds = "diff --staged";
 
-      l = let
-        commit = "%C(auto)%h%d%C(reset)";
-        time = "%C(dim)%ar%C(reset)";
-        message = "%C(bold)%s%C(reset)";
-        author = "%C(dim blue)(%an)%C(reset)";
-        format = "${commit} ${time} ${message} ${author}";
-      in "log --graph --pretty=format:'${format}'";
+        l = let
+          commit = "%C(auto)%h%d%C(reset)";
+          time = "%C(dim)%ar%C(reset)";
+          message = "%C(bold)%s%C(reset)";
+          author = "%C(dim blue)(%an)%C(reset)";
+          format = "${commit} ${time} ${message} ${author}";
+        in "log --graph --pretty=format:'${format}'";
 
-      last = "log -1 HEAD --stat";
-      m = "merge";
-      p = "push";
-      pl = "pull";
-      r = "restore";
-      rh = "reset --hard";
-      rs = "restore --staged";
-      s = "status";
-      sh = "stash";
-      sl = "stash list";
-      sp = "stash pop";
-      sw = "switch";
-      tg = "tag";
-      tracked = "ls-tree --full-tree --name-only -r HEAD";
-      tr = "tracked";
-    };
+        last = "log -1 HEAD --stat";
+        m = "merge";
+        p = "push";
+        pl = "pull";
+        r = "restore";
+        rh = "reset --hard";
+        rs = "restore --staged";
+        s = "status";
+        sh = "stash";
+        sl = "stash list";
+        sp = "stash pop";
+        sw = "switch";
+        tg = "tag";
+        tracked = "ls-tree --full-tree --name-only -r HEAD";
+        tr = "tracked";
+      };
 
-    delta = {
+      delta = {
+        enable = true;
+
+        options = {
+          diff-so-fancy = true;
+          navigate = true;
+          syntax-theme = "base16";
+        };
+      };
+
       enable = true;
 
-      options = {
-        diff-so-fancy = true;
-        navigate = true;
-        syntax-theme = "base16";
-      };
-    };
+      extraConfig = {
+        core.excludesfile = "~/.gitignore_global";
+        default.push = "upstream";
+        diff.colorMoved = "default";
+        github.user = cfg.github.user;
+        gitlab.user = cfg.gitlab.user;
+        init.defaultBranch = "trunk";
 
-    enable = true;
+        merge = {
+          conflictstyle = "diff3";
+          ff = "only";
+        };
 
-    extraConfig = {
-      core.excludesfile = "~/.gitignore_global";
-      default.push = "upstream";
-      diff.colorMoved = "default";
-      init.defaultBranch = "trunk";
-
-      merge = {
-        conflictstyle = "diff3";
-        ff = "only";
+        pull.rebase = false;
+        push.default = "current";
       };
 
-      pull.rebase = false;
-      push.default = "current";
+      userEmail = cfg.userEmail;
+      userName = cfg.userName;
+    };
+  };
+
+  options.git = with types; let
+    user = import ../../modules/users/user.nix;
+  in {
+    github.user = mkOption {
+      default = user.githubUsername;
+      type = str;
     };
 
-    userName = "Ben Rosen";
+    gitlab.user = mkOption {
+      default = user.gitlabUsername;
+      type = str;
+    };
+
+    userEmail = mkOption {
+      default = user.email;
+      type = str;
+    };
+
+    userName = mkOption {
+      default = user.name;
+      type = str;
+    };
   };
 }
