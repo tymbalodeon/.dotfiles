@@ -14,7 +14,7 @@ in {
       activation.nb = let
         git = "${pkgs.git}/bin/git";
       in
-        lib.hm.dag.entryAfter ["writeBoundary"]
+        hm.dag.entryAfter ["writeBoundary"]
         ''
           nb_directory=$HOME/.nb
           nb_home_notebook=$nb_directory/home

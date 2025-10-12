@@ -17,7 +17,6 @@ in {
         import ../../systems/darwin/hosts/${hostName}/home.nix;
     };
 
-    imports = [inputs.home-manager.darwinModules.home-manager];
     nix.enable = false;
     security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
 
@@ -50,6 +49,8 @@ in {
 
     users.users.${cfg.username}.home = /Users/${cfg.username};
   };
+
+  imports = [inputs.home-manager.darwinModules.home-manager];
 
   options.darwin = with types; let
     user = import ../../modules/users/user.nix;
