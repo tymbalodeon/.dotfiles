@@ -9,19 +9,45 @@ with lib; let
 in {
   config = {
     home = {
-      activation.nb = lib.hm.dag.entryAfter ["writeBoundary"] (
-        import ./entry-after.nix {
-          inherit pkgs;
-          nbRemote = cfg.remote;
-        }
-      );
+      # TODO: handle $VERBOSE and $DRY_RUN
+      # TODO: is it possible to git pull the remote notes here?
+      activation.nb = with pkgs;
+        lib.hm.dag.entryAfter ["writeBoundary"]
+        ''
+          nb_directory=$HOME/.nb
+          nb_home_notebook=$nb_directory/home
+          nb_current_notebook=$nb_directory/.current
 
-      file = let
-        nu_default_config_dir = config.programs.nushell.configDirectory;
-      in {
+          if [[ ! -d $nb_home_notebook ]]; then
+          	echo Creating "$nb_home_notebook"
+          	mkdir --parents "$nb_home_notebook"
+          	${git} -C "$nb_home_notebook" init
+          fi
+
+          if [[ ! -f $nb_current_notebook ]]; then
+            echo Setting the current notebook to \"home\"
+          	echo home >"$nb_current_notebook"
+          fi
+
+          if [[ -n "${cfg.remote}" ]]; then
+          	origin=$(
+              ${git} -C "$nb_home_notebook" remote get-url origin 2>/dev/null ||
+                echo ""
+            )
+
+          	if [[ -n $origin ]] && [[ $origin != "${cfg.remote}" ]]; then
+          		echo Setting nb remote to "${cfg.remote}"
+          		${git} -C "$nb_home_notebook" remote set-url origin "${cfg.remote}"
+          	elif [[ -z $origin ]]; then
+          		echo Adding nb remote "${cfg.remote}"
+          		${git} -C "$nb_home_notebook" remote add origin "${cfg.remote}"
+          	fi
+          fi
+        '';
+
+      file = {
         ".nb/.plugins/csv.nb-plugin".source = ./csv.nb-plugin;
         ".nb/.plugins/tags.nb-plugin".source = ./tags.nb-plugin;
-        "${nu_default_config_dir}/nb-cd.nu".source = ./nb-cd.nu;
       };
 
       packages = with pkgs; [
