@@ -11,5 +11,6 @@
 
   imports = [
     ../../home-standalone.nix
+    ../../../../hosts/work.nix
   ];
 }

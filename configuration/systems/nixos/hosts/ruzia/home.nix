@@ -4,6 +4,8 @@
 
   imports = [
     ../../home.nix
-    ../../../../hosts/ruzia.nix
+    ../../../../modules/music-player
   ];
+
+  music-player.musicDirectory = "/run/media/benrosen/G-DRIVE Thunderbolt 3/Music";
 }

@@ -1,3 +1,6 @@
 {
-  imports = [../../home.nix];
+  imports = [
+    ../../home.nix
+    ../../../../hosts/work.nix
+  ];
 }
