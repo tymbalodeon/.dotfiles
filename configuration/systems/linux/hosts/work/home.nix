@@ -10,7 +10,7 @@
   };
 
   imports = [
+    ../../../common/work.nix
     ../../home-standalone.nix
-    ../../../../hosts/work.nix
   ];
 }
