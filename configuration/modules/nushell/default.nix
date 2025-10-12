@@ -60,15 +60,12 @@
           show_banner = false;
         };
 
-        shellAliases =
-          {
-            l = "ls --long";
-            la = "ls --long --all";
-            lsa = "ls --all";
-            ssh = "nu '${./ssh.nu}'";
-          }
-          # FIXME: use imports
-          // (import ../aliases.nix);
+        shellAliases = {
+          l = "ls --long";
+          la = "ls --long --all";
+          lsa = "ls --all";
+          ssh = "nu '${./ssh.nu}'";
+        };
       }
       // lib.optionalAttrs pkgs.stdenv.isDarwin {
         environmentVariables = {

@@ -1,6 +1,5 @@
 {
   imports = [
-    ./bash
     ./bat
     ./bottom
     ./eza
@@ -15,9 +14,9 @@
     ./kitty
     ./music-player
     ./nb
-    ./nushell
     ./rclone
     ./ripgrep
+    ./shell
     ./taskwarrior
     ./tealdeer
     ./tinty
