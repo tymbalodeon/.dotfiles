@@ -11,7 +11,9 @@ in {
     home = {
       # TODO: handle $VERBOSE and $DRY_RUN
       # TODO: is it possible to git pull the remote notes here?
-      activation.nb = with pkgs;
+      activation.nb = let
+        git = "${pkgs.git}/bin/git";
+      in
         lib.hm.dag.entryAfter ["writeBoundary"]
         ''
           nb_directory=$HOME/.nb

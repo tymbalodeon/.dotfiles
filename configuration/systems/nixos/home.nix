@@ -29,10 +29,8 @@
 
   home = {
     packages = with pkgs; [
-      brightnessctl
       equibop
-      hyprlock
-      hyprpicker
+      maestral
       nemo
       wev
       wl-clipboard
