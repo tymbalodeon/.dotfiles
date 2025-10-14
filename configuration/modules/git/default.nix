@@ -4,10 +4,10 @@
   pkgs,
   ...
 }:
-with lib; let
-  cfg = config.git;
-in {
-  config = {
+with lib; {
+  config = let
+    cfg = config.git;
+  in {
     home.packages = with pkgs; [
       gh
       glab

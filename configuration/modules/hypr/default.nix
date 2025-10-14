@@ -5,10 +5,10 @@
   pkgs,
   ...
 }:
-with lib; let
-  cfg = config.hypr;
-in {
-  config = {
+with lib; {
+  config = let
+    cfg = config.hypr;
+  in {
     home = {
       file = {
         ".config/hypr/hypridle.conf".source = ./hypridle.conf;

@@ -6,10 +6,10 @@
   lib,
   ...
 }:
-with lib; let
-  cfg = config.darwin;
-in {
-  config = {
+with lib; {
+  config = let
+    cfg = config.darwin;
+  in {
     home-manager = {
       extraSpecialArgs = {inherit inputs isNixOS;};
 

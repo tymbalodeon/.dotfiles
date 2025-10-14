@@ -6,10 +6,10 @@
   pkgs,
   ...
 }:
-with lib; let
-  cfg = config.music-player;
-in {
-  config = {
+with lib; {
+  config = let
+    cfg = config.music-player;
+  in {
     home = {
       file = {
         ".config/rmpc/notify.sh".source = ./notify.sh;

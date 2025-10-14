@@ -1,6 +1,8 @@
 {
   imports = [
-    ../../home.nix
-    {programs.nushell.configDirectory = "Library/Application Support/nushell";}
+    ../common/home.nix
+    ../../modules/nushell
   ];
+
+  nushell.configDirectory = "Library/Application Support/nushell";
 }

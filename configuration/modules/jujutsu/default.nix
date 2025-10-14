@@ -4,10 +4,10 @@
   pkgs,
   ...
 }:
-with lib; let
-  cfg = config.jujutsu;
-in {
-  config = {
+with lib; {
+  config = let
+    cfg = config.jujutsu;
+  in {
     home.packages = [pkgs.jjui];
 
     programs.jujutsu = {

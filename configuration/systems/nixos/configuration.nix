@@ -7,10 +7,10 @@
   pkgs,
   ...
 }:
-with lib; let
-  cfg = config.nixos;
-in {
-  config = {
+with lib; {
+  config = let
+    cfg = config.nixos;
+  in {
     boot.loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;

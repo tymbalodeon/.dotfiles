@@ -13,6 +13,12 @@ set working-directory := "../.."
 @clean *args:
     .environments/dotfiles/scripts/clean.nu {{ args }}
 
+# List available configurations
+@configurations *args:
+    .environments/dotfiles/scripts/configurations.nu {{ args }}
+
+alias configs := configurations
+
 # View the diff between hosts
 [no-cd]
 @diff *args:
@@ -27,16 +33,14 @@ set working-directory := "../.."
 @generations *help:
     .environments/dotfiles/scripts/generations.nu {{ help }}
 
-# List available configurations
-@configurations *args:
-    .environments/dotfiles/scripts/configurations.nu {{ args }}
-
-alias configs := configurations
-
 # List flake inputs
 [working-directory("./configuration")]
 @inputs *help:
     ../.environments/dotfiles/scripts/inputs.nu {{ help }}
+
+# Build ISO
+@iso *args:
+    .environments/dotfiles/scripts/iso.nu {{ args }}
 
 # Replace identical files in the Nix store by hard links
 @optimise *help:

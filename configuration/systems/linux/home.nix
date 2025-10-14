@@ -2,7 +2,7 @@
   home.packages = [pkgs.brave];
 
   imports = [
-    ../../home.nix
+    ../common/home.nix
     ../../modules/ghostty
   ];
 }

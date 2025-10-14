@@ -2,6 +2,7 @@
   imports = [
     ./bat
     ./bottom
+    ./direnv
     ./eza
     ./fastfetch
     ./fonts

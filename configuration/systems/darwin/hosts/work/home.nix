@@ -1,6 +1,6 @@
 {
   imports = [
-    ../../../common/work.nix
+    ../../../common/hosts/work.nix
     ../../home.nix
   ];
 }

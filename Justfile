@@ -100,6 +100,7 @@ alias diff := dotfiles::diff
 alias files := dotfiles::files
 alias generations := dotfiles::generations
 alias inputs := dotfiles::inputs
+alias iso := dotfiles::iso
 alias leaks := git::leaks
 alias optimise := dotfiles::optimise
 alias prune := dotfiles::prune

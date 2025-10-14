@@ -4,10 +4,10 @@
   pkgs,
   ...
 }:
-with lib; let
-  cfg = config.nb;
-in {
-  config = {
+with lib; {
+  config = let
+    cfg = config.nb;
+  in {
     home = {
       # TODO: handle $VERBOSE and $DRY_RUN
       # TODO: is it possible to git pull the remote notes here?
