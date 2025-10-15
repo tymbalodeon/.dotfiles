@@ -69,24 +69,19 @@
       "linux";
 
     nixosConfigurations =
-      (mkHosts (hostName: {
-          ${hostName} = nixpkgs.lib.nixosSystem {
-            modules = [
-              solaar.nixosModules.default
-              ./systems/nixos/hosts/${hostName}/configuration.nix
-            ];
+      mkHosts (hostName: {
+        ${hostName} = nixpkgs.lib.nixosSystem {
+          modules = [
+            solaar.nixosModules.default
+            ./systems/nixos/hosts/${hostName}/configuration.nix
+          ];
 
-            specialArgs = {
-              inherit hostName inputs;
-              isNixOS = true;
-            };
+          specialArgs = {
+            inherit hostName inputs;
+            isNixOS = true;
           };
-        })
-        "nixos")
-      // {
-        iso = nixpkgs.lib.nixosSystem {
-          modules = [./systems/nixos/hosts/iso/configuration.nix];
         };
-      };
+      })
+      "nixos";
   };
 }

@@ -38,10 +38,6 @@ alias configs := configurations
 @inputs *help:
     ../.environments/dotfiles/scripts/inputs.nu {{ help }}
 
-# Build ISO
-@iso *args:
-    .environments/dotfiles/scripts/iso.nu {{ args }}
-
 # Replace identical files in the Nix store by hard links
 @optimise *help:
     .environments/dotfiles/scripts/optimise.nu {{ help }}
