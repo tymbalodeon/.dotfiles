@@ -6,7 +6,11 @@
   pkgs,
   ...
 }: {
-  programs.kitty = {
+  programs.kitty = let
+    # TODO: use let inherit instead of with everywhere?
+    # see: https://discourse.nixos.org/t/best-practices-with-with/58857/2
+    inherit (pkgs.stdenv) isDarwin isLinux;
+  in {
     enable = true;
 
     extraConfig = ''
@@ -24,7 +28,7 @@
     package =
       if isNixOS
       then pkgs.kitty
-      else if pkgs.stdenv.isLinux
+      else if isLinux
       then config.lib.nixGL.wrap pkgs.kitty
       # FIXME: pinned packages that are broken in more recent commits
       else inputs.nixpkgs-kitty.legacyPackages.x86_64-darwin.kitty;
@@ -36,16 +40,16 @@
         enabled_layouts = "grid, stack, vertical, horizontal, tall";
         inactive_text_alpha = 0.5;
         include = "theme.conf";
+        shell = "${pkgs.nushell}/bin/nu";
         tab_bar_edge = "top";
         tab_bar_style = "powerline";
         tab_powerline_style = "slanted";
       }
-      // lib.optionalAttrs pkgs.stdenv.isDarwin {
+      // lib.optionalAttrs isDarwin {
         hide_window_decorations = "yes";
         macos_quit_when_last_window_closed = "yes";
-        shell = "${pkgs.nushell}/bin/nu";
       }
-      // lib.optionalAttrs pkgs.stdenv.isLinux {kitty_mod = "ctrl+shift";};
+      // lib.optionalAttrs isLinux {kitty_mod = "ctrl+shift";};
 
     themeFile = "Catppuccin-Mocha";
   };

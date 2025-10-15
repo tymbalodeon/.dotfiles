@@ -5,7 +5,10 @@
   pkgs,
   ...
 }: {
-  home.packages = [pkgs.xclip];
+  home = {
+    homeDirectory = "/home/${config.home.username}";
+    packages = [pkgs.xclip];
+  };
 
   imports = [
     ./home.nix
