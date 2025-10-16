@@ -4,7 +4,6 @@
   inputs,
   isNixOS,
   lib,
-  pkgs-dab3a6e,
   pkgs-stable,
   ...
 }:
@@ -24,7 +23,6 @@ with lib; {
     nixpkgs.overlays = [
       (final: prev: {
         kitty = pkgs-stable.kitty;
-        mpd = pkgs-dab3a6e.mpd;
         nix-search-cli = pkgs-stable.nix-search-cli;
       })
     ];

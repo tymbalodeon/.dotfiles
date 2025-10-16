@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   isNixOS,
   lib,
   pkgs,
@@ -18,9 +19,10 @@ with lib; {
       packages = with pkgs;
         [mpc]
         ++ (
-          if isNixOS
-          then []
-          else [mpd]
+          if stdenv.isDarwin
+          # TODO: why doesn't this work as an overlay?
+          then [inputs.nixpkgs-stable.legacyPackages.x86_64-darwin.mpd]
+          else []
         );
     };
 

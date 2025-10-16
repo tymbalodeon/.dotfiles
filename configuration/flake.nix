@@ -11,7 +11,6 @@
     };
 
     nixgl.url = "github:nix-community/nixGL";
-    nixpkgs-dab3a6e.url = "github:nixos/nixpkgs/dab3a6e781554f965bde3def0aa2fda4eb8f1708";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -26,7 +25,6 @@
     nix-darwin,
     nixgl,
     nixpkgs,
-    nixpkgs-dab3a6e,
     nixpkgs-stable,
     solaar,
     ...
@@ -51,11 +49,6 @@
               isNixOS = false;
 
               pkgs-stable = import nixpkgs-stable {
-                inherit system;
-                config.allowUnfree = true;
-              };
-
-              pkgs-dab3a6e = import nixpkgs-dab3a6e {
                 inherit system;
                 config.allowUnfree = true;
               };
