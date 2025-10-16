@@ -4,6 +4,7 @@
   inputs,
   isNixOS,
   lib,
+  pkgs-stable,
   ...
 }:
 with lib; {
@@ -18,6 +19,14 @@ with lib; {
     };
 
     nix.enable = false;
+
+    nixpkgs.overlays = [
+      (final: prev: {
+        kitty = pkgs-stable.kitty;
+        nix-search-cli = pkgs-stable.nix-search-cli;
+      })
+    ];
+
     security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
 
     system = {

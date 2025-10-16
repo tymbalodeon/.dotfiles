@@ -14,9 +14,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # FIXME: pinned packages that are broken in more recent commits
-    nixpkgs-kitty.url = "github:nixos/nixpkgs/dab3a6e781554f965bde3def0aa2fda4eb8f1708";
-    nixpkgs-mpd.url = "github:nixos/nixpkgs/dab3a6e781554f965bde3def0aa2fda4eb8f1708";
-    nixpkgs-nix-search-cli.url = "github:nixos/nixpkgs/dab3a6e781554f965bde3def0aa2fda4eb8f1708";
+    nixpkgs-dab3a6e.url = "github:nixos/nixpkgs/dab3a6e781554f965bde3def0aa2fda4eb8f1708";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
 
     solaar = {
       inputs.nixpkgs.follows = "nixpkgs";
@@ -29,6 +28,7 @@
     nix-darwin,
     nixgl,
     nixpkgs,
+    nixpkgs-stable,
     solaar,
     ...
   } @ inputs: let
@@ -40,16 +40,23 @@
     darwinConfigurations =
       mkHosts
       (hostName: {
-        ${hostName} = nix-darwin.lib.darwinSystem {
-          modules = [./systems/darwin/hosts/${hostName}/configuration.nix];
-
-          specialArgs = {
-            inherit hostName inputs;
-            isNixOS = false;
-          };
-
+        ${hostName} = let
           system = "x86_64-darwin";
-        };
+        in
+          nix-darwin.lib.darwinSystem {
+            inherit system;
+            modules = [./systems/darwin/hosts/${hostName}/configuration.nix];
+
+            specialArgs = {
+              inherit hostName inputs;
+              isNixOS = false;
+
+              pkgs-stable = import nixpkgs-stable {
+                inherit system;
+                config.allowUnfree = true;
+              };
+            };
+          };
       })
       "darwin";
 

@@ -1,7 +1,5 @@
 {
   config,
-  inputs,
-  isNixOS,
   lib,
   pkgs,
   ...
@@ -26,12 +24,9 @@
     keybindings."kitty_mod+enter" = "launch --cwd=current --type=window";
 
     package =
-      if isNixOS
-      then pkgs.kitty
-      else if isLinux
+      if isLinux
       then config.lib.nixGL.wrap pkgs.kitty
-      # FIXME: pinned packages that are broken in more recent commits
-      else inputs.nixpkgs-kitty.legacyPackages.x86_64-darwin.kitty;
+      else pkgs.kitty;
 
     settings =
       {
