@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   isNixOS,
   lib,
   pkgs,
@@ -17,16 +16,11 @@ with lib; {
       };
 
       packages = with pkgs;
-        [
-          mpc
-        ]
+        [mpc]
         ++ (
           if isNixOS
           then []
-          else [
-            # FIXME: pinned packages that are broken in more recent commits
-            inputs.nixpkgs-mpd.legacyPackages.x86_64-darwin.mpd
-          ]
+          else [mpd]
         );
     };
 
