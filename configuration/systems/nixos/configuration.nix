@@ -134,6 +134,7 @@ with lib; {
 
       solaar.enable = true;
       udisks2.enable = true;
+      wayland-pipewire-idle-inhibit.enable = true;
     };
 
     system.stateVersion = "23.11";

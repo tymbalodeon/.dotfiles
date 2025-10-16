@@ -18,6 +18,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:Svenum/Solaar-Flake/main";
     };
+
+    wayland-pipewire-idle-inhibit.url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
   };
 
   outputs = {
@@ -27,6 +29,7 @@
     nixpkgs,
     nixpkgs-stable,
     solaar,
+    wayland-pipewire-idle-inhibit,
     ...
   } @ inputs: let
     mkHosts = mkHost: system:
@@ -78,6 +81,7 @@
           modules = [
             solaar.nixosModules.default
             ./systems/nixos/hosts/${hostName}/configuration.nix
+            wayland-pipewire-idle-inhibit.nixosModules.default
           ];
 
           specialArgs = {
