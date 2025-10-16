@@ -32,6 +32,10 @@ def "music current" [
   if (is-nixos) {
     let data = (rmpc song | from json)
 
+    if ($data | is-empty) {
+      return
+    }
+
     if $all {
       $data
     } else {
