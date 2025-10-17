@@ -19,8 +19,6 @@
       url = "github:Svenum/Solaar-Flake/main";
     };
 
-    # FIXME: this doesn't prevent idle when rmpc is playing...either fix or
-    # remove!
     wayland-pipewire-idle-inhibit.url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
   };
 
