@@ -14,6 +14,11 @@
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    rofi-theme = {
+      flake = false;
+      url = "github:catppuccin/rofi";
+    };
+
     solaar = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:Svenum/Solaar-Flake/main";
