@@ -1,10 +1,6 @@
 {pkgs, ...}: {
   programs.bat = {
-    config = {
-      style = "plain";
-      theme = "base16";
-    };
-
+    config.style = "plain";
     enable = true;
     extraPackages = [pkgs.bat-extras.batman];
 

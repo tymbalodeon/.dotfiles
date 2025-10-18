@@ -1,10 +1,5 @@
 {pkgs, ...}: {
   dconf.settings = {
-    # TODO: test this!
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
-    };
-
     "org/nemo/preferences" = {
       default-folder-viewer = "list-view";
       show-hidden-files = true;
@@ -18,11 +13,6 @@
 
     iconTheme = {
       name = "Adwaita";
-      package = gnomeTheme;
-    };
-
-    theme = {
-      name = "Adwaita-dark";
       package = gnomeTheme;
     };
   };
@@ -51,8 +41,6 @@
     ../../modules/swaync
     ../../modules/waybar
   ];
-
-  programs.kitty.font.size = 8;
 
   services.udiskie = {
     enable = true;

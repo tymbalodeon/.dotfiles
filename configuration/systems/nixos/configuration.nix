@@ -137,6 +137,12 @@ with lib; {
       wayland-pipewire-idle-inhibit.enable = true;
     };
 
+    stylix = {
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+      enable = true;
+      polarity = "dark";
+    };
+
     system.stateVersion = "23.11";
     time.timeZone = "America/New_York";
 
