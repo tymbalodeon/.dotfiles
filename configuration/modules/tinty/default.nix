@@ -5,6 +5,13 @@
   ...
 }: {
   home = {
+    activation.tinty = let
+      tinty = "${pkgs.tinty}/bin/tinty";
+    in
+      lib.hm.dag.entryAfter ["writeBoundary"] ''
+        ${tinty} install
+      '';
+
     file =
       {
         ".config/tinty/fzf.toml".source =
