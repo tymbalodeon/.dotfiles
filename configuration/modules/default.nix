@@ -20,7 +20,6 @@
     ./shell
     ./taskwarrior
     ./tealdeer
-    ./tinty
     ./vivid
     ./yazi
     ./zathura

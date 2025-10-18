@@ -3,7 +3,6 @@ source ($nu.default-config-dir | path join f.nu)
 source ($nu.default-config-dir | path join fonts.nu)
 source ($nu.default-config-dir | path join music.nu)
 source ($nu.default-config-dir | path join src.nu)
-source ($nu.default-config-dir | path join theme-function.nu)
 source ($nu.default-config-dir | path join theme.nu)
 
 $env.config = {
@@ -33,7 +32,3 @@ $env.config = {
 
 let themes = (open ($nu.default-config-dir | path join "themes.toml"))
 $env.FZF_DEFAULT_OPTS = ($themes | get FZF_DEFAULT_OPTS)
-
-if not (which tinty | is-empty) {
-  tinty apply ($themes | get shell_theme)
-}

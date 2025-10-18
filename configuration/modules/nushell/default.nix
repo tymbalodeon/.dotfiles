@@ -18,12 +18,6 @@ with lib; {
         "${cfg.configDirectory}/prompt.nu".source = ./prompt.nu;
         "${cfg.configDirectory}/src.nu".source = ./src.nu;
         "${cfg.configDirectory}/theme.nu".source = ./theme.nu;
-
-        "${cfg.configDirectory}/theme-function.nu".source =
-          if pkgs.stdenv.isDarwin
-          then ./theme-function-darwin.nu
-          else ./theme-function-linux.nu;
-
         "${cfg.configDirectory}/themes.toml".source = ./themes.toml;
       };
 

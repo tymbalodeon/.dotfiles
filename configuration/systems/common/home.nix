@@ -29,6 +29,7 @@ with lib; {
         rainfrog
         repgrep
         sd
+        tinty
         uutils-coreutils-noprefix
         wiki-tui
         xh

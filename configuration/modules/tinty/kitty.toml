@@ -1,8 +1,0 @@
-shell = "nu -c '{}'"
-
-[[items]]
-name = "kitty"
-path = "https://github.com/kdrag0n/base16-kitty"
-revision = "master"
-themes-dir = "colors"
-hook = "cp --force %f ~/.dotfiles/configuration/kitty/theme.conf"

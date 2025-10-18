@@ -1,7 +1,0 @@
-shell = "nu -c '{}'"
-
-[[items]]
-name = "waybar"
-path = "https://github.com/tinted-theming/base16-waybar"
-themes-dir = "colors"
-hook = "cp --force %f ~/.dotfiles/configuration/systems/nixos/waybar/colors.css"
