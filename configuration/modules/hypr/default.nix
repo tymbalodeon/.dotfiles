@@ -8,9 +8,11 @@
 with lib; {
   config = let
     cfg = config.hypr;
+    configDirectory = config.nushell.configDirectory;
   in {
     home = {
       file = {
+        "${configDirectory}/hyprland-set-gaps.nu".source = ./hyprland-set-gaps.nu;
         ".config/hypr/hypridle.conf".source = ./hypridle.conf;
         ".config/hypr/hyprlock.conf".source = ./hyprlock.conf;
         ".config/hypr/hyprpaper.conf".source = ./hyprpaper.conf;
@@ -35,6 +37,8 @@ with lib; {
         );
     };
   };
+
+  imports = [../nushell];
 
   options.hypr = with types; {
     laptop = mkOption {
