@@ -10,6 +10,7 @@ with lib; {
     cfg = config.hypr;
     configDirectory = config.nushell.configDirectory;
   in {
+    # TODO: use programs.hyprland.enable, etc. (for stylix)
     home = {
       file = {
         "${configDirectory}/hyprland-set-gaps.nu".source = ./hyprland-set-gaps.nu;
