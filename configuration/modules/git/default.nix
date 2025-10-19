@@ -14,43 +14,10 @@ with lib; {
       siketyan-ghr
     ];
 
-    programs.git = {
-      aliases = {
-        a = "add";
-        b = "branch";
-        cm = "commit -m";
-        ch = "checkout";
-        cl = "clone";
-        d = "diff";
-        ds = "diff --staged";
-
-        l = let
-          commit = "%C(auto)%h%d%C(reset)";
-          time = "%C(dim)%ar%C(reset)";
-          message = "%C(bold)%s%C(reset)";
-          author = "%C(dim blue)(%an)%C(reset)";
-          format = "${commit} ${time} ${message} ${author}";
-        in "log --graph --pretty=format:'${format}'";
-
-        last = "log -1 HEAD --stat";
-        m = "merge";
-        p = "push";
-        pl = "pull";
-        r = "restore";
-        rh = "reset --hard";
-        rs = "restore --staged";
-        s = "status";
-        sh = "stash";
-        sl = "stash list";
-        sp = "stash pop";
-        sw = "switch";
-        tg = "tag";
-        tracked = "ls-tree --full-tree --name-only -r HEAD";
-        tr = "tracked";
-      };
-
+    programs = {
       delta = {
         enable = true;
+        enableGitIntegration = true;
 
         options = {
           diff-so-fancy = true;
@@ -59,27 +26,63 @@ with lib; {
         };
       };
 
-      enable = true;
+      git.settings = {
+        aliases = {
+          a = "add";
+          b = "branch";
+          cm = "commit -m";
+          ch = "checkout";
+          cl = "clone";
+          d = "diff";
+          ds = "diff --staged";
 
-      extraConfig = {
-        core.excludesfile = "~/.gitignore_global";
-        default.push = "upstream";
-        diff.colorMoved = "default";
-        github.user = cfg.github.user;
-        gitlab.user = cfg.gitlab.user;
-        init.defaultBranch = "trunk";
+          l = let
+            commit = "%C(auto)%h%d%C(reset)";
+            time = "%C(dim)%ar%C(reset)";
+            message = "%C(bold)%s%C(reset)";
+            author = "%C(dim blue)(%an)%C(reset)";
+            format = "${commit} ${time} ${message} ${author}";
+          in "log --graph --pretty=format:'${format}'";
 
-        merge = {
-          conflictstyle = "diff3";
-          ff = "only";
+          last = "log -1 HEAD --stat";
+          m = "merge";
+          p = "push";
+          pl = "pull";
+          r = "restore";
+          rh = "reset --hard";
+          rs = "restore --staged";
+          s = "status";
+          sh = "stash";
+          sl = "stash list";
+          sp = "stash pop";
+          sw = "switch";
+          tg = "tag";
+          tracked = "ls-tree --full-tree --name-only -r HEAD";
+          tr = "tracked";
         };
 
-        pull.rebase = false;
-        push.default = "current";
-      };
+        enable = true;
 
-      userEmail = cfg.userEmail;
-      userName = cfg.userName;
+        extraConfig = {
+          core.excludesfile = "~/.gitignore_global";
+          default.push = "upstream";
+          diff.colorMoved = "default";
+          github.user = cfg.github.user;
+          gitlab.user = cfg.gitlab.user;
+          init.defaultBranch = "trunk";
+
+          merge = {
+            conflictstyle = "diff3";
+            ff = "only";
+          };
+
+          pull.rebase = false;
+          push.default = "current";
+        };
+
+        userEmail = cfg.userEmail;
+        userName = cfg.userName;
+      };
     };
   };
 
