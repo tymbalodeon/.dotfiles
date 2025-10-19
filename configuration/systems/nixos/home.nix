@@ -20,6 +20,7 @@
   home = {
     packages = with pkgs; [
       equibop
+      libnotify
       maestral
       nemo
       wev
