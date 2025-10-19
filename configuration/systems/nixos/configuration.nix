@@ -31,7 +31,6 @@ with lib; {
         firefox
         git
         helix
-        hyprpaper
         xdg-utils
       ];
     };
