@@ -26,8 +26,27 @@ with lib; {
         };
       };
 
-      git.settings = {
-        aliases = {
+      git = {
+        enable = true;
+
+        extraConfig = {
+          core.excludesfile = "~/.gitignore_global";
+          default.push = "upstream";
+          diff.colorMoved = "default";
+          github.user = cfg.github.user;
+          gitlab.user = cfg.gitlab.user;
+          init.defaultBranch = "trunk";
+
+          merge = {
+            conflictstyle = "diff3";
+            ff = "only";
+          };
+
+          pull.rebase = false;
+          push.default = "current";
+        };
+
+        settings.aliases = {
           a = "add";
           b = "branch";
           cm = "commit -m";
@@ -59,25 +78,6 @@ with lib; {
           tg = "tag";
           tracked = "ls-tree --full-tree --name-only -r HEAD";
           tr = "tracked";
-        };
-
-        enable = true;
-
-        extraConfig = {
-          core.excludesfile = "~/.gitignore_global";
-          default.push = "upstream";
-          diff.colorMoved = "default";
-          github.user = cfg.github.user;
-          gitlab.user = cfg.gitlab.user;
-          init.defaultBranch = "trunk";
-
-          merge = {
-            conflictstyle = "diff3";
-            ff = "only";
-          };
-
-          pull.rebase = false;
-          push.default = "current";
         };
 
         userEmail = cfg.userEmail;
