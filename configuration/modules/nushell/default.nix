@@ -11,14 +11,11 @@ with lib; {
     home = {
       file = {
         "${cfg.configDirectory}/cloud.nu".source = ./cloud.nu;
-        "${cfg.configDirectory}/colors.nu".source = ./colors.nu;
         "${cfg.configDirectory}/f.nu".source = ./f.nu;
         "${cfg.configDirectory}/fonts.nu".source = ./fonts.nu;
         "${cfg.configDirectory}/music.nu".source = ./music.nu;
         "${cfg.configDirectory}/prompt.nu".source = ./prompt.nu;
         "${cfg.configDirectory}/src.nu".source = ./src.nu;
-        "${cfg.configDirectory}/theme.nu".source = ./theme.nu;
-        "${cfg.configDirectory}/themes.toml".source = ./themes.toml;
       };
 
       packages = [pkgs.fontconfig];
@@ -63,6 +60,8 @@ with lib; {
         };
       };
   };
+
+  imports = [../jujutsu];
 
   options.nushell = with types; {
     configDirectory = lib.mkOption {
