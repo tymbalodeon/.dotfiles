@@ -27,6 +27,20 @@ with lib; {
         enable = true;
         envFile.source = ./env.nu;
 
+        extraEnv = let
+          colors = config.lib.stylix.colors;
+        in let
+          branchColor = colors.base0E;
+          changeIDColor = colors.base0D;
+          darkForegroundColor = colors.base04;
+        in ''
+          $env.PROMPT_COMMAND = {|| create_left_prompt ${darkForegroundColor} ${branchColor} ${changeIDColor}}
+          $env.PROMPT_COMMAND_RIGHT = {|| null}
+          $env.PROMPT_INDICATOR_VI_INSERT = "> "
+          $env.PROMPT_INDICATOR_VI_NORMAL = ">> "
+          $env.PROMPT_MULTILINE_INDICATOR = "::: "
+        '';
+
         plugins = with pkgs.nushellPlugins; [
           formats
           gstat

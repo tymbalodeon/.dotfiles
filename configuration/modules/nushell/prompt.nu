@@ -1,4 +1,12 @@
-def create_left_prompt [] {
+def make-hex [color_code: string] {
+  $"#($color_code)"  
+}
+
+def create_left_prompt [
+  dark_foreground_color: string
+  branch_color: string
+  change_id_color: string
+] {
   let home =  $nu.home-path
 
   let dir = (
@@ -22,14 +30,13 @@ def create_left_prompt [] {
   )
 
   try {
-    # TODO: is it possible to pull color values from stylix to add color to the
-    # branch/change id info?
     let branch = (
       (
         jj log
           --no-graph
           --revisions "ancestors(@)"
           --template "bookmarks ++ '\n'"
+          err> /dev/null
         | lines
         | where {is-not-empty}
         | first
@@ -37,19 +44,23 @@ def create_left_prompt [] {
     )
 
     let change_id = (
-      jj log --no-graph --revisions @ --template "change_id.shortest()"
+      jj log
+        --no-graph
+        --revisions @
+        --template "change_id.shortest()"
+        err> /dev/null
     )
 
-    (
-      $"($prompt) \(($branch) - ($change_id)\)\n"
-    )
+    let dark_foreground_color = (make-hex $dark_foreground_color)
+    let branch_color = (make-hex $branch_color)
+    let change_id_color = (make-hex $change_id_color)
+
+    $"($prompt) (
+      ansi $branch_color
+    )($branch) (ansi $change_id_color)(
+      $change_id
+    )(ansi reset)\n"
   } catch {
     $prompt + $"\n" 
   }
 }
-
-$env.PROMPT_COMMAND = {|| create_left_prompt}
-$env.PROMPT_COMMAND_RIGHT = {|| null}
-$env.PROMPT_INDICATOR_VI_INSERT = "> "
-$env.PROMPT_INDICATOR_VI_NORMAL = ">> "
-$env.PROMPT_MULTILINE_INDICATOR = "::: "
