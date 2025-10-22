@@ -30,11 +30,10 @@ with lib; {
         extraEnv = let
           colors = config.lib.stylix.colors;
         in let
-          branchColor = colors.base0E;
-          changeIDColor = colors.base0D;
+          highlightColor = colors.base0E;
           darkForegroundColor = colors.base04;
         in ''
-          $env.PROMPT_COMMAND = {|| create_left_prompt ${darkForegroundColor} ${branchColor} ${changeIDColor}}
+          $env.PROMPT_COMMAND = {|| create_left_prompt ${darkForegroundColor} ${highlightColor}}
           $env.PROMPT_COMMAND_RIGHT = {|| null}
           $env.PROMPT_INDICATOR_VI_INSERT = "> "
           $env.PROMPT_INDICATOR_VI_NORMAL = ">> "
