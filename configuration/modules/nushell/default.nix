@@ -27,13 +27,8 @@ with lib; {
         enable = true;
         envFile.source = ./env.nu;
 
-        extraEnv = let
-          colors = config.lib.stylix.colors;
-        in let
-          highlightColor = colors.base0E;
-          darkForegroundColor = colors.base04;
-        in ''
-          $env.PROMPT_COMMAND = {|| create_left_prompt ${darkForegroundColor} ${highlightColor}}
+        extraEnv = ''
+          $env.PROMPT_COMMAND = {|| create_left_prompt}
           $env.PROMPT_COMMAND_RIGHT = {|| null}
           $env.PROMPT_INDICATOR_VI_INSERT = "> "
           $env.PROMPT_INDICATOR_VI_NORMAL = ">> "

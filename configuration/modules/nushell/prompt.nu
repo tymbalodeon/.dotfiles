@@ -1,11 +1,4 @@
-def make-hex [color_code: string] {
-  $"#($color_code)"  
-}
-
-def create_left_prompt [
-  dark_foreground_color: string
-  highlight_color: string
-] {
+def create_left_prompt [] {
   let home =  $nu.home-path
 
   let dir = (
@@ -50,15 +43,7 @@ def create_left_prompt [
         err> /dev/null
     )
 
-    let dark_foreground_color = (make-hex $dark_foreground_color)
-    let branch_color = (make-hex $highlight_color)
-    let change_id_color = (make-hex $highlight_color)
-
-    $"($prompt) (
-      ansi $branch_color
-    )($branch) (ansi $change_id_color)(
-      $change_id
-    )(ansi reset)\n"
+    $"($prompt) (ansi magenta)($branch) ($change_id)(ansi reset)\n"
   } catch {
     $prompt + $"\n" 
   }

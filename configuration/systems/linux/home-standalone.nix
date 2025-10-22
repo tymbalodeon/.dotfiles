@@ -19,5 +19,4 @@
   nixpkgs.config.allowUnfree = true;
   programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
   targets.genericLinux.enable = true;
-  xdg.mime.enable = true;
 }
