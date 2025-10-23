@@ -56,7 +56,10 @@
         in
           nix-darwin.lib.darwinSystem {
             inherit system;
-            modules = [./systems/darwin/hosts/${hostName}/configuration.nix];
+            modules = [
+              stylix.darwinModules.styli
+              ./systems/darwin/hosts/${hostName}/configuration.nix
+            ];
 
             specialArgs = {
               inherit hostName inputs;
@@ -80,7 +83,11 @@
             isNixOS = false;
           };
 
-          modules = [./systems/linux/hosts/${hostName}/home.nix];
+          modules = [
+            stylix.homeModules.stylix
+            ./systems/linux/hosts/${hostName}/home.nix
+          ];
+
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
         };
       })

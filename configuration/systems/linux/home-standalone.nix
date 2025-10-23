@@ -15,8 +15,16 @@
     ../../modules/xmonad
   ];
 
+  kitty.font_size = 11.0;
   nixGL.packages = nixgl.packages;
   nixpkgs.config.allowUnfree = true;
   programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
+
+  stylix = {
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+    enable = true;
+    polarity = "dark";
+  };
+
   targets.genericLinux.enable = true;
 }
