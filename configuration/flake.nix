@@ -57,7 +57,7 @@
           nix-darwin.lib.darwinSystem {
             inherit system;
             modules = [
-              stylix.darwinModules.styli
+              stylix.darwinModules.stylix
               ./systems/darwin/hosts/${hostName}/configuration.nix
             ];
 
