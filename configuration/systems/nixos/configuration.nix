@@ -88,6 +88,7 @@ with lib; {
       overlays = [
         (final: prev: {
           maestral = pkgs-stable.maestral;
+          steam = pkgs-stable.steam;
         })
       ];
     };
