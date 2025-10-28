@@ -5,6 +5,7 @@
   isNixOS,
   lib,
   pkgs,
+  pkgs-stable,
   ...
 }:
 with lib; {
@@ -81,7 +82,15 @@ with lib; {
       settings.experimental-features = ["nix-command" "flakes"];
     };
 
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs = {
+      config.allowUnfree = true;
+
+      overlays = [
+        (final: prev: {
+          maestral = pkgs-stable.maestral;
+        })
+      ];
+    };
 
     programs = {
       hyprland = {

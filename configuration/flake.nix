@@ -106,6 +106,11 @@
           specialArgs = {
             inherit hostName inputs;
             isNixOS = true;
+
+            pkgs-stable = import nixpkgs-stable {
+              config.allowUnfree = true;
+              system = "x86_64-linux";
+            };
           };
         };
       })

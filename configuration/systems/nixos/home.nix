@@ -21,6 +21,7 @@
     packages = with pkgs; [
       equibop
       libnotify
+      maestral
       nemo
       wev
       wl-clipboard
