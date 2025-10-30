@@ -11,7 +11,7 @@
       liberation_ttf
       nerd-fonts.jetbrains-mono
       noto-fonts
-      ubuntu_font_family
+      ubuntu-classic
     ]
     ++ (
       if stdenv.isLinux
