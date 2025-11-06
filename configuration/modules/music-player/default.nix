@@ -63,6 +63,11 @@ with lib; {
           #![enable(unwrap_variant_newtypes)]
 
           (
+            artists: (
+              album_display_mode: NameOnly,
+              album_sort_by: Name,
+            ),
+
             on_song_change: ["~/.config/rmpc/notify.sh"],
           )
         '';
