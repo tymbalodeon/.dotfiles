@@ -2,4 +2,5 @@
 .env
 .envrc
 .helix/config.toml
+*.qcow2
 result
