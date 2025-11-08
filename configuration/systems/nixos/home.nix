@@ -22,7 +22,7 @@
       equibop
       libnotify
       maestral
-      nemo
+      nemo-with-extensions
       wev
       wl-clipboard
     ];
@@ -49,5 +49,21 @@
     settings.program_options.file_manager = "${
       pkgs.nemo-with-extensions
     }/bin/nemo";
+  };
+
+  xdg = {
+    desktopEntries.nemo = {
+      exec = "${pkgs.nemo-with-extensions}/bin/nemo";
+      name = "Nemo";
+    };
+
+    mimeApps = {
+      defaultApplications = {
+        "application/x-gnome-saved-search" = ["nemo.desktop"];
+        "inode/directory" = ["nemo.desktop"];
+      };
+
+      enable = true;
+    };
   };
 }
