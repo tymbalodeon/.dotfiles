@@ -15,33 +15,36 @@ export def main [
       | columns
     )
 
-    let darwin_inputs = (
-      $inputs
-      | where {$in not-in [nixgl solaar]}
-    )
+    if ((uname).kernel-name == Darwin) {
+      let darwin_inputs = (
+        $inputs
+        | where {
+            $in not-in [
+              nixgl
+              rofi-theme
+              solaar
+              wayland-pipewire-idle-inhibit
+            ]
+          }
+      )
 
-    let linux_inputs = (
-      $inputs
-      | where {
-          $in not-in [
-            nix-darwin
-            # TODO: remove when kitty > 0.42.1 works on Darwin
-            nixpkgs-kitty
-          ]
-        }
-    )
-
-    let nixos_inputs = (
-      $linux_inputs
-      | where {$in != nixgl}
-    )
-
-    if (is-nixos) {
-      nix flake update ...$nixos_inputs
-    } else if (is-linux) {
-      nix flake update ...$linux_inputs
-    } else {
       nix flake update ...$darwin_inputs
+    } else if (is-linux) {
+      let linux_inputs = (
+        $inputs
+        | where {$in != nix-darwin}
+      )
+
+      if (is-nixos) {
+        let nixos_inputs = (
+          $linux_inputs
+          | where {$in != nixgl}
+        )
+        
+        nix flake update ...$nixos_inputs
+      } else {
+        nix flake update ...$linux_inputs
+      }
     }
   } else {
     for input in $inputs {

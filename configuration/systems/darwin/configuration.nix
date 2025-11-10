@@ -4,6 +4,7 @@
   inputs,
   isNixOS,
   lib,
+  pkgs,
   pkgs-stable,
   ...
 }:
@@ -28,6 +29,12 @@ with lib; {
     ];
 
     security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
+
+    stylix = {
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+      enable = true;
+      polarity = "dark";
+    };
 
     system = {
       defaults = {
