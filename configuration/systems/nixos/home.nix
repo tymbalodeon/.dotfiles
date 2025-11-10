@@ -54,7 +54,7 @@
   xdg = {
     desktopEntries.nemo = {
       exec = "${pkgs.nemo-with-extensions}/bin/nemo";
-      name = "Nemo";
+      name = "Files";
     };
 
     mimeApps = {
