@@ -1,31 +1,25 @@
 {
-  config,
   lib,
   pkgs,
   ...
 }:
 with lib; {
-  config = let
-    cfg = config.nushell;
-  in {
-    home = {
-      file = {
-        "${cfg.configDirectory}/cloud.nu".source = ./cloud.nu;
-        "${cfg.configDirectory}/f.nu".source = ./f.nu;
-        "${cfg.configDirectory}/fonts.nu".source = ./fonts.nu;
-        "${cfg.configDirectory}/music.nu".source = ./music.nu;
-        "${cfg.configDirectory}/prompt.nu".source = ./prompt.nu;
-        "${cfg.configDirectory}/src.nu".source = ./src.nu;
-      };
-
-      packages = [pkgs.fontconfig];
-    };
+  config = {
+    home.packages = [pkgs.fontconfig];
 
     programs.nushell =
       {
-        configFile.source = ./config.nu;
         enable = true;
         envFile.source = ./env.nu;
+
+        extraConfig = ''
+          const NU_LIB_DIRS = [${./.}]
+
+          ${map
+            (file: "source " + file)
+            (builtins.attrNames
+              (builtins.readDir ./configuration/modules/nushell/scripts))}
+        '';
 
         extraEnv = ''
           $env.PROMPT_COMMAND = {|| create_left_prompt}
@@ -50,6 +44,26 @@ with lib; {
 
           datetime_format = {normal = "%A, %B %d, %Y %H:%M:%S";};
           edit_mode = "vi";
+
+          hooks.env_change.PWD = [
+            ''
+              (
+                # TODO: auto-pull from https://github.com/nushell/nu_scripts/blob/main/nu-hooks/nu-hooks/direnv/config.nu
+
+                if (which direnv | is-empty) {
+                    return
+                  }
+
+                  direnv export json
+                  | from json
+                  | default {}
+                  | load-env
+
+                  $env.PATH = ($env.PATH | split row (char env_sep))
+                )
+            ''
+          ];
+
           show_banner = false;
         };
 
