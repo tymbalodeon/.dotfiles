@@ -13,15 +13,18 @@ with lib; {
         envFile.source = ./env.nu;
 
         extraConfig = ''
-          const NU_LIB_DIRS = [${./.}]
+          const NU_LIB_DIRS = [${./scripts}]
 
-          ${map
-            (file: "source " + file)
-            (builtins.attrNames
-              (builtins.readDir ./configuration/modules/nushell/scripts))}
+          ${builtins.concatStringsSep
+            "\n"
+            (map
+              (file: "source " + file)
+              (builtins.attrNames (builtins.readDir ./scripts)))}
         '';
 
         extraEnv = ''
+          source ${./prompt.nu}
+
           $env.PROMPT_COMMAND = {|| create_left_prompt}
           $env.PROMPT_COMMAND_RIGHT = {|| null}
           $env.PROMPT_INDICATOR_VI_INSERT = "> "
@@ -47,7 +50,7 @@ with lib; {
 
           hooks.env_change.PWD = [
             ''
-              (
+              {
                 # TODO: auto-pull from https://github.com/nushell/nu_scripts/blob/main/nu-hooks/nu-hooks/direnv/config.nu
 
                 if (which direnv | is-empty) {
@@ -60,7 +63,7 @@ with lib; {
                   | load-env
 
                   $env.PATH = ($env.PATH | split row (char env_sep))
-                )
+              }
             ''
           ];
 
@@ -71,7 +74,7 @@ with lib; {
           l = "ls --long";
           la = "ls --long --all";
           lsa = "ls --all";
-          ssh = "nu '${./ssh.nu}'";
+          ssh = "nu '${./scripts/ssh.nu}'";
         };
       }
       // lib.optionalAttrs pkgs.stdenv.isDarwin {

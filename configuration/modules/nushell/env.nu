@@ -1,5 +1,3 @@
-source ($nu.default-config-dir | path join "prompt.nu")
-
 $env.PATH = (
   "/nix/var/nix/profiles/default/bin"
   | append ($env.HOME | path join ".nix-profile/bin")
