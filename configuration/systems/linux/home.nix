@@ -6,8 +6,12 @@
     ../../modules/ghostty
   ];
 
-  xdg.mimeApps = {
-    defaultApplications."application/pdf" = ["org.pwmt.zathura.desktop"];
-    enable = true;
+  xdg = {
+    configFile."mimeapps.list".force = true;
+
+    mimeApps = {
+      defaultApplications."application/pdf" = ["org.pwmt.zathura.desktop"];
+      enable = true;
+    };
   };
 }
