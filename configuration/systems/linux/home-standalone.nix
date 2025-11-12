@@ -16,7 +16,6 @@
   ];
 
   kitty.font_size = 11.0;
-  nixGL.packages = nixgl.packages;
   nixpkgs.config.allowUnfree = true;
   programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
 
@@ -26,5 +25,8 @@
     polarity = "dark";
   };
 
-  targets.genericLinux.enable = true;
+  targets.genericLinux = {
+    enable = true;
+    nixGL.packages = nixgl.packages;
+  };
 }
