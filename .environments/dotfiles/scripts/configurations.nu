@@ -22,12 +22,12 @@ export def get-current-system [] {
   | str downcase
 }
 
-export def is-linux [] {
-  "linux" in (get-current-system)
-}
-
 export def is-nixos [] {
   (get-current-system) == "nixos"
+}
+
+export def is-linux [] {
+  (is-nixos) or "linux" in (get-current-system)
 }
 
 export def get-all-systems [] {
