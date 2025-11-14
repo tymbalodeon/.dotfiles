@@ -93,7 +93,6 @@ mod markdown ".environments/markdown/Justfile"
 mod nix ".environments/nix/Justfile"
 mod yaml ".environments/yaml/Justfile"
 
-alias clean := dotfiles::clean
 alias configs := dotfiles::configurations
 alias configurations := dotfiles::configurations
 alias diff := dotfiles::diff
