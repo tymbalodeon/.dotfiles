@@ -44,6 +44,7 @@
         "temperature"
         "cpu"
         "memory"
+        "bluetooth"
         "network"
         "backlight"
         "wireplumber"
