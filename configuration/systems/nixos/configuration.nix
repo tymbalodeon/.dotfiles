@@ -49,12 +49,15 @@ with lib; {
         import ../../systems/nixos/hosts/${hostName}/home.nix;
     };
 
-    i18n = {
-      defaultLocale = "en_US.UTF-8";
+    i18n = let
+      locale = "en_US.UTF-8";
+    in {
+      defaultLocale = locale;
+      # TODO: can this be linked to waybar configuration, which is the only
+      # place (so far) that it is used?
+      extraLocales = ["en_GB.UTF-8/UTF-8"];
 
-      extraLocaleSettings = let
-        locale = "en_US.UTF-8";
-      in {
+      extraLocaleSettings = {
         LC_ADDRESS = locale;
         LC_IDENTIFICATION = locale;
         LC_MEASUREMENT = locale;

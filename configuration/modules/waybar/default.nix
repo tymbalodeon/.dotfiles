@@ -23,51 +23,24 @@
         };
       };
 
-      # FIXME
       clock = {
         calendar = {
-          format.weeks = "{=%W}";
           mode-mon-col = 3;
           mode = "year";
         };
 
-        format = "{=%I=%M %p}";
-        format-alt = "{=%A, %B %d, %Y (%I=%M %p)}";
+        format = "{:%A, %d %B %Y — %I:%M %p}";
+        locale = "en_GB.UTF-8";
         tooltip-format = "<tt><small>{calendar}</small></tt>";
       };
 
-      cpu.format = "{usage}% ";
-
-      "hyprland/window" = {
-        format = "{}";
-
-        rewrite = {
-          "(.*) — Mozilla Firefox" = "   $1";
-          "(.*)nu" = " ";
-        };
-      };
-
-      "hyprland/workspaces" = {
-        on-click = "activate";
-        sort-by-number = true;
-      };
-
-      idle_inhibitor = {
-        format = "{icon}";
-
-        format-icons = {
-          activated = "";
-          deactivated = "";
-        };
-      };
-
-      layer = "top";
-      memory.format = "{}% ";
+      cpu.format = " {usage}%";
+      "hyprland/workspaces".on-click = "activate";
+      memory.format = " {}%";
       modules-center = ["clock"];
       modules-left = ["hyprland/workspaces" "hyprland/window"];
 
       modules-right = [
-        "idle_inhibitor"
         "temperature"
         "cpu"
         "memory"
@@ -81,15 +54,14 @@
         format-alt = "{ifname}= {ipaddr}/{cidr}";
         format-disconnected = "Disconnected ⚠";
         format-ethernet = "{ipaddr}/{cidr} ";
-        format-wifi = "{essid} ({signalStrength}%) ";
+        format-wifi = "{essid} ({signalStrength}%)  ";
       };
 
-      spacing = 4;
+      spacing = 8;
 
       temperature = {
         critical-threshold = 80;
-        format = "{temperatureF}°F {icon}";
-        format-icons = ["" "" ""];
+        format = "{temperatureF}°F";
       };
 
       wireplumber = {
