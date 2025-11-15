@@ -51,6 +51,8 @@
     }/bin/nemo";
   };
 
+  stylix.targets.waybar.font = "sansSerif";
+
   xdg = {
     desktopEntries.nemo = {
       exec = "${pkgs.nemo-with-extensions}/bin/nemo";
