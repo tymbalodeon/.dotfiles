@@ -38,7 +38,30 @@
 
       disk = {
         format = "{used} / {total} ({percentage_used}%)";
+        tooltip = false;
         unit = "GB";
+      };
+
+      "group/hardware" = {
+        orientation = "inherit";
+        drawer = {};
+
+        modules = [
+          "disk"
+          "temperature"
+          "cpu"
+          "memory"
+        ];
+      };
+
+      "group/network" = {
+        orientation = "inherit";
+        drawer = {};
+
+        modules = [
+          "network"
+          "bluetooth"
+        ];
       };
 
       "hyprland/workspaces".on-click = "activate";
@@ -54,18 +77,18 @@
       # };
 
       memory.format = " {}%";
-      modules-center = ["clock"];
+
+      modules-center = [
+        "clock"
+        "systemd-failed-units"
+      ];
+
       modules-left = ["hyprland/workspaces" "hyprland/window" "tray"];
 
       modules-right = [
         "mpd"
-        "systemd-failed-units"
-        "disk"
-        "temperature"
-        "cpu"
-        "memory"
-        "bluetooth"
-        "network"
+        "group/hardware"
+        "group/network"
         "backlight"
         "wireplumber"
         "battery"
@@ -90,10 +113,10 @@
       };
 
       network = {
-        format-alt = "{ifname}= {ipaddr}/{cidr}";
         format-disconnected = "Disconnected ⚠";
         format-ethernet = "{ipaddr}/{cidr} ";
         format-wifi = "{essid} ({signalStrength}%)  ";
+        tooltip-format = "{ifname}= {ipaddr}/{cidr}";
       };
 
       spacing = 8;
