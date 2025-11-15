@@ -35,13 +35,22 @@
       };
 
       cpu.format = " {usage}%";
+
+      disk = {
+        format = "{used} / {total} ({percentage_used}%)";
+        unit = "GB";
+      };
+
       "hyprland/workspaces".on-click = "activate";
+
       memory.format = " {}%";
       modules-center = ["clock"];
       modules-left = ["hyprland/workspaces" "hyprland/window"];
 
       modules-right = [
         "mpd"
+        "systemd-failed-units"
+        "disk"
         "temperature"
         "cpu"
         "memory"
@@ -75,6 +84,7 @@
       };
 
       spacing = 8;
+      systemd-failed-units.format = "✗ {nr_failed}";
 
       temperature = {
         critical-threshold = 80;
