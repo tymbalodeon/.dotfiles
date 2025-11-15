@@ -73,9 +73,9 @@
 
       mpd = {
         consume-icons.on = " ";
-        format-disconnected = "Disconnected ";
-        format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S})";
-        format-stopped = "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped";
+        format-disconnected = "Disconnected";
+        format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{title} ({elapsedTime:%M:%S}/{totalTime:%M:%S})";
+        format-stopped = "⏹ Stoppped";
         random-icons.on = " ";
         repeat-icons.on = " ";
         single-icons.on = "1 ";
@@ -84,6 +84,9 @@
           paused = "";
           playing = "";
         };
+
+        title-len = 66;
+        tooltip-format = "{artist} — {album}";
       };
 
       network = {
