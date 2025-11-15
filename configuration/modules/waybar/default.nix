@@ -119,6 +119,8 @@
         tooltip-format = "{ifname}= {ipaddr}/{cidr}";
       };
 
+      position = "bottom";
+
       spacing = 8;
       systemd-failed-units.format = "✗ {nr_failed}";
 
