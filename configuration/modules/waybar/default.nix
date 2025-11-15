@@ -41,6 +41,7 @@
       modules-left = ["hyprland/workspaces" "hyprland/window"];
 
       modules-right = [
+        "mpd"
         "temperature"
         "cpu"
         "memory"
@@ -50,6 +51,21 @@
         "wireplumber"
         "battery"
       ];
+
+      mpd = {
+        consume-icons.on = " ";
+        format-disconnected = "Disconnected ";
+        format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S})";
+        format-stopped = "{consumeIcon}{randomIcon}{repeatIcon}{singleIcon}Stopped";
+        random-icons.on = " ";
+        repeat-icons.on = " ";
+        single-icons.on = "1 ";
+
+        state-icons = {
+          paused = "";
+          playing = "";
+        };
+      };
 
       network = {
         format-alt = "{ifname}= {ipaddr}/{cidr}";
