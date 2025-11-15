@@ -43,9 +43,19 @@
 
       "hyprland/workspaces".on-click = "activate";
 
+      # TODO
+      # idle_inhibitor = {
+      #   format = "{icon}";
+
+      #   format-icons = {
+      #     activated = "";
+      #     deactivated = "";
+      #   };
+      # };
+
       memory.format = " {}%";
       modules-center = ["clock"];
-      modules-left = ["hyprland/workspaces" "hyprland/window"];
+      modules-left = ["hyprland/workspaces" "hyprland/window" "tray"];
 
       modules-right = [
         "mpd"
@@ -89,6 +99,11 @@
       temperature = {
         critical-threshold = 80;
         format = "{temperatureF}°F";
+      };
+
+      tray = {
+        icon-size = 21;
+        spacing = 10;
       };
 
       wireplumber = {

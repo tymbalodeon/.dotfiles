@@ -154,6 +154,8 @@ with lib; {
           "XCURSOR_SIZE,16"
         ];
 
+        exec-once = ["waybar"];
+
         general = {
           allow_tearing = false;
           gaps_in = 8;
