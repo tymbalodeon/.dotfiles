@@ -81,6 +81,8 @@ with lib; {
           wallpaper = [", ${wallpaper}"];
         };
       };
+
+      playerctld.enable = true;
     };
 
     wayland.windowManager.hyprland = {
@@ -138,6 +140,9 @@ with lib; {
         bindel =
           [
             ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"
+            ", XF86AudioNext, exec, rmpc next"
+            ", XF86AudioPlay, exec, playerctl play-pause; rmpc togglepause"
+            ", XF86AudioPrev, exec, rmpc prev"
             ", XF86AudioRaiseVolume, exec, wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ 1%+"
           ]
           ++ cfg.hyprland.settings.bindelExtra;
