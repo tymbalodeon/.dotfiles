@@ -47,10 +47,10 @@
         drawer = {};
 
         modules = [
-          "disk"
-          "temperature"
           "cpu"
           "memory"
+          "temperature"
+          "disk"
         ];
       };
 
@@ -108,7 +108,7 @@
           playing = "";
         };
 
-        title-len = 66;
+        title-len = 146;
         tooltip-format = "{artist} — {album}";
       };
 
