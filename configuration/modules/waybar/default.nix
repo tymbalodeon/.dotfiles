@@ -135,7 +135,7 @@
       };
 
       wireplumber = {
-        format = "{volume}% {icon}";
+        format = "{volume}% {icon} ";
         format-icons = ["" "" ""];
         format-muted = "";
       };
