@@ -34,7 +34,7 @@
         tooltip-format = "<tt><small>{calendar}</small></tt>";
       };
 
-      cpu.format = " {usage}%";
+      cpu.format = "  {usage}%";
 
       disk = {
         format = "{used} / {total} ({percentage_used}%)";
