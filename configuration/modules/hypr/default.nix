@@ -134,7 +134,7 @@ with lib; {
           "$mainMod, space, exec, rofi -show drun"
           "$mainMod, S, togglespecialworkspace, magic"
           "$mainMod, T, exec, kitty"
-          "$mainMod, W, exec, pgrep waybar && pkill waybar || waybar"
+          "$mainMod, W, exec, pkill waybar || waybar; systemctl --user start hypridle"
         ];
 
         bindel =

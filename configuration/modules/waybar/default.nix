@@ -66,24 +66,27 @@
 
       "hyprland/workspaces".on-click = "activate";
 
-      # TODO
-      # idle_inhibitor = {
-      #   format = "{icon}";
+      idle_inhibitor = {
+        format = "{icon}";
 
-      #   format-icons = {
-      #     activated = "";
-      #     deactivated = "";
-      #   };
-      # };
+        format-icons = {
+          activated = "";
+          deactivated = "";
+        };
+
+        on-click = "pgrep hypridle && systemctl --user stop hypridle || systemctl --user start hypridle";
+      };
 
       memory.format = " {}%";
 
       modules-center = [
+        "idle_inhibitor"
         "clock"
+        "tray"
         "systemd-failed-units"
       ];
 
-      modules-left = ["hyprland/workspaces" "hyprland/window" "tray"];
+      modules-left = ["hyprland/workspaces" "hyprland/window"];
 
       modules-right = [
         "mpd"
@@ -137,7 +140,7 @@
       wireplumber = {
         format = "{volume}% {icon} ";
         format-icons = ["" "" ""];
-        format-muted = "";
+        format-muted = " ";
       };
     };
   };
