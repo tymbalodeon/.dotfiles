@@ -100,7 +100,7 @@
       mpd = {
         consume-icons.on = " ";
         format-disconnected = "Disconnected";
-        format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{title} ({elapsedTime:%M:%S}/{totalTime:%M:%S})";
+        format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon} {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S})";
         format-stopped = "⏹ Stoppped";
         random-icons.on = " ";
         repeat-icons.on = " ";
