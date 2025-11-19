@@ -23,6 +23,7 @@
       libnotify
       maestral
       nemo-with-extensions
+      vlc
       wev
       wl-clipboard
     ];
