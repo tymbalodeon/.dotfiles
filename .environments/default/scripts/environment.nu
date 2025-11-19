@@ -115,6 +115,36 @@ export def "main add" [
   }
 }
 
+def filter-to-local-files [files: string] {
+  let default_environments = (
+    get-available-environments --exclude-local
+    | get name
+  )
+
+  $files
+  | lines
+  | where {($in | path split | get 1) not-in $default_environments}
+}
+
+# Open local justfile configuration in $EDITOR
+def "main edit justfile" [] {
+  let justfiles = (filter-to-local-files (fd Justfile .environments))
+
+  if ($justfiles | is-empty) {
+    return
+  }
+
+  let justfile = if ($justfiles | length) > 1 {
+    $justfiles
+    | fzf
+  } else {
+    $justfiles
+    | first
+  }
+
+  ^$env.EDITOR $justfile
+}
+
 # Open local helix configuration in $EDITOR [alias: `edit languages`]
 def "main edit helix languages" [] {
   ^$env.EDITOR .helix/languages.toml
@@ -129,22 +159,11 @@ def "main edit helix" [] {
 
 # Open a local recipe in $EDITOR
 def "main edit recipe" [recipe?: string] {
-  let default_environments = (
-    get-available-environments --exclude-local
-    | get name
-  )
+  let recipes = (filter-to-local-files (fd --extension nu "" .environments))
 
-  let recipes = (
-    fd --extension nu "" .environments
-    | lines
-    | where {
-        (
-          $in
-          | path split
-          | get 1
-        ) not-in $default_environments
-      }
-  )
+  if ($recipes | is-empty) {
+    return
+  } 
 
   let recipe = if ($recipe | is-empty) {
     $recipes
