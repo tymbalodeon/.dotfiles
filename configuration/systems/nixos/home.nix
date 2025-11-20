@@ -55,6 +55,8 @@
   stylix.targets.waybar.font = "sansSerif";
 
   xdg = {
+    configFile."mimeapps.list".force = true;
+
     desktopEntries.nemo = {
       exec = "${pkgs.nemo-with-extensions}/bin/nemo";
       name = "Files";
@@ -62,6 +64,7 @@
 
     mimeApps = {
       defaultApplications = {
+        "application/pdf" = ["org.pwmt.zathura.desktop"];
         "application/x-gnome-saved-search" = ["nemo.desktop"];
         "inode/directory" = ["nemo.desktop"];
       };
