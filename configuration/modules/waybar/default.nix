@@ -101,7 +101,7 @@
         consume-icons.on = " ";
         format-disconnected = "Disconnected";
         format = "{title}  ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}]   {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
-        format-stopped = "⏹ Stoppped";
+        format-stopped = "";
         random-icons.on = " ";
         repeat-icons.on = " ";
         single-icons.on = "1 ";
