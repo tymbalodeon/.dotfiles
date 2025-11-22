@@ -100,7 +100,7 @@
       mpd = {
         consume-icons.on = " ";
         format-disconnected = "Disconnected";
-        format = "{stateIcon} {consumeIcon}{randomIcon}{repeatIcon}{singleIcon} {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S})";
+        format = "{title}    ({elapsedTime:%M:%S}/{totalTime:%M:%S})  [{songPosition}/{queueLength}]  {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
         format-stopped = "⏹ Stoppped";
         random-icons.on = " ";
         repeat-icons.on = " ";
@@ -112,7 +112,7 @@
         };
 
         title-len = 146;
-        tooltip-format = "{artist} — {album}";
+        tooltip-format = "{album} ({albumArtist})";
       };
 
       network = {
