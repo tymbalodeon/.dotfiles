@@ -25,6 +25,7 @@ with lib; {
       (final: prev: {
         kitty = pkgs-stable.kitty;
         nix-search-cli = pkgs-stable.nix-search-cli;
+        uutils-coreutils-noprefix = pkgs-stable.uutils-coreutils-noprefix;
       })
     ];
 
