@@ -149,9 +149,17 @@ def "main revision" [] {
   environment-revision revision get
 }
 
+# List available revisions (branches and tags only)
+def "main revision list" [] {
+  environment-revision revision list
+}
+
 # Set the revision of `environments` to use
-def "main revision set" [revision: string] {
-  environment-revision revision set $revision
+def "main revision set" [
+  revision: string
+  --source-flake="flake.nix"
+] {
+  environment-revision revision set $revision $source_flake
 }
 
 # Show environments in help text
