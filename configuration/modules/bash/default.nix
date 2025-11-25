@@ -5,7 +5,14 @@
     enable = true;
     historyControl = ["erasedups"];
     historyIgnore = ["cd" "exit" "ls"];
-    initExtra = builtins.readFile ./.bashrc;
+
+    # TODO: set vi mode cursors
+    initExtra = ''
+      set -o vi
+
+      PS1="\[\e[1m\e[1;32m$\e[0m\] "
+      PS2="\[\e[37m>\e[0m\] "
+    '';
 
     shellAliases = {
       l = "eza --long";
