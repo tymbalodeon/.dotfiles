@@ -38,6 +38,7 @@
 
   imports = [
     ../linux/home.nix
+    ../../modules/clipboard
     ../../modules/hypr
     ../../modules/rofi
     ../../modules/swaync

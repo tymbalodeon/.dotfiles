@@ -134,6 +134,7 @@ with lib; {
           "$mainMod, space, exec, rofi -show drun"
           "$mainMod, S, togglespecialworkspace, magic"
           "$mainMod, T, exec, kitty"
+          "$mainMod, V, exec, cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy"
           "$mainMod, W, exec, pkill waybar || waybar; systemctl --user start hypridle"
         ];
 
