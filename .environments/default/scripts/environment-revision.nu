@@ -1,3 +1,5 @@
+use print.nu print-error
+
 def get-current-revision [] {
   try {
     open flake.nix
@@ -25,19 +27,22 @@ export def "revision get" [] {
 }
 
 export def "revision set" [revision: string] {
-  # gh api repos/tymbalodeon/environments/tags
-
   try {
-    (
-      gh search commits
-        --hash $revision
-        --json commit
-        --owner tymbalodeon
-        --repo environments
-        err> /dev/null
+      (
+        gh search commits
+          --hash $revision
+          --json commit
+          --owner tymbalodeon
+          --repo environments
+          err> /dev/null
+      )
       | from json
       | get commit.tree.sha
-    )
+      | append (
+          gh api repos/tymbalodeon/environments/tags
+          | from json
+          | get name
+        )
   } catch {
     print-error $"invalid revision: \"($revision)\""
 
