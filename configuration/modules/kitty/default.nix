@@ -20,7 +20,10 @@ with lib; {
         font_features FiraCodeRoman-SemiBold +zero +onum +cv30 +ss09 +cv25 +cv26 +cv32 +ss07
       '';
 
-      keybindings."kitty_mod+enter" = "launch --cwd=current --type=window";
+      keybindings = {
+        "ctrl+o" = "open_url_with_hints";
+        "kitty_mod+enter" = "launch --cwd=current --type=window";
+      };
 
       package =
         if isLinux
