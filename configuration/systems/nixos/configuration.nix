@@ -88,16 +88,7 @@ with lib; {
       };
     };
 
-    nixpkgs = {
-      config.allowUnfree = true;
-
-      overlays = [
-        (final: prev: {
-          maestral = pkgs-stable.maestral;
-          steam = pkgs-stable.steam;
-        })
-      ];
-    };
+    nixpkgs.config.allowUnfree = true;
 
     programs = {
       hyprland = {
