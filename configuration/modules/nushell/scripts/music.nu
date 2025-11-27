@@ -1,14 +1,15 @@
+def pid [] {
+  let pid =  (ps | where name == mpd | get pid)
+
+  if ($pid | is-not-empty) {
+    $pid
+    | first
+  }
+}
+
 def running [] {
   $"(pid)"
   | is-not-empty
-}
-
-def "music status" [] {
-  if (running) {
-    "running"
-  } else {
-    "stopped"
-  }
 }
 
 def is-nixos [ ] {
@@ -19,6 +20,25 @@ def is-nixos [ ] {
     | first
     | get value 
   ) == nixos
+}
+
+# Open music player
+def "music" [] {
+  let is_nixos = (is-nixos)
+
+  if not (running) {
+    if $is_nixos {
+      systemctl --user restart mpd.service
+    } else {
+      mpd
+    }
+  }
+
+  if $is_nixos {
+    rmpc
+  } else {
+    ncmpcpp
+  }
 }
 
 # Show the track currently playing
@@ -46,13 +66,81 @@ def "music current" [
   }
 }
 
-# Get pid of music server, if running
-def pid [] {
-  let pid =  (ps | where name == mpd | get pid)
+def get-playlist-directory [] {
+  $env.HOME | path join .local/share/mpd/playlists
+}
 
-  if ($pid | is-not-empty) {
-    $pid
-    | first
+def get-playlist [playlist?: string] {
+  let playlist = if ($playlist | is-empty) {
+    let playlists = (music playlists | lines)
+
+    if ($playlists | length) > 1 {
+      $playlists
+      | fzf
+    } else if ($playlists | is-empty) {
+      return
+    } else {
+      $playlists
+      | first
+    }
+  } else {
+    $playlist
+  }
+
+  let playlist = (
+    ls (get-playlist-directory)
+    | where {($in.name | path parse | get stem) == $playlist}
+    | get name
+  )
+
+  if ($playlist | is-empty) {
+    return
+  }
+
+  $playlist
+  | first
+}
+
+# Edit playlist
+def "music playlist edit" [playlist?: string] {
+  let playlist = (get-playlist $playlist)
+
+  if ($playlist | is-empty) {
+    return
+  }
+
+  ^$env.EDITOR $playlist
+}
+
+# View playlist
+def "music playlist open" [playlist?: string] {
+  let playlist = (get-playlist $playlist)
+
+  if ($playlist | is-empty) {
+    return
+  }
+
+  open $playlist
+}
+
+alias "music playlist show" = music playlist open
+alias "music playlist view" = music playlist open
+
+# List playlists
+def "music playlists" [] {
+  ls (get-playlist-directory)
+  | get name
+  | path parse
+  | get stem
+  | to text --no-newline
+}
+
+# Show the status of the music player server
+def "music status" [] {
+  if (running) {
+    "running"
+  } else {
+    "stopped"
   }
 }
 
@@ -62,24 +150,5 @@ def "music stop" [] {
     systemctl --user stop mpd.service
   } else {
     pkill mpd
-  }
-}
-
-# Open music player
-def "music" [] {
-  let is_nixos = (is-nixos)
-
-  if not (running) {
-    if $is_nixos {
-      systemctl --user restart mpd.service
-    } else {
-      mpd
-    }
-  }
-
-  if $is_nixos {
-    rmpc
-  } else {
-    ncmpcpp
   }
 }
