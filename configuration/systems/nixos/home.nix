@@ -17,6 +17,7 @@
       maestral
       vlc
       wev
+      wordbook
     ];
 
     pointerCursor = {
