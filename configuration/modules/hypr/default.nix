@@ -12,10 +12,10 @@ with lib; {
   in {
     home = {
       file = {
-        "${configDirectory}/hyprland-set-gaps.nu".source = ./hyprland-set-gaps.nu;
-
         "${configDirectory}/hyprland-set-follow-mouse.nu".source =
           ./hyprland-set-follow-mouse.nu;
+
+        "${configDirectory}/hyprland-set-gaps.nu".source = ./hyprland-set-gaps.nu;
       };
 
       packages = with pkgs;
