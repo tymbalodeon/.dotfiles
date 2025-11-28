@@ -13,7 +13,6 @@ with lib; {
         dogdns
         dua
         dust
-        dysk
         fd
         glow
         hexyl

@@ -15,7 +15,6 @@
     ./kitty
     ./music-player
     ./nb
-    ./rclone
     ./ripgrep
     ./shell
     ./taskwarrior
