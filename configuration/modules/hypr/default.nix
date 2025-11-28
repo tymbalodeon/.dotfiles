@@ -11,7 +11,12 @@ with lib; {
     wallpaper = ./wallpaper/hildegard.jpeg;
   in {
     home = {
-      file."${configDirectory}/hyprland-set-gaps.nu".source = ./hyprland-set-gaps.nu;
+      file = {
+        "${configDirectory}/hyprland-set-gaps.nu".source = ./hyprland-set-gaps.nu;
+
+        "${configDirectory}/hyprland-set-follow-mouse.nu".source =
+          ./hyprland-set-follow-mouse.nu;
+      };
 
       packages = with pkgs;
         [
@@ -107,6 +112,7 @@ with lib; {
           "$mainMod, J, cyclenext, prev"
           "$mainMod, K, cyclenext"
           "$mainMod, L, workspace, +1"
+          "$mainMod, M, exec, nu ~/.config/nushell/hyprland-set-follow-mouse.nu"
           "$mainMod, Q, killactive,"
           "$mainMod, R, exec, hyprctl reload"
           "$mainMod SHIFT, 0, movetoworkspace, 10"
