@@ -27,43 +27,43 @@ with lib; {
       };
 
       git = {
+        aliases = {
+          a = "add";
+          b = "branch";
+          cm = "commit -m";
+          ch = "checkout";
+          cl = "clone";
+          d = "diff";
+          ds = "diff --staged";
+
+          l = let
+            commit = "%C(auto)%h%d%C(reset)";
+            time = "%C(dim)%ar%C(reset)";
+            message = "%C(bold)%s%C(reset)";
+            author = "%C(dim blue)(%an)%C(reset)";
+            format = "${commit} ${time} ${message} ${author}";
+          in "log --graph --pretty=format:'${format}'";
+
+          last = "log -1 HEAD --stat";
+          m = "merge";
+          p = "push";
+          pl = "pull";
+          r = "restore";
+          rh = "reset --hard";
+          rs = "restore --staged";
+          s = "status";
+          sh = "stash";
+          sl = "stash list";
+          sp = "stash pop";
+          sw = "switch";
+          tg = "tag";
+          tracked = "ls-tree --full-tree --name-only -r HEAD";
+          tr = "tracked";
+        };
+
         enable = true;
 
         settings = {
-          aliases = {
-            a = "add";
-            b = "branch";
-            cm = "commit -m";
-            ch = "checkout";
-            cl = "clone";
-            d = "diff";
-            ds = "diff --staged";
-
-            l = let
-              commit = "%C(auto)%h%d%C(reset)";
-              time = "%C(dim)%ar%C(reset)";
-              message = "%C(bold)%s%C(reset)";
-              author = "%C(dim blue)(%an)%C(reset)";
-              format = "${commit} ${time} ${message} ${author}";
-            in "log --graph --pretty=format:'${format}'";
-
-            last = "log -1 HEAD --stat";
-            m = "merge";
-            p = "push";
-            pl = "pull";
-            r = "restore";
-            rh = "reset --hard";
-            rs = "restore --staged";
-            s = "status";
-            sh = "stash";
-            sl = "stash list";
-            sp = "stash pop";
-            sw = "switch";
-            tg = "tag";
-            tracked = "ls-tree --full-tree --name-only -r HEAD";
-            tr = "tracked";
-          };
-
           core.excludesfile = "~/.gitignore_global";
           default.push = "upstream";
           diff.colorMoved = "default";
