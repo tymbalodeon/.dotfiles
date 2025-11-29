@@ -179,8 +179,8 @@ with lib; {
 
         input = {
           kb_options = cfg.hyprland.settings.input.kb_options;
-          repeat_rate = 50;
           repeat_delay = 200;
+          repeat_rate = 50;
         };
 
         "$mainMod" = "SUPER";

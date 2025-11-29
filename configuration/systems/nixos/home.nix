@@ -34,6 +34,7 @@
     ../../modules/clipboard
     ../../modules/hypr
     ../../modules/nemo
+    ../../modules/niri
     ../../modules/reaper
     ../../modules/rofi
     ../../modules/swaync

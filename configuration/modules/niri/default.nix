@@ -5,17 +5,19 @@
   ];
 
   programs = {
-    alacritty.enable = true;
     fuzzel.enable = true;
     swaylock.enable = true;
-    waybar.enable = true;
   };
 
   services = {
     mako.enable = true;
     swayidle.enable = true;
+    # TODO: is this why solaar suddenly appeared in the tray?? If so, move it elsewhere!
     polkit-gnome.enable = true;
   };
 
-  xdg.configFile."niri/config.kdl".source = ./config.kdl;
+  xdg.configFile."niri/config.kdl" = {
+    force = true;
+    source = ./config.kdl;
+  };
 }

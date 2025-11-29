@@ -86,7 +86,12 @@
         "systemd-failed-units"
       ];
 
-      modules-left = ["hyprland/workspaces" "hyprland/window"];
+      modules-left = [
+        "hyprland/workspaces"
+        "hyprland/window"
+        "niri/workspaces"
+        "niri/window"
+      ];
 
       modules-right = [
         "mpd"
@@ -122,6 +127,15 @@
         tooltip-format = "{ifname}= {ipaddr}/{cidr}";
       };
 
+      "niri/workspaces" = {
+        format = "{icon}";
+
+        format-icons = {
+          active = "";
+          default = "";
+        };
+      };
+
       position = "bottom";
 
       spacing = 8;
@@ -139,7 +153,7 @@
 
       wireplumber = {
         format = "{volume}%  {icon} ";
-        format-icons = ["" "" "🔊"];
+        format-icons = ["" "" ""];
         format-muted = " ";
       };
     };
