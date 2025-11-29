@@ -1,4 +1,4 @@
-{
+{config, ...}: {
   programs.waybar = {
     enable = true;
 
@@ -100,7 +100,7 @@
       mpd = {
         consume-icons.on = " ";
         format-disconnected = "Disconnected";
-        format = "{title}  ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}]   {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
+        format = "{title}   ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}]   {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
         format-stopped = "";
         random-icons.on = " ";
         repeat-icons.on = " ";
@@ -116,9 +116,9 @@
       };
 
       network = {
-        format-disconnected = "Disconnected ⚠";
-        format-ethernet = "{ipaddr}/{cidr} ";
-        format-wifi = "{essid} ({signalStrength}%)  ";
+        format-disconnected = "Disconnected  ⚠";
+        format-ethernet = "{ipaddr}/{cidr}  ";
+        format-wifi = "{essid} ({signalStrength}%)   ";
         tooltip-format = "{ifname}= {ipaddr}/{cidr}";
       };
 
@@ -138,10 +138,16 @@
       };
 
       wireplumber = {
-        format = "{volume}% {icon} ";
-        format-icons = ["" "" ""];
-        format-muted = " ";
+        format = "{volume}%  {icon} ";
+        format-icons = ["" "" "🔊"];
+        format-muted = " ";
       };
     };
+
+    style = ''
+      * {
+        font-family: ${config.stylix.fonts.sansSerif.name}, "Font Awesome 7 Free"
+      }
+    '';
   };
 }
