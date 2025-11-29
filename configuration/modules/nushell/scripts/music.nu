@@ -129,7 +129,7 @@ def "music playlist create" [playlist?: string] {
     return
   }
 
-  ^$env.EDITOR $playlist
+  touch (get-playlist-directory | path join $"($playlist).m3u")
 }
 
 alias "music playlist new" = music playlist create
