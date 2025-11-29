@@ -139,7 +139,7 @@
 
       wireplumber = {
         format = "{volume}% {icon} ";
-        format-icons = ["" "" ""];
+        format-icons = ["" "" ""];
         format-muted = " ";
       };
     };
