@@ -5,7 +5,6 @@
   isNixOS,
   lib,
   pkgs,
-  pkgs-stable,
   ...
 }:
 with lib; {
@@ -97,6 +96,7 @@ with lib; {
         xwayland.enable = true;
       };
 
+      niri.enable = true;
       nix-ld.enable = true;
 
       steam = {
