@@ -85,6 +85,10 @@ def get-playlist-directory [] {
   | path join $playlist_directory
 }
 
+def "music playlist" [] {
+  help music
+}
+
 def get-playlist [playlist?: string] {
   let playlist = if ($playlist | is-empty) {
     let playlists = (music playlists | lines)
@@ -115,6 +119,20 @@ def get-playlist [playlist?: string] {
   $playlist
   | first
 }
+
+# Create playlist
+def "music playlist create" [playlist?: string] {
+  let playlist_path = (get-playlist $playlist)
+
+  if ($playlist_path | is-not-empty) {
+    error make --unspanned {msg: $"playlist \"($playlist)\" already exists"}
+    return
+  }
+
+  ^$env.EDITOR $playlist
+}
+
+alias "music playlist new" = music playlist create
 
 # Edit playlist
 def "music playlist edit" [playlist?: string] {
