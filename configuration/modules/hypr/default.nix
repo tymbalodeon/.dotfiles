@@ -12,6 +12,8 @@ with lib; {
   in {
     home = {
       file = {
+        "${configDirectory}/hyprland-is-muted.nu".source = ./hyprland-is-muted.nu;
+
         "${configDirectory}/hyprland-set-follow-mouse.nu".source =
           ./hyprland-set-follow-mouse.nu;
 
@@ -146,11 +148,11 @@ with lib; {
 
         bindel =
           [
-            ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"
+            ", XF86AudioLowerVolume, exec, nu ~/.config/nushell/hyprland-is-muted.nu && wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"
             ", XF86AudioNext, exec, rmpc next"
             ", XF86AudioPlay, exec, playerctl play-pause; rmpc togglepause"
             ", XF86AudioPrev, exec, rmpc prev"
-            ", XF86AudioRaiseVolume, exec, wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ 1%+"
+            ", XF86AudioRaiseVolume, exec, nu ~/.config/nushell/hyprland-is-muted.nu && wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ 1%+"
           ]
           ++ cfg.hyprland.settings.bindelExtra;
 
