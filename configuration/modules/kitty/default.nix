@@ -38,7 +38,6 @@ with lib; {
           font_family = "Fira Code";
           font_size = cfg.font_size;
           inactive_text_alpha = 0.5;
-          include = "theme.conf";
           shell = "${pkgs.nushell}/bin/nu";
           tab_bar_edge = "top";
           tab_bar_style = "powerline";
