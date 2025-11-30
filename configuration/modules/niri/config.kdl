@@ -145,7 +145,7 @@ layout {
     center-focused-column "on-overflow"
     // TODO: pull colors from stylix
     focus-ring {
-        width 2
+        width 1
     }
 }
 

@@ -190,7 +190,10 @@ with lib; {
     };
   };
 
-  imports = [../nushell];
+  imports = [
+    ../nushell
+    ../rofi
+  ];
 
   options.hypr = with types; {
     hyprland.settings = {

@@ -36,7 +36,6 @@
     ../../modules/nemo
     ../../modules/niri
     ../../modules/reaper
-    ../../modules/rofi
     ../../modules/swaync
     ../../modules/waybar
   ];

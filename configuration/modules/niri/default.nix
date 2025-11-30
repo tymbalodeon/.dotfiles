@@ -4,10 +4,9 @@
     xwayland-satellite
   ];
 
-  programs = {
-    fuzzel.enable = true;
-    swaylock.enable = true;
-  };
+  imports = [../fuzzel];
+
+  programs.swaylock.enable = true;
 
   services = {
     mako.enable = true;
