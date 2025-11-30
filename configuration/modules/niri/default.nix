@@ -11,7 +11,6 @@
 
   services = {
     mako.enable = true;
-    swayidle.enable = true;
     # TODO: is this why solaar suddenly appeared in the tray?? If so, move it elsewhere!
     polkit-gnome.enable = true;
   };
