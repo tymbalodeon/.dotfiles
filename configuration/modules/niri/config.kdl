@@ -3,30 +3,6 @@
     clip-to-geometry false
 }
 
-hotkey-overlay {
-    skip-at-startup
-}
-
-input {
-    keyboard {
-        xkb {
-            options "caps:escape"
-        }
-        repeat-delay 200
-        repeat-rate 50
-    }
-}
-
-layout {
-    center-focused-column "on-overflow"
-    // TODO: pull colors from stylix
-    focus-ring {
-        width 2
-    }
-}
-
-spawn-at-startup "waybar"
-
 binds {
     Alt+Print { screenshot-window; }
     Ctrl+Alt+Delete { quit; }
@@ -150,3 +126,29 @@ binds {
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
 }
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+input {
+    keyboard {
+        xkb {
+            options "caps:escape"
+        }
+        repeat-delay 200
+        repeat-rate 50
+    }
+}
+
+layout {
+    center-focused-column "on-overflow"
+    // TODO: pull colors from stylix
+    focus-ring {
+        width 2
+    }
+}
+
+prefer-no-csd
+
+spawn-at-startup "waybar"
