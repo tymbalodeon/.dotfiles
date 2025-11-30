@@ -70,6 +70,7 @@
 
       keys = {
         normal = {
+          C-g = [":reset-diff-change"];
           C-j = ["extend_to_line_bounds" "delete_selection" "paste_after"];
 
           C-k = [
