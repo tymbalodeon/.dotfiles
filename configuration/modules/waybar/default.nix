@@ -36,6 +36,21 @@
 
       cpu.format = "  {usage}%";
 
+      "custom/power" = {
+        format = "⏻ ";
+
+        menu-actions = {
+          hibernate = "systemctl hibernate";
+          reboot = "reboot";
+          shutdown = "shutdown";
+          suspend = "systemctl suspend";
+        };
+
+        menu-file = "${./power_menu.xml}";
+        menu = "on-click";
+        tooltip = false;
+      };
+
       disk = {
         format = "{used} / {total} ({percentage_used}%)";
         tooltip = false;
@@ -100,6 +115,7 @@
         "backlight"
         "wireplumber"
         "battery"
+        "custom/power"
       ];
 
       mpd = {
