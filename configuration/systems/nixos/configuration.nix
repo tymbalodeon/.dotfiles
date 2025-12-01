@@ -11,9 +11,13 @@ with lib; {
   config = let
     cfg = config.nixos;
   in {
-    boot.loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
+    boot = {
+      kernelModules = ["i2c-dev"];
+
+      loader = {
+        systemd-boot.enable = true;
+        efi.canTouchEfiVariables = true;
+      };
     };
 
     environment = {
@@ -35,7 +39,10 @@ with lib; {
       ];
     };
 
-    hardware.bluetooth.enable = true;
+    hardware = {
+      bluetooth.enable = true;
+      i2c.enable = true;
+    };
 
     home-manager = {
       extraSpecialArgs = {
@@ -139,6 +146,7 @@ with lib; {
       };
 
       solaar.enable = true;
+      udev.extraRules = ''KERNEL=="i2c-[0-9]*", GROUP="i2c", MODE="0660"'';
       udisks2.enable = true;
       wayland-pipewire-idle-inhibit.enable = true;
     };
@@ -154,7 +162,7 @@ with lib; {
 
     users.users.${cfg.username} = {
       description = cfg.name;
-      extraGroups = ["networkmanager" "wheel"];
+      extraGroups = ["i2c" "networkmanager" "wheel"];
       isNormalUser = true;
       shell = pkgs.nushell;
     };
