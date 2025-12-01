@@ -127,12 +127,7 @@
 
       "niri/workspaces" = {
         current-only = true;
-        format = "{icon} {value}";
-
-        format-icons = {
-          active = "";
-          default = "";
-        };
+        disable-click = true;
       };
 
       position = "bottom";
