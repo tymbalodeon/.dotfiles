@@ -1,7 +1,17 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
-    xwayland-satellite
-  ];
+{
+  lib,
+  pkgs,
+  ...
+}: {
+  home = {
+    activation.niri =
+      lib.hm.dag.entryAfter ["writeBoundary"]
+      ''mkdir --parents ~/Pictures/Screenshots'';
+
+    packages = with pkgs; [
+      xwayland-satellite
+    ];
+  };
 
   imports = [
     ../fuzzel

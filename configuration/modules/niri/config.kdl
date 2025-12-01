@@ -1,7 +1,5 @@
 binds {
-    Alt+Print { screenshot-window; }
     Ctrl+Alt+Delete { quit; }
-    Ctrl+Print { screenshot-screen; }
     Mod+1 { focus-workspace 1; }
     Mod+2 { focus-workspace 2; }
     Mod+3 { focus-workspace 3; }
@@ -98,7 +96,9 @@ binds {
     Mod+WheelScrollRight { focus-column-right; }
     Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
     Mod+W { toggle-column-tabbed-display; }
-    Print { screenshot; }
+    Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" { screenshot-screen; }
+    Super+Alt+2 hotkey-overlay-title="Screenshot the current window" { screenshot-window; }
+    Super+Alt+3 hotkey-overlay-title="Screenshot" { screenshot; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "hyprlock"; }
     Super+Alt+M hotkey-overlay-title="Power off monitors" { power-off-monitors; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "nu ~/.config/nushell/hyprland-is-muted.nu && wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"; }
@@ -137,5 +137,5 @@ layout {
 }
 
 prefer-no-csd
-
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 spawn-at-startup "waybar"
