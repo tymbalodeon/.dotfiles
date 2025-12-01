@@ -33,7 +33,6 @@
     ../linux/home.nix
     ../../modules/clipboard
     ../../modules/hyprland
-    ../../modules/nemo
     ../../modules/niri
     ../../modules/reaper
     ../../modules/swaync

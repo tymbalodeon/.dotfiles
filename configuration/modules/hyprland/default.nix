@@ -132,6 +132,7 @@ with lib; {
     ../hypridle
     ../hyprlock
     ../hyprpaper
+    ../nemo
     ../nushell
     ../playerctl
     ../rofi
