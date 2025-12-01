@@ -11,7 +11,7 @@ with lib; {
   in {
     home = {
       file = {
-        "${configDirectory}/hyprland-is-muted.nu".source = ./hyprland-is-muted.nu;
+        "${configDirectory}/is-muted.nu".source = ./hyprland-is-muted.nu;
 
         "${configDirectory}/hyprland-set-follow-mouse.nu".source =
           ./hyprland-set-follow-mouse.nu;

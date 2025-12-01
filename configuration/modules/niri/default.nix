@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -7,6 +8,9 @@
     activation.niri =
       lib.hm.dag.entryAfter ["writeBoundary"]
       ''mkdir --parents ~/Pictures/Screenshots'';
+
+    file."${config.nushell.configDirectory}/set-brightness.nu".source =
+      ./set-brightness.nu;
 
     packages = with pkgs; [
       xwayland-satellite
