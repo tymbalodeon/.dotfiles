@@ -102,9 +102,12 @@
 
       mpd = {
         consume-icons.on = " ";
+        format = "{title}    ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}]    {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
         format-disconnected = "Disconnected";
-        format = "{title}   ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}]   {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
         format-stopped = "";
+        on-click = "rmpc togglepause";
+        on-click-middle = "rmpc prev";
+        on-click-right = "rmpc next";
         random-icons.on = " ";
         repeat-icons.on = " ";
         single-icons.on = "1 ";
