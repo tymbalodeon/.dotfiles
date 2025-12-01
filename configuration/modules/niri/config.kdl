@@ -112,8 +112,7 @@ binds {
     Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
     Mod+W { toggle-column-tabbed-display; }
     Print { screenshot; }
-    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
-    Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
+    Super+Alt+L hotkey-overlay-title="Lock the Screen: hyprlock" { spawn "hyprlock"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "nu ~/.config/nushell/hyprland-is-muted.nu && wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"; }
     XF86AudioMicMute allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
     XF86AudioMute allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
@@ -135,6 +134,7 @@ input {
         xkb {
             options "caps:escape"
         }
+
         repeat-delay 200
         repeat-rate 50
     }
@@ -142,7 +142,7 @@ input {
 
 layout {
     center-focused-column "on-overflow"
-    // TODO: pull colors from stylix
+
     focus-ring {
         width 1
     }

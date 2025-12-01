@@ -8,7 +8,6 @@ with lib; {
   config = let
     cfg = config.hypr;
     configDirectory = config.nushell.configDirectory;
-    wallpaper = ./wallpaper/hildegard.jpeg;
   in {
     home = {
       file = {
@@ -29,67 +28,6 @@ with lib; {
           then [brightnessctl]
           else []
         );
-    };
-
-    programs.hyprlock = {
-      enable = true;
-
-      settings = {
-        background = {
-          blur_passes = 2;
-          path = "${wallpaper}";
-        };
-
-        general.hide_cursor = true;
-
-        label = [
-          {
-            font_size = 90;
-            position = "0, -25%";
-            text = "$TIME12";
-            valign = "top";
-          }
-
-          {
-            font_size = 25;
-            position = "0, -32%";
-            text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
-            valign = "top";
-          }
-        ];
-      };
-    };
-
-    services = {
-      hypridle = {
-        enable = true;
-
-        settings = {
-          listener = [
-            {
-              timeout = 300;
-              on-resume = "hyprctl dispatch dpms on";
-              on-timeout = "hyprctl dispatch dpms off";
-            }
-
-            {
-              on-timeout = "systemctl suspend";
-              timeout = 600;
-            }
-          ];
-        };
-      };
-
-      hyprpaper = {
-        enable = true;
-
-        settings = {
-          preload = "${wallpaper}";
-          wallpaper = [", ${wallpaper}"];
-        };
-      };
-
-      playerctld.enable = true;
     };
 
     wayland.windowManager.hyprland = {
@@ -191,7 +129,11 @@ with lib; {
   };
 
   imports = [
+    ../hypridle
+    ../hyprlock
+    ../hyprpaper
     ../nushell
+    ../playerctl
     ../rofi
   ];
 

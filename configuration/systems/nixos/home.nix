@@ -32,7 +32,7 @@
   imports = [
     ../linux/home.nix
     ../../modules/clipboard
-    ../../modules/hypr
+    ../../modules/hyprland
     ../../modules/nemo
     ../../modules/niri
     ../../modules/reaper

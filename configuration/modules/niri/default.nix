@@ -6,6 +6,7 @@
 
   imports = [
     ../fuzzel
+    ../hyprlock
     ../polkit
   ];
 
