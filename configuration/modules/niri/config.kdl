@@ -1,5 +1,4 @@
 binds {
-    Ctrl+Alt+Delete { quit; }
     Mod+1 { focus-workspace 1; }
     Mod+2 { focus-workspace 2; }
     Mod+3 { focus-workspace 3; }
@@ -72,7 +71,6 @@ binds {
     Mod+Shift+Ctrl+Up { move-column-to-monitor-up; }
     Mod+Shift+Down { focus-monitor-down; }
     Mod+Shift+Equal { set-window-height "+10%"; }
-    Mod+Shift+E { quit; }
     Mod+Shift+F hotkey-overlay-title="Make the window fullscreen" { fullscreen-window; }
     Mod+Shift+H { focus-monitor-left; }
     Mod+Shift+J { focus-monitor-down; }
@@ -100,6 +98,7 @@ binds {
     Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" { screenshot-screen; }
     Super+Alt+2 hotkey-overlay-title="Screenshot the current window" { screenshot-window; }
     Super+Alt+3 hotkey-overlay-title="Screenshot" { screenshot; }
+    Super+Alt+Delete hotkey-overlay-title="Exit niri" { quit; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "hyprlock"; }
     Super+Alt+M hotkey-overlay-title="Power off monitors" { power-off-monitors; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "nu ~/.config/nushell/hyprland-is-muted.nu && wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"; }

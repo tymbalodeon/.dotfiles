@@ -34,7 +34,7 @@
         tooltip-format = "<tt><small>{calendar}</small></tt>";
       };
 
-      cpu.format = "  {usage}%";
+      cpu.format = " {usage}%";
 
       "custom/power" = {
         format = "⏻ ";
@@ -52,31 +52,9 @@
       };
 
       disk = {
-        format = "{used} / {total} ({percentage_used}%)";
-        tooltip = false;
+        format = " {percentage_used}%";
+        tooltip-format = "Used: {used}\nRemaining: {free}\nTotal: {total}";
         unit = "GB";
-      };
-
-      "group/hardware" = {
-        orientation = "inherit";
-        drawer = {};
-
-        modules = [
-          "cpu"
-          "memory"
-          "temperature"
-          "disk"
-        ];
-      };
-
-      "group/network" = {
-        orientation = "inherit";
-        drawer = {};
-
-        modules = [
-          "network"
-          "bluetooth"
-        ];
       };
 
       "hyprland/workspaces".on-click = "activate";
@@ -92,7 +70,7 @@
         on-click = "pgrep hypridle && systemctl --user stop hypridle || systemctl --user start hypridle";
       };
 
-      memory.format = " {}%";
+      memory.format = " {}%";
 
       modules-center = [
         "idle_inhibitor"
@@ -110,8 +88,12 @@
 
       modules-right = [
         "mpd"
-        "group/hardware"
-        "group/network"
+        "cpu"
+        "memory"
+        "disk"
+        "temperature"
+        "bluetooth"
+        "network"
         "backlight"
         "wireplumber"
         "battery"
@@ -137,9 +119,9 @@
       };
 
       network = {
-        format-disconnected = "Disconnected  ⚠";
-        format-ethernet = "{ipaddr}/{cidr}  ";
-        format-wifi = "{essid} ({signalStrength}%)   ";
+        format-disconnected = "⚠ Disconnected";
+        format-ethernet = " {ipaddr}/{cidr}";
+        format-wifi = " {essid} ({signalStrength}%)";
         tooltip-format = "{ifname}= {ipaddr}/{cidr}";
       };
 
@@ -160,7 +142,7 @@
 
       temperature = {
         critical-threshold = 80;
-        format = "{temperatureF}°F";
+        format = " {temperatureF}°F";
       };
 
       tray = {
@@ -169,7 +151,7 @@
       };
 
       wireplumber = {
-        format = "{volume}%  {icon} ";
+        format = "{icon} {volume}%";
         format-icons = ["" "" ""];
         format-muted = " ";
       };
