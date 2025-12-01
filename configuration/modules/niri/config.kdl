@@ -49,16 +49,16 @@ binds {
     Mod+F { maximize-column; }
     Mod+H { focus-column-left; }
     Mod+Home { focus-column-first; }
-    Mod+P { focus-workspace-up; }
     Mod+J { focus-window-down; }
     Mod+K { focus-window-up; }
     Mod+Left { focus-column-left; }
     Mod+L { focus-column-right; }
     Mod+Minus { set-column-width "-10%"; }
-    Mod+O repeat=false { toggle-overview; }
     Mod+N { focus-workspace-down; }
+    Mod+O repeat=false { toggle-overview; }
     Mod+Page_Up { focus-workspace-up; }
     Mod+Period { expel-window-from-column; }
+    Mod+P { focus-workspace-up; }
     Mod+Q repeat=false { close-window; }
     Mod+Right { focus-column-right; }
     Mod+R { switch-preset-column-width; }
@@ -80,6 +80,7 @@ binds {
     Mod+Shift+Left { focus-monitor-left; }
     Mod+Shift+L { focus-monitor-right; }
     Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+N { spawn-sh "swaync-client --toggle-panel --skip-wait"; }
     Mod+Shift+Right { focus-monitor-right; }
     Mod+Shift+R { switch-preset-window-height; }
     Mod+Shift+Slash { show-hotkey-overlay; }
@@ -99,7 +100,6 @@ binds {
     Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" { screenshot-screen; }
     Super+Alt+2 hotkey-overlay-title="Screenshot the current window" { screenshot-window; }
     Super+Alt+3 hotkey-overlay-title="Screenshot" { screenshot; }
-    // Super+Alt+Delete hotkey-overlay-title="Put the computer to sleep" { spawn "systemctl suspend"; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "hyprlock"; }
     Super+Alt+M hotkey-overlay-title="Power off monitors" { power-off-monitors; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "nu ~/.config/nushell/hyprland-is-muted.nu && wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"; }
