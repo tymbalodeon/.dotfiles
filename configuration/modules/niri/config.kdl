@@ -1,8 +1,3 @@
-/-window-rule {
-    geometry-corner-radius 0
-    clip-to-geometry false
-}
-
 binds {
     Alt+Print { screenshot-window; }
     Ctrl+Alt+Delete { quit; }
@@ -35,18 +30,16 @@ binds {
     Mod+Ctrl+F { expand-column-to-available-width; }
     Mod+Ctrl+H { move-column-left; }
     Mod+Ctrl+Home { move-column-to-first; }
-    Mod+Ctrl+I { move-column-to-workspace-up; }
     Mod+Ctrl+J { move-window-down; }
     Mod+Ctrl+K { move-window-up; }
     Mod+Ctrl+Left { move-column-left; }
     Mod+Ctrl+L { move-column-right; }
-    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
-    Mod+Ctrl+Page_Up { move-column-to-workspace-up; }
+    Mod+Ctrl+N { move-column-to-workspace-down; }
+    Mod+Ctrl+P { move-column-to-workspace-up; }
     Mod+Ctrl+Right { move-column-right; }
     Mod+Ctrl+R { reset-window-height; }
     Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
     Mod+Ctrl+Shift+WheelScrollUp { move-column-left; }
-    Mod+Ctrl+U { move-column-to-workspace-down; }
     Mod+Ctrl+Up { move-window-up; }
     Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
     Mod+Ctrl+WheelScrollLeft { move-column-left; }
@@ -55,18 +48,18 @@ binds {
     Mod+Down { focus-window-down; }
     Mod+End { focus-column-last; }
     Mod+Equal { set-column-width "+10%"; }
-    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    Mod+Escape { power-off-monitors; }
     Mod+F { maximize-column; }
     Mod+H { focus-column-left; }
     Mod+Home { focus-column-first; }
-    Mod+I { focus-workspace-up; }
+    Mod+P { focus-workspace-up; }
     Mod+J { focus-window-down; }
     Mod+K { focus-window-up; }
     Mod+Left { focus-column-left; }
     Mod+L { focus-column-right; }
     Mod+Minus { set-column-width "-10%"; }
     Mod+O repeat=false { toggle-overview; }
-    Mod+Page_Down { focus-workspace-down; }
+    Mod+N { focus-workspace-down; }
     Mod+Page_Up { focus-workspace-up; }
     Mod+Period { expel-window-from-column; }
     Mod+Q repeat=false { close-window; }
@@ -85,19 +78,14 @@ binds {
     Mod+Shift+E { quit; }
     Mod+Shift+F { fullscreen-window; }
     Mod+Shift+H { focus-monitor-left; }
-    Mod+Shift+I { move-workspace-up; }
     Mod+Shift+J { focus-monitor-down; }
     Mod+Shift+K { focus-monitor-up; }
     Mod+Shift+Left { focus-monitor-left; }
     Mod+Shift+L { focus-monitor-right; }
     Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+Page_Down { move-workspace-down; }
-    Mod+Shift+Page_Up { move-workspace-up; }
-    Mod+Shift+P { power-off-monitors; }
     Mod+Shift+Right { focus-monitor-right; }
     Mod+Shift+R { switch-preset-window-height; }
     Mod+Shift+Slash { show-hotkey-overlay; }
-    Mod+Shift+U { move-workspace-down; }
     Mod+Shift+Up { focus-monitor-up; }
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
     Mod+Shift+WheelScrollDown { focus-column-right; }
