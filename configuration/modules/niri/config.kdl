@@ -111,6 +111,7 @@ binds {
     XF86AudioPrev allow-when-locked=true { spawn-sh "playerctl previous || rmpc prev"; }
     XF86AudioRaiseVolume allow-when-locked=true {spawn-sh "nu ~/.config/nushell/is-muted.nu && wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ 1%+"; }
     XF86AudioStop allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86LaunchA repeat=false { toggle-overview; }
     XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ~/.config/nushell/brightness.nu decrease";}
     XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ~/.config/nushell/brightness.nu increase"; }
 }
