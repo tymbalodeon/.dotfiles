@@ -170,7 +170,11 @@ with lib; {
     };
   };
 
-  imports = [inputs.home-manager.nixosModules.home-manager];
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+    # TODO: pull out into a nixos modules folder?
+    ../../modules/dropbox
+  ];
 
   options.nixos = with types; let
     user = import ../../modules/users/user.nix;
