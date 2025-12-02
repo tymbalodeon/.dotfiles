@@ -48,7 +48,7 @@
       };
 
       "custom/power" = {
-        format = "⏻ ";
+        format = "⏻  ";
 
         menu-actions = {
           hibernate = "systemctl hibernate";
