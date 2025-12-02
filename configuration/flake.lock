@@ -87,11 +87,11 @@
     "flake-compat": {
       "flake": false,
       "locked": {
-        "lastModified": 1747046372,
-        "narHash": "sha256-CIVLLkVgvHYbgI2UpXvIIBJ12HWgX+fjA8Xf8PUmqCY=",
+        "lastModified": 1761588595,
+        "narHash": "sha256-XKUZz9zewJNUj46b4AJdiRZJAvSZ0Dqj2BNfXvFlJC4=",
         "owner": "edolstra",
         "repo": "flake-compat",
-        "rev": "9100a0f413b0c601e0533d1d94ffd501ce2e7885",
+        "rev": "f387cd2afec9419c8ee37694406ca490c3f34ee5",
         "type": "github"
       },
       "original": {
@@ -470,11 +470,11 @@
         "snowfall-lib": "snowfall-lib"
       },
       "locked": {
-        "lastModified": 1761840426,
-        "narHash": "sha256-CprKgnLGKpNB0leamU9hw+ZgocRAsEFevyqIuY0FSiY=",
+        "lastModified": 1764670272,
+        "narHash": "sha256-nzbjvav3wEC9gUgl5XH/VRnlNN4P2bLxK4Senz0uaVU=",
         "owner": "Svenum",
         "repo": "Solaar-Flake",
-        "rev": "7b5e221d60195d77fda5c2d69087f7cd1b8d3c20",
+        "rev": "8e70e50873b756ee2e721b907677dfcb4be25a6b",
         "type": "github"
       },
       "original": {
