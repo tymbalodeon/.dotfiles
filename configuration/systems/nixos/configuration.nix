@@ -137,6 +137,8 @@ with lib; {
         };
       };
 
+      fwupd.enable = true;
+
       hypridle.enable = true;
 
       pipewire = {
