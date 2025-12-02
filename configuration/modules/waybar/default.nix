@@ -36,6 +36,17 @@
 
       cpu.format = " {usage}%";
 
+      "custom/brightness" = {
+        exec = "nu ${../monitors/brightness.nu} get";
+        format = " {text}%";
+        on-click = "nu ${../monitors/brightness.nu} set min";
+        on-click-right = "nu ${../monitors/brightness.nu} set max";
+        on-scroll-down = "nu ${../monitors/brightness.nu} decrease";
+        on-scroll-up = "nu ${../monitors/brightness.nu} increase";
+        signal = 8;
+        tooltip = false;
+      };
+
       "custom/power" = {
         format = "⏻ ";
 
@@ -88,13 +99,14 @@
 
       modules-right = [
         "mpd"
+        "network"
+        "bluetooth"
         "cpu"
         "memory"
         "disk"
         "temperature"
-        "bluetooth"
-        "network"
         "backlight"
+        "custom/brightness"
         "wireplumber"
         "battery"
         "custom/power"

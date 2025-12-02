@@ -9,8 +9,8 @@
       lib.hm.dag.entryAfter ["writeBoundary"]
       ''mkdir --parents ~/Pictures/Screenshots'';
 
-    file."${config.nushell.configDirectory}/set-brightness.nu".source =
-      ./set-brightness.nu;
+    file."${config.nushell.configDirectory}/brightness.nu".source =
+      ../monitors/brightness.nu;
 
     packages = with pkgs; [
       xwayland-satellite
