@@ -20,7 +20,12 @@
   imports = [
     ../fuzzel
     ../hyprlock
+    ../music-player
+    ../nushell
+    ../playerctl
     ../polkit
+    ../swaync
+    ../waybar
   ];
 
   programs.swaylock.enable = true;
