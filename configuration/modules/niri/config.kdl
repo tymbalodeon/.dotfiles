@@ -78,7 +78,7 @@ binds {
     Mod+Shift+Left { focus-monitor-left; }
     Mod+Shift+L { focus-monitor-right; }
     Mod+Shift+Minus { set-window-height "-10%"; }
-    Mod+Shift+N hotkey-overlay-title="Open notifications panel" { spawn-sh "swaync-client --toggle-panel --skip-wait"; }
+    Mod+Shift+N hotkey-overlay-title="Open notifications panel" { spawn "swaync-client" "--toggle-panel" "--skip-wait"; }
     Mod+Shift+Right { focus-monitor-right; }
     Mod+Shift+R { switch-preset-window-height; }
     Mod+Shift+Slash { show-hotkey-overlay; }
@@ -101,16 +101,17 @@ binds {
     Super+Alt+Delete hotkey-overlay-title="Exit niri" { quit; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "hyprlock"; }
     Super+Alt+M hotkey-overlay-title="Power off monitors" { power-off-monitors; }
+    Super+Alt+S hotkey-overlay-title="Put the computer to sleep" { spawn "systemctl" "suspend"; }
     Super+XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "nu ~/.config/nushell/brightness.nu set min";}
     Super+XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "nu ~/.config/nushell/brightness.nu set max"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "nu ~/.config/nushell/is-muted.nu && wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"; }
-    XF86AudioMicMute allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
-    XF86AudioMute allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
     XF86AudioNext allow-when-locked=true { spawn-sh "playerctl next || rmpc next"; }
     XF86AudioPlay allow-when-locked=true { spawn-sh "playerctl play-pause; rmpc togglepause"; }
     XF86AudioPrev allow-when-locked=true { spawn-sh "playerctl previous || rmpc prev"; }
     XF86AudioRaiseVolume allow-when-locked=true {spawn-sh "nu ~/.config/nushell/is-muted.nu && wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ 1%+"; }
-    XF86AudioStop allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioStop allow-when-locked=true { spawn "playerctl" "stop"; }
     XF86LaunchA repeat=false { toggle-overview; }
     XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ~/.config/nushell/brightness.nu decrease";}
     XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ~/.config/nushell/brightness.nu increase"; }
