@@ -7,9 +7,25 @@ export def main [
   --all # Remove all old generations
   --older-than: string # Remove generations older than this amount
 ] {
+  let is_nixos = (is-nixos)
+
+  if $is_nixos {
+    let generations = if ($older_than | is-not-empty) {
+      $older_than
+    } else if $all {
+      "old"
+    } else {
+      ""
+    }
+
+    if ($generations | is-not-empty) {
+      nix-env --delete-generations $generations
+    }
+  }
+
   let args = [nix-collect-garbage]
 
-  let args = if (is-nixos) {
+  let args = if $is_nixos {
     $args
     | prepend sudo
   } else {
