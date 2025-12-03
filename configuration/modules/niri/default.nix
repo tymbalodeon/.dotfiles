@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   ...
@@ -8,9 +7,6 @@
     activation.niri =
       lib.hm.dag.entryAfter ["writeBoundary"]
       ''mkdir --parents ~/Pictures/Screenshots'';
-
-    file."${config.nushell.configDirectory}/brightness.nu".source =
-      ../monitors/brightness.nu;
 
     packages = with pkgs; [
       xwayland-satellite
@@ -34,8 +30,154 @@
   xdg.configFile."niri/config.kdl" = {
     force = true;
 
-    text =
-      (builtins.readFile ./config.kdl)
-      + ''spawn-at-startup "swaybg" "--image" "${../../wallpaper.jpeg}"'';
+    text = ''
+          binds {
+          Mod+1 { focus-workspace 1; }
+          Mod+2 { focus-workspace 2; }
+          Mod+3 { focus-workspace 3; }
+          Mod+4 { focus-workspace 4; }
+          Mod+5 { focus-workspace 5; }
+          Mod+6 { focus-workspace 6; }
+          Mod+7 { focus-workspace 7; }
+          Mod+8 { focus-workspace 8; }
+          Mod+9 { focus-workspace 9; }
+          Mod+BracketLeft { consume-or-expel-window-left; }
+          Mod+BracketRight { consume-or-expel-window-right; }
+          Mod+C { center-column; }
+          Mod+Comma { consume-window-into-column; }
+          Mod+Ctrl+1 { move-column-to-workspace 1; }
+          Mod+Ctrl+2 { move-column-to-workspace 2; }
+          Mod+Ctrl+3 { move-column-to-workspace 3; }
+          Mod+Ctrl+4 { move-column-to-workspace 4; }
+          Mod+Ctrl+5 { move-column-to-workspace 5; }
+          Mod+Ctrl+6 { move-column-to-workspace 6; }
+          Mod+Ctrl+7 { move-column-to-workspace 7; }
+          Mod+Ctrl+8 { move-column-to-workspace 8; }
+          Mod+Ctrl+9 { move-column-to-workspace 9; }
+          Mod+Ctrl+C { center-visible-columns; }
+          Mod+Ctrl+Down { move-window-down; }
+          Mod+Ctrl+End { move-column-to-last; }
+          Mod+Ctrl+F { expand-column-to-available-width; }
+          Mod+Ctrl+H { move-column-left; }
+          Mod+Ctrl+Home { move-column-to-first; }
+          Mod+Ctrl+J { move-window-down; }
+          Mod+Ctrl+K { move-window-up; }
+          Mod+Ctrl+Left { move-column-left; }
+          Mod+Ctrl+L { move-column-right; }
+          Mod+Ctrl+N { move-column-to-workspace-down; }
+          Mod+Ctrl+P { move-column-to-workspace-up; }
+          Mod+Ctrl+Right { move-column-right; }
+          Mod+Ctrl+R { reset-window-height; }
+          Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+          Mod+Ctrl+Shift+WheelScrollUp { move-column-left; }
+          Mod+Ctrl+Up { move-window-up; }
+          Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+          Mod+Ctrl+WheelScrollLeft { move-column-right; }
+          Mod+Ctrl+WheelScrollRight { move-column-left; }
+          Mod+Ctrl+WheelScrollUp cooldown-ms=150 { move-column-to-workspace-up; }
+          Mod+Down { focus-window-down; }
+          Mod+End { focus-column-last; }
+          Mod+Equal { set-column-width "+10%"; }
+          Mod+F { maximize-column; }
+          Mod+H { focus-column-left; }
+          Mod+Home { focus-column-first; }
+          Mod+J { focus-window-down; }
+          Mod+K { focus-window-up; }
+          Mod+Left { focus-column-left; }
+          Mod+L { focus-column-right; }
+          Mod+Minus { set-column-width "-10%"; }
+          Mod+N { focus-workspace-down; }
+          Mod+O repeat=false { toggle-overview; }
+          Mod+Page_Up { focus-workspace-up; }
+          Mod+Period { expel-window-from-column; }
+          Mod+P { focus-workspace-up; }
+          Mod+Q repeat=false { close-window; }
+          Mod+Right { focus-column-right; }
+          Mod+R { switch-preset-column-width; }
+          Mod+Shift+Ctrl+Down { move-column-to-monitor-down; }
+          Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
+          Mod+Shift+Ctrl+J { move-column-to-monitor-down; }
+          Mod+Shift+Ctrl+K { move-column-to-monitor-up; }
+          Mod+Shift+Ctrl+Left { move-column-to-monitor-left; }
+          Mod+Shift+Ctrl+L { move-column-to-monitor-right; }
+          Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+          Mod+Shift+Ctrl+Up { move-column-to-monitor-up; }
+          Mod+Shift+Down { focus-monitor-down; }
+          Mod+Shift+Equal { set-window-height "+10%"; }
+          Mod+Shift+F hotkey-overlay-title="Make the window fullscreen" { fullscreen-window; }
+          Mod+Shift+H { focus-monitor-left; }
+          Mod+Shift+J { focus-monitor-down; }
+          Mod+Shift+K { focus-monitor-up; }
+          Mod+Shift+Left { focus-monitor-left; }
+          Mod+Shift+L { focus-monitor-right; }
+          Mod+Shift+Minus { set-window-height "-10%"; }
+          Mod+Shift+N hotkey-overlay-title="Open notifications panel" { spawn "swaync-client" "--toggle-panel" "--skip-wait"; }
+          Mod+Shift+Right { focus-monitor-right; }
+          Mod+Shift+R { switch-preset-window-height; }
+          Mod+Shift+Slash { show-hotkey-overlay; }
+          Mod+Shift+Up { focus-monitor-up; }
+          Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+          Mod+Shift+WheelScrollDown { focus-column-right; }
+          Mod+Shift+WheelScrollUp { focus-column-left; }
+          Mod+Space hotkey-overlay-title="Run an Application" { spawn "fuzzel"; }
+          Mod+U { focus-workspace-down; }
+          Mod+Up { focus-window-up; }
+          Mod+V { toggle-window-floating; }
+          Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+          Mod+WheelScrollLeft { focus-column-right; }
+          Mod+WheelScrollRight { focus-column-left; }
+          Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+          Mod+W { toggle-column-tabbed-display; }
+          Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" { screenshot-screen; }
+          Super+Alt+2 hotkey-overlay-title="Screenshot the current window" { screenshot-window; }
+          Super+Alt+3 hotkey-overlay-title="Screenshot" { screenshot; }
+          Super+Alt+B hotkey-overlay-title="Switch to random background" { spawn-sh "nu ${../swaybg/update-wallpaper.nu}"; }
+          Super+Alt+Delete hotkey-overlay-title="Exit niri" { quit; }
+          Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "hyprlock"; }
+          Super+Alt+M hotkey-overlay-title="Power off monitors" { power-off-monitors; }
+          Super+Alt+Shift+B hotkey-overlay-title="Switch to default background" { spawn-sh "nu ${../swaybg/update-wallpaper.nu} ${../../wallpaper.jpeg}"; }
+          Super+Alt+S hotkey-overlay-title="Put the computer to sleep" { spawn-sh "niri msg action power-off-monitors; systemctl suspend"; }
+          Super+Alt+W hotkey-overlay-title="Restart waybar" { spawn "systemctl" "--user" "restart" "waybar"; }
+          Super+XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "nu ${../monitors/brightness.nu} set min";}
+          Super+XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "nu ${../monitors/brightness.nu} set max"; }
+          XF86AudioLowerVolume allow-when-locked=true { spawn-sh "nu ${../music-player/is-muted.nu} && wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-"; }
+          XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+          XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+          XF86AudioNext allow-when-locked=true { spawn-sh "playerctl next || rmpc next"; }
+          XF86AudioPlay allow-when-locked=true { spawn-sh "playerctl play-pause; rmpc togglepause"; }
+          XF86AudioPrev allow-when-locked=true { spawn-sh "playerctl previous || rmpc prev"; }
+          XF86AudioRaiseVolume allow-when-locked=true {spawn-sh "nu ${../music-player/is-muted.nu} && wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ 1%+"; }
+          XF86AudioStop allow-when-locked=true { spawn "playerctl" "stop"; }
+          XF86LaunchA repeat=false { toggle-overview; }
+          XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ${../monitors/brightness.nu} decrease";}
+          XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ${../monitors/brightness.nu} increase"; }
+      }
+
+      hotkey-overlay {
+          skip-at-startup
+      }
+
+      input {
+          keyboard {
+              xkb {
+                  options "caps:escape"
+              }
+
+              repeat-delay 200
+              repeat-rate 50
+          }
+      }
+
+      layout {
+          center-focused-column "on-overflow"
+
+          focus-ring {
+              width 1
+          }
+      }
+
+      prefer-no-csd
+      screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+    '';
   };
 }
