@@ -124,11 +124,11 @@ with lib; {
   imports = [
     ../hypridle
     ../hyprlock
-    ../hyprpaper
     ../nemo
     ../nushell
     ../playerctl
     ../rofi
+    ../wallpaper
   ];
 
   options.hypr = with types; {

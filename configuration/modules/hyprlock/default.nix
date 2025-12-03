@@ -5,7 +5,7 @@
     settings = {
       background = {
         blur_passes = 2;
-        path = "${../../wallpaper.jpeg}";
+        path = "${../wallpaper/wallpaper.jpeg}";
       };
 
       general.hide_cursor = true;
