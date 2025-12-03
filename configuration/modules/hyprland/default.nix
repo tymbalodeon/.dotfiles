@@ -106,7 +106,10 @@ with lib; {
           "XCURSOR_SIZE,16"
         ];
 
-        exec-once = ["waybar"];
+        exec-once = [
+          "hyprpaper"
+          "waybar"
+        ];
 
         general = {
           allow_tearing = false;

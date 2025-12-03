@@ -24,6 +24,7 @@
     ../nushell
     ../playerctl
     ../polkit
+    ../swaybg
     ../swaync
     ../waybar
   ];
@@ -32,6 +33,9 @@
 
   xdg.configFile."niri/config.kdl" = {
     force = true;
-    source = ./config.kdl;
+
+    text =
+      (builtins.readFile ./config.kdl)
+      + ''spawn-at-startup "swaybg" "--image" "${../../wallpaper.jpeg}"'';
   };
 }

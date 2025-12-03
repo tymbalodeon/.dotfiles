@@ -5,7 +5,7 @@
     settings = {
       background = {
         blur_passes = 2;
-        path = "${../hyprpaper/hildegard.jpeg}";
+        path = "${../../wallpaper.jpeg}";
       };
 
       general.hide_cursor = true;
