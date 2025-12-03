@@ -1,5 +1,9 @@
 #!/usr/bin/env nu
 
+# TODO: record current backgorund and ensure that the new random background
+# is different
+const STATE_FILE = "/tmp/swaybg-background.tmp"
+
 def main [wallpaper?: string] {
   let old_swaybg_instance = try { pidof swaybg } catch { null }
 
@@ -12,7 +16,15 @@ def main [wallpaper?: string] {
       return
     }
 
-    let images = (fd "" $local_wallpaper_directory | lines)
+    let images = (
+      fd
+        --extension jpg
+        --extension jpeg
+        --extension webp
+        ""
+        $local_wallpaper_directory
+      | lines
+    )
 
     if ($images | is-empty) {
       return

@@ -1,7 +1,7 @@
 #!/usr/bin/env nu
 
 const DISPLAY_NUM = "1"
-const STATE_FILE = "/tmp/waybar_brightness.tmp"
+const STATE_FILE = "/tmp/waybar-brightness.tmp"
 const STEP = 5
 
 def --wrapped ddcutil [...args: string] {

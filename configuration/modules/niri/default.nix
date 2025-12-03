@@ -20,9 +20,9 @@
     ../nushell
     ../playerctl
     ../polkit
-    ../swaybg
     ../swaync
     ../waybar
+    ../wpaperd
   ];
 
   programs.swaylock.enable = true;
@@ -31,7 +31,7 @@
     force = true;
 
     text = ''
-          binds {
+      binds {
           Mod+1 { focus-workspace 1; }
           Mod+2 { focus-workspace 2; }
           Mod+3 { focus-workspace 3; }
@@ -131,11 +131,11 @@
           Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" { screenshot-screen; }
           Super+Alt+2 hotkey-overlay-title="Screenshot the current window" { screenshot-window; }
           Super+Alt+3 hotkey-overlay-title="Screenshot" { screenshot; }
-          Super+Alt+B hotkey-overlay-title="Switch to random background" { spawn-sh "nu ${../swaybg/update-wallpaper.nu}"; }
+          Super+Alt+B hotkey-overlay-title="Switch to random background image" { spawn "wpaperctl" "next"; }
           Super+Alt+Delete hotkey-overlay-title="Exit niri" { quit; }
           Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "hyprlock"; }
           Super+Alt+M hotkey-overlay-title="Power off monitors" { power-off-monitors; }
-          Super+Alt+Shift+B hotkey-overlay-title="Switch to default background" { spawn-sh "nu ${../swaybg/update-wallpaper.nu} ${../../wallpaper.jpeg}"; }
+          Super+Alt+Shift+B hotkey-overlay-title="Toggle automatic background image switching" { spawn "wpaperctl" "toggle-pause"; }
           Super+Alt+S hotkey-overlay-title="Put the computer to sleep" { spawn-sh "niri msg action power-off-monitors; systemctl suspend"; }
           Super+Alt+W hotkey-overlay-title="Restart waybar" { spawn "systemctl" "--user" "restart" "waybar"; }
           Super+XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "nu ${../monitors/brightness.nu} set min";}
