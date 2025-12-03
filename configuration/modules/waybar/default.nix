@@ -39,11 +39,12 @@
       "custom/brightness" = {
         exec = "nu ${../monitors/brightness.nu} get";
         format = " {text}%";
+        interval = "once";
         on-click = "nu ${../monitors/brightness.nu} set min";
         on-click-right = "nu ${../monitors/brightness.nu} set max";
         on-scroll-down = "nu ${../monitors/brightness.nu} decrease";
         on-scroll-up = "nu ${../monitors/brightness.nu} increase";
-        signal = 8;
+        signal = 1;
         tooltip = false;
       };
 
@@ -68,6 +69,15 @@
         unit = "GB";
       };
 
+      "custom/wallpaper" = {
+        exec-if = "pgrep wpaperd";
+        exec = "nu ${../wallpaper/get-wallpaper-status.nu}";
+        format = " {}";
+        hide-empty-text = true;
+        interval = "once";
+        signal = 2;
+      };
+
       "hyprland/workspaces".on-click = "activate";
 
       idle_inhibitor = {
@@ -85,6 +95,7 @@
 
       modules-center = [
         "idle_inhibitor"
+        "custom/wallpaper"
         "clock"
         "tray"
         "systemd-failed-units"

@@ -1,12 +1,9 @@
 #!/usr/bin/env nu
 
-def main [] {
-  let status = (
-    wpaperctl get-status --json
-    | from json
-    | get status
-    | first
-  )
+use get-wallpaper-status.nu 
+
+export def main [] {
+  let status = (get-wallpaper-status)
 
   notify-send --urgency low $"\n\tAutomatic wallpaper cycling: ($status)\n"
 }

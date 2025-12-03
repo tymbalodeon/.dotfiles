@@ -1,5 +1,7 @@
 #!/usr/bin/env nu
 
+use ../waybar/update-waybar.nu 
+
 const DISPLAY_NUM = "1"
 const STATE_FILE = "/tmp/waybar-brightness.tmp"
 const STEP = 5
@@ -49,7 +51,7 @@ def set-brightness [
   $new_value
   | save --force $STATE_FILE
 
-  pkill -RTMIN+8 waybar
+  update-waybar 1
 }
 
 def get-new-brightness [value: int] {
