@@ -19,6 +19,7 @@
       vlc
       wev
       wordbook
+      xrandr
     ];
 
     pointerCursor = {
