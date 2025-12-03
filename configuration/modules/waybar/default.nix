@@ -74,7 +74,7 @@
         exec = "nu ${../wallpaper/get-wallpaper-status.nu}";
         format = " {}";
         hide-empty-text = true;
-        interval = "once";
+        interval = 60;
         signal = 2;
       };
 
