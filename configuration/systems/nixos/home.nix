@@ -19,7 +19,6 @@
       vlc
       wev
       wordbook
-      xrandr
     ];
 
     pointerCursor = {
@@ -34,6 +33,7 @@
     ../linux/home.nix
     ../../modules/clipboard
     ../../modules/hyprland
+    ../../modules/monitors
     ../../modules/niri
     ../../modules/reaper
     ../../modules/swaync

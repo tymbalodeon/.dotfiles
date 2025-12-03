@@ -1,7 +1,10 @@
 {pkgs, ...}: {
   home = {
     file."wallpaper/wallpaper.jpeg".source = ./wallpaper.jpeg;
-    packages = [pkgs.swaybg];
+    packages = with pkgs; [
+      imagemagick
+      swaybg
+    ];
   };
 
   services = {
