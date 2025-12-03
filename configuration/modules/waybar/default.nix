@@ -172,5 +172,7 @@
         font-family: ${config.stylix.fonts.sansSerif.name}, "Font Awesome 7 Free"
       }
     '';
+
+    systemd.enable = true;
   };
 }
