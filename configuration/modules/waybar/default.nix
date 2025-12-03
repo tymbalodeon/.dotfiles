@@ -75,9 +75,9 @@
         format = " {}";
         hide-empty-text = true;
         interval = 60;
-        on-click-middle = "nu ${../wallpaper/set-wallpaper.nu} toggle-pause";
-        on-click = "nu ${../wallpaper/set-wallpaper.nu} next";
-        on-click-right = "nu ${../wallpaper/set-wallpaper.nu} previous";
+        on-click-middle = "nu ${../nushell/scripts/set-wallpaper.nu} toggle-pause";
+        on-click = "nu ${../nushell/scripts/set-wallpaper.nu} next";
+        on-click-right = "nu ${../nushell/scripts/set-wallpaper.nu} previous";
         return-type = "json";
         signal = 2;
       };

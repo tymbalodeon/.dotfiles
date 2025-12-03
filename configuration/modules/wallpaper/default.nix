@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   home = {
     file."wallpaper/wallpaper.jpeg".source = ./wallpaper.jpeg;
+
     packages = with pkgs; [
       imagemagick
       swaybg

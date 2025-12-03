@@ -131,13 +131,13 @@
           Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" { screenshot-screen; }
           Super+Alt+2 hotkey-overlay-title="Screenshot the current window" { screenshot-window; }
           Super+Alt+3 hotkey-overlay-title="Screenshot" { screenshot; }
-          Super+Alt+B hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../wallpaper/set-wallpaper.nu} next"; }
+          Super+Alt+B hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../nushell/scripts/set-wallpaper.nu} next"; }
           Super+Alt+Delete hotkey-overlay-title="Exit niri" { quit; }
           Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "hyprlock"; }
           Super+Alt+M hotkey-overlay-title="Power off monitors" { power-off-monitors; }
-          Super+Alt+Shift+B hotkey-overlay-title="Toggle automatic background image switching" { spawn-sh "nu ${../wallpaper/set-wallpaper.nu} toggle-pause"; }
+          Super+Alt+Shift+B hotkey-overlay-title="Toggle automatic background image switching" { spawn-sh "nu ${../nushell/scripts/set-wallpaper.nu} toggle-pause"; }
           Super+Alt+S hotkey-overlay-title="Put the computer to sleep" { spawn-sh "niri msg action power-off-monitors; systemctl suspend"; }
-          Super+Alt+V hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../wallpaper/set-wallpaper.nu} previous"; }
+          Super+Alt+V hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../nushell/scripts/set-wallpaper.nu} previous"; }
           Super+Alt+W hotkey-overlay-title="Restart waybar" { spawn "systemctl" "--user" "restart" "waybar"; }
           Super+XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "nu ${../monitors/brightness.nu} set min";}
           Super+XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "nu ${../monitors/brightness.nu} set max"; }
