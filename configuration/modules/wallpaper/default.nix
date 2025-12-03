@@ -20,6 +20,7 @@
 
       settings.default = {
         duration = "15m";
+        mode = "fit";
         path = "~/wallpaper";
       };
     };
