@@ -75,6 +75,10 @@
         format = " {}";
         hide-empty-text = true;
         interval = 60;
+        on-click-middle = "nu ${../wallpaper/set-wallpaper.nu} toggle-pause";
+        on-click = "nu ${../wallpaper/set-wallpaper.nu} next";
+        on-click-right = "nu ${../wallpaper/set-wallpaper.nu} previous";
+        return-type = "json";
         signal = 2;
       };
 
