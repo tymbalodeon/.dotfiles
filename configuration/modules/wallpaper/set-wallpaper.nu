@@ -1,24 +1,20 @@
 #!/usr/bin/env nu
 
-use notify-wallpaper-status.nu 
-use ../waybar/update-waybar.nu
-
-def main [] {}
+export def main [] {}
 
 def --wrapped wpaperctl [...args: string] {
   ^wpaperctl ...$args
-  update-waybar 2
-  notify-wallpaper-status
+  pkill -RTMIN+2 waybar
 }
 
-def "main next" [] {
+export def "main next" [] {
   wpaperctl next
 }
 
-def "main previous" [] {
-  wpaperctl next
+export def "main previous" [] {
+  wpaperctl previous
 }
 
-def "main toggle-pause" [] {
-  wpaperctl next
+export def "main toggle-pause" [] {
+  wpaperctl toggle-pause
 }
