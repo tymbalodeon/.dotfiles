@@ -8,11 +8,12 @@ import XMonad.Layout.ThreeColumns
 import XMonad.Util.EZConfig
 
 main :: IO ()
-main =
+main = do
+  xmproc <- spwanPipe "xmobar"
   xmonad $
     ewmhFullscreen $
       ewmh $
         xmobarProp
           def
-            { terminal = "ghostty"
+            { terminal = "kitty"
             }

@@ -1,0 +1,37 @@
+Config {
+    font = "Ubuntu Sans",
+    bgColor = "black",
+    fgColor = "white",
+    position = Top,
+    border = TopB,
+    borderColor = "black",
+    alignSep = "}{" ,
+    template = "%battery% | %dynnetwork% }{ %date%",
+    lowerOnStart = True,
+    hideOnStart = False,
+    commands = [
+        Run Battery [
+            "--template"
+            , "Batt: <acstatus>"
+            , "--Low"      , "10"
+            , "--High"     , "80"
+            , "--low"      , "darkred"
+            , "--normal"   , "darkorange"
+            , "--high"     , "darkgreen"
+
+            , "--"
+            , "-o"	, "<left>% (<timeleft>)"
+            , "-O"	, "<fc=#dAA520>Charging</fc>"
+            , "-i"	, "<fc=#006000>Charged</fc>"
+        ] 50
+        , Run DynNetwork [
+            "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
+            , "--Low"      , "1000"
+            , "--High"     , "5000"
+            , "--low"      , "darkgreen"
+            , "--normal"   , "darkorange"
+            , "--high"     , "darkred"
+        ] 10
+        , Run Date "<fc=#ABABAB>%F (%a) %T</fc>" "date" 10
+    ]
+}   

@@ -4,6 +4,7 @@
   home.file = {
     ".config/xmonad/xmonad.hs".source = ./xmonad.hs;
     ".xprofile".source = ./.xprofile;
+    ".xmobarrc".source = ./.xmobarrc;
   };
 
   # FIXME: get this to work/show up in the login screen
