@@ -90,6 +90,8 @@ with lib; {
     };
   };
 
+  imports = [../nushell];
+
   options.music-player = with types; {
     musicDirectory = mkOption {
       default = "~/music";

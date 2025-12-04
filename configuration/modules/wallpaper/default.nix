@@ -8,6 +8,8 @@
     ];
   };
 
+  imports = [../nushell];
+
   services = {
     hyprpaper.settings = let
       wallpaper = "${./wallpaper.jpeg}";
@@ -21,6 +23,7 @@
 
       settings.default = {
         duration = "15m";
+        exec = ./signal-waybar.nu;
         mode = "fit";
         path = "~/wallpaper";
       };
