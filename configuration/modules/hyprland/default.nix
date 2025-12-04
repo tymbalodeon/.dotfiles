@@ -122,9 +122,9 @@ with lib; {
   };
 
   imports = [
+    ../dolphin
     ../hypridle
     ../hyprlock
-    ../nemo
     ../nushell
     ../playerctl
     ../rofi

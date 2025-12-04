@@ -14,6 +14,7 @@
   };
 
   imports = [
+    ../dolphin
     ../fuzzel
     ../hyprlock
     ../music-player
