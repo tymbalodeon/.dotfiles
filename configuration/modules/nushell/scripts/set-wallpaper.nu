@@ -36,13 +36,16 @@ export def wallpaper [wallpaper?: string] {
 }
 
 export def "wallpaper load" [path: string] {
-  match ($path | path type) {
-    file => ""
-    dir => ""
-    _ => ""
+  let files = if ($path | path type) == file {
+    $path
+  } else {
+    ls $path
+    | get name
   }
 
-  print "load directory"
+  for file in $files {
+    ln --symbolic $file ~/wallpaper
+  }
 }
 
 def --wrapped wpaperctl [...args: string] {
