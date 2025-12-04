@@ -15,7 +15,16 @@ export def main [] {
    "off" 
   } else {
     match $status.status {
-      running => $status.duration_left
+      running => {
+        let duration = $status.duration_left
+
+        if ($duration | str ends-with s) {
+          "<1m"
+        } else {
+          $duration
+        }
+      }
+
       _ => "off"
     }
   }
