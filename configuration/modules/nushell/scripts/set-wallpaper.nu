@@ -30,12 +30,17 @@ export def wallpaper [wallpaper?: string] {
   }
 
   bash -c $"swaybg --image '($wallpaper)' &" out+err> /dev/null
-  ^wpaperctl toggle-pause
   pkill -RTMIN+2 waybar
   systemctl --user stop wpaperd.service
 }
 
+export def "wallpaper clear" [] {
+  rm ~/wallpaper/*
+}
+
 export def "wallpaper load" [path: string] {
+  let path = ($path | path expand)
+
   let files = if ($path | path type) == file {
     $path
   } else {
@@ -51,10 +56,13 @@ export def "wallpaper load" [path: string] {
 def --wrapped wpaperctl [...args: string] {
   if (systemctl --user list-units | rg wpaperd | is-empty) {
     systemctl --user start wpaperd.service
-    sleep 1sec
+    sleep 500ms
+
+    if toggle-pause in $args {
+      ^wpaperctl toggle-pause
+    }
   }
 
-  ^wpaperctl toggle-pause
   ^wpaperctl ...$args
   pkill -RTMIN+2 waybar
   try { pkill swaybg }
@@ -62,9 +70,7 @@ def --wrapped wpaperctl [...args: string] {
 
 # Change to next (random) wallpaper
 export def "wallpaper next" [] {
-try {
   wpaperctl next
-  } catch {|e| print $e}
 }
 
 # Change to previous wallpaper
