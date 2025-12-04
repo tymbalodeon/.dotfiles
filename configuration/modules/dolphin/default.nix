@@ -7,12 +7,9 @@
   #   };
   # };
 
-  home.packages = with pkgs; [
-    # kdePackages.qtsvg
-    # kdePackages.kio
-    kdePackages.dolphin
-    # kdePackages.kdegraphics-thumbnailers
-    # taglib
+  home.packages = with pkgs.kdePackages; [
+    dolphin
+    qtsvg
   ];
 
   services.udiskie = {
@@ -25,11 +22,6 @@
 
   xdg = {
     configFile."mimeapps.list".force = true;
-
-    desktopEntries.dolphin = {
-      exec = "${pkgs.kdePackages.dolphin}/bin/dolphin";
-      name = "Files";
-    };
 
     mimeApps = {
       defaultApplications = {
