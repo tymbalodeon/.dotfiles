@@ -1,6 +1,8 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  wallpaper = ./wallpaper.jpeg;
+in {
   home = {
-    file."wallpaper/wallpaper.jpeg".source = ./wallpaper.jpeg;
+    file."wallpaper/wallpaper.jpeg".source = wallpaper;
 
     packages = with pkgs; [
       imagemagick
@@ -8,13 +10,9 @@
     ];
   };
 
-  imports = [../nushell];
-
   services = {
-    hyprpaper.settings = let
-      wallpaper = "${./wallpaper.jpeg}";
-    in {
-      preload = "${wallpaper}";
+    hyprpaper.settings = {
+      preload = wallpaper;
       wallpaper = [", ${wallpaper}"];
     };
 
@@ -23,7 +21,7 @@
 
       settings.default = {
         duration = "15m";
-        exec = ./signal-waybar.nu;
+        exec = ./signal-waybar.sh;
         mode = "fit";
         path = "~/wallpaper";
       };
