@@ -30,7 +30,19 @@ export def wallpaper [wallpaper?: string] {
   }
 
   bash -c $"swaybg --image '($wallpaper)' &" out+err> /dev/null
+  ^wpaperctl toggle-pause
+  pkill -RTMIN+2 waybar
   systemctl --user stop wpaperd.service
+}
+
+export def "wallpaper load" [path: string] {
+  match ($path | path type) {
+    file => ""
+    dir => ""
+    _ => ""
+  }
+
+  print "load directory"
 }
 
 def --wrapped wpaperctl [...args: string] {
@@ -39,6 +51,7 @@ def --wrapped wpaperctl [...args: string] {
     sleep 1sec
   }
 
+  ^wpaperctl toggle-pause
   ^wpaperctl ...$args
   pkill -RTMIN+2 waybar
   try { pkill swaybg }

@@ -70,10 +70,9 @@
       };
 
       "custom/wallpaper" = {
-        exec-if = "pgrep wpaperd";
+        exec-if = "pgrep swaybg || pgrep wpaperd";
         exec = "nu ${../wallpaper/get-wallpaper-status.nu}";
         format = " {}";
-        hide-empty-text = true;
         interval = 60;
         on-click-middle = "nu ${../nushell/scripts/set-wallpaper.nu} toggle-pause";
         on-click = "nu ${../nushell/scripts/set-wallpaper.nu} next";
