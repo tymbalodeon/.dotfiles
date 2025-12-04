@@ -1,15 +1,15 @@
 {pkgs, ...}: {
-  # TODO: update for dolphin
-  # dconf.settings = {
-  #   "org/nemo/preferences" = {
-  #     default-folder-viewer = "list-view";
-  #     show-hidden-files = true;
-  #   };
-  # };
-
-  home.packages = with pkgs.kdePackages; [
-    dolphin
-    qtsvg
+  home.packages = with pkgs; [
+    icoutils
+    kdePackages.dolphin
+    kdePackages.ffmpegthumbs
+    kdePackages.kdegraphics-thumbnailers
+    kdePackages.kdesdk-thumbnailers
+    kdePackages.kimageformats
+    kdePackages.qtsvg
+    libappimage
+    resvg
+    taglib
   ];
 
   services.udiskie = {
