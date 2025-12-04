@@ -1,13 +1,26 @@
 #!/usr/bin/env nu
 
 # Set wallpaper to a specific file
-export def wallpaper [wallpaper: string] {
-  let path = if ($wallpaper | path dirname) not-in [
+export def wallpaper [wallpaper?: string] {
+  let wallpaper = if ($wallpaper | is-empty) {
+    ls --short-names ~/wallpaper
+    | get name
+    | to text
+    | fzf
+  } else {
+    $wallpaper
+  }
+
+  let wallpaper = if ($wallpaper | path dirname) not-in [
     $"($env.HOME)/wallpaper"
     "~/wallpaper"
   ] {
-    $env.HOME
-    | path join $wallpaper
+    [
+      $env.HOME
+      wallpaper
+      $wallpaper
+    ]
+    | path join
   } else {
     $wallpaper
   }
@@ -16,7 +29,7 @@ export def wallpaper [wallpaper: string] {
     return
   }
 
-  bash -c $"swaybg --image ($wallpaper) &" out+err> /dev/null
+  bash -c $"swaybg --image '($wallpaper)' &" out+err> /dev/null
   systemctl --user stop wpaperd.service
 }
 
@@ -48,7 +61,7 @@ export def "wallpaper toggle-pause" [] {
   wpaperctl toggle-pause
 }
 
-export def main [arg: string] {
+export def main [arg?: string] {
   match $arg {
     "next" => (wallpaper next)
     "previous" => (wallpaper previous)
