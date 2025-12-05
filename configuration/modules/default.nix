@@ -13,6 +13,7 @@
     ./jq
     ./jujutsu
     ./kitty
+    ./mpv
     ./music-player
     ./nb
     ./ripgrep

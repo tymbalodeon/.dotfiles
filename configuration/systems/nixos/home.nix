@@ -15,8 +15,6 @@
       equibop
       libnotify
       maestral
-      mpv
-      vlc
       wev
       wordbook
     ];
