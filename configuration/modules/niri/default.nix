@@ -21,12 +21,11 @@
     ../nushell
     ../playerctl
     ../polkit
+    ../swayidle
     ../swaync
     ../wallpaper
     ../waybar
   ];
-
-  programs.swaylock.enable = true;
 
   xdg.configFile."niri/config.kdl" = {
     force = true;

@@ -3,19 +3,10 @@
 in {
   home = {
     file."wallpaper/wallpaper.jpeg".source = wallpaper;
-
-    packages = with pkgs; [
-      imagemagick
-      swaybg
-    ];
+    packages = [pkgs.swaybg];
   };
 
   services = {
-    hyprpaper.settings = {
-      preload = wallpaper;
-      wallpaper = [", ${wallpaper}"];
-    };
-
     wpaperd = {
       enable = true;
 

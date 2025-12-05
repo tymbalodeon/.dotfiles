@@ -82,8 +82,6 @@
         signal = 2;
       };
 
-      "hyprland/workspaces".on-click = "activate";
-
       idle_inhibitor = {
         format = "{icon}";
 
@@ -92,7 +90,7 @@
           deactivated = "";
         };
 
-        on-click = "pgrep hypridle && systemctl --user stop hypridle || systemctl --user start hypridle";
+        on-click = "pgrep swayidle && systemctl --user stop swayidle || systemctl --user start swayidle";
       };
 
       memory.format = " {}%";
@@ -106,8 +104,6 @@
       ];
 
       modules-left = [
-        "hyprland/workspaces"
-        "hyprland/window"
         "niri/workspaces"
         "niri/window"
       ];

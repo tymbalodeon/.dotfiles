@@ -97,12 +97,6 @@ with lib; {
     nixpkgs.config.allowUnfree = true;
 
     programs = {
-      hyprland = {
-        enable = true;
-        withUWSM = true;
-        xwayland.enable = true;
-      };
-
       niri.enable = true;
       nix-ld.enable = true;
 
@@ -138,8 +132,6 @@ with lib; {
       };
 
       fwupd.enable = true;
-
-      hypridle.enable = true;
 
       pipewire = {
         enable = true;
