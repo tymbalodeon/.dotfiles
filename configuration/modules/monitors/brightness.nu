@@ -1,7 +1,8 @@
 #!/usr/bin/env nu
 
 const DISPLAY_NUM = "1"
-const STATE_FILE = "/tmp/waybar-brightness.tmp"
+const CURRENT_BRIGHTNESS_FILE = "/tmp/current-brightness.tmp"
+const PREVIOUS_BRIGHTNESS_FILE = "/tmp/previous-brightness.tmp"
 const STEP = 5
 
 def --wrapped ddcutil [...args: string] {
@@ -16,8 +17,10 @@ def --wrapped ddcutil [...args: string] {
   )
 }
 
-def get-brightness [] {
-  let current_brightness = if not ($STATE_FILE | path exists) {
+def open-current-brightness-file [] {
+  let current_brightness = if ($CURRENT_BRIGHTNESS_FILE | path exists) {
+    open $CURRENT_BRIGHTNESS_FILE
+  } else {
     let current_brightness = (
       ddcutil --display $DISPLAY_NUM --terse getvcp 10
       | split words
@@ -25,15 +28,26 @@ def get-brightness [] {
     )
 
     $current_brightness
-    | save --force $STATE_FILE
+    | save --force $CURRENT_BRIGHTNESS_FILE
 
     $current_brightness
-  } else {
-    open $STATE_FILE
   }
 
   $current_brightness
   | into int
+}
+
+def open-previous-brightness-file [] {
+  if ($PREVIOUS_BRIGHTNESS_FILE | path exists) {
+    open $PREVIOUS_BRIGHTNESS_FILE
+    | into int
+  } else {
+    50
+  }
+}
+
+def get-brightness [] {
+  open-current-brightness-file
 }
 
 def set-brightness [
@@ -47,7 +61,7 @@ def set-brightness [
   ddcutil --display $DISPLAY_NUM setvcp 10 ($new_value | into string)
 
   $new_value
-  | save --force $STATE_FILE
+  | save --force $CURRENT_BRIGHTNESS_FILE
 
   pkill -RTMIN+1 waybar
 }
@@ -65,6 +79,18 @@ def get-new-brightness [value: int] {
 }
 
 def main [] {}
+
+def "main dim" [] {
+  open-current-brightness-file
+  | save --force $PREVIOUS_BRIGHTNESS_FILE
+
+  main set min
+}
+
+def "main restore" [] {
+  set-brightness (open-previous-brightness-file)
+  rm --force $PREVIOUS_BRIGHTNESS_FILE
+}
 
 def "main set max" [] {
   set-brightness 100

@@ -4,7 +4,8 @@
 
     settings.listener = [
       {
-        on-timeout = "nu ${../monitors/brightness.nu} set min";
+        on-timeout = "nu ${../monitors/brightness.nu} dim";
+        on-resume = "nu ${../monitors/brightness.nu} restore";
         timeout = 290;
       }
 
