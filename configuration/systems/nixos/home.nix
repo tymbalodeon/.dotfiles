@@ -43,6 +43,7 @@
 
   xdg = {
     configFile."mimeapps.list".force = true;
+    enable = true;
 
     mimeApps = {
       defaultApplications."application/pdf" = ["org.pwmt.zathura.desktop"];

@@ -132,6 +132,8 @@ with lib; {
       };
 
       fwupd.enable = true;
+      # TODO: break this out into a module?
+      gnome.sushi.enable = true;
 
       pipewire = {
         enable = true;

@@ -9,15 +9,18 @@
       ''mkdir --parents ~/Pictures/Screenshots'';
 
     packages = with pkgs; [
+      gnome-keyring
+      xdg-desktop-portal-gnome
+      xdg-desktop-portal-gtk
       xwayland-satellite
     ];
   };
 
   imports = [
-    ../dolphin
     ../fuzzel
     ../hyprlock
     ../music-player
+    ../nautilus
     ../nushell
     ../playerctl
     ../polkit

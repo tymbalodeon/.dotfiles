@@ -19,7 +19,6 @@
     ./shell
     ./taskwarrior
     ./tealdeer
-    ./vivid
     ./yazi
     ./zathura
     ./zellij

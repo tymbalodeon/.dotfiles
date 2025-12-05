@@ -11,11 +11,6 @@ with lib; {
     cfg = config.music-player;
   in {
     home = {
-      file = {
-        ".config/rmpc/notify.sh".source = ./notify.sh;
-        ".config/rmpc/default_album_art.jpg".source = ./default_album_art.jpg;
-      };
-
       packages = with pkgs;
         [mpc]
         ++ (
@@ -87,6 +82,11 @@ with lib; {
 
       musicDirectory = cfg.musicDirectory;
       network.startWhenNeeded = true;
+    };
+
+    xdg.configFile = {
+      "rmpc/default_album_art.jpg".source = ./default_album_art.jpg;
+      "rmpc/notify.sh".source = ./notify.sh;
     };
   };
 

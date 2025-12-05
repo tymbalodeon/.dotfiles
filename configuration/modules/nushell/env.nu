@@ -21,10 +21,6 @@ $env.ENV_CONVERSIONS = {
   }
 }
 
-$env.LS_COLORS = (
-  vivid generate ($env.HOME | path join ".config/vivid/themes/theme.yml")
-)
-
 $env.NU_LIB_DIRS = [($nu.default-config-dir | path join 'scripts')]
 $env.NU_PLUGIN_DIRS = [($nu.default-config-dir | path join 'plugins')]
 
