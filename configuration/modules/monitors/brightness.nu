@@ -81,10 +81,22 @@ def get-new-brightness [value: int] {
 def main [] {}
 
 def "main dim" [] {
-  open-current-brightness-file
-  | save --force $PREVIOUS_BRIGHTNESS_FILE
+  let current_brightness = (open-current-brightness-file)
 
-  main set min
+  if $current_brightness == 0 {
+    let seconds = 10
+
+    (
+      notify-send
+        --expire-time ($seconds * 1000)
+        $"\n\tSleeping in ($seconds) seconds...\n"
+    )
+  } else {
+    $current_brightness
+    | save --force $PREVIOUS_BRIGHTNESS_FILE
+    
+    main set min
+  }
 }
 
 def "main restore" [] {
