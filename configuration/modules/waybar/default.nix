@@ -90,7 +90,7 @@
           deactivated = "";
         };
 
-        on-click = "pgrep swayidle && systemctl --user stop swayidle || systemctl --user start swayidle";
+        on-click = "pgrep hypridle && systemctl --user stop hypridle || systemctl --user start hypridle";
       };
 
       memory.format = " {}%";

@@ -18,13 +18,13 @@
 
   imports = [
     ../fuzzel
+    ../hypridle
     ../hyprlock
     ../music-player
     ../nautilus
     ../nushell
     ../playerctl
     ../polkit
-    ../swayidle
     ../swaync
     ../wallpaper
     ../waybar
