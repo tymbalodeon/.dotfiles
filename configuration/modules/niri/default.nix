@@ -173,6 +173,7 @@
       }
 
       layout {
+          always-center-single-column
           center-focused-column "on-overflow"
 
           focus-ring {
