@@ -83,9 +83,9 @@
       };
 
       "custom/sunset" = {
-        exec-if = "pgrep sunsetr";
-        exec = "nu ${../sunsetr/get-sunsetr-status.nu}";
+        exec = "nu ${../sunsetr/sunsetr.nu} get";
         interval = 3600;
+        on-click = "nu ${../sunsetr/sunsetr.nu} toggle";
         return-type = "json";
         signal = 3;
       };
