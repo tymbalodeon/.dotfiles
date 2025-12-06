@@ -82,6 +82,14 @@
         signal = 2;
       };
 
+      "custom/sunset" = {
+        exec-if = "pgrep sunsetr";
+        exec = "nu ${../sunsetr/get-sunsetr-status.nu}";
+        interval = 3600;
+        return-type = "json";
+        signal = 3;
+      };
+
       idle_inhibitor = {
         format = "{icon}";
 
@@ -117,6 +125,7 @@
         "disk"
         "temperature"
         "backlight"
+        "custom/sunset"
         "custom/brightness"
         "wireplumber"
         "battery"
