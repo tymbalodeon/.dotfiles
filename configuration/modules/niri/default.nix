@@ -25,6 +25,7 @@
     ../nushell
     ../playerctl
     ../polkit
+    ../sunsetr
     ../swaync
     ../wallpaper
     ../waybar
@@ -138,6 +139,7 @@
           Super+Alt+Delete hotkey-overlay-title="Exit niri" { quit; }
           Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "hyprlock"; }
           Super+Alt+M hotkey-overlay-title="Power off monitors" { power-off-monitors; }
+          Super+Alt+N hotkey-overlay-title="Toggle blue light filter" { spawn-sh "pgrep sunsetr && sunsetr stop || sunsetr"; }
           Super+Alt+Shift+B hotkey-overlay-title="Toggle automatic background image switching" { spawn-sh "nu ${../nushell/scripts/set-wallpaper.nu} toggle-pause"; }
           Super+Alt+S hotkey-overlay-title="Put the computer to sleep" { spawn-sh "niri msg action power-off-monitors; systemctl suspend"; }
           Super+Alt+V hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../nushell/scripts/set-wallpaper.nu} previous"; }
@@ -183,6 +185,7 @@
 
       prefer-no-csd
       screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+      spawn-at-startup "sunsetr"
       spawn-at-startup "systemctl" "--user" "enable" "wpaperd.service"
     '';
   };
