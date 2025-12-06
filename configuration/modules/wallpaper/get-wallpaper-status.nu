@@ -35,6 +35,8 @@ export def main [] {
     | first
     | get path
     | path basename
+    | path parse
+    | get stem
   } catch {
     ""
   }

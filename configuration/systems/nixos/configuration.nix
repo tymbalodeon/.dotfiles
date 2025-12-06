@@ -119,8 +119,8 @@ with lib; {
             AutoLogin.User = cfg.username;
 
             Theme = {
-              CursorTheme = "Bibata-Modern-Classic";
               CursorSize = 16;
+              CursorTheme = "Bibata-Modern-Classic";
             };
           };
 

@@ -1,3 +1,6 @@
 {
-  programs.mpv.enable = true;
+  programs.mpv = {
+    config.keep-open = true;
+    enable = true;
+  };
 }
