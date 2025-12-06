@@ -14,8 +14,8 @@ def "main get" [] {
     $day_icon
   } else {
     match $status.period {
-      day => $day_icon
-      night => ""
+      day => ""
+      night => $day_icon
       _ => ""
     }
   }
