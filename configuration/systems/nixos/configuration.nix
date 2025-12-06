@@ -29,7 +29,6 @@ with lib; {
           {
             accent = "lavender";
             flavor = "mocha";
-            font = "Cantarell";
             fontSize = "12";
           })
         firefox
@@ -115,7 +114,6 @@ with lib; {
 
         sddm = {
           enable = true;
-          package = pkgs.kdePackages.sddm;
 
           settings = {
             AutoLogin.User = cfg.username;

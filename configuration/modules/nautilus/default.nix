@@ -1,4 +1,6 @@
 {pkgs, ...}: {
+  home.packages = [pkgs.nautilus];
+
   services.udiskie = {
     enable = true;
 
