@@ -84,9 +84,21 @@ with lib; {
       network.startWhenNeeded = true;
     };
 
-    xdg.configFile = {
-      "rmpc/default_album_art.jpg".source = ./default_album_art.jpg;
-      "rmpc/notify.sh".source = ./notify.sh;
+    xdg = let
+      icon = ./icon.jpg;
+    in {
+      configFile = {
+        "rmpc/default_album_art.jpg".source = icon;
+        "rmpc/notify.sh".source = ./notify.sh;
+      };
+
+      desktopEntries.music = {
+        inherit icon;
+
+        exec = "kitty --hold rmpc";
+        name = "Music";
+        type = "Application";
+      };
     };
   };
 
