@@ -187,7 +187,7 @@
       prefer-no-csd
       screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
       spawn-at-startup "sunsetr"
-      spawn-at-startup "systemctl" "--user" "enable" "wpaperd.service"
+      spawn-at-startup "systemctl" "--user" "enable" "wpaperd"
     '';
   };
 }

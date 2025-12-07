@@ -31,7 +31,7 @@ export def wallpaper [wallpaper?: string] {
 
   bash -c $"swaybg --image '($wallpaper)' &" out+err> /dev/null
   pkill -RTMIN+2 waybar
-  systemctl --user stop wpaperd.service
+  systemctl --user stop wpaperd
 }
 
 export def "wallpaper clear" [] {
@@ -55,7 +55,7 @@ export def "wallpaper load" [path: string] {
 
 def --wrapped wpaperctl [...args: string] {
   if (systemctl --user list-units | rg wpaperd | is-empty) {
-    systemctl --user start wpaperd.service
+    systemctl --user start wpaperd
     sleep 500ms
 
     if toggle-pause in $args {

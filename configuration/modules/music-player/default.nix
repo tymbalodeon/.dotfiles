@@ -12,7 +12,10 @@ with lib; {
   in {
     home = {
       packages = with pkgs;
-        [mpc]
+        [
+          mpc
+          mpd-notification
+        ]
         ++ (
           if stdenv.isDarwin
           # TODO: why doesn't this work as an overlay?

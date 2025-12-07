@@ -36,7 +36,7 @@ def "music" [] {
 
   if not (running) {
     if $is_nixos {
-      systemctl --user restart mpd.service
+      systemctl --user restart mpd
     } else {
       mpd
     }
@@ -180,7 +180,7 @@ def "music status" [] {
 # Stop music server
 def "music stop" [] {
   if (is-nixos) {
-    systemctl --user stop mpd.service
+    systemctl --user stop mpd
   } else {
     pkill mpd
   }
