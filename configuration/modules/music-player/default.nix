@@ -87,18 +87,15 @@ with lib; {
       network.startWhenNeeded = true;
     };
 
-    xdg = let
-      icon = ./icon.jpg;
-    in {
+    xdg = {
       configFile = {
-        "rmpc/default_album_art.jpg".source = icon;
+        "rmpc/default_album_art.jpg".source = ./default_album_art.jpg;
         "rmpc/notify.sh".source = ./notify.sh;
       };
 
       desktopEntries.music = {
-        inherit icon;
-
         exec = "kitty --hold rmpc";
+        icon = ./icon.png;
         name = "Music";
         type = "Application";
       };
