@@ -68,8 +68,14 @@
         };
       };
 
-      keys = {
+      keys = let
+        space = {S-q = ":quit!";};
+      in {
+        insert = {inherit space;};
+
         normal = {
+          inherit space;
+
           C-g = [":reset-diff-change"];
           C-j = ["extend_to_line_bounds" "delete_selection" "paste_after"];
 
@@ -84,7 +90,11 @@
           X = ["extend_line_up" "extend_to_line_bounds"];
         };
 
-        select.X = ["extend_line_up" "extend_to_line_bounds"];
+        select = {
+          inherit space;
+
+          X = ["extend_line_up" "extend_to_line_bounds"];
+        };
       };
     };
   };

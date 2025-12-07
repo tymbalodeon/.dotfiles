@@ -21,6 +21,7 @@ with lib; {
       '';
 
       keybindings = {
+        "ctrl+shift+h" = "launch --stdin-source=@screen_scrollback hx";
         "ctrl+o" = "open_url_with_hints";
         "kitty_mod+enter" = "launch --cwd last_reported --type window";
       };
