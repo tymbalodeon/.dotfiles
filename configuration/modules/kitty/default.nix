@@ -22,7 +22,7 @@ with lib; {
 
       keybindings = {
         "ctrl+o" = "open_url_with_hints";
-        "kitty_mod+enter" = "launch --cwd=current --type=window";
+        "kitty_mod+enter" = "launch --cwd last_reported --type window";
       };
 
       package =
