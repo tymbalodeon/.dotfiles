@@ -90,6 +90,7 @@
           Mod+Left { focus-column-left; }
           Mod+L { focus-column-right; }
           Mod+Minus { set-column-width "-10%"; }
+          Mod+M hotkey-overlay-title="Open music player" { spawn-sh "kitty --hold rmpc"; }
           Mod+N { focus-workspace-down; }
           Mod+O repeat=false { toggle-overview; }
           Mod+Page_Up { focus-workspace-up; }
