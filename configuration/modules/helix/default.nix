@@ -69,10 +69,8 @@
       };
 
       keys = let
-        space = {S-q = ":quit!";};
+        space = {w.S-q = ":quit!";};
       in {
-        insert = {inherit space;};
-
         normal = {
           inherit space;
 

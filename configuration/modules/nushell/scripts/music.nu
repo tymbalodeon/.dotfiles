@@ -179,9 +179,9 @@ def "music status" [] {
 
 # Stop music server
 def "music stop" [] {
-  if (is-nixos) {
-    systemctl --user stop mpd
-  } else {
+  if (is-darwin) {
     pkill mpd
+  } else {
+    error make --unspanned {msg: "only implemented on Darwin systems"}
   }
 }
