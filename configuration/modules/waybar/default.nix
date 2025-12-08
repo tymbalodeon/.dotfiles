@@ -79,6 +79,8 @@
 
       "custom/systemd-failed-units" = {
         exec = "${./systemd-failed-units.nu}";
+        format = "✗ {}";
+        hide-empty-text = true;
         interval = 60;
         return-type = "json";
       };
@@ -114,8 +116,6 @@
         "custom/wallpaper"
         "clock"
         "tray"
-        # TODO: remove this if the custom one seems to work
-        "systemd-failed-units"
         "custom/systemd-failed-units"
       ];
 
@@ -174,9 +174,7 @@
       };
 
       position = "bottom";
-
       spacing = 8;
-      systemd-failed-units.format = "✗ {nr_failed}";
 
       temperature = {
         critical-threshold = 80;
