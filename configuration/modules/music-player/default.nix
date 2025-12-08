@@ -11,14 +11,12 @@ with lib; {
     cfg = config.music-player;
   in {
     home = {
-      packages = with pkgs;
-        [mpc]
-        ++ (
-          if stdenv.isDarwin
-          # TODO: why doesn't this work as an overlay?
-          then [inputs.nixpkgs-stable.legacyPackages.x86_64-darwin.mpd]
-          else []
-        );
+      packages = (
+        if stdenv.isDarwin
+        # TODO: why doesn't this work as an overlay?
+        then [inputs.nixpkgs-stable.legacyPackages.x86_64-darwin.mpd]
+        else []
+      );
     };
 
     programs = {
