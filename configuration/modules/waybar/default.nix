@@ -69,6 +69,20 @@
         unit = "GB";
       };
 
+      "custom/sunset" = {
+        exec = "nu ${../sunsetr/sunsetr.nu} get";
+        interval = 3600;
+        on-click = "nu ${../sunsetr/sunsetr.nu} toggle";
+        return-type = "json";
+        signal = 3;
+      };
+
+      "custom/systemd-failed-units" = {
+        exec = "${./systemd-failed-units.nu}";
+        interval = 60;
+        return-type = "json";
+      };
+
       "custom/wallpaper" = {
         escape = true;
         exec-if = "pgrep swaybg || pgrep wpaperd";
@@ -80,14 +94,6 @@
         on-click-right = "nu ${../nushell/scripts/set-wallpaper.nu} previous";
         return-type = "json";
         signal = 2;
-      };
-
-      "custom/sunset" = {
-        exec = "nu ${../sunsetr/sunsetr.nu} get";
-        interval = 3600;
-        on-click = "nu ${../sunsetr/sunsetr.nu} toggle";
-        return-type = "json";
-        signal = 3;
       };
 
       idle_inhibitor = {
@@ -108,7 +114,9 @@
         "custom/wallpaper"
         "clock"
         "tray"
+        # TODO: remove this if the custom one seems to work
         "systemd-failed-units"
+        "custom/systemd-failed-units"
       ];
 
       modules-left = [

@@ -24,6 +24,7 @@ with lib; {
     nixpkgs.overlays = [
       (final: prev: {
         kitty = pkgs-stable.kitty;
+        mpd = pkgs-stable.mpd;
         nix-search-cli = pkgs-stable.nix-search-cli;
         uutils-coreutils-noprefix = pkgs-stable.uutils-coreutils-noprefix;
       })
