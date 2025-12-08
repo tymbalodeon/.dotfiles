@@ -63,7 +63,9 @@ with lib; {
               album_sort_by: Name,
             ),
 
+            center_current_song_on_change: true,
             on_song_change: ["~/.config/rmpc/notify.sh"],
+            select_current_song_on_change: true,
           )
         '';
 
