@@ -1,5 +1,6 @@
 def get_src_directory [] {
- return ($env.HOME | path join "src")
+ $env.HOME
+| path join "src"
 }
 
 def parse_git_url [origin: string] {
@@ -21,7 +22,8 @@ def parse_git_url [origin: string] {
     }
   )
 
-  return ($values | first)
+  $values
+  | first
 }
 
 def into_repo [] {
@@ -51,14 +53,12 @@ def get_visibility [path: string] {
     }
   )
 
-  return (
-    if ($visibility | is-empty) {
-      $visibility
-    } else {
-      $visibility
-      | str downcase
-    }
-  )
+  if ($visibility | is-empty) {
+    $visibility
+  } else {
+    $visibility
+    | str downcase
+  }
 }
 
 def get_remote_domain [path: string] {
@@ -67,7 +67,7 @@ def get_remote_domain [path: string] {
 
     let origin = (git remote get-url origin)
 
-    return (get_domain $origin)
+    get_domain $origin
   }
 }
 
@@ -108,21 +108,19 @@ def get_local_repo_paths [args: record] {
     $repos
   }
 
-  return (
-    $repos
-    | where {
-        |item|
+  $repos
+  | where {
+      |item|
 
-        (
-          (($item | path type) == "dir")
-          and (
-            $item
-            | path join ".git"
-            | path exists
-          )
+      (
+        (($item | path type) == "dir")
+        and (
+          $item
+          | path join ".git"
+          | path exists
         )
-      }
-  )
+      )
+    }
 }
 
 def get_local_repos [args: record] {
@@ -195,15 +193,13 @@ def get_local_repos [args: record] {
         }
   )
 
-  return (
-    if $args.paths {
-      $repos
-      | get path
-    } else {
-      $repos
-      | reject path
-    }
-  )
+  if $args.paths {
+    $repos
+    | get path
+  } else {
+    $repos
+    | reject path
+  }
 }
 
 def matches [
@@ -213,50 +209,48 @@ def matches [
 ] {
   let search_repo_column = ($search_repo | get $column)
 
-  return (
-    (
-      $search_repo_column | is-empty
-    ) or (($repo | get $column) =~ $search_repo_column)
-  )
+  (
+    $search_repo_column | is-empty
+  ) or (($repo | get $column) =~ $search_repo_column)
 }
 
 def choose_from_list [options: list] {
-  return (
-    $options
+  let repo = (
+    $options.repo
     | to text
     | fzf --exact --scheme path
   )
+
+  $options
+  | where repo == $repo
+  | first
 }
 
 def parse_repo_path [path: string] {
-  return (
-    if ($path | path basename) == ".dotfiles" {
-      cd $path
-      parse_git_url (git remote get-url origin)
-    } else {
-      $path
-      | path parse
-      | reject extension
-      | insert user ($in.parent | path basename)
-      | insert domain ($in.parent | path dirname | path basename)
-      | reject parent
-      | rename --column {stem: repo}
-    }
-  )
+  if ($path | path basename) == ".dotfiles" {
+    cd $path
+    parse_git_url (git remote get-url origin)
+  } else {
+    $path
+    | path parse
+    | reject extension
+    | insert user ($in.parent | path basename)
+    | insert domain ($in.parent | path dirname | path basename)
+    | reject parent
+    | rename --column {stem: repo}
+  }
 }
 
 def parse_repo_path_path [repo: record] {
-  return (
-    if $repo.repo == ".dotfiles" {
-      $env.HOME
-      | path join $repo.repo
-    } else {
-      get_src_directory
-      | path join $repo.domain
-      | path join $repo.user
-      | path join $repo.repo
-    }
-  )
+  if $repo.repo == ".dotfiles" {
+    $env.HOME
+    | path join $repo.repo
+  } else {
+    get_src_directory
+    | path join $repo.domain
+    | path join $repo.user
+    | path join $repo.repo
+  }
 }
 
 # Change directory to a repo
@@ -378,30 +372,22 @@ def --env "src cd" [
       }
   )
 
-  if ($matching_repos | length) == 1 {
-    let repo = ($matching_repos | first)
-
-    let $repo_path = if $repo.repo == ".dotfiles" {
-      $env.HOME
-      | path join $repo.repo
-    } else {
-      parse_repo_path_path $repo
-    }
-
-    cd $repo_path
+  let repo = if ($matching_repos | length) == 1 {
+    $matching_repos
+    | first
   } else if ($matching_repos | length | into bool) {
-    let matching_repo = (choose_from_list $matching_repos)
-
-    if ($matching_repo | path exists) {
-      cd $matching_repo
-    } else {
-      return
-    }
+    choose_from_list $matching_repos
   } else {
     return
   }
 
-    return (if $no_ls { null } else { ls })
+  cd (parse_repo_path_path ($matching_repos | first))
+
+  if $no_ls {
+    null
+  } else {
+    ls
+  }
 }
 
 def is_synced [repo: record] {
@@ -444,22 +430,18 @@ def is_synced [repo: record] {
     git checkout $current_branch
   }
 
-  return $status
+  $status
 }
 
 def get_remote_user [domain: string = "github"] {
   if $domain == "github" {
-    return (
-      gh api user
-      | from json
-      | get login
-    )
+    gh api user
+    | from json
+    | get login
   } else if $domain == "gitlab" {
-    return (
-      glab api user err> /dev/null
-      | from json
-      | get username
-    )
+    glab api user err> /dev/null
+    | from json
+    | get username
   }
 }
 
@@ -482,20 +464,19 @@ def get_github_repos [
       }
     }
   )
-  return (
-    $repos
-    | from json
-    | select owner name
-    | par-each {
-        |repo|
 
-        {
-          domain: "github.com"
-          user: $repo.owner.login
-          repo: $repo.name
-        }
+  $repos
+  | from json
+  | select owner name
+  | par-each {
+      |repo|
+
+      {
+        domain: "github.com"
+        user: $repo.owner.login
+        repo: $repo.name
       }
-  )
+    }
 }
 
 def get_gitlab_repos [
@@ -514,28 +495,26 @@ def get_gitlab_repos [
     return
   }
 
-  return (
-    glab repo list err> /dev/null
-    | lines
-    | where {|line| $line | str starts-with $remote_user}
-    | par-each {
-        |repo|
+  glab repo list err> /dev/null
+  | lines
+  | where {|line| $line | str starts-with $remote_user}
+  | par-each {
+      |repo|
 
-        let repo = (
-          $repo
-          | str trim | split row "\t"
-          | first
-        )
+      let repo = (
+        $repo
+        | str trim | split row "\t"
+        | first
+      )
 
-        let data = ($repo | split row "/")
+      let data = ($repo | split row "/")
 
-        {
-          domain: "gitlab.com"
-          user: ($data | first)
-          repo: ($data | last)
-        }
+      {
+        domain: "gitlab.com"
+        user: ($data | first)
+        repo: ($data | last)
       }
-  )
+    }
 }
 
 def get_remote_repos [args: record] {
@@ -548,33 +527,31 @@ def get_remote_repos [args: record] {
     | append (get_gitlab_repos $args.user $args.visibility)
   }
 
-  return (
-    $repos
-    | par-each {
-        |repo|
+  $repos
+  | par-each {
+      |repo|
 
-        if $args.include_status {
-          $repo
-          | insert "synced" (is_synced $repo)
-        } else {
-          $repo
-        }
-
-        if $args.include_visibility {
-          $repo
-          | insert "visibility" (
-              if ($args.visibility | is-empty) {
-                get_visibility $repo
-              } else {
-                $args.visibility
-              }
-            )
-        } else {
-          $repo
-        }
+      if $args.include_status {
+        $repo
+        | insert "synced" (is_synced $repo)
+      } else {
+        $repo
       }
-    | sort-by --ignore-case "repo"
-  )
+
+      if $args.include_visibility {
+        $repo
+        | insert "visibility" (
+            if ($args.visibility | is-empty) {
+              get_visibility $repo
+            } else {
+              $args.visibility
+            }
+          )
+      } else {
+        $repo
+      }
+    }
+  | sort-by --ignore-case "repo"
 }
 
 def get_domain [domain?: string] {
@@ -583,9 +560,9 @@ def get_domain [domain?: string] {
   }
 
   if "github" in $domain {
-    return "github.com"
+    "github.com"
   } else if "gitlab" in $domain {
-    return "gitlab.com"
+    "gitlab.com"
   } else {
     let available_domains = (
       ["github.com" "gitlab.com"]
@@ -718,7 +695,7 @@ def get_environment_command_source [] {
     | save --force $file
   )
 
-  return $file
+  $file
 }
 
 # Create a new project
@@ -745,10 +722,8 @@ def --env --wrapped "src new" [
 }
 
 def get_remote_users [] {
-  return (
-    ["github" "gitlab"]
-    | each {|domain| git config $"($domain).user"}
-  )
+  ["github" "gitlab"]
+  | each {|domain| git config $"($domain).user"}
 }
 
 # List repos
@@ -820,17 +795,8 @@ def "src list" [
     $repos
   }
 
-  # let sort_by = if ($sort_by | is-empty) {
-  #   [domain user repo]
-  # } else {
-  #   $sort_by
-  # }
-
-  return (
-    $repos
-    # | sort-by --ignore-case ...$sort_by
-    | table --index false
-  )
+  $repos
+  | table --index false
 }
 
 # Sync all repos
