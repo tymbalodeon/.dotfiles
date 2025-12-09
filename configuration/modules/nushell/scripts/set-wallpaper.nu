@@ -53,34 +53,34 @@ export def "wallpaper load" [path: string] {
   }
 }
 
-def --wrapped wpaperctl [...args: string] {
+def --wrapped wpaperctl-wrapper [...args: string] {
   if (systemctl --user list-units | rg wpaperd | is-empty) {
     systemctl --user start wpaperd
     sleep 500ms
 
     if toggle-pause in $args {
-      ^wpaperctl toggle-pause
+      wpaperctl toggle-pause
     }
   }
 
-  ^wpaperctl ...$args
+  wpaperctl ...$args
   pkill -RTMIN+2 waybar
   try { pkill swaybg }
 }
 
 # Change to next (random) wallpaper
 export def "wallpaper next" [] {
-  wpaperctl next
+  wpaperctl-wrapper next
 }
 
 # Change to previous wallpaper
 export def "wallpaper previous" [] {
-  wpaperctl previous
+  wpaperctl-wrapper previous
 }
 
 # Toggle pausing/resuming automatic cycling of wallpaper
 export def "wallpaper toggle-pause" [] {
-  wpaperctl toggle-pause
+  wpaperctl-wrapper toggle-pause
 }
 
 export def main [arg?: string] {
