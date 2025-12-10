@@ -17,7 +17,7 @@ def get-remote [remote?: string] {
     if ($remote in $valid_remotes) {
       $remote
     } else {
-      print-error "remote \"($remote)\" does not exist"
+      print-error $"remote \"($remote)\" does not exist"
     }
   }
 }
@@ -105,6 +105,7 @@ def "files list" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
 ] {
+  # TODO: print the name of the directory listing (for interactive choosing)
   rclone lsf (get-remote-path $remote $path)
 }
 
@@ -132,8 +133,10 @@ def "files upload" [
   --remote: string # The name of the remote service
 ] {
   if not ($local_path | path exists) {
-    print-error "\"($local_path)\" not found"
+    print-error $"\"($local_path)\" not found"
   }
+
+  let local_path = (realpath ($local_path | path expand))
 
   let remote = if ($remote | is-not-empty) {
     $remote
@@ -157,8 +160,11 @@ def "files upload" [
     $remote_path
   } else {
     $local_path
-    | str replace (get-files-directory) ""
+    | str replace $"(get-files-directory)($remote)/" ""
   }
 
-  rclone copy $local_path (get-parent (get-remote-path $remote $remote_path))
+  print $local_path
+  print (get-remote-path $remote $remote_path)
+  print (get-parent (get-remote-path $remote $remote_path))
+  # rclone copy $local_path (get-parent (get-remote-path $remote $remote_path))
 }
