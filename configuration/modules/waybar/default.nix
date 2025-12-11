@@ -5,22 +5,16 @@
     settings.bar = {
       backlight = {
         device = "intel_backlight";
-        format = "{percent}% {icon}";
+        format = "{icon} {percent}%";
         format-icons = ["" ""];
+        tooltip = false;
       };
 
       battery = {
-        format-alt = "{time} {icon}";
+        format-charging = " {capacity}%";
         format = "{icon} {capacity}%";
-        format-charging = "{ capacity}%";
-        format-icons = ["" "" "" "" ""];
-        format-plugged = "{ capacity}%";
-
-        states = {
-          critical = 15;
-          good = 75;
-          warning = 30;
-        };
+        format-icons = ["" "" "" ""];
+        format-plugged = " {capacity}%";
       };
 
       clock = {
@@ -124,21 +118,36 @@
         "niri/window"
       ];
 
-      modules-right = [
-        "mpd"
-        "network"
-        "bluetooth"
-        "cpu"
-        "memory"
-        "disk"
-        "temperature"
-        "backlight"
-        "custom/sunset"
-        "custom/brightness"
-        "wireplumber"
-        "battery"
-        "custom/power"
-      ];
+      modules-right =
+        [
+          "mpd"
+          "network"
+        ]
+        ++ (
+          # TODO: fix bluetooth on laptop
+          if config.laptop
+          then []
+          else [
+            "bluetooth"
+          ]
+        )
+        ++ [
+          "cpu"
+          "memory"
+          "disk"
+          "temperature"
+          "custom/sunset"
+        ]
+        ++ (
+          if config.laptop
+          then ["backlight"]
+          else ["custom/brightness"]
+        )
+        ++ [
+          "wireplumber"
+          "battery"
+          "custom/power"
+        ];
 
       mpd = {
         consume-icons.on = " ";
