@@ -11,10 +11,10 @@
 
       battery = {
         format-alt = "{time} {icon}";
-        format = "{capacity}% {icon}";
-        format-charging = "{capacity}% ";
+        format = "{icon} {capacity}%";
+        format-charging = "{ capacity}%";
         format-icons = ["" "" "" "" ""];
-        format-plugged = "{capacity}% ";
+        format-plugged = "{ capacity}%";
 
         states = {
           critical = 15;

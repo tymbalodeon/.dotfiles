@@ -1,29 +1,48 @@
-{pkgs, ...}: {
-  gtk = let
-    gnomeTheme = pkgs.gnome-themes-extra;
-  in {
-    enable = true;
+{
+  lib,
+  pkgs,
+  ...
+}:
+with lib; {
+  config = {
+    gtk = let
+      gnomeTheme = pkgs.gnome-themes-extra;
+    in {
+      enable = true;
 
-    iconTheme = {
-      name = "Adwaita";
-      package = gnomeTheme;
+      iconTheme = {
+        name = "Adwaita";
+        package = gnomeTheme;
+      };
     };
-  };
 
-  home = {
-    packages = with pkgs; [
-      equibop
-      libnotify
-      maestral
-      wev
-      wordbook
-    ];
+    home = {
+      packages = with pkgs; [
+        equibop
+        libnotify
+        maestral
+        wev
+        wordbook
+      ];
 
-    pointerCursor = {
-      gtk.enable = true;
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Classic";
-      size = 16;
+      pointerCursor = {
+        gtk.enable = true;
+        package = pkgs.bibata-cursors;
+        name = "Bibata-Modern-Classic";
+        size = 16;
+      };
+    };
+
+    stylix.targets.waybar.font = "sansSerif";
+
+    xdg = {
+      configFile."mimeapps.list".force = true;
+      enable = true;
+
+      mimeApps = {
+        defaultApplications."application/pdf" = ["org.pwmt.zathura.desktop"];
+        enable = true;
+      };
     };
   };
 
@@ -37,15 +56,8 @@
     ../../modules/waybar
   ];
 
-  stylix.targets.waybar.font = "sansSerif";
-
-  xdg = {
-    configFile."mimeapps.list".force = true;
-    enable = true;
-
-    mimeApps = {
-      defaultApplications."application/pdf" = ["org.pwmt.zathura.desktop"];
-      enable = true;
-    };
+  options.laptop = mkOption {
+    default = false;
+    type = types.bool;
   };
 }
