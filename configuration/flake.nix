@@ -83,11 +83,7 @@
             isNixOS = false;
           };
 
-          modules = [
-            stylix.homeModules.stylix
-            ./systems/linux/hosts/${hostName}/home.nix
-          ];
-
+          modules = [./systems/linux/hosts/${hostName}/home.nix];
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
         };
       })

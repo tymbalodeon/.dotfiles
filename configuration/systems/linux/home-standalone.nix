@@ -19,12 +19,6 @@
   nixpkgs.config.allowUnfree = true;
   programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
 
-  stylix = {
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-    enable = true;
-    polarity = "dark";
-  };
-
   targets.genericLinux = {
     enable = true;
     nixGL.packages = nixgl.packages;

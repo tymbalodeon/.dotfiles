@@ -25,13 +25,13 @@ with lib; {
 
       systemPackages = with pkgs; [
         bibata-cursors
+        brave
         (catppuccin-sddm.override
           {
             accent = "lavender";
             flavor = "mocha";
             fontSize = "12";
           })
-        firefox
         git
         helix
         xdg-utils
