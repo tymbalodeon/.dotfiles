@@ -43,10 +43,9 @@
     wayland-pipewire-idle-inhibit,
     ...
   } @ inputs: let
-    mkHosts = mkHost: system:
+    mkHosts = mkHost: hosts:
       builtins.foldl' (a: b: a // b) {}
-      (map mkHost
-        (builtins.attrNames (builtins.readDir ./systems/${system}/hosts)));
+      (map mkHost (builtins.attrNames (builtins.readDir ./hosts/${hosts})));
   in {
     darwinConfigurations =
       mkHosts
@@ -58,7 +57,7 @@
             inherit system;
             modules = [
               stylix.darwinModules.stylix
-              ./systems/darwin/hosts/${hostName}/configuration.nix
+              ./hosts/darwin/${hostName}/configuration.nix
             ];
 
             specialArgs = {
@@ -83,11 +82,11 @@
             isNixOS = false;
           };
 
-          modules = [./systems/linux/hosts/${hostName}/home.nix];
+          modules = [./hosts/linux/standalone/${hostName}/home.nix];
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
         };
       })
-      "linux";
+      "linux/standalone";
 
     nixosConfigurations =
       mkHosts (hostName: {
@@ -95,7 +94,7 @@
           modules = [
             solaar.nixosModules.default
             stylix.nixosModules.stylix
-            ./systems/nixos/hosts/${hostName}/configuration.nix
+            ./hosts/linux/nixos/${hostName}/configuration.nix
             wayland-pipewire-idle-inhibit.nixosModules.default
           ];
 
@@ -110,6 +109,6 @@
           };
         };
       })
-      "nixos";
+      "linux/nixos";
   };
 }
