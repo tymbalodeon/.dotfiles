@@ -58,16 +58,17 @@ def get-local-path [remote: string path: string] {
 def "files download" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
+  --interactive (-i) # Interactively select the file or directory to download
   --linked # (Dropbox only) Download the file using the `maestral` service
 ] {
   let remote = (get-remote $remote)
-  let path = (get-path $remote $path)
+  let path = (get-path $interactive $remote $path)
 
   if $linked and $remote == dropbox {
 
     maestral excluded remove $path
   } else {
-    let remote_path = (get-remote-path $remote $path)
+    let remote_path = (get-remote-path $interactive $remote $path)
     let local_path = (get-local-path $remote $path)
 
     let parent = (
@@ -110,7 +111,7 @@ def "files list" [
 
   rclone lsf $path
   | lines
-  | each {prepend $path | str join}
+  | each {prepend $path | str join /}
   | to text --no-newline
 }
 
