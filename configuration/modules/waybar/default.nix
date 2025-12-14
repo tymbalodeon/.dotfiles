@@ -92,6 +92,30 @@
         signal = 2;
       };
 
+      "group/brightness" = {
+        drawer = {};
+
+        modules = [
+          "backlight"
+          "custom/sunset"
+        ];
+
+        orientation = "inherit";
+      };
+
+      "group/system" = {
+        drawer = {};
+
+        modules = [
+          "cpu"
+          "memory"
+          "disk"
+          "temperature"
+        ];
+
+        orientation = "inherit";
+      };
+
       idle_inhibitor = {
         format = "{icon}";
 
@@ -131,21 +155,35 @@
             "bluetooth"
           ]
         )
-        ++ [
-          "cpu"
-          "memory"
-          "disk"
-          "temperature"
-          "custom/sunset"
-        ]
         ++ (
           if config.laptop
-          then ["backlight"]
-          else ["custom/brightness"]
+          then ["group/system"]
+          else [
+            "cpu"
+            "memory"
+            "disk"
+            "temperature"
+          ]
+        )
+        ++ (
+          if config.laptop
+          then ["group/brightness"]
+          else [
+            "custom/sunset"
+            "custom/brightness"
+          ]
         )
         ++ [
           "wireplumber"
-          "battery"
+        ]
+        ++ (
+          if config.laptop
+          then [
+            "battery"
+          ]
+          else []
+        )
+        ++ [
           "custom/power"
         ];
 
