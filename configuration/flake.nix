@@ -19,11 +19,6 @@
       url = "github:catppuccin/rofi";
     };
 
-    solaar = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:Svenum/Solaar-Flake/main";
-    };
-
     stylix = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:nix-community/stylix";
@@ -38,7 +33,6 @@
     nixgl,
     nixpkgs,
     nixpkgs-stable,
-    solaar,
     stylix,
     wayland-pipewire-idle-inhibit,
     ...
@@ -92,7 +86,6 @@
       mkHosts (hostName: {
         ${hostName} = nixpkgs.lib.nixosSystem {
           modules = [
-            solaar.nixosModules.default
             stylix.nixosModules.stylix
             ./hosts/linux/nixos/${hostName}/configuration.nix
             wayland-pipewire-idle-inhibit.nixosModules.default
