@@ -47,6 +47,7 @@ with lib; {
   };
 
   imports = [
+    ../../../home-manager/bluetooth
     ../../../home-manager/clipboard
     ../../../home-manager/monitors
     ../../../home-manager/niri

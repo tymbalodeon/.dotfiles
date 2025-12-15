@@ -147,15 +147,8 @@
         [
           "mpd"
           "network"
+          "bluetooth"
         ]
-        ++ (
-          # TODO: fix bluetooth on laptop
-          if config.laptop
-          then []
-          else [
-            "bluetooth"
-          ]
-        )
         ++ (
           if config.laptop
           then ["group/system"]
