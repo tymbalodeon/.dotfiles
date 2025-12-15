@@ -5,3 +5,8 @@ def fonts [] {
   | sort
   | to text --no-newline
 }
+
+# Update the font cache
+def "fonts update" [] {
+  fc-cache --really-force
+}
