@@ -75,8 +75,8 @@ in {
             Mod+Ctrl+Shift+WheelScrollUp { move-column-left; }
             Mod+Ctrl+Up { move-window-up; }
             Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
-            Mod+Ctrl+WheelScrollLeft { move-column-right; }
-            Mod+Ctrl+WheelScrollRight { move-column-left; }
+            Mod+Ctrl+WheelScrollLeft { move-column-left; }
+            Mod+Ctrl+WheelScrollRight { move-column-right; }
             Mod+Ctrl+WheelScrollUp cooldown-ms=150 { move-column-to-workspace-up; }
             Mod+Down { focus-window-down; }
             Mod+End { focus-column-last; }
@@ -128,8 +128,8 @@ in {
             Mod+Up { focus-window-up; }
             Mod+V { toggle-window-floating; }
             Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
-            Mod+WheelScrollLeft { focus-column-right; }
-            Mod+WheelScrollRight { focus-column-left; }
+            Mod+WheelScrollLeft { focus-column-left; }
+            Mod+WheelScrollRight { focus-column-right; }
             Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
             Mod+W { toggle-column-tabbed-display; }
             Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" { screenshot-screen; }
