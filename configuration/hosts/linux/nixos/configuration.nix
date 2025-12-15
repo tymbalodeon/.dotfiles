@@ -11,37 +11,24 @@ with lib; {
   config = let
     cfg = config.nixos;
   in {
-    boot = {
-      kernelModules = ["i2c-dev"];
-
-      loader = {
-        systemd-boot.enable = true;
-        efi.canTouchEfiVariables = true;
-      };
+    boot.loader = {
+      efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
     };
 
-    environment = {
-      sessionVariables.NIXOS_OZONE_WL = "1";
-
-      systemPackages = with pkgs; [
-        bibata-cursors
-        brave
-        (catppuccin-sddm.override
-          {
-            accent = "lavender";
-            flavor = "mocha";
-            fontSize = "12";
-          })
-        git
-        helix
-        xdg-utils
-      ];
-    };
-
-    hardware = {
-      bluetooth.enable = true;
-      i2c.enable = true;
-    };
+    environment.systemPackages = with pkgs; [
+      bibata-cursors
+      brave
+      (catppuccin-sddm.override
+        {
+          accent = "lavender";
+          flavor = "mocha";
+          fontSize = "12";
+        })
+      git
+      helix
+      xdg-utils
+    ];
 
     home-manager = {
       extraSpecialArgs = {
@@ -136,7 +123,6 @@ with lib; {
       };
 
       solaar.enable = true;
-      udev.extraRules = ''KERNEL=="i2c-[0-9]*", GROUP="i2c", MODE="0660"'';
       udisks2.enable = true;
       wayland-pipewire-idle-inhibit.enable = true;
     };
@@ -152,7 +138,12 @@ with lib; {
 
     users.users.${cfg.username} = {
       description = cfg.name;
-      extraGroups = ["i2c" "networkmanager" "wheel"];
+
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+      ];
+
       isNormalUser = true;
       shell = pkgs.nushell;
     };
@@ -160,9 +151,7 @@ with lib; {
 
   imports = [
     inputs.home-manager.nixosModules.home-manager
-    ../../../nixos/dropbox
-    ../../../nixos/nautilus
-    ../../../nixos/waybar
+    ../../../nixos
   ];
 
   options.nixos = with types; let
