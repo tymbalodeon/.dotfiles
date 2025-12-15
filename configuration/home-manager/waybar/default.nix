@@ -17,6 +17,18 @@
         format-plugged = " {capacity}%";
       };
 
+      bluetooth = {
+        # TODO: figure out why this is necessary
+        format =
+          if config.laptop
+          then " {status}"
+          else null;
+
+        tooltip-format = "{controller_alias}\t{controller_address}";
+        tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
+        tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+      };
+
       clock = {
         calendar = {
           mode-mon-col = 3;
