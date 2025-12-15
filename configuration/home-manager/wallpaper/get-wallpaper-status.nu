@@ -9,6 +9,14 @@ def get-status [ ] {
 }
 
 export def main [] {
+  try {
+    if (ls ($env.HOME | path join wallpaper) | length) < 2 {
+      return
+    }
+  } catch {
+    return
+  }
+
   let status = (get-status)
 
   let text = if ($status | is-empty) {
