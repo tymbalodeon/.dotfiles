@@ -19,12 +19,6 @@ with lib; {
     environment.systemPackages = with pkgs; [
       bibata-cursors
       brave
-      (catppuccin-sddm.override
-        {
-          accent = "lavender";
-          flavor = "mocha";
-          fontSize = "12";
-        })
       git
       helix
       xdg-utils
@@ -70,7 +64,11 @@ with lib; {
       };
 
       settings = {
-        experimental-features = ["nix-command" "flakes"];
+        experimental-features = [
+          "flakes"
+          "nix-command"
+        ];
+
         trusted-users = [
           "root"
           (import ../../../home-manager/users/user.nix).username
@@ -79,50 +77,18 @@ with lib; {
     };
 
     nixpkgs.config.allowUnfree = true;
-
-    programs = {
-      niri.enable = true;
-      nix-ld.enable = true;
-
-      steam = {
-        enable = true;
-        remotePlay.openFirewall = true;
-        dedicatedServer.openFirewall = true;
-      };
-    };
-
+    programs.nix-ld.enable = true;
     security.rtkit.enable = true;
 
     services = {
-      displayManager = {
-        defaultSession = "niri";
-
-        sddm = {
-          enable = true;
-
-          settings = {
-            AutoLogin.User = cfg.username;
-
-            Theme = {
-              CursorSize = 16;
-              CursorTheme = "Bibata-Modern-Classic";
-            };
-          };
-
-          theme = "catppuccin-mocha-lavender";
-          wayland.enable = true;
-        };
-      };
-
       fwupd.enable = true;
 
       pipewire = {
-        enable = true;
         alsa.enable = true;
+        enable = true;
         pulse.enable = true;
       };
 
-      solaar.enable = true;
       udisks2.enable = true;
       wayland-pipewire-idle-inhibit.enable = true;
     };
