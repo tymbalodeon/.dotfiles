@@ -17,7 +17,6 @@
 
   kitty.font_size = 11.0;
   nixpkgs.config.allowUnfree = true;
-  programs.ghostty.package = config.lib.nixGL.wrap pkgs.ghostty;
 
   targets.genericLinux = {
     enable = true;

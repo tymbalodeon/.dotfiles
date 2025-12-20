@@ -3,7 +3,6 @@
 
   imports = [
     ../../home-manager/brave
-    ../../home-manager/ghostty
     ../../home-manager/rclone
     ../home.nix
   ];
