@@ -11,6 +11,7 @@ with lib; {
     home.packages = with pkgs; [
       gh
       glab
+      # TODO: replace this with my own version?
       siketyan-ghr
     ];
 
