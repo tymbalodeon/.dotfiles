@@ -208,6 +208,17 @@ in {
             focus-ring {
                 width 1
             }
+
+            tab-indicator {
+              hide-when-single-tab
+            }
+
+            preset-window-heights {
+              proportion 0.33333
+              proportion 0.5
+              proportion 0.66667
+              proportion 1.0
+            }
         }
 
         prefer-no-csd
