@@ -173,6 +173,12 @@ in {
               XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ${../monitors/brightness.nu} increase"; }
             ''
           );
+        proportions = ''
+          proportion 0.33333
+          proportion 0.5
+          proportion 0.66667
+          proportion 1.0
+        '';
       in ''
         binds {
             ${binds}
@@ -209,15 +215,16 @@ in {
                 width 1
             }
 
-            tab-indicator {
-              hide-when-single-tab
+            preset-column-widths {
+                ${proportions}
             }
 
             preset-window-heights {
-              proportion 0.33333
-              proportion 0.5
-              proportion 0.66667
-              proportion 1.0
+                ${proportions}
+            }
+
+            tab-indicator {
+                hide-when-single-tab
             }
         }
 
