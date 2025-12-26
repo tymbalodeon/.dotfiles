@@ -1,10 +1,13 @@
-{inputs, ...}: {
-  imports =
-    map
-    (name: ./${name})
-    (builtins.attrNames (
-      inputs.nixpkgs.lib.attrsets.filterAttrs
-      (attr: value: value == "directory")
-      (builtins.readDir ./.)
-    ));
+{
+  imports = [
+    ./bluetooth
+    ./dropbox
+    ./monitors
+    ./nautilus
+    ./niri
+    ./sddm
+    ./steam
+    ./waybar
+    ./wayland
+  ];
 }
