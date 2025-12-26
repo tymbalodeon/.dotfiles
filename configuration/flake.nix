@@ -49,6 +49,7 @@
         in
           nix-darwin.lib.darwinSystem {
             inherit system;
+
             modules = [
               stylix.darwinModules.stylix
               ./hosts/darwin/${hostName}/configuration.nix
