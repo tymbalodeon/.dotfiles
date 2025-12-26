@@ -174,10 +174,10 @@ in {
             ''
           );
         proportions = ''
-          proportion 0.33333
-          proportion 0.5
-          proportion 0.66667
           proportion 1.0
+          proportion 0.66667
+          proportion 0.5
+          proportion 0.33333
         '';
       in ''
         binds {
@@ -210,6 +210,10 @@ in {
 
         layout {
             always-center-single-column
+
+            default-column-width {
+                proportion 1.0
+            }
 
             focus-ring {
                 width 1
