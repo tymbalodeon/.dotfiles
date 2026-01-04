@@ -10,7 +10,7 @@ with lib; {
   in {
     home = {
       packages = with pkgs; [
-        dogdns
+        doggo
         dua
         dust
         fd

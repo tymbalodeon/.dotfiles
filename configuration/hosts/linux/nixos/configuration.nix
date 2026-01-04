@@ -5,6 +5,7 @@
   isNixOS,
   lib,
   pkgs,
+  pkgs-stable,
   ...
 }:
 with lib; {
@@ -76,7 +77,16 @@ with lib; {
       };
     };
 
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs = {
+      config.allowUnfree = true;
+
+      overlays = [
+        (final: prev: {
+          readability-cli = pkgs-stable.readability-cli;
+        })
+      ];
+    };
+
     programs.nix-ld.enable = true;
     security.rtkit.enable = true;
 
