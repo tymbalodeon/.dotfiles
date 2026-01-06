@@ -150,13 +150,25 @@ def get_local_repos [args: record] {
               parse_git_url $origin
             } else {
               $repo
-              | split row "/"
+              | split row /
               | reverse
               | take 3
               | reverse
               | into_repo
             }
-          ) | insert path $repo
+          )
+
+          let repo_date = if ($repo_data | is-empty) {
+            return {
+              domain: null
+              user: null
+              repo: null
+              path: null
+            }
+          } else {
+            $repo_data
+            | insert path $repo
+          }
 
           let repo_data = if (
             not ($args.include_status | is-empty) and (
@@ -193,12 +205,28 @@ def get_local_repos [args: record] {
         }
   )
 
-  if $args.paths {
+  let repos = (
     $repos
-    | get path
-  } else {
+    | where {
+      |repo| 
+
+
+      ($repo.domain | is-not-empty) and (
+        $repo.user | is-not-empty
+      ) and ($repo.repo | is-not-empty)
+    }
+  )
+
+  try {
+    if $args.paths {
+      $repos
+      | get path
+    } else {
+      $repos
+      | reject path
+    }
+  } catch {
     $repos
-    | reject path
   }
 }
 
