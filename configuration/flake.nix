@@ -75,6 +75,7 @@
           extraSpecialArgs = {
             inherit inputs nixgl;
             isNixOS = false;
+            pkgs-stable = nixpkgs-stable.legacyPackages.x86_64-linux;
           };
 
           modules = [./hosts/linux/standalone/${hostName}/home.nix];

@@ -3,6 +3,7 @@
   config,
   nixgl,
   pkgs,
+  pkgs-stable,
   ...
 }: {
   home = {
@@ -16,7 +17,16 @@
   ];
 
   kitty.font_size = 11.0;
-  nixpkgs.config.allowUnfree = true;
+
+  nixpkgs = {
+    config.allowUnfree = true;
+
+    overlays = [
+      (final: prev: {
+        readability-cli = pkgs-stable.readability-cli;
+      })
+    ];
+  };
 
   targets.genericLinux = {
     enable = true;
