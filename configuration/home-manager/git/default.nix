@@ -31,12 +31,12 @@ with lib; {
         enable = true;
 
         settings = {
-          aliases = {
+          alias = {
             a = "add";
             b = "branch";
-            cm = "commit -m";
             ch = "checkout";
             cl = "clone";
+            cm = "commit -m";
             d = "diff";
             ds = "diff --staged";
 
@@ -50,15 +50,15 @@ with lib; {
 
             last = "log -1 HEAD --stat";
             m = "merge";
-            p = "push";
             pl = "pull";
-            r = "restore";
+            p = "push";
             rh = "reset --hard";
+            r = "restore";
             rs = "restore --staged";
-            s = "status";
             sh = "stash";
             sl = "stash list";
             sp = "stash pop";
+            st = "status";
             sw = "switch";
             tg = "tag";
             tracked = "ls-tree --full-tree --name-only -r HEAD";
