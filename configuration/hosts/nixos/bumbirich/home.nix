@@ -1,7 +1,7 @@
 {
   imports = [
-    ../../../../home-manager/niri
-    ../home.nix
+    ../../../home-manager/home-nixos.nix
+    ../../../home-manager/niri
   ];
 
   laptop = true;

@@ -47,14 +47,14 @@ with lib; {
   };
 
   imports = [
-    ../../../home-manager/bluetooth
-    ../../../home-manager/clipboard
-    ../../../home-manager/monitors
-    ../../../home-manager/niri
-    ../../../home-manager/reaper
-    ../../../home-manager/swaync
-    ../../../home-manager/waybar
-    ../home.nix
+    ./bluetooth
+    ./clipboard
+    ./home-linux.nix
+    ./monitors
+    ./niri
+    ./reaper
+    ./swaync
+    ./waybar
   ];
 
   options.laptop = mkOption {

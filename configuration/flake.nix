@@ -37,11 +37,13 @@
     wayland-pipewire-idle-inhibit,
     ...
   } @ inputs: let
-    mkHosts = mkHost: hosts:
+    mkHosts = mkHost: hostType:
       builtins.foldl' (a: b: a // b) {}
-      (map mkHost (builtins.attrNames (builtins.readDir ./hosts/${hosts})));
+      (map mkHost (builtins.attrNames (builtins.readDir ./hosts/${hostType})));
   in {
-    darwinConfigurations =
+    darwinConfigurations = let
+      hostType = "darwin";
+    in
       mkHosts
       (hostName: {
         ${hostName} = let
@@ -51,50 +53,60 @@
             inherit system;
 
             modules = [
+              ./hosts/${hostType}/${hostName}/configuration.nix
               stylix.darwinModules.stylix
-              ./hosts/darwin/${hostName}/configuration.nix
             ];
 
             specialArgs = {
               inherit hostName inputs;
+
+              hostType = hostType;
               isNixOS = false;
 
               pkgs-stable = import nixpkgs-stable {
                 inherit system;
+
                 config.allowUnfree = true;
               };
             };
           };
       })
-      "darwin";
+      hostType;
 
-    homeConfigurations =
+    homeConfigurations = let
+      hostType = "home-manager";
+    in
       mkHosts
       (hostName: {
         ${hostName} = home-manager.lib.homeManagerConfiguration {
           extraSpecialArgs = {
             inherit inputs nixgl;
+
             isNixOS = false;
             pkgs-stable = nixpkgs-stable.legacyPackages.x86_64-linux;
           };
 
-          modules = [./hosts/linux/standalone/${hostName}/home.nix];
+          modules = [./hosts/${hostType}/${hostName}/home.nix];
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
         };
       })
-      "linux/standalone";
+      hostType;
 
-    nixosConfigurations =
+    nixosConfigurations = let
+      hostType = "nixos";
+    in
       mkHosts (hostName: {
         ${hostName} = nixpkgs.lib.nixosSystem {
           modules = [
+            ./hosts/${hostType}/${hostName}/configuration.nix
             stylix.nixosModules.stylix
-            ./hosts/linux/nixos/${hostName}/configuration.nix
             wayland-pipewire-idle-inhibit.nixosModules.default
           ];
 
           specialArgs = {
             inherit hostName inputs;
+
+            hostType = hostType;
             isNixOS = true;
 
             pkgs-stable = import nixpkgs-stable {
@@ -104,6 +116,6 @@
           };
         };
       })
-      "linux/nixos";
+      hostType;
   };
 }

@@ -1,0 +1,3 @@
+{
+  imports = [../../../darwin/configuration.nix];
+}
