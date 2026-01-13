@@ -1,6 +1,6 @@
 {
   config,
-  isNixOS,
+  hostType,
   lib,
   pkgs,
   ...
@@ -58,7 +58,7 @@ with lib; {
         '';
 
         enable =
-          if isNixOS
+          if hostType == "nixos"
           then true
           else false;
       };
@@ -66,7 +66,7 @@ with lib; {
 
     services.mpd = {
       enable =
-        if isNixOS
+        if hostType == "nixos"
         then true
         else false;
 

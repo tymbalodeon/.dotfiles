@@ -3,7 +3,6 @@
   hostName,
   hostType,
   inputs,
-  isNixOS,
   lib,
   pkgs,
   pkgs-stable,
@@ -16,7 +15,7 @@ with lib; {
     determinate-nix.customSettings.warn-dirty = false;
 
     home-manager = {
-      extraSpecialArgs = {inherit inputs isNixOS;};
+      extraSpecialArgs = {inherit inputs;};
       users.${cfg.username} = import ../darwin/${hostType}/${hostName}/home.nix;
     };
 

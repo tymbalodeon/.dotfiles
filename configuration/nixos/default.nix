@@ -3,7 +3,6 @@
   hostName,
   hostType,
   inputs,
-  isNixOS,
   lib,
   pkgs,
   pkgs-stable,
@@ -28,7 +27,7 @@ with lib; {
 
     home-manager = {
       extraSpecialArgs = {
-        inherit hostName inputs isNixOS;
+        inherit hostName hostType inputs;
       };
 
       useGlobalPkgs = true;

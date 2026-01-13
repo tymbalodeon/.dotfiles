@@ -61,10 +61,7 @@
             ];
 
             specialArgs = {
-              inherit hostName inputs;
-
-              hostType = hostType;
-              isNixOS = false;
+              inherit hostName hostType inputs;
 
               pkgs-stable = import nixpkgs-stable {
                 inherit system;
@@ -82,17 +79,19 @@
         hostType,
         hostName,
       }: {
-        ${hostName} = home-manager.lib.homeManagerConfiguration {
-          extraSpecialArgs = {
-            inherit inputs nixgl;
+        ${hostName} = let
+          system = "x86_64-linux";
+        in
+          home-manager.lib.homeManagerConfiguration {
+            extraSpecialArgs = {
+              inherit inputs nixgl;
 
-            isNixOS = false;
-            pkgs-stable = nixpkgs-stable.legacyPackages.x86_64-linux;
+              pkgs-stable = nixpkgs-stable.legacyPackages.${system};
+            };
+
+            modules = [./hosts/${hostType}/${hostName}/home.nix];
+            pkgs = nixpkgs.legacyPackages.${system};
           };
-
-          modules = [./hosts/${hostType}/${hostName}/home.nix];
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        };
       })
       "home-manager";
 
@@ -110,10 +109,7 @@
           ];
 
           specialArgs = {
-            inherit hostName inputs;
-
-            hostType = hostType;
-            isNixOS = true;
+            inherit hostName hostType inputs;
 
             pkgs-stable = import nixpkgs-stable {
               config.allowUnfree = true;
