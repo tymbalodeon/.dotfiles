@@ -24,7 +24,8 @@
       url = "github:nix-community/stylix";
     };
 
-    wayland-pipewire-idle-inhibit.url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
+    wayland-pipewire-idle-inhibit.url = ''
+      github:rafaelrc7/wayland-pipewire-idle-inhibit'';
   };
 
   outputs = {
