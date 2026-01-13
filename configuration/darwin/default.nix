@@ -13,6 +13,8 @@ with lib; {
   config = let
     cfg = config.darwin;
   in {
+    determinate-nix.customSettings.warn-dirty = false;
+
     home-manager = {
       extraSpecialArgs = {inherit inputs isNixOS;};
       users.${cfg.username} = import ../darwin/${hostType}/${hostName}/home.nix;

@@ -59,6 +59,8 @@ with lib; {
     };
 
     nix = {
+      extraOptions = "warn-dirty = false";
+
       gc = {
         automatic = true;
         dates = "weekly";
