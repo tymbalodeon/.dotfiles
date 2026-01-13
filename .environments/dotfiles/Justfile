@@ -33,6 +33,10 @@ alias configs := configurations
 @generations *help:
     .environments/dotfiles/scripts/generations.nu {{ help }}
 
+# View hosts
+@hosts *help:
+    .environments/dotfiles/scripts/hosts.nu {{ help }}
+
 # List flake inputs
 [working-directory("./configuration")]
 @inputs *help:

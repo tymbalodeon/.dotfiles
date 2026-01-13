@@ -84,7 +84,7 @@
         in
           home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = {
-              inherit inputs nixgl;
+              inherit hostType inputs nixgl;
 
               pkgs-stable = nixpkgs-stable.legacyPackages.${system};
             };

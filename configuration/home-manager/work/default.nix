@@ -2,9 +2,9 @@ let
   email = "benrosen@upenn.edu";
 in {
   imports = [
-    ./git
-    ./jujutsu
-    ./nb
+    ../git
+    ../jujutsu
+    ../nb
   ];
 
   git.github.user = "benjaminrosen";
