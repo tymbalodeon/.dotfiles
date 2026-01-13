@@ -74,7 +74,7 @@ with lib; {
 
         trusted-users = [
           "root"
-          (import ../home-manager/users/user.nix).username
+          (import ../home-manager/users).username
         ];
       };
     };
@@ -142,7 +142,7 @@ with lib; {
   ];
 
   options.nixos = with types; let
-    user = import ../home-manager/users/user.nix;
+    user = import ../home-manager/users;
   in {
     name = mkOption {
       default = user.name;

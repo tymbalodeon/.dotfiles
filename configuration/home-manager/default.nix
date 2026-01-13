@@ -1,5 +1,6 @@
 {
   config,
+  hostType,
   lib,
   pkgs,
   ...
@@ -43,35 +44,45 @@ with lib; {
     programs.home-manager.enable = true;
   };
 
-  imports = [
-    ./bat
-    ./bottom
-    ./direnv
-    ./eza
-    ./fastfetch
-    ./fonts
-    ./fzf
-    ./git
-    ./gpg
-    ./helix
-    ./jq
-    ./jujutsu
-    ./kitty
-    ./mpv
-    ./music-player
-    ./nb
-    ./ripgrep
-    ./shell
-    ./taskwarrior
-    ./tealdeer
-    ./yazi
-    ./zathura
-    ./zellij
-    ./zoxide
-  ];
+  imports =
+    [
+      ./bat
+      ./bottom
+      ./direnv
+      ./eza
+      ./fastfetch
+      ./fonts
+      ./fzf
+      ./git
+      ./gpg
+      ./helix
+      ./jq
+      ./jujutsu
+      ./kitty
+      ./mpv
+      ./music-player
+      ./nb
+      ./ripgrep
+      ./shell
+      ./taskwarrior
+      ./tealdeer
+      ./yazi
+      ./zathura
+      ./zellij
+      ./zoxide
+    ]
+    ++ (
+      if hostType == "darwin"
+      then [./darwin]
+      else if hostType == "home-manager"
+      then [./home-manager]
+      else if hostType == "nixos"
+      then [./nixos]
+      else []
+    );
 
   options.home-user = with types; let
-    user = import ./users/user.nix;
+    user = import ./users;
   in {
     username = mkOption {
       default = user.username;

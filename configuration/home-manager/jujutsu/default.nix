@@ -30,7 +30,7 @@ with lib; {
   };
 
   options.jujutsu = with types; let
-    user = import ../users/user.nix;
+    user = import ../users;
   in {
     email = mkOption {
       default = user.email;

@@ -75,7 +75,7 @@ with lib; {
   ];
 
   options.nb = with types; let
-    user = import ../users/user.nix;
+    user = import ../users;
   in {
     remote = mkOption {
       default = user.nbRemote;

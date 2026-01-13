@@ -10,7 +10,7 @@
   };
 
   imports = [
-    ../../../home-manager/home-home-manager.nix
-    ../../../home-manager/home-work.nix
+    ../../../home-manager
+    ../../../home-manager/work
   ];
 }

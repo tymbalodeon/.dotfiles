@@ -94,7 +94,7 @@ export def get-built-host-name [] {
       ""
     }
   ) == (
-    open home-manager/home-work.nix
+    open home-manager/work/default.nix
     | lines
     | find --regex "\\s+email ="
     | first

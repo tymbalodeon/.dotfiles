@@ -12,8 +12,8 @@
   };
 
   imports = [
-    ./home-linux.nix
-    ./xmonad
+    ../linux
+    ../xmonad
   ];
 
   kitty.font_size = 11.0;

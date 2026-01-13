@@ -2,8 +2,7 @@
   home.packages = [pkgs.dysk];
 
   imports = [
-    ./.
-    ./brave
-    ./rclone
+    ../brave
+    ../rclone
   ];
 }

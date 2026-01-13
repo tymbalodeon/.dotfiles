@@ -47,18 +47,13 @@ with lib; {
   };
 
   imports = [
-    ./bluetooth
-    ./clipboard
-    ./home-linux.nix
-    ./monitors
-    ./niri
-    ./reaper
-    ./swaync
-    ./waybar
+    ../bluetooth
+    ../clipboard
+    ../linux
+    ../monitors
+    ../niri
+    ../reaper
+    ../swaync
+    ../waybar
   ];
-
-  options.laptop = mkOption {
-    default = false;
-    type = types.bool;
-  };
 }

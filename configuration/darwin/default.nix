@@ -71,7 +71,7 @@ with lib; {
   imports = [inputs.home-manager.darwinModules.home-manager];
 
   options.darwin = with types; let
-    user = import ../../home-manager/users/user.nix;
+    user = import ../../home-manager/users;
   in {
     username = mkOption {
       default = user.username;

@@ -90,7 +90,7 @@ with lib; {
   };
 
   options.git = with types; let
-    user = import ../users/user.nix;
+    user = import ../users;
   in {
     github.user = mkOption {
       default = user.githubUsername;
