@@ -7,8 +7,7 @@
   pkgs,
   pkgs-stable,
   ...
-}:
-with lib; {
+}: {
   config = let
     cfg = config.nixos;
   in {
@@ -141,7 +140,10 @@ with lib; {
     ./wayland
   ];
 
-  options.nixos = with types; let
+  options.nixos = let
+    inherit (lib) mkOption types;
+
+    str = types.str;
     user = import ../home-manager/users;
   in {
     name = mkOption {

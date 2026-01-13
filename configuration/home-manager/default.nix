@@ -4,8 +4,7 @@
   lib,
   pkgs,
   ...
-}:
-with lib; {
+}: {
   config = let
     cfg = config.username;
   in {
@@ -81,12 +80,13 @@ with lib; {
       else []
     );
 
-  options.username = with types; let
+  options.username = let
     user = import ./users;
-  in {
-    username = mkOption {
-      default = user.username;
-      type = str;
+  in
+    with lib; {
+      username = mkOption {
+        default = user.username;
+        type = types.str;
+      };
     };
-  };
 }

@@ -2,8 +2,7 @@
   lib,
   pkgs,
   ...
-}:
-with lib; {
+}: {
   config = {
     home.packages = [pkgs.fontconfig];
 
@@ -88,12 +87,12 @@ with lib; {
 
   imports = [../jujutsu];
 
-  options.nushell = with types; {
-    configDirectory = lib.mkOption {
+  options.nushell = with lib; {
+    configDirectory = mkOption {
       default = ".config/nushell";
       description = "The value of `$nu.default-config-dir`";
       example = "Library/Application Support/nushell";
-      type = str;
+      type = types.str;
     };
   };
 }

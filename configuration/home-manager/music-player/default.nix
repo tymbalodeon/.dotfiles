@@ -4,8 +4,7 @@
   lib,
   pkgs,
   ...
-}:
-with lib; {
+}: {
   config = let
     cfg = config.music-player;
   in {
@@ -91,10 +90,10 @@ with lib; {
 
   imports = [../nushell];
 
-  options.music-player = with types; {
+  options.music-player = with lib; {
     musicDirectory = mkOption {
       default = "~/music";
-      type = str;
+      type = types.str;
     };
   };
 }

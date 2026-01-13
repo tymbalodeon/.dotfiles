@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-with lib; {
+}: {
   config = let
     cfg = config.jujutsu;
   in {
@@ -29,7 +28,10 @@ with lib; {
     };
   };
 
-  options.jujutsu = with types; let
+  options.jujutsu = let
+    inherit (lib) mkOption types;
+
+    str = types.str;
     user = import ../users;
   in {
     email = mkOption {

@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-with lib; {
+}: {
   config = let
     cfg = config.git;
   in {
@@ -89,7 +88,10 @@ with lib; {
     };
   };
 
-  options.git = with types; let
+  options.git = let
+    inherit (lib) mkOption types;
+
+    str = types.str;
     user = import ../users;
   in {
     github.user = mkOption {

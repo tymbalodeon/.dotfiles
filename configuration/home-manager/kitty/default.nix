@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-with lib; {
+}: {
   config = let
     cfg = config.kitty;
   in {
@@ -54,10 +53,10 @@ with lib; {
     };
   };
 
-  options.kitty = with types; {
+  options.kitty = with lib; {
     font_size = mkOption {
       default = 8.0;
-      type = float;
+      type = types.float;
     };
   };
 }

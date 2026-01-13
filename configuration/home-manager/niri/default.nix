@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
   defaultXkbOptions = "caps:escape";
 in {
   config = let
@@ -251,15 +250,18 @@ in {
     ../waybar
   ];
 
-  options.niri = with types; {
-    input.keyboard.xkb.options = mkOption {
-      default = defaultXkbOptions;
-      type = str;
-    };
+  options.niri = let
+    inherit (lib) mkOption types;
+  in
+    with types; {
+      input.keyboard.xkb.options = mkOption {
+        default = defaultXkbOptions;
+        type = str;
+      };
 
-    laptop = mkOption {
-      default = false;
-      type = bool;
+      laptop = mkOption {
+        default = false;
+        type = bool;
+      };
     };
-  };
 }

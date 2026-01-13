@@ -7,8 +7,7 @@
   pkgs,
   pkgs-stable,
   ...
-}:
-with lib; {
+}: {
   config = let
     cfg = config.darwin;
   in {
@@ -70,12 +69,12 @@ with lib; {
 
   imports = [inputs.home-manager.darwinModules.home-manager];
 
-  options.darwin = with types; let
+  options.darwin = let
     user = import ../../home-manager/users;
   in {
-    username = mkOption {
+    username = lib.mkOption {
       default = user.username;
-      type = str;
+      type = lib.types.str;
     };
   };
 }

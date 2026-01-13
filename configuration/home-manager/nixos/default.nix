@@ -1,9 +1,4 @@
-{
-  lib,
-  pkgs,
-  ...
-}:
-with lib; {
+{pkgs, ...}: {
   config = {
     gtk = let
       gnomeTheme = pkgs.gnome-themes-extra;

@@ -3,8 +3,7 @@
   lib,
   pkgs,
   ...
-}:
-with lib; {
+}: {
   config = let
     cfg = config.nb;
   in {
@@ -14,7 +13,7 @@ with lib; {
       activation.nb = let
         git = "${pkgs.git}/bin/git";
       in
-        hm.dag.entryAfter ["writeBoundary"]
+        lib.hm.dag.entryAfter ["writeBoundary"]
         ''
           nb_directory=$HOME/.nb
           nb_home_notebook=$nb_directory/home
@@ -74,12 +73,12 @@ with lib; {
     ../nushell
   ];
 
-  options.nb = with types; let
+  options.nb = with lib; let
     user = import ../users;
   in {
     remote = mkOption {
       default = user.nbRemote;
-      type = str;
+      type = types.str;
     };
   };
 }
