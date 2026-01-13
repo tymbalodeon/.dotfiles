@@ -23,7 +23,7 @@ in {
           xwayland-satellite
         ]
         ++ (
-          if config.laptop
+          if cfg.laptop
           then [pkgs.brightnessctl]
           else []
         );
@@ -157,7 +157,7 @@ in {
           + (
             # TODO: fix spacing
             # TODO: handle all of this with the brightness nushell script
-            if config.laptop
+            if cfg.laptop
             then ''
               Shift+XF86MonBrightnessDown { spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%-"; }
               Shift+XF86MonBrightnessUp { spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%+"; }
@@ -255,6 +255,11 @@ in {
     input.keyboard.xkb.options = mkOption {
       default = defaultXkbOptions;
       type = str;
+    };
+
+    laptop = mkOption {
+      default = false;
+      type = bool;
     };
   };
 }
