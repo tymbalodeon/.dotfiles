@@ -179,7 +179,7 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs-unstable"
         ]
       },
       "locked": {
@@ -220,7 +220,9 @@
     "nixgl": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
       },
       "locked": {
         "lastModified": 1762090880,
@@ -233,21 +235,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "nixGL",
-        "type": "github"
-      }
-    },
-    "nixpkgs": {
-      "locked": {
-        "lastModified": 1746378225,
-        "narHash": "sha256-OeRSuL8PUjIfL3Q0fTbNJD/fmv1R+K2JAOqWJd3Oceg=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "93e8cdce7afc64297cfec447c311470788131cd9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "repo": "nixpkgs",
         "type": "github"
       }
     },
@@ -282,23 +269,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1768127708,
-        "narHash": "sha256-1Sm77VfZh3mU0F5OqKABNLWxOuDeHIlcFjsXeeiPazs=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "ffbc9f8cbaacfb331b6017d5a5abb21a492c9a38",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_3": {
+    "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1768127708,
         "narHash": "sha256-1Sm77VfZh3mU0F5OqKABNLWxOuDeHIlcFjsXeeiPazs=",
@@ -360,8 +331,8 @@
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixgl": "nixgl",
-        "nixpkgs": "nixpkgs_2",
         "nixpkgs-stable": "nixpkgs-stable",
+        "nixpkgs-unstable": "nixpkgs-unstable",
         "rofi-theme": "rofi-theme",
         "stylix": "stylix",
         "wayland-pipewire-idle-inhibit": "wayland-pipewire-idle-inhibit"
@@ -377,7 +348,7 @@
         "flake-parts": "flake-parts",
         "gnome-shell": "gnome-shell",
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs-unstable"
         ],
         "nur": "nur",
         "systems": "systems_2",
@@ -551,7 +522,9 @@
     "wayland-pipewire-idle-inhibit": {
       "inputs": {
         "flake-parts": "flake-parts_2",
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ],
         "systems": "systems_3",
         "treefmt-nix": "treefmt-nix"
       },

@@ -1,7 +1,7 @@
 {
   inputs = {
     home-manager = {
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:nix-community/home-manager";
     };
 
@@ -10,9 +10,13 @@
       url = "github:LnL7/nix-darwin/nix-darwin-25.05";
     };
 
-    nixgl.url = "github:nix-community/nixGL";
+    nixgl = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:nix-community/nixGL";
+    };
+
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     rofi-theme = {
       flake = false;
@@ -20,19 +24,21 @@
     };
 
     stylix = {
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:nix-community/stylix";
     };
 
-    wayland-pipewire-idle-inhibit.url = ''
-      github:rafaelrc7/wayland-pipewire-idle-inhibit'';
+    wayland-pipewire-idle-inhibit = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
+    };
   };
 
   outputs = {
     home-manager,
     nix-darwin,
     nixgl,
-    nixpkgs,
+    nixpkgs-unstable,
     nixpkgs-stable,
     stylix,
     wayland-pipewire-idle-inhibit,
@@ -91,7 +97,7 @@
             };
 
             modules = [./hosts/${hostType}/${hostName}/home.nix];
-            pkgs = nixpkgs.legacyPackages.${system};
+            pkgs = nixpkgs-unstable.legacyPackages.${system};
           };
       })
       "home-manager";
@@ -102,7 +108,7 @@
         hostType,
         hostName,
       }: {
-        ${hostName} = nixpkgs.lib.nixosSystem {
+        ${hostName} = nixpkgs-unstable.lib.nixosSystem {
           modules = [
             ./hosts/${hostType}/${hostName}/configuration.nix
             stylix.nixosModules.stylix
