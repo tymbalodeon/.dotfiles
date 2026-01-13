@@ -7,7 +7,7 @@
 }:
 with lib; {
   config = let
-    cfg = config.home-user;
+    cfg = config.username;
   in {
     home = {
       packages = with pkgs; [
@@ -81,7 +81,7 @@ with lib; {
       else []
     );
 
-  options.home-user = with types; let
+  options.username = with types; let
     user = import ./users;
   in {
     username = mkOption {
