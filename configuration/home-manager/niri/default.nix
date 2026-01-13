@@ -211,10 +211,6 @@ in {
         layout {
             always-center-single-column
 
-            default-column-width {
-                proportion 1.0
-            }
-
             focus-ring {
                 width 1
             }

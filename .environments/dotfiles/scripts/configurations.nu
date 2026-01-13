@@ -107,6 +107,8 @@ export def get-built-host-name [] {
       cat /etc/hostname
       | str trim
     } else {
+      # FIXME: now need to use the HOST name and not the username. Is it
+      # possible to set the host name with nix-darwin?
       whoami
     }
   }
