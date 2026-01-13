@@ -1,3 +1,3 @@
 {
-  imports = [../../../home-manager/home-darwin.nix];
+  imports = [../../../home-manager];
 }
