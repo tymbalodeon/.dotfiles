@@ -39,13 +39,16 @@
   } @ inputs: let
     mkHosts = mkHost: hostType:
       builtins.foldl' (a: b: a // b) {}
-      (map mkHost (builtins.attrNames (builtins.readDir ./hosts/${hostType})));
+      (map mkHost
+        (map (hostName: {inherit hostName hostType;})
+          (builtins.attrNames (builtins.readDir ./hosts/${hostType}))));
   in {
-    darwinConfigurations = let
-      hostType = "darwin";
-    in
+    darwinConfigurations =
       mkHosts
-      (hostName: {
+      ({
+        hostType,
+        hostName,
+      }: {
         ${hostName} = let
           system = "x86_64-darwin";
         in
@@ -71,13 +74,14 @@
             };
           };
       })
-      hostType;
+      "darwin";
 
-    homeConfigurations = let
-      hostType = "home-manager";
-    in
+    homeConfigurations =
       mkHosts
-      (hostName: {
+      ({
+        hostType,
+        hostName,
+      }: {
         ${hostName} = home-manager.lib.homeManagerConfiguration {
           extraSpecialArgs = {
             inherit inputs nixgl;
@@ -90,12 +94,14 @@
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
         };
       })
-      hostType;
+      "home-manager";
 
-    nixosConfigurations = let
-      hostType = "nixos";
-    in
-      mkHosts (hostName: {
+    nixosConfigurations =
+      mkHosts
+      ({
+        hostType,
+        hostName,
+      }: {
         ${hostName} = nixpkgs.lib.nixosSystem {
           modules = [
             ./hosts/${hostType}/${hostName}/configuration.nix
@@ -116,6 +122,6 @@
           };
         };
       })
-      hostType;
+      "nixos";
   };
 }
