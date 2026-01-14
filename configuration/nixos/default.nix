@@ -29,7 +29,6 @@
         inherit hostName hostType inputs pkgs-stable;
       };
 
-      useGlobalPkgs = true;
       users.${cfg.username} = import ../hosts/${hostType}/${hostName}/home.nix;
     };
 
