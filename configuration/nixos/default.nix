@@ -26,7 +26,7 @@
 
     home-manager = {
       extraSpecialArgs = {
-        inherit hostName hostType inputs;
+        inherit hostName hostType inputs pkgs-stable;
       };
 
       useGlobalPkgs = true;
@@ -78,16 +78,7 @@
       };
     };
 
-    nixpkgs = {
-      config.allowUnfree = true;
-
-      overlays = [
-        (final: prev: {
-          readability-cli = pkgs-stable.readability-cli;
-        })
-      ];
-    };
-
+    nixpkgs.config.allowUnfree = true;
     programs.nix-ld.enable = true;
     security.rtkit.enable = true;
 

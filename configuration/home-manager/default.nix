@@ -3,6 +3,7 @@
   hostType,
   lib,
   pkgs,
+  pkgs-stable,
   ...
 }: {
   config = {
@@ -38,6 +39,17 @@
     };
 
     news.display = "silent";
+
+    nixpkgs = {
+      config.allowUnfree = true;
+
+      overlays = [
+        (final: prev: {
+          readability-cli = pkgs-stable.readability-cli;
+        })
+      ];
+    };
+
     programs.home-manager.enable = true;
   };
 

@@ -12,19 +12,22 @@
     username = config.darwin.username;
   in {
     home-manager = {
-      extraSpecialArgs = {inherit hostType inputs;};
+      extraSpecialArgs = {inherit hostType inputs pkgs-stable;};
       users.${username} = import ../hosts/${hostType}/${hostName}/home.nix;
     };
 
     nix.enable = false;
 
     nixpkgs.overlays = [
-      (final: prev: {
-        kitty = pkgs-stable.kitty;
-        mpd = pkgs-stable.mpd;
-        nix-search-cli = pkgs-stable.nix-search-cli;
-        uutils-coreutils-noprefix = pkgs-stable.uutils-coreutils-noprefix;
-      })
+      (final: prev:
+        with pkgs-stable; {
+          inherit
+            ktty
+            mpd
+            nix-search-cli
+            uutils-coreutils-no-prefix
+            ;
+        })
     ];
 
     security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
