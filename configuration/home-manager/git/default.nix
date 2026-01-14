@@ -92,7 +92,7 @@
     inherit (lib) mkOption types;
 
     str = types.str;
-    user = import ../users;
+    user = import ../../users;
   in {
     github.user = mkOption {
       default = user.githubUsername;

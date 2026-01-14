@@ -5,9 +5,7 @@
   pkgs,
   ...
 }: {
-  config = let
-    cfg = config.username;
-  in {
+  config = {
     home = {
       packages = with pkgs; [
         doggo
@@ -36,7 +34,7 @@
       ];
 
       stateVersion = "23.11";
-      username = cfg.username;
+      username = config.username;
     };
 
     news.display = "silent";
@@ -81,12 +79,11 @@
     );
 
   options.username = let
-    user = import ./users;
+    user = import ../users;
   in
-    with lib; {
-      username = mkOption {
+    with lib;
+      mkOption {
         default = user.username;
         type = types.str;
       };
-    };
 }

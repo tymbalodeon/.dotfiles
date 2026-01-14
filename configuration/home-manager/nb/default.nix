@@ -73,12 +73,15 @@
     ../nushell
   ];
 
-  options.nb = with lib; let
-    user = import ../users;
-  in {
-    remote = mkOption {
-      default = user.nbRemote;
-      type = types.str;
-    };
-  };
+  options.nb.remote = let
+    user = import ../../users;
+  in
+    with lib;
+      mkOption {
+        default =
+          if builtins.hasAttr "nbRemote" user
+          then user.nbRemote
+          else "git@github.com:${config.git.github.user}/notes.git";
+        type = types.str;
+      };
 }

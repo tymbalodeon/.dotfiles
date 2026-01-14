@@ -9,13 +9,13 @@
   ...
 }: {
   config = let
-    cfg = config.darwin;
+    username = config.darwin.username;
   in {
-    determinate-nix.customSettings.warn-dirty = false;
+    determinate-nix.customSettings.warn-irty = false;
 
     home-manager = {
       extraSpecialArgs = {inherit inputs;};
-      users.${cfg.username} = import ../darwin/${hostType}/${hostName}/home.nix;
+      users.${username} = import ../arwin/${hostType}/${hostName}/home.nix;
     };
 
     nix.enable = false;
@@ -60,21 +60,21 @@
         remapCapsLockToEscape = true;
       };
 
-      primaryUser = cfg.username;
+      primaryUser = username;
       stateVersion = 6;
     };
 
-    users.users.${cfg.username}.home = /Users/${cfg.username};
+    users.users.${username}.home = /Users/${username};
   };
 
   imports = [inputs.home-manager.darwinModules.home-manager];
 
-  options.darwin = let
+  options.darwin.username = let
     user = import ../../home-manager/users;
-  in {
-    username = lib.mkOption {
-      default = user.username;
-      type = lib.types.str;
-    };
-  };
+  in
+    with lib;
+      mkOption {
+        default = user.username;
+        type = types.str;
+      };
 }

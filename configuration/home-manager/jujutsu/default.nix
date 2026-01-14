@@ -32,7 +32,7 @@
     inherit (lib) mkOption types;
 
     str = types.str;
-    user = import ../users;
+    user = import ../../users;
   in {
     email = mkOption {
       default = user.email;

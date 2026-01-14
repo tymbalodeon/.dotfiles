@@ -73,7 +73,7 @@
 
         trusted-users = [
           "root"
-          (import ../home-manager/users).username
+          cfg.username
         ];
       };
     };
@@ -144,7 +144,7 @@
     inherit (lib) mkOption types;
 
     str = types.str;
-    user = import ../home-manager/users;
+    user = import ../users;
   in {
     name = mkOption {
       default = user.name;
