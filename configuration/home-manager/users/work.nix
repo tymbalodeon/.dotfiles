@@ -6,18 +6,18 @@
   config = let
     cfg = config.user;
   in {
-    imports = [
-      ../git
-      ../jujutsu
-      ../nb
-    ];
-
     git.github.user = cfg.githubUsername;
     git.gitlab.user = cfg.gitlabUsername;
     git.userEmail = cfg.email;
     jujutsu.email = cfg.email;
     nb.remote = cfg.nbRemote;
   };
+
+  imports = [
+    ../git
+    ../jujutsu
+    ../nb
+  ];
 
   options.work.user = let
     user = import ../../users/work.nix;
