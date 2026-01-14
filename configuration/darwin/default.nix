@@ -11,11 +11,9 @@
   config = let
     username = config.darwin.username;
   in {
-    determinate-nix.customSettings.warn-irty = false;
-
     home-manager = {
       extraSpecialArgs = {inherit inputs;};
-      users.${username} = import ../arwin/${hostType}/${hostName}/home.nix;
+      users.${username} = import ../hosts/${hostType}/${hostName}/home.nix;
     };
 
     nix.enable = false;
