@@ -20,26 +20,32 @@
   ];
 
   options.work.user = let
+    getUserValue = attr: (
+      if builtins.hasAttr attr user
+      then user.${attr}
+      else config.user.${attr}
+    );
+
     user = import ../../users/work.nix;
   in
     with lib; {
       email = mkOption {
-        default = user.email;
+        default = getUserValue "email";
         type = types.str;
       };
 
       githubUsername = mkOption {
-        default = user.githubUsername;
+        default = getUserValue "githubUsername";
         type = types.str;
       };
 
       gitlabUsername = mkOption {
-        default = user.gitlabUsername;
+        default = getUserValue "gitlabUsername";
         type = types.str;
       };
 
       nbRemote = mkOption {
-        default = user.nbRemote;
+        default = getUserValue "nbRemote";
         type = types.str;
       };
     };
