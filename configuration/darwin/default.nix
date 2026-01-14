@@ -70,7 +70,7 @@
   imports = [inputs.home-manager.darwinModules.home-manager];
 
   options.darwin.username = let
-    user = import ../../home-manager/users;
+    user = import ../users;
   in
     with lib;
       mkOption {
