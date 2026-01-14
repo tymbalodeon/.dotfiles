@@ -6,8 +6,8 @@
     };
 
     nix-darwin = {
-      inputs.nixpkgs.follows = "nixpkgs-stable";
-      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:LnL7/nix-darwin";
     };
 
     nixgl = {
