@@ -1,8 +1,9 @@
 {
+  channel,
   config,
+  home-manager,
   hostName,
   hostType,
-  inputs,
   lib,
   pkgs,
   pkgs-stable,
@@ -12,8 +13,10 @@
     username = config.darwin.username;
   in {
     home-manager = {
-      extraSpecialArgs = {inherit hostType inputs pkgs-stable;};
-      users.${username} = import ../hosts/${hostType}/${hostName}/home.nix;
+      extraSpecialArgs = {inherit hostType pkgs-stable;};
+
+      users.${username} =
+        import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
     };
 
     nix.enable = false;
@@ -68,7 +71,7 @@
     users.users.${username}.home = /Users/${username};
   };
 
-  imports = [inputs.home-manager.darwinModules.home-manager];
+  imports = [home-manager.darwinModules.home-manager];
 
   options.darwin.username = let
     user = import ../users;

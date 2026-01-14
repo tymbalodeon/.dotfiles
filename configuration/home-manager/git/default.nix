@@ -15,75 +15,75 @@
     ];
 
     programs = {
-      delta = {
-        enable = true;
-        enableGitIntegration = true;
+      # delta = {
+      #   enable = true;
+      #   enableGitIntegration = true;
 
-        options = {
-          diff-so-fancy = true;
-          navigate = true;
-          syntax-theme = "base16";
-        };
-      };
+      #   options = {
+      #     diff-so-fancy = true;
+      #     navigate = true;
+      #     syntax-theme = "base16";
+      #   };
+      # };
 
       git = {
         enable = true;
 
-        settings = {
-          alias = {
-            a = "add";
-            b = "branch";
-            ch = "checkout";
-            cl = "clone";
-            cm = "commit -m";
-            d = "diff";
-            ds = "diff --staged";
+        # settings = {
+        #   alias = {
+        #     a = "add";
+        #     b = "branch";
+        #     ch = "checkout";
+        #     cl = "clone";
+        #     cm = "commit -m";
+        #     d = "diff";
+        #     ds = "diff --staged";
 
-            l = let
-              commit = "%C(auto)%h%d%C(reset)";
-              time = "%C(dim)%ar%C(reset)";
-              message = "%C(bold)%s%C(reset)";
-              author = "%C(dim blue)(%an)%C(reset)";
-              format = "${commit} ${time} ${message} ${author}";
-            in "log --graph --pretty=format:'${format}'";
+        #     l = let
+        #       commit = "%C(auto)%h%d%C(reset)";
+        #       time = "%C(dim)%ar%C(reset)";
+        #       message = "%C(bold)%s%C(reset)";
+        #       author = "%C(dim blue)(%an)%C(reset)";
+        #       format = "${commit} ${time} ${message} ${author}";
+        #     in "log --graph --pretty=format:'${format}'";
 
-            last = "log -1 HEAD --stat";
-            m = "merge";
-            pl = "pull";
-            p = "push";
-            rh = "reset --hard";
-            r = "restore";
-            rs = "restore --staged";
-            sh = "stash";
-            sl = "stash list";
-            sp = "stash pop";
-            st = "status";
-            sw = "switch";
-            tg = "tag";
-            tracked = "ls-tree --full-tree --name-only -r HEAD";
-            tr = "tracked";
-          };
+        #     last = "log -1 HEAD --stat";
+        #     m = "merge";
+        #     pl = "pull";
+        #     p = "push";
+        #     rh = "reset --hard";
+        #     r = "restore";
+        #     rs = "restore --staged";
+        #     sh = "stash";
+        #     sl = "stash list";
+        #     sp = "stash pop";
+        #     st = "status";
+        #     sw = "switch";
+        #     tg = "tag";
+        #     tracked = "ls-tree --full-tree --name-only -r HEAD";
+        #     tr = "tracked";
+        #   };
 
-          core.excludesfile = "~/.gitignore_global";
-          default.push = "upstream";
-          diff.colorMoved = "default";
-          github.user = cfg.github.user;
-          gitlab.user = cfg.gitlab.user;
-          init.defaultBranch = "trunk";
+        #   core.excludesfile = "~/.gitignore_global";
+        #   default.push = "upstream";
+        #   diff.colorMoved = "default";
+        #   github.user = cfg.github.user;
+        #   gitlab.user = cfg.gitlab.user;
+        #   init.defaultBranch = "trunk";
 
-          merge = {
-            conflictstyle = "diff3";
-            ff = "only";
-          };
+        #   merge = {
+        #     conflictstyle = "diff3";
+        #     ff = "only";
+        #   };
 
-          pull.rebase = false;
-          push.default = "current";
+        #   pull.rebase = false;
+        #   push.default = "current";
 
-          user = {
-            email = cfg.userEmail;
-            name = cfg.userName;
-          };
-        };
+        #   user = {
+        #     email = cfg.userEmail;
+        #     name = cfg.userName;
+        #   };
+        # };
       };
     };
   };

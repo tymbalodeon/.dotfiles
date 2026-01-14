@@ -1,11 +1,21 @@
 {
   inputs = {
-    home-manager = {
+    home-manager-25_05 = {
+      inputs.nixpkgs.follows = "nixpkgs-25_05";
+      url = "github:nix-community/home-manager/release-25.05";
+    };
+
+    home-manager-unstable = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:nix-community/home-manager";
     };
 
-    nix-darwin = {
+    nix-darwin-25_05 = {
+      inputs.nixpkgs.follows = "nixpkgs-25_05";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
+    };
+
+    nix-darwin-unstable = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:LnL7/nix-darwin";
     };
@@ -15,7 +25,7 @@
       url = "github:nix-community/nixGL";
     };
 
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-25_05.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     rofi-theme = {
@@ -23,7 +33,12 @@
       url = "github:catppuccin/rofi";
     };
 
-    stylix = {
+    stylix-25_05 = {
+      inputs.nixpkgs.follows = "nixpkgs-25_05";
+      url = "github:nix-community/stylix/release-25.05";
+    };
+
+    stylix-unstable = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:nix-community/stylix";
     };
@@ -35,42 +50,109 @@
   };
 
   outputs = {
-    home-manager,
-    nix-darwin,
+    home-manager-25_05,
+    home-manager-unstable,
+    nix-darwin-25_05,
+    nix-darwin-unstable,
     nixgl,
+    nixpkgs-25_05,
     nixpkgs-unstable,
-    nixpkgs-stable,
-    stylix,
+    stylix-25_05,
+    stylix-unstable,
     wayland-pipewire-idle-inhibit,
     ...
-  } @ inputs: let
+  }: let
+    getChannels = hostType:
+      builtins.attrNames (builtins.readDir ./hosts/${hostType});
+
+    getHost = {
+      channel,
+      hostType,
+    }:
+      builtins.elemAt (
+        builtins.attrNames (
+          builtins.readDir ./hosts/${hostType}/${channel}
+        )
+      )
+      0;
+
+    getHosts = hostType:
+      nixpkgs-unstable.lib.lists.flatten (
+        map (channel: {
+          inherit channel hostType;
+
+          hostName = getHost {inherit channel hostType;};
+        })
+        (getChannels hostType)
+      );
+
     mkHosts = mkHost: hostType:
       builtins.foldl' (a: b: a // b) {}
       (map mkHost
-        (map (hostName: {inherit hostName hostType;})
-          (builtins.attrNames (builtins.readDir ./hosts/${hostType}))));
+        (map ({
+          channel,
+          hostName,
+          hostType,
+        }: {inherit channel hostName hostType;})
+        (getHosts hostType)));
+
+    getInputs = channel: {
+      home-manager =
+        if channel == "25_05"
+        then home-manager-25_05
+        else home-manager-unstable;
+
+      nix-darwin =
+        if channel == "25_05"
+        then nix-darwin-25_05
+        else nix-darwin-unstable;
+
+      nixpkgs =
+        if channel == "25_05"
+        then nixpkgs-25_05
+        else nixpkgs-unstable;
+
+      stylix =
+        if channel == "25_05"
+        then stylix-25_05
+        else stylix-unstable;
+    };
   in {
     darwinConfigurations =
       mkHosts
       ({
+        channel,
         hostType,
         hostName,
       }: {
         ${hostName} = let
+          inherit
+            (getInputs channel)
+            home-manager
+            nix-darwin
+            nixpkgs
+            stylix
+            ;
+
           system = "x86_64-darwin";
         in
           nix-darwin.lib.darwinSystem {
             inherit system;
 
             modules = [
-              ./hosts/${hostType}/${hostName}/configuration.nix
+              ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
               stylix.darwinModules.stylix
             ];
 
             specialArgs = {
-              inherit hostName hostType inputs;
+              inherit
+                channel
+                hostName
+                hostType
+                home-manager
+                ;
 
-              pkgs-stable = import nixpkgs-stable {
+              pkgs-stable = import nixpkgs {
                 inherit system;
 
                 config.allowUnfree = true;
@@ -83,21 +165,28 @@
     homeConfigurations =
       mkHosts
       ({
+        channel,
         hostType,
         hostName,
       }: {
         ${hostName} = let
+          inherit
+            (getInputs channel)
+            home-manager
+            nixpkgs
+            ;
+
           system = "x86_64-linux";
         in
           home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = {
-              inherit hostType inputs nixgl;
+              inherit hostType home-manager-unstable nixgl;
 
-              pkgs-stable = nixpkgs-stable.legacyPackages.${system};
+              pkgs-stable = nixpkgs-25_05.legacyPackages.${system};
             };
 
             modules = [./hosts/${hostType}/${hostName}/home.nix];
-            pkgs = nixpkgs-unstable.legacyPackages.${system};
+            pkgs = nixpkgs.legacyPackages.${system};
           };
       })
       "home-manager";
@@ -105,25 +194,34 @@
     nixosConfigurations =
       mkHosts
       ({
+        channel,
         hostType,
         hostName,
       }: {
-        ${hostName} = nixpkgs-unstable.lib.nixosSystem {
-          modules = [
-            ./hosts/${hostType}/${hostName}/configuration.nix
-            stylix.nixosModules.stylix
-            wayland-pipewire-idle-inhibit.nixosModules.default
-          ];
+        ${hostName} = let
+          inherit
+            (getInputs channel)
+            home-manager
+            nixpkgs
+            stylix
+            ;
+        in
+          nixpkgs.lib.nixosSystem {
+            modules = [
+              ./hosts/${hostType}/${hostName}/configuration.nix
+              stylix.nixosModules.stylix
+              wayland-pipewire-idle-inhibit.nixosModules.default
+            ];
 
-          specialArgs = {
-            inherit hostName hostType inputs;
+            specialArgs = {
+              inherit hostName hostType home-manager;
 
-            pkgs-stable = import nixpkgs-stable {
-              config.allowUnfree = true;
-              system = "x86_64-linux";
+              pkgs-stable = import nixpkgs-25_05 {
+                config.allowUnfree = true;
+                system = "x86_64-linux";
+              };
             };
           };
-        };
       })
       "nixos";
   };

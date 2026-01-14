@@ -1,8 +1,8 @@
 {
   config,
+  home-manager,
   hostName,
   hostType,
-  inputs,
   lib,
   pkgs,
   pkgs-stable,
@@ -26,7 +26,7 @@
 
     home-manager = {
       extraSpecialArgs = {
-        inherit hostName hostType inputs pkgs-stable;
+        inherit hostName hostType pkgs-stable;
       };
 
       useGlobalPkgs = true;
@@ -118,7 +118,7 @@
   };
 
   imports = [
-    inputs.home-manager.nixosModules.home-manager
+    home-manager.nixosModules.home-manager
 
     ./bluetooth
     ./dropbox
