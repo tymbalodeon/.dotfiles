@@ -4,7 +4,7 @@
   ...
 }: {
   config = let
-    cfg = config.user;
+    cfg = config.work.user;
   in {
     git.github.user = cfg.githubUsername;
     git.gitlab.user = cfg.gitlabUsername;

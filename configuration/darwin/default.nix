@@ -12,7 +12,7 @@
     username = config.darwin.username;
   in {
     home-manager = {
-      extraSpecialArgs = {inherit inputs;};
+      extraSpecialArgs = {inherit hostType inputs;};
       users.${username} = import ../hosts/${hostType}/${hostName}/home.nix;
     };
 

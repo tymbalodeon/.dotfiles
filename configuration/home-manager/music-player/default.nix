@@ -73,19 +73,22 @@
       network.startWhenNeeded = true;
     };
 
-    xdg = {
-      configFile = {
-        "rmpc/default_album_art.jpg".source = ./default_album_art.jpg;
-        "rmpc/notify.sh".source = ./notify.sh;
-      };
+    xdg =
+      if pkgs.stdenv.isLinux
+      then {
+        configFile = {
+          "rmpc/default_album_art.jpg".source = ./default_album_art.jpg;
+          "rmpc/notify.sh".source = ./notify.sh;
+        };
 
-      desktopEntries.music = {
-        exec = "kitty --hold rmpc";
-        icon = ./icon.png;
-        name = "Music";
-        type = "Application";
-      };
-    };
+        desktopEntries.music = {
+          exec = "kitty --hold rmpc";
+          icon = ./icon.png;
+          name = "Music";
+          type = "Application";
+        };
+      }
+      else {};
   };
 
   imports = [../nushell];
