@@ -34,7 +34,7 @@
       ];
 
       stateVersion = "23.11";
-      username = config.username;
+      username = config.user.username;
     };
 
     news.display = "silent";
@@ -78,12 +78,44 @@
       else []
     );
 
-  options.username = let
+  options.user = let
+    inherit (lib) mkOption types;
+
+    str = types.str;
     user = import ../users;
-  in
-    with lib;
-      mkOption {
-        default = user.username;
-        type = types.str;
-      };
+  in {
+    email = mkOption {
+      default = user.email;
+      type = str;
+    };
+
+    githubUsername = mkOption {
+      default = user.githubUsername;
+      type = str;
+    };
+
+    gitlabUsername = mkOption {
+      default = user.gitlabUsername;
+      type = str;
+    };
+
+    name = mkOption {
+      default = user.name;
+      type = str;
+    };
+
+    nbRemote = mkOption {
+      default =
+        if builtins.hasAttr "nbRemote" user
+        then user.nbRemote
+        else "git@github.com:${user.githubUsername}/notes.git";
+
+      type = str;
+    };
+
+    username = mkOption {
+      default = user.username;
+      type = str;
+    };
+  };
 }

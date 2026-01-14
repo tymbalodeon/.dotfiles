@@ -19,7 +19,7 @@
     nb.remote = cfg.nbRemote;
   };
 
-  options.user = let
+  options.work.user = let
     user = import ../../users/work.nix;
   in
     with lib; {

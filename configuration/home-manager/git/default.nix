@@ -92,25 +92,24 @@
     inherit (lib) mkOption types;
 
     str = types.str;
-    user = import ../../users;
   in {
     github.user = mkOption {
-      default = user.githubUsername;
+      default = config.user.githubUsername;
       type = str;
     };
 
     gitlab.user = mkOption {
-      default = user.gitlabUsername;
+      default = config.user.gitlabUsername;
       type = str;
     };
 
     userEmail = mkOption {
-      default = user.email;
+      default = config.user.email;
       type = str;
     };
 
     userName = mkOption {
-      default = user.name;
+      default = config.user.name;
       type = str;
     };
   };
