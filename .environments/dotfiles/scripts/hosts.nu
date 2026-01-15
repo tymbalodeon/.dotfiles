@@ -1,5 +1,8 @@
 #!/usr/bin/env nu
 
+# FIXME: needs to be updated to accomated the hosts/${hostType}/${channel}
+# pattern
+
 def get-host-path [host_type: string] {
   $"configuration/hosts/($host_type)"  
 }
