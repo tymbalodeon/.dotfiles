@@ -1,4 +1,5 @@
 {
+  channel,
   config,
   home-manager,
   hostName,
@@ -30,7 +31,9 @@
       };
 
       useGlobalPkgs = true;
-      users.${cfg.username} = import ../hosts/${hostType}/${hostName}/home.nix;
+
+      users.${cfg.username} =
+        import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
     };
 
     i18n = let

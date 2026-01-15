@@ -1,7 +1,7 @@
 {
   imports = [
     ./hardware.nix
-    ../../../nixos
-    ../../../nixos/laptop
+    ../../../../nixos
+    ../../../../nixos/laptop
   ];
 }

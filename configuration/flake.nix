@@ -185,7 +185,7 @@
               pkgs-stable = nixpkgs-25_05.legacyPackages.${system};
             };
 
-            modules = [./hosts/${hostType}/${hostName}/home.nix];
+            modules = [./hosts/${hostType}/${channel}/${hostName}/home.nix];
             pkgs = nixpkgs.legacyPackages.${system};
           };
       })
@@ -208,13 +208,18 @@
         in
           nixpkgs.lib.nixosSystem {
             modules = [
-              ./hosts/${hostType}/${hostName}/configuration.nix
+              ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
               stylix.nixosModules.stylix
               wayland-pipewire-idle-inhibit.nixosModules.default
             ];
 
             specialArgs = {
-              inherit hostName hostType home-manager;
+              inherit
+                channel
+                hostName
+                hostType
+                home-manager
+                ;
 
               pkgs-stable = import nixpkgs-25_05 {
                 config.allowUnfree = true;
