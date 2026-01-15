@@ -29,6 +29,7 @@
     home-manager = {
       extraSpecialArgs = {
         inherit
+          channel
           hostName
           hostType
           pkgs-25_05
