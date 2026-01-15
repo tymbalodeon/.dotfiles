@@ -53,6 +53,7 @@
       core.excludesfile = "~/.gitignore_global";
       default.push = "upstream";
       diff.colorMoved = "default";
+      enable = true;
       github.user = cfg.github.user;
       gitlab.user = cfg.gitlab.user;
       init.defaultBranch = "trunk";
@@ -86,28 +87,33 @@
         }
         else {}
       )
-      // {git.enable = true;}
       // (
         if channel == "unstable"
         then {
-          git.settings = {
-            inherit
-              alias
-              core
-              default
-              diff
-              github
-              gitlab
-              init
-              merge
-              pull
-              push
-              user
-              ;
+          git = {
+            inherit enable;
+
+            settings = {
+              inherit
+                alias
+                core
+                default
+                diff
+                github
+                gitlab
+                init
+                merge
+                pull
+                push
+                user
+                ;
+            };
           };
         }
         else {
           git = {
+            inherit enable;
+
             extraConfig = {
               inherit
                 core
