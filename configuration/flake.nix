@@ -67,25 +67,20 @@
     getChannels = hostType:
       builtins.attrNames (builtins.readDir ./hosts/${hostType});
 
-    getHost = {
+    getChannelHosts = {
       channel,
       hostType,
     }:
-    # TODO: FIXME need to get all the hosts!
-      builtins.elemAt (
-        builtins.attrNames (
-          builtins.readDir ./hosts/${hostType}/${channel}
-        )
-      )
-      0;
+      builtins.attrValues (
+        builtins.mapAttrs
+        (hostName: _: {inherit channel hostName hostType;})
+        (builtins.readDir ./hosts/${hostType}/${channel})
+      );
 
     getHosts = hostType:
       nixpkgs-unstable.lib.lists.flatten (
-        map (channel: {
-          inherit channel hostType;
-
-          hostName = getHost {inherit channel hostType;};
-        })
+        map
+        (channel: getChannelHosts {inherit channel hostType;})
         (getChannels hostType)
       );
 

@@ -71,7 +71,7 @@
       };
     in
       (
-        if channel == "stable"
+        if channel == "unstable"
         then {
           delta = {
             enable = true;
@@ -88,7 +88,7 @@
       )
       // {git.enable = true;}
       // (
-        if channel == "stable"
+        if channel == "unstable"
         then {
           git.settings = {
             inherit
