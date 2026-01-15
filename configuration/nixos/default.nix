@@ -30,8 +30,6 @@
         inherit hostName hostType pkgs-stable;
       };
 
-      useGlobalPkgs = true;
-
       users.${cfg.username} =
         import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
     };
