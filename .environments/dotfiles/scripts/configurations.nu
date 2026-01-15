@@ -3,6 +3,7 @@
 use color.nu colorize
 use color.nu get-colorized-configuration-name
 use color.nu get-colors
+use ../../default/scripts/print.nu print-error
 
 export def get-current-system [] {
   let release_file = "/etc/os-release"
@@ -87,30 +88,11 @@ export def get-configuration-data [] {
 }
 
 export def get-built-host-name [] {
-  if (
-    try {
-      git config user.email err> /dev/null
-    } catch {
-      ""
-    }
-  ) == (
-    open users/work.nix
-    | lines
-    | find --regex "\\s+email ="
-    | first
-    | split row '"'
-    | get 1
-  ) {
-    "work"
-  } else {
-    if (is-nixos) {
-      cat /etc/hostname
-      | str trim
-    } else {
-      # FIXME: now need to use the HOST name and not the username. Is it
-      # possible to set the host name with nix-darwin?
-      whoami
-    }
+  try {
+    cat /etc/hostname
+    | str trim
+  } catch {
+    print-error "cannot determine hostname"
   }
 }
 
