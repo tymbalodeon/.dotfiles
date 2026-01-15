@@ -6,7 +6,8 @@
   hostType,
   lib,
   pkgs,
-  pkgs-stable,
+  pkgs-25_05,
+  pkgs-25_11,
   ...
 }: {
   config = let
@@ -27,7 +28,12 @@
 
     home-manager = {
       extraSpecialArgs = {
-        inherit hostName hostType pkgs-stable;
+        inherit
+          hostName
+          hostType
+          pkgs-25_05
+          pkgs-25_11
+          ;
       };
 
       users.${cfg.username} =

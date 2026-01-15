@@ -3,7 +3,7 @@
   hostType,
   lib,
   pkgs,
-  pkgs-stable,
+  pkgs-25_05,
   ...
 }: {
   config = {
@@ -45,7 +45,7 @@
 
       overlays = [
         (final: prev: {
-          readability-cli = pkgs-stable.readability-cli;
+          readability-cli = pkgs-25_05.readability-cli;
         })
       ];
     };

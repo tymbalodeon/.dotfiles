@@ -6,14 +6,14 @@
   hostType,
   lib,
   pkgs,
-  pkgs-stable,
+  pkgs-25_05,
   ...
 }: {
   config = let
     username = config.darwin.username;
   in {
     home-manager = {
-      extraSpecialArgs = {inherit hostType pkgs-stable;};
+      extraSpecialArgs = {inherit hostType pkgs-25_05;};
 
       users.${username} =
         import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
@@ -23,7 +23,7 @@
 
     nixpkgs.overlays = [
       (final: prev:
-        with pkgs-stable; {
+        with pkgs-25_05; {
           inherit
             ktty
             mpd

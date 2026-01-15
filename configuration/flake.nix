@@ -26,6 +26,7 @@
     };
 
     nixpkgs-25_05.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-25_11.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     rofi-theme = {
@@ -56,6 +57,7 @@
     nix-darwin-unstable,
     nixgl,
     nixpkgs-25_05,
+    nixpkgs-25_11,
     nixpkgs-unstable,
     stylix-25_05,
     stylix-unstable,
@@ -130,7 +132,6 @@
             (getInputs channel)
             home-manager
             nix-darwin
-            nixpkgs
             stylix
             ;
 
@@ -152,7 +153,7 @@
                 home-manager
                 ;
 
-              pkgs-stable = import nixpkgs {
+              pkgs-25_05 = import nixpkgs-25_05 {
                 inherit system;
 
                 config.allowUnfree = true;
@@ -182,7 +183,7 @@
             extraSpecialArgs = {
               inherit hostType home-manager-unstable nixgl;
 
-              pkgs-stable = nixpkgs-25_05.legacyPackages.${system};
+              pkgs-25_05 = nixpkgs-25_05.legacyPackages.${system};
             };
 
             modules = [./hosts/${hostType}/${channel}/${hostName}/home.nix];
@@ -221,7 +222,7 @@
                 home-manager
                 ;
 
-              pkgs-stable = import nixpkgs-25_05 {
+              pkgs-25_05 = import nixpkgs-25_11 {
                 config.allowUnfree = true;
                 system = "x86_64-linux";
               };
