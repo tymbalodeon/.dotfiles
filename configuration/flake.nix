@@ -71,6 +71,7 @@
       channel,
       hostType,
     }:
+    # TODO: FIXME need to get all the hosts!
       builtins.elemAt (
         builtins.attrNames (
           builtins.readDir ./hosts/${hostType}/${channel}
