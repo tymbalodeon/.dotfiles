@@ -1,4 +1,5 @@
 {
+  channel,
   config,
   lib,
   pkgs,
@@ -14,78 +15,119 @@
       siketyan-ghr
     ];
 
-    programs = {
-      delta = {
-        enable = true;
-        enableGitIntegration = true;
+    programs = let
+      alias = {
+        a = "add";
+        b = "branch";
+        ch = "checkout";
+        cl = "clone";
+        cm = "commit -m";
+        d = "diff";
+        ds = "diff --staged";
 
-        options = {
-          diff-so-fancy = true;
-          navigate = true;
-          syntax-theme = "base16";
-        };
+        l = let
+          commit = "%C(auto)%h%d%C(reset)";
+          time = "%C(dim)%ar%C(reset)";
+          message = "%C(bold)%s%C(reset)";
+          author = "%C(dim blue)(%an)%C(reset)";
+          format = "${commit} ${time} ${message} ${author}";
+        in "log --graph --pretty=format:'${format}'";
+
+        last = "log -1 HEAD --stat";
+        m = "merge";
+        pl = "pull";
+        p = "push";
+        rh = "reset --hard";
+        r = "restore";
+        rs = "restore --staged";
+        sh = "stash";
+        sl = "stash list";
+        sp = "stash pop";
+        st = "status";
+        sw = "switch";
+        tg = "tag";
+        tracked = "ls-tree --full-tree --name-only -r HEAD";
+        tr = "tracked";
       };
 
-      git = {
-        enable = true;
+      core.excludesfile = "~/.gitignore_global";
+      default.push = "upstream";
+      diff.colorMoved = "default";
+      github.user = cfg.github.user;
+      gitlab.user = cfg.gitlab.user;
+      init.defaultBranch = "trunk";
 
-        settings = {
-          alias = {
-            a = "add";
-            b = "branch";
-            ch = "checkout";
-            cl = "clone";
-            cm = "commit -m";
-            d = "diff";
-            ds = "diff --staged";
-
-            l = let
-              commit = "%C(auto)%h%d%C(reset)";
-              time = "%C(dim)%ar%C(reset)";
-              message = "%C(bold)%s%C(reset)";
-              author = "%C(dim blue)(%an)%C(reset)";
-              format = "${commit} ${time} ${message} ${author}";
-            in "log --graph --pretty=format:'${format}'";
-
-            last = "log -1 HEAD --stat";
-            m = "merge";
-            pl = "pull";
-            p = "push";
-            rh = "reset --hard";
-            r = "restore";
-            rs = "restore --staged";
-            sh = "stash";
-            sl = "stash list";
-            sp = "stash pop";
-            st = "status";
-            sw = "switch";
-            tg = "tag";
-            tracked = "ls-tree --full-tree --name-only -r HEAD";
-            tr = "tracked";
-          };
-
-          core.excludesfile = "~/.gitignore_global";
-          default.push = "upstream";
-          diff.colorMoved = "default";
-          github.user = cfg.github.user;
-          gitlab.user = cfg.gitlab.user;
-          init.defaultBranch = "trunk";
-
-          merge = {
-            conflictstyle = "diff3";
-            ff = "only";
-          };
-
-          pull.rebase = false;
-          push.default = "current";
-
-          user = {
-            email = cfg.userEmail;
-            name = cfg.userName;
-          };
-        };
+      merge = {
+        conflictstyle = "diff3";
+        ff = "only";
       };
-    };
+
+      pull.rebase = false;
+      push.default = "current";
+
+      user = {
+        email = cfg.userEmail;
+        name = cfg.userName;
+      };
+    in
+      (
+        if channel == "stable"
+        then {
+          delta = {
+            enable = true;
+            enableGitIntegration = true;
+
+            options = {
+              diff-so-fancy = true;
+              navigate = true;
+              syntax-theme = "base16";
+            };
+          };
+        }
+        else {}
+      )
+      // {git.enable = true;}
+      // (
+        if channel == "stable"
+        then {
+          git.settings = {
+            inherit
+              alias
+              core
+              default
+              diff
+              github
+              gitlab
+              init
+              merge
+              pull
+              push
+              user
+              ;
+          };
+        }
+        else {
+          git = {
+            extraConfig = {
+              inherit
+                core
+                default
+                diff
+                github
+                gitlab
+                init
+                merge
+                pull
+                push
+                ;
+            };
+
+            aliases = alias;
+            userEmail = user.email;
+            userName = user.name;
+          };
+        }
+      );
   };
 
   options.git = let

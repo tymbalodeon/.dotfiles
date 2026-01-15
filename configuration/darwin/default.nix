@@ -13,7 +13,7 @@
     username = config.darwin.username;
   in {
     home-manager = {
-      extraSpecialArgs = {inherit hostType pkgs-25_05;};
+      extraSpecialArgs = {inherit channel hostType pkgs-25_05;};
 
       users.${username} =
         import ../hosts/${hostType}/${channel}/${hostName}/home.nix;

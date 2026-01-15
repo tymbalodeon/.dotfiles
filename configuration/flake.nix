@@ -181,7 +181,12 @@
         in
           home-manager.lib.homeManagerConfiguration {
             extraSpecialArgs = {
-              inherit hostType home-manager-unstable nixgl;
+              inherit
+                channel
+                hostType
+                home-manager-unstable
+                nixgl
+                ;
 
               pkgs-25_05 = nixpkgs-25_05.legacyPackages.${system};
             };
