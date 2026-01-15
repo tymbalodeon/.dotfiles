@@ -266,10 +266,10 @@
     };
   };
 
-  options.waybar = with lib.types; {
-    laptop = lib.mkOption {
-      default = false;
-      type = bool;
+  options.waybar = with lib; {
+    laptop = mkOption {
+      default = config.laptop;
+      type = types.bool;
     };
   };
 }

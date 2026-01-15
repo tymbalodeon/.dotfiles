@@ -90,44 +90,51 @@
       else []
     );
 
-  options.user = let
+  options = let
     inherit (lib) mkOption types;
-
-    str = types.str;
-    user = import ../users;
   in {
-    email = mkOption {
-      default = user.email;
-      type = str;
+    laptop = mkOption {
+      default = false;
+      type = types.bool;
     };
 
-    githubUsername = mkOption {
-      default = user.githubUsername;
-      type = str;
-    };
+    user = let
+      str = types.str;
+      user = import ../users;
+    in {
+      email = mkOption {
+        default = user.email;
+        type = str;
+      };
 
-    gitlabUsername = mkOption {
-      default = user.gitlabUsername;
-      type = str;
-    };
+      githubUsername = mkOption {
+        default = user.githubUsername;
+        type = str;
+      };
 
-    name = mkOption {
-      default = user.name;
-      type = str;
-    };
+      gitlabUsername = mkOption {
+        default = user.gitlabUsername;
+        type = str;
+      };
 
-    nbRemote = mkOption {
-      default =
-        if builtins.hasAttr "nbRemote" user
-        then user.nbRemote
-        else "git@github.com:${user.githubUsername}/notes.git";
+      name = mkOption {
+        default = user.name;
+        type = str;
+      };
 
-      type = str;
-    };
+      nbRemote = mkOption {
+        default =
+          if builtins.hasAttr "nbRemote" user
+          then user.nbRemote
+          else "git@github.com:${user.githubUsername}/notes.git";
 
-    username = mkOption {
-      default = user.username;
-      type = str;
+        type = str;
+      };
+
+      username = mkOption {
+        default = user.username;
+        type = str;
+      };
     };
   };
 }

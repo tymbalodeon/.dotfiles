@@ -260,7 +260,7 @@ in {
       };
 
       laptop = mkOption {
-        default = false;
+        default = config.laptop;
         type = bool;
       };
     };
