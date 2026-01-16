@@ -1,4 +1,4 @@
-# View, edit, and upload files to/from remote storage
+#iiiii View, edit, and upload files to/from remote storage
 def files [] {
   help files
 }
@@ -7,33 +7,48 @@ def print-error [text: string] {
   error make --unspanned {msg: $"(ansi red_bold)error(ansi reset): ($text)"}
 }
 
+def validate-remote [remote?: string] {
+  if ($remote | is-empty) or (
+    $remote in (files list remotes | lines)
+  ) {
+    return
+  }
+
+  print-error $"remote \"($remote)\" does not exist"
+}
+
+def select-remote [] {
+  files list remotes
+  | fzf
+}
+
 def get-remote [remote?: string] {
-  let valid_remotes = (files list remotes)
-
-  if ($remote | is-empty) {
-    $valid_remotes
-    | fzf
+  let remote = if ($remote | is-empty) {
+    select-remote
   } else {
-    if ($remote in $valid_remotes) {
+    if ":" in $remote {
       $remote
+      | split row :
+      | first
     } else {
-      if ":" in $remote {
-        let remote = ($remote | split row : | first) 
-
-        if ($remote in $valid_remotes) {
-          return $remote
-        }
-      }
-
-      print-error $"remote \"($remote)\" does not exist"
+      $remote
     }
   }
+
+  validate-remote $remote
+
+  $remote
 }
 
 def get-path [interactive: bool remote?: string path?: string] {
   if $interactive {
-    rclone lsf $"($remote):($path)"
-    | fzf
+    let selected_path = (
+      rclone lsf $"($remote):($path)"
+      | fzf
+    )
+
+    $path
+    | path join $selected_path
   } else {
     if ($remote | is-not-empty) and ":" in $remote {
       let parts = ($remote | split row :)
@@ -79,18 +94,25 @@ def get-local-path [remote: string path: string] {
 def "files download" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
+  --force (-f) # Re-download file even if it already exists locally
   --interactive (-i) # Interactively select the file or directory to download
   --linked # (Dropbox only) Download the file using the `maestral` service
 ] {
-  let remote = (get-remote $remote)
+  let parsed_remote = (get-remote $remote)
   let path = (get-path $interactive $remote $path)
 
-  if $linked and $remote == dropbox {
+  if $linked and $parsed_remote == dropbox {
 
     maestral excluded remove $path
   } else {
-    let remote_path = (get-remote-path $interactive $remote $path)
-    let local_path = (get-local-path $remote $path)
+    let remote_path = (get-remote-path $interactive $parsed_remote $path)
+    let local_path = (get-local-path $parsed_remote $path)
+
+    if not $force and ($local_path | path exists) {
+      print --stderr $"($local_path) already exists. Use `--force` to download again."
+
+      return
+    }
 
     let parent = (
       if (
@@ -105,7 +127,13 @@ def "files download" [
       }
     )
 
-    rclone sync $remote_path $parent
+    let result = (rclone sync $remote_path $parent | complete) 
+
+    if $result.exit_code == 0 {
+      print $"Downloaded ($local_path)"
+    } else {
+      print-error $"could not find remote file \"($remote_path)\""
+    }
   }
 }
 
@@ -140,14 +168,35 @@ alias "files ls" = files list
 # List locally downloaded files
 def "files list local" [
   remote?: string # The name of the remote service
-  path?: string # A path relative to <remote>:
+  search?: string # Search pattern
 ] {
-  # TODO: add support for remote and path
-  
   let files_directory = (get-files-directory)
+  mut search_path = $files_directory
+
+  for item in [$remote $search] {
+    if ($item | is-not-empty) {
+      $search_path = (
+        $search_path
+        | path join $item
+      )
+    } 
+  }
+
+  let search_path = if not ($search_path | path exists) {
+    $search_path
+    | path dirname
+  } else {
+    $search_path
+  }
+
+  let search = if ($search | is-empty) {
+    ""
+  } else {
+    $search
+  }
 
   if ($files_directory | path exists) {
-    fd --type file "" $files_directory
+    fd --type file $search $search_path
   }
 }
 
@@ -162,6 +211,87 @@ def "files list remotes" [] {
 }
 
 alias "files ls remotes" = files list remotes
+
+def confirm-remove [type?: string] {
+  let type = if ($type | is-empty) {
+    " "
+  } else {
+    $" ($type) "
+  }
+
+  let prompt = $"Are you sure you want to clear all downloaded($type)files? "
+
+  (input $prompt | str downcase) in [y yes]
+}
+
+# Remove local files
+def "files remove" [
+  remote?: string # The name of the remote service
+  path?: string # A path relative to <remote>:
+  --interactive (-i) # Interactively select the subdirectory whose contents to list
+] {
+  # TODO: add `--force``
+  # TODO: remove warning when path is empty ("files remove dropbox", but there
+# is nothing in there)
+# 
+  validate-remote $remote
+
+  if not $interactive and ($path | is-empty) and not (
+    confirm-remove $remote
+  ) {
+    return
+  }
+
+  let remote = if $interactive {
+    select-remote
+  } else {
+    $remote
+  }
+
+  let files_directory = (get-files-directory)
+
+  let parsed_path = if ($remote | is-empty) {
+    $files_directory
+  } else if ($path | is-empty) {
+    $files_directory
+    | path join $remote
+  } else {
+    [$files_directory $remote $path]
+    | path join
+  }
+
+  let path = if not ($parsed_path | path exists) {
+    print --stderr $"(
+      ansi yellow_bold
+    )warning(ansi reset)(ansi default_bold):(
+      ansi reset
+    ) no files or directories matching \"($path)\" found"
+
+    let potential_files = (
+      fd --type file ($parsed_path | path basename) ($parsed_path | path dirname)
+      | lines
+    )
+
+    let paths = if ($potential_files | length) == 0 {
+      return 
+    } else if ($potential_files | length) == 1 {
+      $potential_files
+    } else {
+      $potential_files
+      | to text
+      | fzf --multi
+    }
+
+    print --stderr "Did you mean one of the following?"
+    print --stderr ($paths | each {$"  - ($in)"} | to text --no-newline)
+
+    return
+  } else {
+    $parsed_path
+  }
+
+  rm --force --recursive $path
+}
 
 # Setup remotes
 def "files setup" [] {
