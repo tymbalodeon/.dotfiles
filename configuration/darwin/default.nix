@@ -14,7 +14,7 @@
   in {
     home-manager = {
       extraSpecialArgs = {inherit channel hostType pkgs-25_05;};
-      users.${cfg.username} = cfg.home;
+      users.${cfg.username} = import cfg.homeFile;
     };
 
     nix.enable = false;
@@ -77,9 +77,9 @@
     user = import ../users;
   in
     with types; {
-      home = mkOption {
-        default = import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
-        type = attrs;
+      homeFile = mkOption {
+        default = ../hosts/${hostType}/${channel}/${hostName}/home.nix;
+        type = path;
       };
 
       username = mkOption {

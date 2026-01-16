@@ -37,7 +37,7 @@
           ;
       };
 
-      users.${cfg.username} = cfg.home;
+      users.${cfg.username} = import cfg.homeFile;
     };
 
     i18n = let
@@ -144,9 +144,9 @@
     str = types.str;
     user = import ../users;
   in {
-    home = mkOption {
-      default = import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
-      type = types.attrs;
+    homeFile = mkOption {
+      default = ../hosts/${hostType}/${channel}/${hostName}/home.nix;
+      type = types.path;
     };
 
     name = mkOption {
