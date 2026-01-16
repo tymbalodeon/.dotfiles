@@ -37,8 +37,7 @@
           ;
       };
 
-      users.${cfg.username} =
-        import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
+      users.${cfg.username} = cfg.home;
     };
 
     i18n = let
@@ -145,6 +144,11 @@
     str = types.str;
     user = import ../users;
   in {
+    home = mkOption {
+      default = import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
+      type = types.attrs;
+    };
+
     name = mkOption {
       default = user.name;
       type = str;

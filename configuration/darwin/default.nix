@@ -10,13 +10,11 @@
   ...
 }: {
   config = let
-    username = config.darwin.username;
+    cfg = config.darwin;
   in {
     home-manager = {
       extraSpecialArgs = {inherit channel hostType pkgs-25_05;};
-
-      users.${username} =
-        import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
+      users.${cfg.username} = cfg.home;
     };
 
     nix.enable = false;
@@ -64,21 +62,29 @@
         remapCapsLockToEscape = true;
       };
 
-      primaryUser = username;
+      primaryUser = cfg.username;
       stateVersion = 6;
     };
 
-    users.users.${username}.home = /Users/${username};
+    users.users.${cfg.username}.home = /Users/${cfg.username};
   };
 
   imports = [home-manager.darwinModules.home-manager];
 
-  options.darwin.username = let
+  options.darwin = let
+    inherit (lib) mkOption types;
+
     user = import ../users;
   in
-    with lib;
-      mkOption {
-        default = user.username;
-        type = types.str;
+    with types; {
+      home = mkOption {
+        default = import ../hosts/${hostType}/${channel}/${hostName}/home.nix;
+        type = attrs;
       };
+
+      username = mkOption {
+        default = user.username;
+        type = str;
+      };
+    };
 }
