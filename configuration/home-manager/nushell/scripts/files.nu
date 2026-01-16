@@ -8,7 +8,7 @@ def print-error [text: string] {
 }
 
 def get-remote [remote?: string] {
-  let valid_remotes = (files list-remotes)
+  let valid_remotes = (files list remotes)
 
   if ($remote | is-empty) {
     $valid_remotes
@@ -17,25 +17,46 @@ def get-remote [remote?: string] {
     if ($remote in $valid_remotes) {
       $remote
     } else {
+      if ":" in $remote {
+        let remote = ($remote | split row : | first) 
+
+        if ($remote in $valid_remotes) {
+          return $remote
+        }
+      }
+
       print-error $"remote \"($remote)\" does not exist"
     }
   }
 }
 
-def get-path [interactive: bool remote: string path?: string] {
+def get-path [interactive: bool remote?: string path?: string] {
   if $interactive {
     rclone lsf $"($remote):($path)"
     | fzf
   } else {
-    $path
+    if ($remote | is-not-empty) and ":" in $remote {
+      let parts = ($remote | split row :)
+
+      $parts
+      | drop nth 0
+      | str join :
+    } else {
+      $path
+    }
   }
 }
 
 def get-remote-path [interactive: bool remote?: string path?: string] {
-  let remote = (get-remote $remote)
-  let path = (get-path $interactive $remote $path)
+  let parsed_remote = (get-remote $remote)
 
-  $"($remote):($path)"
+  let remote = if $interactive {
+    $parsed_remote
+  } else {
+    $remote
+  }
+
+  $"($parsed_remote):(get-path $interactive $remote $path)"
 }
 
 def get-files-directory [] {
@@ -111,21 +132,36 @@ def "files list" [
 
   rclone lsf $path
   | lines
-  | each {prepend $path | str join /}
   | to text --no-newline
 }
 
 alias "files ls" = files list
 
+# List locally downloaded files
+def "files list local" [
+  remote?: string # The name of the remote service
+  path?: string # A path relative to <remote>:
+] {
+  # TODO: add support for remote and path
+  
+  let files_directory = (get-files-directory)
+
+  if ($files_directory | path exists) {
+    fd --type file "" $files_directory
+  }
+}
+
+alias "files ls local" = files list local
+
 # List available remotes
-def "files list-remotes" [] {
+def "files list remotes" [] {
   rclone listremotes err> /dev/null
   | lines
   | str replace --regex ":$" ""
   | to text
 }
 
-alias "files ls-remotes" = files list-remotes
+alias "files ls remotes" = files list remotes
 
 # Setup remotes
 def "files setup" [] {
