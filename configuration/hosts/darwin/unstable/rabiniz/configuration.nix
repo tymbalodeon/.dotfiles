@@ -1,3 +1,3 @@
 {
-  imports = [../../../darwin];
+  imports = [../../../../darwin];
 }

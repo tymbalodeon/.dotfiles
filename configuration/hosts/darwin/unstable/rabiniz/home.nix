@@ -1,6 +1,6 @@
 {
   imports = [
-    ../../../home-manager
-    ../../../home-manager/users/work.nix
+    ../../../../home-manager
+    ../../../../home-manager/users/work.nix
   ];
 }
