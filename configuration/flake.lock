@@ -342,11 +342,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768434960,
-        "narHash": "sha256-cJbFn17oyg6qAraLr+NVeNJrXsrzJdrudkzI4H2iTcg=",
+        "lastModified": 1768530555,
+        "narHash": "sha256-EBXKDho4t1YSgodAL6C8M3UTm8MGMZNQ9rQnceR5+6c=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b4d88c9ac42ae1a745283f6547701da43b6e9f9b",
+        "rev": "d21bee5abf9fb4a42b2fa7728bf671f8bb246ba6",
         "type": "github"
       },
       "original": {
@@ -531,22 +531,6 @@
         "type": "github"
       }
     },
-    "rofi-theme": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1752883501,
-        "narHash": "sha256-81eeFjwM/haPjIEWkZPp1JSDwhWbWDAuKtWiCg7P9Q0=",
-        "owner": "catppuccin",
-        "repo": "rofi",
-        "rev": "71fb15577ccb091df2f4fc1f65710edbc61b5a53",
-        "type": "github"
-      },
-      "original": {
-        "owner": "catppuccin",
-        "repo": "rofi",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "home-manager-25_05": "home-manager-25_05",
@@ -557,7 +541,6 @@
         "nixpkgs-25_05": "nixpkgs-25_05",
         "nixpkgs-25_11": "nixpkgs-25_11",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "rofi-theme": "rofi-theme",
         "stylix-25_05": "stylix-25_05",
         "stylix-unstable": "stylix-unstable",
         "wayland-pipewire-idle-inhibit": "wayland-pipewire-idle-inhibit"

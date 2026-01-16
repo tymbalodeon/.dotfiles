@@ -29,11 +29,6 @@
     nixpkgs-25_11.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    rofi-theme = {
-      flake = false;
-      url = "github:catppuccin/rofi";
-    };
-
     stylix-25_05 = {
       inputs.nixpkgs.follows = "nixpkgs-25_05";
       url = "github:nix-community/stylix/release-25.05";
