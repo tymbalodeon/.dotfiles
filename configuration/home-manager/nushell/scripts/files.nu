@@ -228,9 +228,9 @@ def confirm-remove [type?: string] {
 def "files remove" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
+  --force (-f) # Remove without confirmation
   --interactive (-i) # Interactively select the subdirectory whose contents to list
 ] {
-  # TODO: add `--force``
   # TODO: remove warning when path is empty ("files remove dropbox", but there
 # is nothing in there)
 # 
