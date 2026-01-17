@@ -173,7 +173,7 @@ def "storage list" [
   | to text --no-newline
 }
 
-alias "storage ls" = stroage list
+alias "storage ls" = storage list
 
 # List locally downloaded files
 def "storage list local" [
