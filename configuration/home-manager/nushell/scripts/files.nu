@@ -90,6 +90,31 @@ def get-local-path [remote: string path: string] {
   | path join $path
 }
 
+# Browse storage
+def "storage browse" [
+  remote?: string # The name of the remote service
+  --web # Browse remote in the browser instead of the terminal
+] {
+  validate-remote $remote
+
+  let remote = if ($remote | is-empty) {
+    select-remote
+  } else {
+    $remote
+  }
+
+  if $web {
+    let host = match $remote {
+      "dropbox" => "dropbox.com"
+      "google" => "drive.google.com"
+    }
+
+    start $"https://($host)"
+  } else {
+    rclone ncdu $"($remote):"
+  }
+}
+
 # Download files from remote
 def "storage download" [
   remote?: string # The name of the remote service
