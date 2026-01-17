@@ -1,6 +1,6 @@
 # View, edit, and upload files to/from remote storage
-def files [] {
-  help files
+def storage [] {
+  help storage
 }
 
 def print-error [text: string] {
@@ -9,7 +9,7 @@ def print-error [text: string] {
 
 def validate-remote [remote?: string] {
   if ($remote | is-empty) or (
-    $remote in (files list remotes | lines)
+    $remote in (storage list remotes | lines)
   ) {
     return
   }
@@ -18,7 +18,7 @@ def validate-remote [remote?: string] {
 }
 
 def select-remote [] {
-  files list remotes
+  storage list remotes
   | fzf
 }
 
@@ -74,9 +74,9 @@ def get-remote-path [interactive: bool remote?: string path?: string] {
   $"($parsed_remote):(get-path $interactive $remote $path)"
 }
 
-def get-files-directory [] {
+def get-storage-directory [] {
   $env.HOME
-  | path join files/
+  | path join storage/
 }
 
 def get-local-path [remote: string path: string] {
@@ -86,12 +86,12 @@ def get-local-path [remote: string path: string] {
     $"($remote)/($path)"
   }
 
-  get-files-directory
+  get-storage-directory
   | path join $path
 }
 
 # Download files from remote
-def "files download" [
+def "storage download" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
   --force (-f) # Re-download file even if it already exists locally
@@ -138,30 +138,30 @@ def "files download" [
 }
 
 # Download a file, open it in $EDITOR, and upload it after
-def "files edit" [
+def "storage edit" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
 ] {
   let remote = (get-remote $remote)
   let path = (get-path false $path)
 
-  files download $remote $path
+  storage download $remote $path
   ^$env.EDITOR (get-local-path $remote $path)
-  files upload $remote $path
+  storage upload $remote $path
 }
 
 # TODO
-# def "files find" [
+# def "storage find" [
 #   pattern: string
 # ] {
-#   files list dropbox
+#   storage list dropbox
 #   | lines
 #   | where {$in | str contains --ignore-case $pattern}
 #   | to text --no-newline
 # }
 
-# List files on remote
-def "files list" [
+# List files in remote
+def "storage list" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
   --interactive (-i) # Interactively select the subdirectory whose contents to list
@@ -173,15 +173,15 @@ def "files list" [
   | to text --no-newline
 }
 
-alias "files ls" = files list
+alias "storage ls" = stroage list
 
 # List locally downloaded files
-def "files list local" [
+def "storage list local" [
   remote?: string # The name of the remote service
   search?: string # Search pattern
 ] {
-  let files_directory = (get-files-directory)
-  mut search_path = $files_directory
+  let storage_directory = (get-storage-directory)
+  mut search_path = $storage_directory
 
   for item in [$remote $search] {
     if ($item | is-not-empty) {
@@ -205,22 +205,22 @@ def "files list local" [
     $search
   }
 
-  if ($files_directory | path exists) {
+  if ($storage_directory | path exists) {
     fd --type file $search $search_path
   }
 }
 
-alias "files ls local" = files list local
+alias "storage ls local" = storage list local
 
 # List available remotes
-def "files list remotes" [] {
+def "storage list remotes" [] {
   rclone listremotes err> /dev/null
   | lines
   | str replace --regex ":$" ""
   | to text
 }
 
-alias "files ls remotes" = files list remotes
+alias "storage ls remotes" = storage list remotes
 
 def confirm-remove [type?: string] {
   let type = if ($type | is-empty) {
@@ -235,7 +235,7 @@ def confirm-remove [type?: string] {
 }
 
 # Remove local files
-def "files remove" [
+def "storage remove" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
   --force (-f) # Remove without confirmation
@@ -255,20 +255,20 @@ def "files remove" [
     $remote
   }
 
-  let files_directory = (get-files-directory)
+  let storage_directory = (get-storage-directory)
 
   let paths = if $interactive {
-    fd --type file "" ($files_directory | path join $remote)
+    fd --type file "" ($storage_directory | path join $remote)
     | fzf --multi
     | lines
   } else {
     let parsed_path = if ($remote | is-empty) {
-      $files_directory
+      $storage_directory
     } else if ($path | is-empty) {
-      $files_directory
+      $storage_directory
       | path join $remote
     } else {
-      [$files_directory $remote $path]
+      [$storage_directory $remote $path]
       | path join
     }
 
@@ -311,12 +311,12 @@ def "files remove" [
 }
 
 # Setup remotes
-def "files setup" [] {
+def "storage setup" [] {
   rclone config
 }
 
 # Upload a file to remote
-def "files upload" [
+def "storage upload" [
   local_path?: string # The local file to upload
   remote_path?: string # The remote path to upload to
   --remote: string # The name of the remote service
@@ -330,11 +330,11 @@ def "files upload" [
   let remote = if ($remote | is-not-empty) {
     $remote
   } else {
-    let files_directory = (get-files-directory)
+    let storage_directory = (get-storage-directory)
 
-    let remote = if ($local_path | str starts-with $files_directory) {
+    let remote = if ($local_path | str starts-with $storage_directory) {
       $local_path
-      | split row $files_directory
+      | split row $storage_directory
       | last
       | split row /
       | first
@@ -349,7 +349,7 @@ def "files upload" [
     $remote_path
   } else {
     $local_path
-    | str replace $"(get-files-directory)($remote)/" ""
+    | str replace $"(get-storage-directory)($remote)/" ""
   }
 
   # TODO: handle remote path being dir vs file
