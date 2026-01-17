@@ -1,4 +1,4 @@
-#iiiii View, edit, and upload files to/from remote storage
+# View, edit, and upload files to/from remote storage
 def files [] {
   help files
 }
@@ -150,6 +150,16 @@ def "files edit" [
   files upload $remote $path
 }
 
+# TODO
+# def "files find" [
+#   pattern: string
+# ] {
+#   files list dropbox
+#   | lines
+#   | where {$in | str contains --ignore-case $pattern}
+#   | to text --no-newline
+# }
+
 # List files on remote
 def "files list" [
   remote?: string # The name of the remote service
@@ -231,18 +241,15 @@ def "files remove" [
   --force (-f) # Remove without confirmation
   --interactive (-i) # Interactively select the subdirectory whose contents to list
 ] {
-  # TODO: remove warning when path is empty ("files remove dropbox", but there
-# is nothing in there)
-# 
   validate-remote $remote
 
-  if not $interactive and ($path | is-empty) and not (
+  if not $force and not $interactive and ($path | is-empty) and not (
     confirm-remove $remote
   ) {
     return
   }
 
-  let remote = if $interactive {
+  let remote = if $interactive and ($remote | is-empty) {
     select-remote
   } else {
     $remote
@@ -250,47 +257,57 @@ def "files remove" [
 
   let files_directory = (get-files-directory)
 
-  let parsed_path = if ($remote | is-empty) {
-    $files_directory
-  } else if ($path | is-empty) {
-    $files_directory
-    | path join $remote
+  let paths = if $interactive {
+    fd --type file "" ($files_directory | path join $remote)
+    | fzf --multi
+    | lines
   } else {
-    [$files_directory $remote $path]
-    | path join
-  }
-
-  let path = if not ($parsed_path | path exists) {
-    print --stderr $"(
-      ansi yellow_bold
-    )warning(ansi reset)(ansi default_bold):(
-      ansi reset
-    ) no files or directories matching \"($path)\" found"
-
-    let potential_files = (
-      fd --type file ($parsed_path | path basename) ($parsed_path | path dirname)
-      | lines
-    )
-
-    let paths = if ($potential_files | length) == 0 {
-      return 
-    } else if ($potential_files | length) == 1 {
-      $potential_files
+    let parsed_path = if ($remote | is-empty) {
+      $files_directory
+    } else if ($path | is-empty) {
+      $files_directory
+      | path join $remote
     } else {
-      $potential_files
-      | to text
-      | fzf --multi
+      [$files_directory $remote $path]
+      | path join
     }
 
-    print --stderr "Did you mean one of the following?"
-    print --stderr ($paths | each {$"  - ($in)"} | to text --no-newline)
+    let path = if ($path | is-not-empty) and not ($parsed_path | path exists) {
+      print --stderr $"(
+        ansi yellow_bold
+      )warning(ansi reset)(ansi default_bold):(
+        ansi reset
+      ) no files or directories matching \"($path)\" found in remote \"($remote)\""
 
-    return
-  } else {
-    $parsed_path
+      let potential_files = try {
+        fd --type file ($parsed_path | path basename) ($parsed_path | path dirname) err> /dev/null
+        | lines
+      } catch {
+        return
+      }
+
+      let paths = if ($potential_files | length) == 0 {
+        return 
+      } else if ($potential_files | length) == 1 {
+        $potential_files
+      } else {
+        $potential_files
+        | to text
+        | fzf --multi
+      }
+
+      print --stderr "Did you mean one of the following?"
+      print --stderr ($paths | each {$"  - ($in)"} | to text --no-newline)
+
+      return
+    } else {
+      [$parsed_path]
+    }
   }
 
-  rm --force --recursive $path
+  for path in $paths {
+    rm --force --recursive $path
+  }
 }
 
 # Setup remotes
