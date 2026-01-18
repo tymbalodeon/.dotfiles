@@ -85,7 +85,10 @@
       };
   };
 
-  imports = [../jujutsu];
+  imports = [
+    ../jujutsu
+    ../yazi
+  ];
 
   options.nushell = with lib; {
     configDirectory = mkOption {
