@@ -90,7 +90,7 @@ def get-local-path [remote: string path: string] {
   | path join $path
 }
 
-# Browse storage
+# Browse remotes
 def "storage browse" [
   remote?: string # The name of the remote service
   --web # Browse remote in the browser instead of the terminal
@@ -113,6 +113,22 @@ def "storage browse" [
   } else {
     rclone ncdu $"($remote):"
   }
+}
+
+# Browse local files
+def "storage browse local" [
+  remote?: string # The name of the remote service
+] {
+  let path = (get-storage-directory )
+
+  let path = if ($remote | is-empty) {
+    $path
+  } else {
+    $path
+    | path join $remote
+  }
+
+  yazi $path
 }
 
 # Download files from remote
@@ -185,7 +201,7 @@ def "storage edit" [
 #   | to text --no-newline
 # }
 
-# List files in remote
+# List remote files
 def "storage list" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
