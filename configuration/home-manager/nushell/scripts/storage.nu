@@ -119,7 +119,7 @@ def "storage browse" [
 def "storage browse local" [
   remote?: string # The name of the remote service
 ] {
-  let path = (get-storage-directory )
+  let path = (get-storage-directory)
 
   let path = if ($remote | is-empty) {
     $path
@@ -128,7 +128,9 @@ def "storage browse local" [
     | path join $remote
   }
 
-  yazi $path
+  if ($path | path exists) {
+    yazi $path
+  }
 }
 
 # Download files from remote
