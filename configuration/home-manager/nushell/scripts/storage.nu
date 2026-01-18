@@ -115,18 +115,22 @@ def "storage browse" [
   }
 }
 
-# TODO: handle browsing the `maestral` managed folder
 # Browse local files
 def "storage browse local" [
   remote?: string # The name of the remote service
+  --linked # (Dropbox only) Browse the `maestral` managed folder
 ] {
-  let path = (get-storage-directory)
-
-  let path = if ($remote | is-empty) {
-    $path
+  let path = if $linked {
+    maestral config get path
   } else {
-    $path
-    | path join $remote
+    let path = (get-storage-directory)
+
+    let path = if ($remote | is-empty) {
+      $path
+    } else {
+      $path
+      | path join $remote
+    }
   }
 
   if ($path | path exists) {
