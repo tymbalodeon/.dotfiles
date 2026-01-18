@@ -165,7 +165,11 @@ def "storage download" [
     let local_path = (get-local-path $parsed_remote $path)
 
     if not $force and ($local_path | path exists) {
-      print --stderr $"($local_path) already exists. Use `--force` to download again."
+      (
+        print
+          --stderr
+          $"($local_path) already exists. Use `--force` to download again."
+      )
 
       return
     }
@@ -370,10 +374,18 @@ def "storage remove" [
         ansi yellow_bold
       )warning(ansi reset)(ansi default_bold):(
         ansi reset
-      ) no files or directories matching \"($path)\" found in remote \"($remote)\""
+      ) no files or directories matching \"(
+        $path
+      )\" found in remote \"($remote)\""
 
       let potential_files = try {
-        fd --type file ($parsed_path | path basename) ($parsed_path | path dirname) err> /dev/null
+        (
+          fd
+            --type file
+            ($parsed_path | path basename)
+            ($parsed_path | path dirname)
+            err> /dev/null
+        )
         | lines
       } catch {
         return
