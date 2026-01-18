@@ -4,7 +4,11 @@
   ...
 }: {
   config = {
-    home.packages = [pkgs.fontconfig];
+    home.packages = with pkgs; [
+      fontconfig
+      # TODO: only include on NixOS
+      maestral
+    ];
 
     programs.nushell =
       {
@@ -86,7 +90,10 @@
   };
 
   imports = [
+    ../fzf
     ../jujutsu
+    # TODO: only include on NixOS
+    ../rclone
     ../yazi
   ];
 

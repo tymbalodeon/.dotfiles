@@ -201,6 +201,17 @@ def "storage edit" [
 #   | to text --no-newline
 # }
 
+# Show remote info
+def "storage info" [
+  remote: string # The name of the remote service
+] {
+  # TODO: allow passing both `dropbox` and `dropbox:` and automatically
+  # strip/add the colon as necessary (re-work validate-remote to handle this?)
+  validate-remote $remote
+
+  rclone about $"($remote):"
+}
+
 # List remote files
 def "storage list" [
   remote?: string # The name of the remote service
