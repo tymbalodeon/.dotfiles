@@ -74,9 +74,13 @@ def get-remote-path [interactive: bool remote?: string path?: string] {
   $"($parsed_remote):(get-path $interactive $remote $path)"
 }
 
-def get-storage-directory [] {
-  $env.HOME
-  | path join storage/
+def get-storage-directory [--linked] {
+  if $linked {
+    maestral config get path
+  } else {
+    $env.HOME
+    | path join storage/
+  }
 }
 
 def get-local-path [remote: string path: string] {
@@ -120,8 +124,12 @@ def "storage browse local" [
   remote?: string # The name of the remote service
   --linked # (Dropbox only) Browse the `maestral` managed folder
 ] {
+  if $linked and ($remote != dropbox) {
+    return
+  }
+
   let path = if $linked {
-    maestral config get path
+    get-storage-directory --linked
   } else {
     let path = (get-storage-directory)
 
@@ -293,13 +301,19 @@ def confirm-remove [type?: string] {
   (input $prompt | str downcase) in [y yes]
 }
 
+def remove-linked-file [path: string] {
+  maestral excluded add (
+    $path
+    | str replace $"(get-storage-directory --linked)/" ""
+  )
+}
+
 # Remove local files
 def "storage remove" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
   --force (-f) # Remove without confirmation
   --interactive (-i) # Interactively select the subdirectory whose contents to list
-  # TODO: implement this
   --linked # (Dropbox only) Remove the file from the `maestral` managed folder
 ] {
   validate-remote $remote
@@ -311,12 +325,20 @@ def "storage remove" [
   }
 
   let remote = if $interactive and ($remote | is-empty) {
-    select-remote
+    if $linked {
+      "dropbox"
+    } else {
+      select-remote
+    }
   } else {
     $remote
   }
 
-  let storage_directory = (get-storage-directory)
+  let storage_directory = if $linked {
+    get-storage-directory --linked
+  } else {
+    get-storage-directory
+  }
 
   let paths = if $interactive {
     fd --type file "" ($storage_directory | path join $remote)
@@ -326,14 +348,24 @@ def "storage remove" [
     let parsed_path = if ($remote | is-empty) {
       $storage_directory
     } else if ($path | is-empty) {
-      $storage_directory
-      | path join $remote
+      if $linked {
+        $storage_directory
+      } else {
+        $storage_directory
+        | path join $remote
+      }
     } else {
-      [$storage_directory $remote $path]
+      let path_parts = if $linked {
+        [$storage_directory $path]
+      } else {
+        [$storage_directory $remote $path]
+      }
+
+      $path_parts
       | path join
     }
 
-    let path = if ($path | is-not-empty) and not ($parsed_path | path exists) {
+    if ($path | is-not-empty) and not ($parsed_path | path exists) {
       print --stderr $"(
         ansi yellow_bold
       )warning(ansi reset)(ansi default_bold):(
@@ -366,8 +398,22 @@ def "storage remove" [
     }
   }
 
-  for path in $paths {
-    rm --force --recursive $path
+  if $linked {
+    for path in $paths {
+      if $path == (get-storage-directory --linked) {
+        let paths = (fd --max-depth 1 --type dir "" $storage_directory | lines)
+
+        for path in $paths {
+          remove-linked-file $path
+        }
+      } else {
+        remove-linked-file $path
+      }
+    }
+  } else {
+    for path in $paths {
+      rm --force --recursive $path
+    }
   }
 }
 
