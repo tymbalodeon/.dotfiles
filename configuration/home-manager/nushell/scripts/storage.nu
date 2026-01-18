@@ -109,12 +109,13 @@ def "storage browse" [
       "google" => "drive.google.com"
     }
 
-    start $"https://($host)"
+    job spawn { start $"https://($host)" } out> /dev/null
   } else {
     rclone ncdu $"($remote):"
   }
 }
 
+# TODO: handle browsing the `maestral` managed folder
 # Browse local files
 def "storage browse local" [
   remote?: string # The name of the remote service
@@ -145,7 +146,7 @@ def "storage download" [
   let path = (get-path $interactive $remote $path)
 
   if $linked and $parsed_remote == dropbox {
-
+    # TODO: handle service not running, etc.
     maestral excluded remove $path
   } else {
     let remote_path = (get-remote-path $interactive $parsed_remote $path)
@@ -294,6 +295,8 @@ def "storage remove" [
   path?: string # A path relative to <remote>:
   --force (-f) # Remove without confirmation
   --interactive (-i) # Interactively select the subdirectory whose contents to list
+  # TODO: implement this
+  --linked # (Dropbox only) Remove the file from the `maestral` managed folder
 ] {
   validate-remote $remote
 
