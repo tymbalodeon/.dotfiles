@@ -134,14 +134,14 @@ in {
             Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" { screenshot-screen; }
             Super+Alt+2 hotkey-overlay-title="Screenshot the current window" { screenshot-window; }
             Super+Alt+3 hotkey-overlay-title="Screenshot" { screenshot; }
-            Super+Alt+B hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../nushell/scripts/set-wallpaper.nu} next"; }
+            Super+Alt+B hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../wallpaper/wallpaper.nu} next"; }
             Super+Alt+Delete hotkey-overlay-title="Exit niri" { quit; }
             Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "hyprlock"; }
             Super+Alt+M hotkey-overlay-title="Power off monitors" { power-off-monitors; }
             Super+Alt+N hotkey-overlay-title="Toggle blue light filter" { spawn-sh "nu ${../sunsetr/sunsetr.nu} toggle"; }
-            Super+Alt+Shift+B hotkey-overlay-title="Toggle automatic background image switching" { spawn-sh "nu ${../nushell/scripts/set-wallpaper.nu} toggle-pause"; }
+            Super+Alt+Shift+B hotkey-overlay-title="Toggle automatic background image switching" { spawn-sh "nu ${../wallpaper/wallpaper.nu} toggle-pause"; }
             Super+Alt+S hotkey-overlay-title="Put the computer to sleep" { spawn-sh "niri msg action power-off-monitors; systemctl suspend"; }
-            Super+Alt+V hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../nushell/scripts/set-wallpaper.nu} previous"; }
+            Super+Alt+V hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../wallpaper/wallpaper.nu} previous"; }
             Super+Alt+W hotkey-overlay-title="Restart waybar" { spawn "systemctl" "--user" "restart" "waybar"; }
             XF86AudioLowerVolume allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} lower"; }
             XF86AudioMicMute allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} mute mic"; }

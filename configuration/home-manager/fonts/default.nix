@@ -18,4 +18,7 @@
       then [pkgs.cantarell-fonts]
       else []
     );
+
+  imports = [../nushell];
+  nushell.extraScripts = [./fonts.nu];
 }

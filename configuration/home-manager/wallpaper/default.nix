@@ -6,6 +6,9 @@ in {
     packages = [pkgs.swaybg];
   };
 
+  imports = [../nushell];
+  nushell.extraScripts = [./wallpaper.nu];
+
   services = {
     wpaperd = {
       enable = true;

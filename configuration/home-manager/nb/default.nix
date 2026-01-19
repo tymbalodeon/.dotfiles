@@ -62,6 +62,11 @@
         w3m
       ];
     };
+
+    nushell.extraScripts = [
+      ./nb-cd.nu
+      ./pens.nu
+    ];
   };
 
   imports = [
