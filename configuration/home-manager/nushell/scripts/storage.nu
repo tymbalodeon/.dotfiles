@@ -174,18 +174,16 @@ def "storage download" [
       return
     }
 
-    let parent = (
-      if (
-        $local_path
-        | rg '\.[a-zA-Z]+$'
-        | complete
-      ).exit_code == 0 {
-        $local_path
-        | path dirname
-      } else {
-        $local_path
-      }
-    )
+    let parent = if (
+      rclone lsjson $remote_path
+      | from json
+      | is-empty
+    ) {
+      $local_path
+      | path dirname
+    } else {
+      $local_path
+    }
 
     let result = (rclone sync $remote_path $parent | complete) 
 
