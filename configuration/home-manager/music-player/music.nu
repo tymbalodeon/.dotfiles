@@ -95,6 +95,7 @@ def get-playlist [playlist?: string] {
 
     if ($playlists | length) > 1 {
       $playlists
+      | to text
       | fzf
     } else if ($playlists | is-empty) {
       return
@@ -120,16 +121,49 @@ def get-playlist [playlist?: string] {
   | first
 }
 
+# Add current song to playlists
+def "music playlist add" [
+  playlist?: string
+] {
+  if (rmpc status | from json).state not-in [Pause Play] {
+    return
+  }
+
+  let current_song_file = (
+    rmpc song
+    | from json
+    | get file?
+  )
+
+  if ($current_song_file | is-empty) {
+    return
+  }
+
+  let playlist = if ($playlist | is-empty) {
+    "Saved"
+  } else {
+    $playlist
+  }
+
+  let playlist_file = (music playlist create $playlist)
+
+  let paths = (
+    open $playlist_file
+    | append $current_song_file
+    | to text
+  )
+
+  $paths
+  | save --force $playlist_file
+}
+
 # Create playlist
 def "music playlist create" [playlist?: string] {
   let playlist_path = (get-playlist $playlist)
 
-  if ($playlist_path | is-not-empty) {
-    error make --unspanned {msg: $"playlist \"($playlist)\" already exists"}
-    return
-  }
+  touch $playlist_path
 
-  touch (get-playlist-directory | path join $"($playlist).m3u")
+  $playlist_path
 }
 
 alias "music playlist new" = music playlist create
@@ -145,6 +179,17 @@ def "music playlist edit" [playlist?: string] {
   ^$env.EDITOR $playlist
 }
 
+# List playlists
+def "music playlist list" [] {
+  ls (get-playlist-directory)
+  | get name
+  | path parse
+  | get stem
+  | to text --no-newline
+}
+
+alias "music playlists" = music playlist list
+
 # View playlist
 def "music playlist open" [playlist?: string] {
   let playlist = (get-playlist $playlist)
@@ -158,15 +203,6 @@ def "music playlist open" [playlist?: string] {
 
 alias "music playlist show" = music playlist open
 alias "music playlist view" = music playlist open
-
-# List playlists
-def "music playlists" [] {
-  ls (get-playlist-directory)
-  | get name
-  | path parse
-  | get stem
-  | to text --no-newline
-}
 
 # Show the status of the music player server
 def "music status" [] {
