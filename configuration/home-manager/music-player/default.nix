@@ -8,6 +8,8 @@
   config = let
     cfg = config.music-player;
   in {
+    nushell.extraScripts = [./music.nu];
+
     programs = {
       ncmpcpp = {
         bindings = [

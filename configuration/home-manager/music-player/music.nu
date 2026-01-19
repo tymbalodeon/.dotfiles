@@ -31,7 +31,7 @@ def is-nixos [] {
 }
 
 # Open music player
-def "music" [] {
+def music [] {
   let is_nixos = (is-nixos)
 
   if not (running) {

@@ -19,13 +19,15 @@
         envFile.source = ./env.nu;
 
         extraConfig = ''
-          const NU_LIB_DIRS = [${lib.concatStringsSep "\n" cfg.nuLibDirs}]
-
           ${builtins.concatStringsSep
             "\n"
             (map
               (file: "source " + file)
-              (builtins.attrNames (builtins.readDir ./scripts)))}
+              ((builtins.attrValues (
+                  builtins.mapAttrs (file: _: ./scripts/${file})
+                  (builtins.readDir ./scripts)
+                ))
+                ++ cfg.extraScripts))}
         '';
 
         extraEnv = ''
@@ -100,12 +102,12 @@
     ../yazi
   ];
 
-  options.nushell.nuLibDirs = let
+  options.nushell.extraScripts = let
     inherit (lib) mkOption types;
   in
     with types;
       mkOption {
-        default = [./scripts];
+        default = [];
         type = listOf path;
       };
 }
