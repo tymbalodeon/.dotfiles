@@ -133,7 +133,7 @@ def "storage browse local" [
   } else {
     let path = (get-storage-directory)
 
-    let path = if ($remote | is-empty) {
+    if ($remote | is-empty) {
       $path
     } else {
       $path
@@ -210,15 +210,41 @@ def "storage edit" [
   storage upload $remote $path
 }
 
-# TODO
-# def "storage find" [
-#   pattern: string
-# ] {
-#   storage list dropbox
-#   | lines
-#   | where {$in | str contains --ignore-case $pattern}
-#   | to text --no-newline
-# }
+# Search remote files
+def "storage find" [
+  pattern?: string # Pattern to search for
+  # TODO
+  # --remote: filter to just this remote
+] {
+  let pattern = if ($pattern | is-empty) {
+    ""
+  } else {
+    $pattern
+  }
+
+  # TODO: replace dropbox with $remote
+  storage list dropbox
+  | lines
+  | where {$in | str contains --ignore-case $pattern}
+  | to text --no-newline
+}
+
+# Search local files
+def "storage find local" [
+  pattern?: string # Pattern to search for
+  # TODO
+  # --remote: filter to just this remote
+] {
+  let files = (fd "" (get-storage-directory))
+
+  if ($pattern | is-empty) {
+    $files
+    | fzf --multi
+  } else {
+    $files
+    | rg --ignore-case $pattern
+  }
+}
 
 # Show remote info
 def "storage info" [
