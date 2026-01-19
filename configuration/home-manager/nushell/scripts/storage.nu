@@ -467,10 +467,22 @@ def "storage upload" [
   let remote_path = if ($remote_path | is-not-empty) {
     $remote_path
   } else {
-    $local_path
-    | str replace $"(get-storage-directory)($remote)/" ""
+    let storage_directory = (get-storage-directory)
+
+    if $storage_directory in $local_path {
+      $local_path
+      | str replace $storage_directory ""
+    } else {
+      $local_path
+      | path basename
+    }
   }
 
-  # TODO: handle remote path being dir vs file
-  rclone copy $local_path (get-remote-path $remote $remote_path)
+  let command = if ($local_path | path type) == file {
+    "copyto"
+  } else {
+    "copy"
+  }
+
+  rclone $command $local_path (get-remote-path false $remote $remote_path)
 }
