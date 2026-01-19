@@ -1,9 +1,12 @@
 {
+  config,
   lib,
   pkgs,
   ...
 }: {
-  config = {
+  config = let
+    cfg = config.nushell;
+  in {
     home.packages = with pkgs; [
       fontconfig
       # TODO: only include on NixOS
@@ -16,7 +19,7 @@
         envFile.source = ./env.nu;
 
         extraConfig = ''
-          const NU_LIB_DIRS = [${./scripts}]
+          const NU_LIB_DIRS = [${lib.concatStringsSep "\n" cfg.nuLibDirs}]
 
           ${builtins.concatStringsSep
             "\n"
@@ -97,12 +100,12 @@
     ../yazi
   ];
 
-  options.nushell = with lib; {
-    configDirectory = mkOption {
-      default = ".config/nushell";
-      description = "The value of `$nu.default-config-dir`";
-      example = "Library/Application Support/nushell";
-      type = types.str;
-    };
-  };
+  options.nushell.nuLibDirs = let
+    inherit (lib) mkOption types;
+  in
+    with types;
+      mkOption {
+        default = [./scripts];
+        type = listOf path;
+      };
 }
