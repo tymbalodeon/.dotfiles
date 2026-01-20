@@ -6,7 +6,6 @@
   hostType,
   lib,
   pkgs,
-  pkgs-25_05,
   pkgs-25_11,
   ...
 }: {
@@ -32,7 +31,6 @@
           channel
           hostName
           hostType
-          pkgs-25_05
           pkgs-25_11
           ;
       };

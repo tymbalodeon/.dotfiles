@@ -3,7 +3,6 @@
   hostType,
   lib,
   pkgs,
-  pkgs-25_05,
   ...
 }: {
   config = {
@@ -42,12 +41,6 @@
 
     nixpkgs = {
       config.allowUnfree = true;
-
-      overlays = [
-        (final: prev: {
-          readability-cli = pkgs-25_05.readability-cli;
-        })
-      ];
     };
 
     programs.home-manager.enable = true;

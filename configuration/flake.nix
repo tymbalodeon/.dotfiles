@@ -52,7 +52,6 @@
     nix-darwin-unstable,
     nixgl,
     nixpkgs-25_05,
-    nixpkgs-25_11,
     nixpkgs-unstable,
     stylix-25_05,
     stylix-unstable,
@@ -89,27 +88,20 @@
         }: {inherit channel hostName hostType;})
         (getHosts hostType)));
 
-    getInputs = channel: {
-      home-manager =
-        if channel == "25_05"
-        then home-manager-25_05
-        else home-manager-unstable;
-
-      nix-darwin =
-        if channel == "25_05"
-        then nix-darwin-25_05
-        else nix-darwin-unstable;
-
-      nixpkgs =
-        if channel == "25_05"
-        then nixpkgs-25_05
-        else nixpkgs-unstable;
-
-      stylix =
-        if channel == "25_05"
-        then stylix-25_05
-        else stylix-unstable;
-    };
+    getInputs = channel:
+      if channel == "25_05"
+      then {
+        home-manager = home-manager-25_05;
+        nix-darwin = nix-darwin-25_05;
+        nixpkgs = nixpkgs-25_05;
+        stylix = stylix-25_05;
+      }
+      else {
+        home-manager = home-manager-unstable;
+        nix-darwin = nix-darwin-unstable;
+        nixpkgs = nixpkgs-unstable;
+        stylix = stylix-unstable;
+      };
   in {
     darwinConfigurations =
       mkHosts
@@ -143,12 +135,6 @@
                 hostType
                 home-manager
                 ;
-
-              pkgs-25_05 = import nixpkgs-25_05 {
-                inherit system;
-
-                config.allowUnfree = true;
-              };
             };
           };
       })
@@ -178,8 +164,6 @@
                 home-manager-unstable
                 nixgl
                 ;
-
-              pkgs-25_05 = nixpkgs-25_05.legacyPackages.${system};
             };
 
             modules = [./hosts/${hostType}/${channel}/${hostName}/home.nix];
@@ -217,11 +201,6 @@
                 hostType
                 home-manager
                 ;
-
-              pkgs-25_05 = import nixpkgs-25_11 {
-                config.allowUnfree = true;
-                system = "x86_64-linux";
-              };
             };
           };
       })

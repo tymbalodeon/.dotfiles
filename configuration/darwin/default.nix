@@ -6,31 +6,17 @@
   hostType,
   lib,
   pkgs,
-  pkgs-25_05,
   ...
 }: {
   config = let
     cfg = config.darwin;
   in {
     home-manager = {
-      extraSpecialArgs = {inherit channel hostType pkgs-25_05;};
+      extraSpecialArgs = {inherit channel hostType;};
       users.${cfg.username} = import cfg.homeFile;
     };
 
     nix.enable = false;
-
-    nixpkgs.overlays = [
-      (final: prev:
-        with pkgs-25_05; {
-          inherit
-            ktty
-            mpd
-            nix-search-cli
-            uutils-coreutils-no-prefix
-            ;
-        })
-    ];
-
     security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
 
     stylix = {
