@@ -26,7 +26,6 @@
     };
 
     nixpkgs-25_05.url = "github:nixos/nixpkgs/nixos-25.05";
-    nixpkgs-25_11.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     stylix-25_05 = {

@@ -6,7 +6,6 @@
   hostType,
   lib,
   pkgs,
-  pkgs-25_11,
   ...
 }: {
   config = let
@@ -31,7 +30,6 @@
           channel
           hostName
           hostType
-          pkgs-25_11
           ;
       };
 

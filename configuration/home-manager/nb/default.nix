@@ -55,7 +55,8 @@
         csvlens
         nb
         pandoc
-        readability-cli
+        # FIXME: broken!
+        # readability-cli
         ripgrep
         socat
         tig

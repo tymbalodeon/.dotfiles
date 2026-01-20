@@ -433,22 +433,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-25_11": {
-      "locked": {
-        "lastModified": 1768773494,
-        "narHash": "sha256-XsM7GP3jHlephymxhDE+/TKKO1Q16phz/vQiLBGhpF4=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "77ef7a29d276c6d8303aece3444d61118ef71ac2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-25.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1765674936,
@@ -539,7 +523,6 @@
         "nix-darwin-unstable": "nix-darwin-unstable",
         "nixgl": "nixgl",
         "nixpkgs-25_05": "nixpkgs-25_05",
-        "nixpkgs-25_11": "nixpkgs-25_11",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "stylix-25_05": "stylix-25_05",
         "stylix-unstable": "stylix-unstable",
