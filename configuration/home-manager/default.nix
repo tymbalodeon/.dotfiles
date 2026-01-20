@@ -72,7 +72,6 @@
       ./nb
       ./ripgrep
       ./shell
-      ./storage
       ./taskwarrior
       ./tealdeer
       ./yazi

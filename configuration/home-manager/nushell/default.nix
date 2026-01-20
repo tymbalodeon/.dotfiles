@@ -7,11 +7,7 @@
   config = let
     cfg = config.nushell;
   in {
-    home.packages = with pkgs; [
-      fontconfig
-      # TODO: only include on NixOS
-      maestral
-    ];
+    home.packages = [pkgs.fontconfig];
 
     programs.nushell =
       {
@@ -97,8 +93,6 @@
   imports = [
     ../fzf
     ../jujutsu
-    # TODO: only include on NixOS
-    ../rclone
     ../yazi
   ];
 

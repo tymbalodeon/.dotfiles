@@ -4,5 +4,6 @@
   imports = [
     ../brave
     ../rclone
+    ../storage
   ];
 }
