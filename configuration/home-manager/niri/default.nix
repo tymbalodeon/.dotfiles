@@ -213,8 +213,8 @@ in {
             default-column-width {
               proportion ${
           if cfg.laptop
-          then "0.5"
-          else "1.0"
+          then "1.0"
+          else "0.5"
         };
             }
 
