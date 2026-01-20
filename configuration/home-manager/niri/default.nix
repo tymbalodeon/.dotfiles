@@ -210,6 +210,14 @@ in {
         layout {
             always-center-single-column
 
+            default-column-width {
+              proportion ${
+          if cfg.laptop
+          then "0.5"
+          else "1.0"
+        };
+            }
+
             focus-ring {
                 width 1
             }
