@@ -88,12 +88,7 @@ export def get-configuration-data [] {
 }
 
 export def get-built-host-name [] {
-  try {
-    cat /etc/hostname
-    | str trim
-  } catch {
-    print-error "cannot determine hostname"
-  }
+  (uname).nodename
 }
 
 def raise_configuration_error [configuration: string --systems] {
