@@ -71,6 +71,10 @@
         then true
         else false;
 
+      extraConfig = ''
+        max_output_buffer_size "131072"
+      '';
+
       musicDirectory = cfg.musicDirectory;
       network.startWhenNeeded = true;
     };
