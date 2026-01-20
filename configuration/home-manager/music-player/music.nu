@@ -91,7 +91,7 @@ def "music playlist" [] {
 
 def get-playlist [playlist?: string] {
   let playlist = if ($playlist | is-empty) {
-    let playlists = (music playlists | lines)
+    let playlists = (music playlist list | lines)
 
     if ($playlists | length) > 1 {
       $playlists
