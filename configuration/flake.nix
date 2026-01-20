@@ -26,6 +26,7 @@
     };
 
     nixpkgs-25_05.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     stylix-25_05 = {
@@ -51,6 +52,7 @@
     nix-darwin-unstable,
     nixgl,
     nixpkgs-25_05,
+    nixpkgs-master,
     nixpkgs-unstable,
     stylix-25_05,
     stylix-unstable,
@@ -134,6 +136,10 @@
                 hostType
                 home-manager
                 ;
+
+              pkgs-master = import nixpkgs-master {
+                inherit system;
+              };
             };
           };
       })
@@ -163,6 +169,10 @@
                 home-manager-unstable
                 nixgl
                 ;
+
+              pkgs-master = import nixpkgs-master {
+                inherit system;
+              };
             };
 
             modules = [./hosts/${hostType}/${channel}/${hostName}/home.nix];
@@ -200,6 +210,10 @@
                 hostType
                 home-manager
                 ;
+
+              pkgs-master = import nixpkgs-master {
+                system = "x86_64-linux";
+              };
             };
           };
       })

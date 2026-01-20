@@ -6,13 +6,21 @@
   hostType,
   lib,
   pkgs,
+  pkgs-master,
   ...
 }: {
   config = let
     cfg = config.darwin;
   in {
     home-manager = {
-      extraSpecialArgs = {inherit channel hostType;};
+      extraSpecialArgs = {
+        inherit
+          channel
+          hostType
+          pkgs-master
+          ;
+      };
+
       users.${cfg.username} = import cfg.homeFile;
     };
 

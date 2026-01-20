@@ -3,6 +3,7 @@
   hostType,
   lib,
   pkgs,
+  pkgs-master,
   ...
 }: {
   config = {
@@ -41,6 +42,12 @@
 
     nixpkgs = {
       config.allowUnfree = true;
+
+      overlays = [
+        (final: prev: {
+          readability-cli = pkgs-master.readability-cli;
+        })
+      ];
     };
 
     programs.home-manager.enable = true;
