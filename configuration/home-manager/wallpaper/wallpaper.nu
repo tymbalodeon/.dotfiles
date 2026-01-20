@@ -73,6 +73,8 @@ export def "wallpaper next" [] {
   wpaperctl-wrapper next
 }
 
+alias "wallpaper start" = wallpaper next
+
 # Change to previous wallpaper
 export def "wallpaper previous" [] {
   wpaperctl-wrapper previous
