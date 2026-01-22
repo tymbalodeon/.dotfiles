@@ -63,7 +63,11 @@
     users.users.${cfg.username}.home = /Users/${cfg.username};
   };
 
-  imports = [home-manager.darwinModules.home-manager];
+  imports = [
+    home-manager.darwinModules.home-manager
+
+    ./stylix
+  ];
 
   options.darwin = let
     inherit (lib) mkOption types;

@@ -126,7 +126,6 @@
 
             modules = [
               ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
-              stylix.darwinModules.stylix
             ];
 
             specialArgs = {
@@ -135,11 +134,10 @@
                 hostName
                 hostType
                 home-manager
+                stylix
                 ;
 
-              pkgs-master = import nixpkgs-master {
-                inherit system;
-              };
+              pkgs-master = import nixpkgs-master {inherit system;};
             };
           };
       })
@@ -199,8 +197,6 @@
           nixpkgs.lib.nixosSystem {
             modules = [
               ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
-              stylix.nixosModules.stylix
-              wayland-pipewire-idle-inhibit.nixosModules.default
             ];
 
             specialArgs = {
@@ -209,11 +205,11 @@
                 hostName
                 hostType
                 home-manager
+                stylix
+                wayland-pipewire-idle-inhibit
                 ;
 
-              pkgs-master = import nixpkgs-master {
-                system = "x86_64-linux";
-              };
+              pkgs-master = import nixpkgs-master {system = "x86_64-linux";};
             };
           };
       })

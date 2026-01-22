@@ -133,8 +133,10 @@
     ./niri
     ./sddm
     ./steam
+    ./stylix
     ./waybar
     ./wayland
+    ./wayland-pipewire-idle-inhibit
   ];
 
   options.nixos = let
