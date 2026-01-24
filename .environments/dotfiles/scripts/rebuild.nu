@@ -82,37 +82,41 @@ def main [
   let theme = if ($theme | is-not-empty)  {
     $theme
   } else {
-    let themes = (
-      tinty list --json
-      | from json
-      | where {$in.system == base16}
-    )
-
-    let themes = if $dark_theme  {
-      $themes
-      | where variant == dark
-    } else if $light_theme {
-      $themes
-      | where variant == light
+    if not $choose_theme and not $random_theme {
+      $theme
     } else {
-      $themes
+      let themes = (
+        tinty list --json
+        | from json
+        | where {$in.system == base16}
+      )
+
+      let themes = if $dark_theme  {
+        $themes
+        | where variant == dark
+      } else if $light_theme {
+        $themes
+        | where variant == light
+      } else {
+        $themes
+      }
+
+      let themes = $themes.id
+
+      let theme = if $choose_theme {
+        $themes
+        | to text
+        | fzf
+      } else if $random_theme {
+        let index = (random int 0..($themes | length))
+
+        $themes
+        | get $index
+      }
+
+      $theme
+      | str replace base16- ""
     }
-
-    let themes = $themes.id
-
-    let theme = if $choose_theme {
-      $themes
-      | to text
-      | fzf
-    } else if $random_theme {
-      let index = (random int 0..($themes | length))
-
-      $themes
-      | get $index
-    }
-
-    $theme
-    | str replace base16- ""
   }
 
   $env.STYLIX_THEME = $theme
