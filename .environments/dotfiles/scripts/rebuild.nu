@@ -8,7 +8,19 @@ use prune.nu
 use optimise.nu
 use update.nu
 
-def --wrapped darwin-rebuild [...$args: string] {
+def darwin-rebuild [
+  host: string
+  debug: bool
+] {
+  let args = [switch --flake $host]
+
+  let args = if $debug {
+    $args
+    | append [--show-trace --verbose]
+  } else {
+    $args
+  }
+
   if (which /run/current-system/sw/bin/darwin-rebuild | is-empty) {
     sudo nix run "nix-darwin/master#darwin-rebuild" -- ...$args
   } else {
@@ -16,19 +28,95 @@ def --wrapped darwin-rebuild [...$args: string] {
   }
 }
 
+def nixos-rebuild [
+  host: string
+  test: bool
+] {
+  let args = [--flake $host --impure]
+
+  let args = if $test {
+    $args
+    | append test
+  } else {
+    $args
+    | append switch
+  }
+
+  sudo --preserve-env="STYLIX_THEME" nixos-rebuild ...$args
+}
+
+def home-manager [
+  host: string
+  debug: bool
+] {
+  let args = [--flake $host]
+
+  let args = if $debug {
+    $args
+    | append [--show-trace --verbose]
+  } else {
+    $args
+  }
+
+  ^home-manager switch ...$args
+}
+
 # Rebuild and switch to (or --test) a configuration
 def main [
     host?: string # The target host configuration (auto-detected if not specified)
+    --choose-theme # Choose the stylix theme interactively
     --clean # Run `just prune` and `just optimise` after rebuilding
     --clean-all # Clean, removing all old generations
+    --dark-theme # Select only dark themes
     --debug # Run and show verbose trace
+    --light-theme # Select only light themes
     --older-than: string # (with `--clean` or `--prune`)
     --optimise # Run `just optimise` after rebuilding
     --prune # Run `just prune` after rebuilding
     --prune-all # Prune, removing all old generations
+    --random-theme # Select a random stylix theme
     --test # Apply the configuration without adding it to the boot menu
+    --theme: string # Override the stylix theme
     --update # Update the flake lock before rebuilding
 ] {
+  let theme = if ($theme | is-not-empty)  {
+    $theme
+  } else {
+    let themes = (
+      tinty list --json
+      | from json
+      | where {$in.system == base16}
+    )
+
+    let themes = if $dark_theme  {
+      $themes
+      | where variant == dark
+    } else if $light_theme {
+      $themes
+      | where variant == light
+    } else {
+      $themes
+    }
+
+    let themes = $themes.id
+
+    let theme = if $choose_theme {
+      $themes
+      | to text
+      | fzf
+    } else if $random_theme {
+      let index = (random int 0..($themes | length))
+
+      $themes
+      | get $index
+    }
+
+    $theme
+    | str replace base16- ""
+  }
+
+  $env.STYLIX_THEME = $theme
+
   if $update {
     update
   }
@@ -45,25 +133,13 @@ def main [
 
   if (is-nixos) {
     # TODO: is there a --debug here? If not, make a note in the help text above
-    if $test {
-        sudo nixos-rebuild test --flake $host
-    } else {
-        sudo nixos-rebuild switch --flake $host
-    }
+    nixos-rebuild $host $test
   } else if (is-linux) {
     # TODO: handle what to do if home-manager is not yet installed. Does this
     # apply to darwin too?
-    if $debug {
-      home-manager switch --flake $host --show-trace --verbose
-    } else {
-      home-manager switch --flake $host
-    }
+    home-manager $host $debug
   } else {
-    if $debug {
-      darwin-rebuild switch --flake $host --show-trace --verbose
-    } else {
-      darwin-rebuild switch --flake $host
-    }
+    darwin-rebuild $host $debug
   }
 
   bat cache --build
