@@ -64,6 +64,10 @@ alias configs := configurations
 @shell *help:
     .environments/dotfiles/scripts/shell.nu {{ help }}
 
+# Preview and switch themes
+@theme *help:
+    .environments/dotfiles/scripts/theme.nu {{ help }}
+
 # Update dependencies
 [working-directory("./configuration")]
 @update *inputs:
