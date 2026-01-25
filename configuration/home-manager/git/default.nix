@@ -12,7 +12,8 @@
       gh
       glab
       # TODO: replace this with my own version?
-      siketyan-ghr
+      # FIXME: broken
+      # siketyan-ghr
     ];
 
     programs = let
