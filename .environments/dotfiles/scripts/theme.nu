@@ -61,13 +61,14 @@ def get-random-theme [variant?: string] {
   get-theme $theme
 }
 
+# TODO: allow displaying name and selecting id
 def select-theme [variant?: string] {
   let themes = (get-themes $variant)
 
   $themes
-  | get name
+  | get id
   | to text
-  | fzf
+  | fzf --preview "tinty info {}"
 }
 
 def get-variant [dark?: bool light?: bool] {
