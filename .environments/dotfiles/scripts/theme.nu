@@ -148,9 +148,17 @@ def "main switch" [
 # Rebuild with  a random theme
 def "main switch random" [
   --dark # Select dark themes only
+  --force # Skip confirmation
   --light # Select light themes only
 ] {
   let theme = (get-random-theme (get-variant $dark $light))
 
-  rebuild --theme (get-stylix-theme-name $theme)
+  tinty info $theme
+
+  if $force or (
+    input "Are you sure you want to apply this theme? [y/N] "
+    | str downcase
+  ) in [yes y] {
+    rebuild --theme (get-stylix-theme-name $theme)
+  }
 }
