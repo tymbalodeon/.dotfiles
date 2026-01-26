@@ -109,6 +109,11 @@ def "main preview random" [
   tinty info (get-random-theme (get-variant $dark $light))
 }
 
+def get-stylix-theme-name [theme: string] {
+  $theme
+  | str replace base16- ""
+}
+
 # Rebuild with a new theme
 def "main switch" [
   theme?: string
@@ -127,7 +132,7 @@ def "main switch" [
     return
   }
 
-  rebuild --theme $theme
+  rebuild --theme (get-stylix-theme-name $theme)
 }
 
 # Rebuild with  a random theme
@@ -135,5 +140,7 @@ def "main switch random" [
   --dark # Select dark themes only
   --light # Select light themes only
 ] {
-  rebuild --theme (get-random-theme (get-variant $dark $light))
+  let theme = (get-random-theme (get-variant $dark $light))
+
+  rebuild --theme (get-stylix-theme-name $theme)
 }
