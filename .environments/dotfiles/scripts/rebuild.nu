@@ -62,7 +62,7 @@ def home-manager [
 }
 
 # Rebuild and switch to (or --test) a configuration
-def main [
+export def main [
     host?: string # The target host configuration (auto-detected if not specified)
     --choose-theme # Choose the stylix theme interactively
     --clean # Run `just prune` and `just optimise` after rebuilding
