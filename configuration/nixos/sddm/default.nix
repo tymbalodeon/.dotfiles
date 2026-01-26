@@ -3,8 +3,9 @@
   pkgs,
   ...
 }: {
-  environment.systemPackages = [
-    (pkgs.catppuccin-sddm.override
+  environment.systemPackages = with pkgs; [
+    bibata-cursors
+    (catppuccin-sddm.override
       {
         accent = "lavender";
         flavor = "mocha";

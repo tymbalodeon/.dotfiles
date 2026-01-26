@@ -17,12 +17,8 @@
       systemd-boot.enable = true;
     };
 
-    environment.systemPackages = with pkgs; [
-      bibata-cursors
-      brave
-      git
-      helix
-      xdg-utils
+    environment.systemPackages = [
+      pkgs.xdg-utils
     ];
 
     home-manager = {
