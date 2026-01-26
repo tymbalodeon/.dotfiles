@@ -36,8 +36,17 @@ def get-theme [theme: string] {
     $themes
     | where id == ($theme | str downcase)
   } else {
-    $themes
-    | where name == $theme
+    let theme_by_name = (
+      $themes
+      | where name == $theme
+    )
+
+    if ($theme_by_name | is-empty) {
+      $themes
+      | where id == $"base16-($theme | str downcase)"
+    } else {
+      $theme_by_name
+    }
   }
 
   if ($theme | is-empty) {
