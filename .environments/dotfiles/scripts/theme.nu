@@ -26,7 +26,7 @@ def get-themes [variant?: string] {
 def "main list" [] {
   get-themes
   | get name
-  | to text
+  | to text --no-newline
 }
 
 def get-theme [theme: string] {
