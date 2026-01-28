@@ -1,20 +1,29 @@
 {
   config,
+  hostType,
   lib,
   ...
-}: {
+}:
+{
   home.sessionVariables = {EDITOR = "hx";};
 
-  imports = [
-    ./bash
-    ./json
-    ./markdown
-    ./nix
-    ../../stylix
-    ./toml
-    ./txt
-    ./yaml
-  ];
+  imports =
+    [
+      ./bash
+      ./json
+      ./markdown
+      ./nix
+      ./toml
+      ./txt
+      ./yaml
+    ]
+    ++ (
+      if hostType == "home-manager"
+      then []
+      else [
+        ../../stylix
+      ]
+    );
 
   programs.helix = {
     defaultEditor = true;
@@ -101,10 +110,14 @@
           };
         };
       }
-      // lib.optionalAttrs (config.stylix.theme == "catppuccin-mocha") {
+      // lib.optionalAttrs
+      ((hostType
+        == "home-manager")
+      || (config.stylix.theme == "catppuccin-mocha")) {
         theme = "catppuccin_mocha";
       };
   };
-
+}
+// lib.optionalAttrs (hostType != "home-manager") {
   stylix.targets.helix.enable = !(config.stylix.theme == "catppuccin-mocha");
 }
