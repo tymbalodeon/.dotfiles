@@ -25,13 +25,6 @@ export def main [
 
   let args = [nix-collect-garbage]
 
-  let args = if $is_nixos {
-    $args
-    | prepend sudo
-  } else {
-    $args
-  }
-
   let args = if $all {
     $args
     | append "--delete-old"
@@ -42,5 +35,10 @@ export def main [
     $args
   }
 
-  run-external $args
+  for command in [
+    $args
+    ($args | prepend sudo)
+  ] {
+    run-external $command
+  }
 }

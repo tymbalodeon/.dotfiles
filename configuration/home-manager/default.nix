@@ -38,6 +38,13 @@
     };
 
     news.display = "silent";
+
+    nix.gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+
     nixpkgs.config.allowUnfree = true;
     programs.home-manager.enable = true;
   };
