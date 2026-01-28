@@ -3,6 +3,7 @@
 
   imports = [
     ../brave
+    ../mpv
     ../rclone
     ../storage
   ];

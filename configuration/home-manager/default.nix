@@ -64,7 +64,6 @@
       ./jq
       ./jujutsu
       ./kitty
-      ./mpv
       ./nb
       ./ripgrep
       ./shell
