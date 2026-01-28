@@ -5,7 +5,6 @@
   hostName,
   hostType,
   lib,
-  pkgs-master,
   ...
 }: {
   config = let
@@ -16,7 +15,6 @@
         inherit
           channel
           hostType
-          pkgs-master
           ;
       };
 

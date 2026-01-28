@@ -1,18 +1,8 @@
 {
   inputs = {
-    home-manager-25_05 = {
-      inputs.nixpkgs.follows = "nixpkgs-25_05";
-      url = "github:nix-community/home-manager/release-25.05";
-    };
-
     home-manager-unstable = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:nix-community/home-manager";
-    };
-
-    nix-darwin-25_05 = {
-      inputs.nixpkgs.follows = "nixpkgs-25_05";
-      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
     };
 
     nix-darwin-unstable = {
@@ -25,14 +15,7 @@
       url = "github:nix-community/nixGL";
     };
 
-    nixpkgs-25_05.url = "github:nixos/nixpkgs/nixos-25.05";
-    nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    stylix-25_05 = {
-      inputs.nixpkgs.follows = "nixpkgs-25_05";
-      url = "github:nix-community/stylix/release-25.05";
-    };
 
     stylix-unstable = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -46,15 +29,10 @@
   };
 
   outputs = {
-    home-manager-25_05,
     home-manager-unstable,
-    nix-darwin-25_05,
     nix-darwin-unstable,
     nixgl,
-    nixpkgs-25_05,
-    nixpkgs-master,
     nixpkgs-unstable,
-    stylix-25_05,
     stylix-unstable,
     wayland-pipewire-idle-inhibit,
     ...
@@ -88,21 +66,6 @@
           hostType,
         }: {inherit channel hostName hostType;})
         (getHosts hostType)));
-
-    getInputs = channel:
-      if channel == "25_05"
-      then {
-        home-manager = home-manager-25_05;
-        nix-darwin = nix-darwin-25_05;
-        nixpkgs = nixpkgs-25_05;
-        stylix = stylix-25_05;
-      }
-      else {
-        home-manager = home-manager-unstable;
-        nix-darwin = nix-darwin-unstable;
-        nixpkgs = nixpkgs-unstable;
-        stylix = stylix-unstable;
-      };
   in {
     darwinConfigurations =
       mkHosts
@@ -111,35 +74,24 @@
         hostType,
         hostName,
       }: {
-        ${hostName} = let
-          inherit
-            (getInputs channel)
-            home-manager
-            nix-darwin
-            stylix
-            ;
-
+        ${hostName} = nix-darwin-unstable.lib.darwinSystem {
           system = "x86_64-darwin";
-        in
-          nix-darwin.lib.darwinSystem {
-            inherit system;
 
-            modules = [
-              ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
-            ];
+          modules = [
+            ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
+          ];
 
-            specialArgs = {
-              inherit
-                channel
-                hostName
-                hostType
-                home-manager
-                stylix
-                ;
+          specialArgs = {
+            inherit
+              channel
+              hostName
+              hostType
+              ;
 
-              pkgs-master = import nixpkgs-master {inherit system;};
-            };
+            home-manager = home-manager-unstable;
+            stylix = stylix-unstable;
           };
+        };
       })
       "darwin";
 
@@ -150,32 +102,19 @@
         hostType,
         hostName,
       }: {
-        ${hostName} = let
-          inherit
-            (getInputs channel)
-            home-manager
-            nixpkgs
-            ;
-
-          system = "x86_64-linux";
-        in
-          home-manager.lib.homeManagerConfiguration {
-            extraSpecialArgs = {
-              inherit
-                channel
-                hostType
-                home-manager-unstable
-                nixgl
-                ;
-
-              pkgs-master = import nixpkgs-master {
-                inherit system;
-              };
-            };
-
-            modules = [./hosts/${hostType}/${channel}/${hostName}/home.nix];
-            pkgs = nixpkgs.legacyPackages.${system};
+        ${hostName} = home-manager-unstable.lib.homeManagerConfiguration {
+          extraSpecialArgs = {
+            inherit
+              channel
+              hostType
+              home-manager-unstable
+              nixgl
+              ;
           };
+
+          modules = [./hosts/${hostType}/${channel}/${hostName}/home.nix];
+          pkgs = nixpkgs-unstable.legacyPackages.x86_64-linux;
+        };
       })
       "home-manager";
 
@@ -186,32 +125,23 @@
         hostType,
         hostName,
       }: {
-        ${hostName} = let
-          inherit
-            (getInputs channel)
-            home-manager
-            nixpkgs
-            stylix
-            ;
-        in
-          nixpkgs.lib.nixosSystem {
-            modules = [
-              ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
-            ];
+        ${hostName} = nixpkgs-unstable.lib.nixosSystem {
+          modules = [
+            ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
+          ];
 
-            specialArgs = {
-              inherit
-                channel
-                hostName
-                hostType
-                home-manager
-                stylix
-                wayland-pipewire-idle-inhibit
-                ;
+          specialArgs = {
+            inherit
+              channel
+              hostName
+              hostType
+              wayland-pipewire-idle-inhibit
+              ;
 
-              pkgs-master = import nixpkgs-master {system = "x86_64-linux";};
-            };
+            home-manager = home-manager-unstable;
+            stylix = stylix-unstable;
           };
+        };
       })
       "nixos";
   };
