@@ -69,6 +69,10 @@ alias todos := todo
 @theme *args:
     .environments/default/scripts/theme.nu {{ args }}
 
+# Create a new release
+@release *args:
+    .environments/git/scripts/release.nu  {{ args }}
+
 [private]
 @dot *args:
     just dotfiles {{ args }}

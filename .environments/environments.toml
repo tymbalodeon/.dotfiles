@@ -2,4 +2,8 @@ hide_default = true
 hide_help = true
 
 [[environments]]
+name = "git"
+features = ["release"]
+
+[[environments]]
 name = "haskell"
