@@ -72,6 +72,7 @@
       ./yazi
       ./zathura
       ./zellij
+      ./zk
       ./zoxide
     ]
     ++ (
