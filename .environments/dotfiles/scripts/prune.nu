@@ -5,11 +5,14 @@ use configurations.nu is-nixos
 # Collect garbage and remove old generations
 export def main [
   --all # Remove all old generations
+  --environments # Remove project-local environments
   --older-than: string # Remove generations older than this amount
 ] {
-  let is_nixos = (is-nixos)
+  if $environments {
+    main environments
+  }
 
-  if $is_nixos {
+  if (is-nixos) {
     let generations = if ($older_than | is-not-empty) {
       $older_than
     } else if $all {
@@ -40,5 +43,11 @@ export def main [
     ($args | prepend sudo)
   ] {
     run-external $command
+  }
+}
+
+def "main environments" [] {
+  for directory in (fd \.direnv$ --hidden --no-ignore $env.HOME | lines) {
+    rm --force --recursive $directory
   }
 }
