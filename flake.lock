@@ -9,11 +9,11 @@
       },
       "locked": {
         "dir": "src",
-        "lastModified": 1769828810,
-        "narHash": "sha256-88b4WWGG+C376DQytHuTESVx9gZ9h40SvQdTkbzCOJ0=",
+        "lastModified": 1769888490,
+        "narHash": "sha256-QrAnjwzik+Y8yiLp7VJTD92fgxIoxB+eaaqZz+rXcpk=",
         "owner": "tymbalodeon",
         "repo": "environments",
-        "rev": "242d926c55622eb79cc74bf254d00197afe3b441",
+        "rev": "6dbeb3326239516e7d8fae14f313fba26db38e51",
         "type": "github"
       },
       "original": {

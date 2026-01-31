@@ -9,18 +9,53 @@ def get-revision-names [type: string] {
   | uniq
 }
 
-def get-bookmarks [] {
+def get-remote-revision-names [type: string] {
+  let args = [$type list --template "name ++ '\n'"]
+
+  let args = if $type == bookmark {
+    $args
+    | append [--remote origin]
+  } else {
+    $args
+  }
+
+  jj ...$args
+  | lines
+  | uniq
+}
+
+def get-local-bookmarks [] {
   get-revision-names bookmark
   | append (get-revision-names tag)
+}
+
+def get-remote-bookmarks [] {
+  get-remote-revision-names bookmark
+  | append (get-remote-revision-names tag)
+}
+
+def get-all-bookmarks [] {
+  get-local-bookmarks
+  | append (get-remote-bookmarks)
+  | uniq
+  | sort
 }
 
 # Switch to a development revision
 def main [
   name?: string # The name of the bookmark to switch to
   --choose # Choose the revision to switch to interactively
+  --local # (with `--choose`) Choose from local bookmarks only
+  --remote # (with `--choose`) Choose from remote bookmarks only
   --revision: string # Switch to this particular revision
 ] {
-  let bookmarks = (get-bookmarks)
+  let bookmarks = if $local {
+    get-local-bookmarks
+  } else if $remote {
+    get-remote-bookmarks
+  } else {
+    get-all-bookmarks
+  }
 
   let name = if ($name | is-not-empty) {
     $name
@@ -96,14 +131,22 @@ def main [
   }
 }
 
-# List development bookmarks
+# List local development bookmarks
 def "main list" [] {
-  jj bookmark list
+  get-local-bookmarks
+  | to text --no-newline
 }
 
-# List development bookmarks
-def "main list names" [] {
-  jj bookmark list --template "name ++ '\n'"
+# List remote development bookmarks
+def "main list remote" [] {
+  get-remote-bookmarks
+  | to text --no-newline
+}
+
+# List all development bookmarks
+def "main list all" [] {
+  get-all-bookmarks
+  | to text --no-newline
 }
 
 def get-current-bookmark [] {
@@ -183,13 +226,49 @@ def "main new" [
     jj new $from
   }
 
-  if $name not-in (get-bookmarks) {
+  if $name not-in (get-local-bookmarks) {
     jj bookmark create $name
     jj bookmark track $name
     jj describe --message $"chore: init ($name)"
     jj git push
   } else {
     print-warning $"bookmark ($name) already exists"
+  }
+}
+
+# Remove development branches
+def "main remove" [
+  ...names: string # The names of the branches to remove
+  --force # Skip confirmation before removing from remote
+  --local # Only remove local branches
+] {
+  let bookmarks = (get-all-bookmarks)
+  let names = ($names | where {$in != trunk and $in in $bookmarks})
+
+  if ($names | is-empty) {
+    return
+  }
+
+  if $local {
+    jj bookmark forget ...$names
+  } else {
+    print "The following branches will be removed from the remote:"
+
+    print (
+      $names
+      | each {$in | prepend '- ' | str join}
+      | to text --no-newline
+    )
+
+    print "\n\(Use `--local` to remove them from the local repository only.\)\n"
+
+    if (input "Proceed [y/N]? " | str downcase) == y {
+      print ""
+
+      jj bookmark track ...$names out+err> /dev/null
+      jj bookmark delete ...$names
+      jj git push --deleted
+    }
   }
 }
 
@@ -208,4 +287,34 @@ def "main sync" [
   }
 
   jj rebase --branch $bookmark --onto trunk
+}
+
+# Set the current branch to the current revision
+def "main tug" [] {
+  # TODO
+  # 1. find the most recent revision that is NOT empty
+  # 2. find the most recent bookmark
+  # 3. set that bookmark to the most recent NON-empty revision
+  # 4. Find all revisions between the old set bookmark and the new one to move
+  #    to, and find all commit ids that have an empty description
+  # 5. take those revisions and either add descriptions, or (better?) squash
+  #    them down into a single commit?
+  
+  let revision = if (
+    jj log --no-graph --revisions @ --template "empty"
+    | into bool
+  ) {
+    "@-"
+  } else {
+    "@"
+  }
+
+  # TODO: handle empty descriptions?
+  jj bookmark move --from "heads(::@- & bookmarks())" --to @
+
+  if $revision == "@" {
+    jj new
+  }
+
+  jj git push
 }
