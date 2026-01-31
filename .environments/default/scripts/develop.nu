@@ -1,6 +1,7 @@
 #!/usr/bin/env nu
 
 use print.nu print-error
+use print.nu print-warning
 
 def get-revision-names [type: string] {
   jj $type list --template "name ++ '\n'"
@@ -13,51 +14,56 @@ def get-bookmarks [] {
   | append (get-revision-names tag)
 }
 
+# Switch to a development revision
 def main [
-  bookmark?: string # The name of the bookmark to create or edit
-  --latest # Switch to the most recent revision
+  name?: string # The name of the bookmark to switch to
+  --choose # Choose the revision to switch to interactively
   --revision: string # Switch to this particular revision
 ] {
-  let bookmark = if ($bookmark | is-not-empty) {
-    $bookmark
+  let bookmarks = (get-bookmarks)
+
+  let name = if ($name | is-not-empty) {
+    $name
   } else {
-    get-bookmarks
+    $bookmarks
     | to text
     | fzf
   }
 
-  if ($bookmark | is-empty) {
+  if ($name | is-empty) {
     return
   }
 
-  if ($bookmark in (get-bookmarks)) {
-    let revision = if ($revision | is-not-empty) {
-      $revision
-    } else {
-      let revisions = (
-        jj log
-          --no-graph
-          --revisions $"descendants\(($bookmark)\)"
-          --template "change_id ++ '•' ++ description ++ '\n'"
-        | lines
-        | where {is-not-empty}
-        | each {
-            |line|
+  if ($name not-in $bookmarks) {
+    print-error $"unrecognized bookmark `($name)`"
 
-            let parts = ($line | split row •)
+    return
+  }
 
-            {
-              change_id: $parts.0
-              description: $parts.1
-            }
+  let revision = if ($revision | is-not-empty) {
+    $revision
+  } else {
+    let revisions = (
+      jj log
+        --no-graph
+        --revisions $"descendants\(($name)\)"
+        --template "change_id ++ '•' ++ description ++ '\n'"
+      | lines
+      | where {is-not-empty}
+      | each {
+          |line|
+
+          let parts = ($line | split row •)
+
+          {
+            change_id: $parts.0
+            description: $parts.1
           }
-      )
+        }
+    )
 
+    if $choose {
       if ($revisions | length) == 1 {
-        $revisions
-        | first
-        | get change_id
-      } else if $latest {
         $revisions
         | first
         | get change_id
@@ -69,78 +75,137 @@ def main [
         | split row " "
         | first
       }
-    }
-
-    if ($revision | is-empty) {
-      return
-    }
-
-    if (
-      jj log --no-graph --revisions $revision --template "immutable"
-      | into bool
-    ) {
-      jj new $revision
     } else {
-      jj edit $revision
+      $revisions
+      | first
+      | get change_id
     }
+  }
+
+  if ($revision | is-empty) {
+    return
+  }
+
+  if (
+    jj log --no-graph --revisions $revision --template "immutable"
+    | into bool
+  ) {
+    jj new $revision
   } else {
-    print-error $"unrecognized bookmark `($bookmark)`"
+    jj edit $revision
   }
 }
 
-def "main new" [
-  title?: string # The name of the issue/branch to create
-  --edit # Edit the new issue before developing
-  --from-current # Create a new bookmark off of the current revision instead of main
-  --revision: string # Create a new bookmark off of a particular revision
-] {
-  let revision = if $from_current {
-    "@"
-  } else if ($revision | is-not-empty) {
-    $revision
-  } else {
-    let bookmarks = (get-bookmarks)
+# List development bookmarks
+def "main list" [] {
+  jj bookmark list
+}
 
-    if main in $bookmarks {
-      "main"
-    } else if master in $bookmarks {
-      "master"
-    } else if trunk in $bookmarks {
-      "trunk"
-    } else {
-      print-error "could not determine the default bookmark"
-      print-error "please specify the bookmark name to start from"
-    }
-  }
+# List development bookmarks
+def "main list names" [] {
+  jj bookmark list --template "name ++ '\n'"
+}
 
-  let title = if ($title | is-empty) {
-    gh issue create --editor 
-
-    gh issue list --json title
-    | from json
+def get-current-bookmark [] {
+  let bookmarks = (
+    jj log --no-graph --template "bookmarks ++ '\n'"
+    | lines
+    | where {is-not-empty}
     | first
-    | get title
+  )
+
+  if trunk in $bookmarks {
+    return
+  }
+
+  let bookmarks = ($bookmarks | split row " ")
+
+  if ($bookmarks | length) > 1 {
+    print-error "multiple bookmarks are set to this revision. Please pass a value for $name."
+
+    return
+  }
+
+  $bookmarks
+  | first
+  | str replace * ""
+}
+
+# Merge development branches into trunk
+def "main merge" [
+  name?: string # The name of the bookmark to sync with trunk
+] {
+  let bookmark = if ($name | is-empty) {
+    get-current-bookmark 
   } else {
-    if $edit {
-      gh issue create --editor --title $title
+    $name
+  }
+
+  if ($bookmark | is-empty) or $bookmark == trunk {
+    return
+  }
+
+  main sync $bookmark
+  jj bookmark set trunk --to $bookmark
+
+  if (jj log --no-graph --revisions $bookmark --template "description" | is-empty) {
+    jj describe --message $"chore: merge ($bookmark)"
+  }
+
+  jj bookmark delete $bookmark
+  jj git push --bookmark trunk
+  jj git push --deleted
+}
+
+# Create a new development branch
+def "main new" [
+  name?: string # The name of the bookmark to create
+  --from: string # The revision to start from (defaults to the current revision)
+  --issue: int # The issue ID of the issue whose name to use
+] {
+  let name = if ($name | is-empty) {
+    let json = if ($issue | is-empty) {
+      gh issue list --json title
+      | from json
+      | get title
+      | to text
+      | fzf
     } else {
-      gh issue create --body "" --title $title
+      gh issue view --json title $issue
+      | from json
+      | get title
     }
-
-    $title
-  }
-
-  if not $from_current {
-    jj new $revision
-  }
-
-  if $title not-in (get-bookmarks) {
-    jj bookmark create $title
-    jj bookmark track $title --remote origin
   } else {
-    jj rebase --destination $title
-    jj bookmark set $title --to @
+    $name
   }
 
-  jj describe --message $"chore: init ($title)"
+  if ($from | is-not-empty) {
+    jj new $from
+  }
+
+  if $name not-in (get-bookmarks) {
+    jj bookmark create $name
+    jj bookmark track $name
+    jj describe --message $"chore: init ($name)"
+    jj git push
+  } else {
+    print-warning $"bookmark ($name) already exists"
+  }
+}
+
+# Sync development branch with trunk
+def "main sync" [
+  name?: string # The name of the bookmark to sync with trunk
+] {
+  let bookmark = if ($name | is-empty) {
+    get-current-bookmark 
+  } else {
+    $name
+  }
+
+  if ($bookmark | is-empty) or $bookmark == trunk {
+    return
+  }
+
+  jj rebase --branch $bookmark --onto trunk
 }
