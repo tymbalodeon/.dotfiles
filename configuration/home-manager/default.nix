@@ -53,6 +53,7 @@
     [
       ./bat
       ./bottom
+      ./brave
       ./direnv
       ./eza
       ./fastfetch
