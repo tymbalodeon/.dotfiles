@@ -38,7 +38,14 @@
         };
 
         menuExtraClock.IsAnalog = false;
-        NSGlobalDomain._HIHideMenuBar = true;
+
+        NSGlobalDomain = {
+          "com.apple.swipescrolldirection" = false;
+          InitialKeyRepeat = 15;
+          KeyRepeat = 2;
+          _HIHideMenuBar = true;
+        };
+
         SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
       };
 
