@@ -15,48 +15,64 @@ def open-csv [name: string interactive = false] {
   }
 }
 
+# Show pen collection
 def pens [
   --interactive
 ] {
   open-csv pens $interactive
 }
 
+# Show ink collection
 def inks [
   --interactive
 ] {
   open-csv inks $interactive
 }
 
-def currently-inked [] {
+# Show the inks currently recorded as being in each pen
+def currently-inked [
+  --raw # Display as raw text instead of a nushell table
+] {
   let inks = (open-csv inks)
   let currently_inked = (open-csv currently-inked)
 
-  open-csv pens
-  | each {
-      |pen|
+  let currently_inked = (
+    open-csv pens
+    | each {
+        |pen|
 
-      let current_ink = try {
-        let current_ink = (
-          $inks
-          | where index == (
-              $currently_inked
-              | where "pen id" == $pen.index
-              | first
-              | get "ink id"
-            )
-          | first
-        )
+        let current_ink = try {
+          let current_ink = (
+            $inks
+            | where index == (
+                $currently_inked
+                | where "pen id" == $pen.index
+                | first
+                | get "ink id"
+              )
+            | first
+          )
 
-        $"($current_ink.manufacturer) ($current_ink.'model name')"
-      } catch {
-        ""
+          $"($current_ink.manufacturer) ($current_ink.'model name')"
+        } catch {
+          ""
+        }
+
+        {
+          pen: $"($pen.manufacturer) ($pen.'model name') \(($pen.style)\)"
+          ink: $current_ink
+        }
       }
+    | flatten
+    | sort-by ink
+  )
 
-      {
-        pen: $"($pen.manufacturer) ($pen.'model name')"
-        ink: $current_ink
-      }
-    }
-  | flatten
-  | sort-by ink
+  if $raw {
+    $currently_inked
+    | each {|pen| $"($pen.pen) | ($pen.ink)"}
+    | to text --no-newline
+    | column -t -s "|"
+  } else {
+    $currently_inked
+  }
 }
