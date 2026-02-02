@@ -1,5 +1,5 @@
 def create_left_prompt [] {
-  let home =  $nu.home-path
+  let home =  $nu.home-dir
 
   let dir = (
     if (
