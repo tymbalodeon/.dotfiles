@@ -1,3 +1,7 @@
+def "fountain pens" [] {
+  help fountain pens
+}
+
 def get-path [name: string] {
   nb --path $"($name).csv"
   | ansi strip
@@ -162,6 +166,11 @@ def "fountain pens update" [
 }
 
 alias "fp empty" = fountain pens empty
+alias fp = fountain pens
+alias "fp list empty" = fountain pens list empty
+alias "fp list inked" = fountain pens list inked
+alias "fp list inks" = fountain pens list inks
+alias "fp list pens" = fountain pens list pens
 alias "fp ls empty" = fountain pens list empty
 alias "fp ls inked" = fountain pens list inked
 alias "fp ls inks" = fountain pens list inks
