@@ -161,8 +161,9 @@ def "fountain pens update" [
   update-currently-inked-file $pen_id $ink_id
 }
 
-alias "fp empty" = fountain pens list empty
+alias "fp empty" = fountain pens empty
+alias "fp ls empty" = fountain pens list empty
+alias "fp ls inked" = fountain pens list inked
+alias "fp ls inks" = fountain pens list inks
+alias "fp ls pens" = fountain pens list pens
 alias "fp update" = fountain pens update
-alias "fp inked" = fountain pens list inked
-alias "fp inks" = fountain pens list inks
-alias "fp pens" = fountain pens list pens
