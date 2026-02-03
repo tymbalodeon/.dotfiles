@@ -3,6 +3,59 @@
 use print.nu print-error
 use print.nu print-warning
 
+def get-current-bookmark [] {
+  let bookmarks = (
+    jj log --no-graph --template "bookmarks ++ '\n'"
+    | lines
+    | where {is-not-empty}
+    | first
+  )
+
+  let bookmarks = ($bookmarks | split row " ")
+
+  let bookmarks = if ($bookmarks | length) > 1 {
+    let bookmarks = ($bookmarks | where {$in != trunk})
+
+    if ($bookmarks | length) > 1 {
+      print-error "multiple bookmarks are set to this revision. Please pass a value for $name."
+
+      return
+    } else {
+      $bookmarks
+    }
+  } else {
+    $bookmarks
+  }
+
+  $bookmarks
+  | first
+  | str replace * ""
+}
+
+def is-empty-revision [revision?: string] {
+  let revision = if ($revision | is-empty) {
+    "@"
+  } else {
+    $revision
+  }
+
+  jj log --no-graph --revisions $revision --template "empty"
+  | into bool
+}
+
+# Combine current revision with fetched revisions from the remote
+def "main fetch" [] {
+  jj git fetch
+
+  let current_bookmark = (get-current-bookmark)
+
+  if (is-empty-revision) {
+    jj new $current_bookmark
+  } else {
+    jj new @ $current_bookmark
+  }
+}
+
 def get-revision-names [type: string] {
   jj $type list --template "name ++ '\n'"
   | lines
@@ -149,35 +202,6 @@ def "main list all" [] {
   | to text --no-newline
 }
 
-def get-current-bookmark [] {
-  let bookmarks = (
-    jj log --no-graph --template "bookmarks ++ '\n'"
-    | lines
-    | where {is-not-empty}
-    | first
-  )
-
-  let bookmarks = ($bookmarks | split row " ")
-
-  let bookmarks = if ($bookmarks | length) > 1 {
-    let bookmarks = ($bookmarks | where {$in != trunk})
-
-    if ($bookmarks | length) > 1 {
-      print-error "multiple bookmarks are set to this revision. Please pass a value for $name."
-
-      return
-    } else {
-      $bookmarks
-    }
-  } else {
-    $bookmarks
-  }
-
-  $bookmarks
-  | first
-  | str replace * ""
-}
-
 # Merge development branches into trunk
 def "main merge" [
   name?: string # The name of the bookmark to sync with trunk
@@ -315,10 +339,7 @@ def "main tug" [] {
     jj git push
   }
 
-  let revision = if (
-    jj log --no-graph --revisions @ --template "empty"
-    | into bool
-  ) {
+  let revision = if (is-empty-revision) {
     "@-"
   } else {
     "@"
