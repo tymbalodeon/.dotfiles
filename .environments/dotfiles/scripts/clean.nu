@@ -10,7 +10,7 @@ def main [
   --older-than: string # Remove generations older than this amount
 ] {
   if $environments {
-    prune --environments
+    main environments
   }
 
   if $all {
@@ -22,4 +22,9 @@ def main [
   }
 
   optimise
+}
+
+# Remove project-local environments
+def "main environments" [] {
+  prune --environments
 }
