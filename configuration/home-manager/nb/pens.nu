@@ -117,7 +117,7 @@ def select-item [data: list<string>] {
 
 def get-pen [pen_id?: int] {
   if ($pen_id | is-empty) {
-    select-item (pens | each {display-pen})
+    select-item (fountain pens list pens | each {display-pen})
   } else {
     $pen_id
   }
@@ -125,7 +125,7 @@ def get-pen [pen_id?: int] {
 
 def get-ink [ink_id?: int] {
   if ($ink_id | is-empty) {
-    select-item (inks | each {display-ink})
+    select-item (fountain pens list inks | each {display-ink})
   } else {
     $ink_id
   }
