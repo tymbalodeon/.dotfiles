@@ -15,6 +15,34 @@ def open-csv [name: string interactive = false] {
   }
 }
 
+# Clear the current ink record for a pen
+def "fountain pens empty" [
+  pen_id?: int # The id of the pen to update (choose interactively if left blank)
+] {
+  let pen_id = (get-pen $pen_id)
+
+  if ($pen_id | is-empty) {
+    return
+  }
+
+  update-currently-inked-file $pen_id
+}
+
+# List empty pens
+def "fountain pens list empty" [] {
+  fountain pens list pens
+  | where {
+      |pen|
+
+      $pen.index == (
+        open-csv currently-inked
+        | where {$in."ink id" | is-empty}
+        | first
+        | get "pen id"
+      )
+    }
+}
+
 # Show the inks currently recorded as being in each pen
 def "fountain pens list inked" [] {
   let inks = (open-csv inks)
@@ -133,21 +161,8 @@ def "fountain pens update" [
   update-currently-inked-file $pen_id $ink_id
 }
 
-# Clear the current ink record for a pen
-def "fountain pens empty" [
-  pen_id?: int # The id of the pen to update (choose interactively if left blank)
-] {
-  let pen_id = (get-pen $pen_id)
-
-  if ($pen_id | is-empty) {
-    return
-  }
-
-  update-currently-inked-file $pen_id
-}
-
-alias "fp empty" = fountain pens empty
+alias "fp empty" = fountain pens list empty
 alias "fp update" = fountain pens update
-alias "inked" = fountain pens list inked
-alias "inks" = fountain pens list inks
-alias "pens" = fountain pens list pens
+alias "fp inked" = fountain pens list inked
+alias "fp inks" = fountain pens list inks
+alias "fp pens" = fountain pens list pens
