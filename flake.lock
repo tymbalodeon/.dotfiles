@@ -9,11 +9,11 @@
       },
       "locked": {
         "dir": "src",
-        "lastModified": 1770128485,
-        "narHash": "sha256-d31ntTADHlCUsHUfMefm7F49jInFcZGCzGnpN3U6H50=",
+        "lastModified": 1770131532,
+        "narHash": "sha256-Y5XEKNPAEBhhDsJbEBDmLnCjwc1xVK6qTCMGd/fklfM=",
         "owner": "tymbalodeon",
         "repo": "environments",
-        "rev": "425148345a430354a86c8758d0ef01e35631916a",
+        "rev": "a75da9f3df7e3e76524887af3c115fa3defb31b7",
         "type": "github"
       },
       "original": {
@@ -42,11 +42,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1770019141,
-        "narHash": "sha256-VKS4ZLNx4PNrABoB0L8KUpc1fE7CLpQXQs985tGfaCU=",
+        "lastModified": 1770115704,
+        "narHash": "sha256-KHFT9UWOF2yRPlAnSXQJh6uVcgNcWlFqqiAZ7OVlHNc=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "cb369ef2efd432b3cdf8622b0ffc0a97a02f3137",
+        "rev": "e6eae2ee2110f3d31110d5c222cd395303343b08",
         "type": "github"
       },
       "original": {
