@@ -31,6 +31,6 @@ def --env f [
   if ($path | path type) == dir {
     cd $path
   } else {
-    bash -c $"xdg-open ($path) &"
+    bash -c $"xdg-open '($path)' &"
   }
 }
