@@ -1,17 +1,36 @@
 # Interactively search for a directory and cd into it
 def --env f [
-    directory?: # Limit the search to this directory
+  directory?: # Limit the search to this directory
 ] {
-    if ($directory | is-empty) {
-        cd (
-            fd --type directory --hidden . $env.HOME
-            | fzf --exact --scheme path
-        )
+  let directory = if ($directory | is-empty) {
+    $env.HOME
+  } else {
+    $directory
+    | path expand
+  }
+
+  let type = if ($directory | is-empty) {
+    "directory"
+  } else {
+    if ($directory | path type) == dir {
+      "file"
     } else {
-        cd (
-            fd --type directory --hidden . $env.HOME
-            | fzf --exact --where $directory --scheme path
-            | head -n 1
-        )
+      "directory"
     }
+  }
+
+  let path = (
+    $directory
+    | path join (
+        fd --hidden "" $directory
+        | str replace --all $"($directory)/" ""
+        | fzf --exact --scheme path
+      )
+  )
+
+  if ($path | path type) == dir {
+    cd $path
+  } else {
+    start $path
+  }
 }
