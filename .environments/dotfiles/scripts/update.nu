@@ -21,8 +21,6 @@ export def main [
         | where {
             $in not-in [
               nixgl
-              rofi-theme
-              solaar
               wayland-pipewire-idle-inhibit
             ]
           }
@@ -32,7 +30,7 @@ export def main [
     } else if (is-linux) {
       let linux_inputs = (
         $inputs
-        | where {$in != nix-darwin}
+        | where {$in !~ nix-darwin}
       )
 
       if (is-nixos) {
