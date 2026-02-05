@@ -98,6 +98,7 @@
               channel
               hostName
               hostType
+              zen-browser
               ;
 
             home-manager = home-manager-unstable;
@@ -121,6 +122,7 @@
               hostType
               home-manager-unstable
               nixgl
+              zen-browser
               ;
           };
 

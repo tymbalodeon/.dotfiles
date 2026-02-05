@@ -14,9 +14,9 @@ def get-current-bookmark [] {
   let bookmarks = ($bookmarks | split row " ")
 
   let bookmarks = if ($bookmarks | length) > 1 {
-    let bookmarks = ($bookmarks | where {$in != trunk})
+    let development_bookmarks = ($bookmarks | where {$in !~ trunk})
 
-    if ($bookmarks | length) > 1 {
+    if ($development_bookmarks | length) > 1 {
       print-error "multiple bookmarks are set to this revision. Please pass a value for $name."
 
       return
@@ -30,6 +30,7 @@ def get-current-bookmark [] {
   $bookmarks
   | first
   | str replace * ""
+  | str replace ?? ""
 }
 
 def is-empty-revision [revision?: string] {
@@ -273,10 +274,18 @@ def --wrapped "main push" [
 ] {
   let current_bookmark = (get-current-bookmark)
 
+  let sync_status = try {
+    (
+      jj bookmark list
+        --revisions $current_bookmark
+        --template "name ++ '|' ++ synced ++ '\n'"
+    )
+  } catch {
+    return
+  }
+
   if not (
-    jj bookmark list
-      --revisions $current_bookmark
-      --template "name ++ '|' ++ synced ++ '\n'"
+    $sync_status
     | lines
     | uniq
     | first
