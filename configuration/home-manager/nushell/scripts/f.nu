@@ -24,6 +24,9 @@ def --env f [
     | path join (
         fd --hidden "" $directory
         | str replace --all $"($directory)/" ""
+        | lines
+        | sort
+        | to text
         | fzf --exact --scheme path
       )
   )
