@@ -1,9 +1,6 @@
 {
-  channel,
   config,
-  home-manager,
   hostName,
-  hostType,
   lib,
   pkgs,
   ...
@@ -19,18 +16,6 @@
     environment.systemPackages = [
       pkgs.xdg-utils
     ];
-
-    home-manager = {
-      extraSpecialArgs = {
-        inherit
-          channel
-          hostName
-          hostType
-          ;
-      };
-
-      users.${cfg.username} = import cfg.homeFile;
-    };
 
     i18n = let
       locale = "en_US.UTF-8";
@@ -112,14 +97,14 @@
   };
 
   imports = [
-    home-manager.nixosModules.home-manager
-
     ./bluetooth
     ./dropbox
+    ./home-manager
     ./monitors
     ./nautilus
     ./niri
     ./sddm
+    ./solaar
     ./steam
     ./stylix
     ./waybar
@@ -133,11 +118,6 @@
     str = types.str;
     user = import ../users;
   in {
-    homeFile = mkOption {
-      default = ../hosts/${hostType}/${channel}/${hostName}/home.nix;
-      type = types.path;
-    };
-
     name = mkOption {
       default = user.name;
       type = str;

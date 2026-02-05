@@ -17,6 +17,11 @@
 
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    solaar = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:Svenum/Solaar-Flake/main";
+    };
+
     stylix-unstable = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:nix-community/stylix";
@@ -38,6 +43,7 @@
     nix-darwin-unstable,
     nixgl,
     nixpkgs-unstable,
+    solaar,
     stylix-unstable,
     wayland-pipewire-idle-inhibit,
     zen-browser,
@@ -141,6 +147,7 @@
               channel
               hostName
               hostType
+              solaar
               wayland-pipewire-idle-inhibit
               zen-browser
               ;
