@@ -1,26 +1,11 @@
 {
-  channel,
   config,
-  home-manager,
-  hostName,
-  hostType,
   lib,
   ...
 }: {
   config = let
     cfg = config.darwin;
   in {
-    home-manager = {
-      extraSpecialArgs = {
-        inherit
-          channel
-          hostType
-          ;
-      };
-
-      users.${cfg.username} = import cfg.homeFile;
-    };
-
     nix.enable = false;
     security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
 
@@ -61,26 +46,15 @@
     users.users.${cfg.username}.home = /Users/${cfg.username};
   };
 
-  imports = [
-    home-manager.darwinModules.home-manager
-
-    ./stylix
-  ];
+  imports = [./stylix];
 
   options.darwin = let
-    inherit (lib) mkOption types;
-
     user = import ../users;
   in
-    with types; {
-      homeFile = mkOption {
-        default = ../hosts/${hostType}/${channel}/${hostName}/home.nix;
-        type = path;
-      };
-
+    with lib; {
       username = mkOption {
         default = user.username;
-        type = str;
+        type = types.str;
       };
     };
 }
