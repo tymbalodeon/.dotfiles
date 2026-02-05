@@ -26,6 +26,11 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
     };
+
+    zen-browser = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:youwen5/zen-browser-flake";
+    };
   };
 
   outputs = {
@@ -35,6 +40,7 @@
     nixpkgs-unstable,
     stylix-unstable,
     wayland-pipewire-idle-inhibit,
+    zen-browser,
     ...
   }: let
     getChannels = hostType:
@@ -136,6 +142,7 @@
               hostName
               hostType
               wayland-pipewire-idle-inhibit
+              zen-browser
               ;
 
             home-manager = home-manager-unstable;

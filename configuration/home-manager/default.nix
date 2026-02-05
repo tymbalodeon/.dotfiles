@@ -75,6 +75,7 @@
       ./zellij
       ./zk
       ./zoxide
+      ./zen-browser
     ]
     ++ (
       if hostType == "darwin"
