@@ -4,6 +4,8 @@
   home-manager,
   hostType,
   lib,
+  src,
+  system,
   zen-browser,
   ...
 }: {
@@ -15,6 +17,8 @@
         inherit
           channel
           hostType
+          src
+          system
           zen-browser
           ;
       };

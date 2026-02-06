@@ -5,6 +5,8 @@
   hostName,
   hostType,
   lib,
+  src,
+  system,
   zen-browser,
   ...
 }: {
@@ -17,6 +19,8 @@
           channel
           hostName
           hostType
+          src
+          system
           zen-browser
           ;
       };

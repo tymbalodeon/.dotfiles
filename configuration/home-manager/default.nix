@@ -3,6 +3,8 @@
   hostType,
   lib,
   pkgs,
+  src,
+  system,
   ...
 }: {
   config = {
@@ -26,6 +28,7 @@
         rainfrog
         repgrep
         sd
+        src.packages.${system}.default
         tinty
         uutils-coreutils-noprefix
         wiki-tui

@@ -22,6 +22,11 @@
       url = "github:Svenum/Solaar-Flake/main";
     };
 
+    src = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:tymbalodeon/src";
+    };
+
     stylix-unstable = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:nix-community/stylix";
@@ -44,6 +49,7 @@
     nixgl,
     nixpkgs-unstable,
     solaar,
+    src,
     stylix-unstable,
     wayland-pipewire-idle-inhibit,
     zen-browser,
@@ -86,7 +92,7 @@
         hostType,
         hostName,
       }: {
-        ${hostName} = nix-darwin-unstable.lib.darwinSystem {
+        ${hostName} = nix-darwin-unstable.lib.darwinSystem rec {
           system = "x86_64-darwin";
 
           modules = [
@@ -98,6 +104,8 @@
               channel
               hostName
               hostType
+              src
+              system
               zen-browser
               ;
 
@@ -122,8 +130,11 @@
               hostType
               home-manager-unstable
               nixgl
+              src
               zen-browser
               ;
+
+            system = "x86_64-linux";
           };
 
           modules = [./hosts/${hostType}/${channel}/${hostName}/home.nix];
@@ -150,12 +161,14 @@
               hostName
               hostType
               solaar
+              src
               wayland-pipewire-idle-inhibit
               zen-browser
               ;
 
             home-manager = home-manager-unstable;
             stylix = stylix-unstable;
+            system = "x86_64-linux";
           };
         };
       })
