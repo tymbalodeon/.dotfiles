@@ -6,7 +6,6 @@
   hostType,
   lib,
   src,
-  system,
   zen-browser,
   ...
 }: {
@@ -20,7 +19,6 @@
           hostName
           hostType
           src
-          system
           zen-browser
           ;
       };

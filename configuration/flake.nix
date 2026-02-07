@@ -92,7 +92,7 @@
         hostType,
         hostName,
       }: {
-        ${hostName} = nix-darwin-unstable.lib.darwinSystem rec {
+        ${hostName} = nix-darwin-unstable.lib.darwinSystem {
           system = "x86_64-darwin";
 
           modules = [
@@ -105,7 +105,6 @@
               hostName
               hostType
               src
-              system
               zen-browser
               ;
 
@@ -133,8 +132,6 @@
               src
               zen-browser
               ;
-
-            system = "x86_64-linux";
           };
 
           modules = [./hosts/${hostType}/${channel}/${hostName}/home.nix];
@@ -168,7 +165,6 @@
 
             home-manager = home-manager-unstable;
             stylix = stylix-unstable;
-            system = "x86_64-linux";
           };
         };
       })

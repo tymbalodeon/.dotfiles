@@ -5,7 +5,6 @@
   hostType,
   lib,
   src,
-  system,
   zen-browser,
   ...
 }: {
@@ -18,7 +17,6 @@
           channel
           hostType
           src
-          system
           zen-browser
           ;
       };

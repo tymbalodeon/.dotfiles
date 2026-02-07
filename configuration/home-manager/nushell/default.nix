@@ -3,7 +3,6 @@
   lib,
   pkgs,
   src,
-  system,
   ...
 }: {
   config = let
@@ -33,7 +32,7 @@
         '';
 
         extraEnv = let
-          srcPackage = src.packages.${system}.default;
+          srcPackage = src.packages.${pkgs.stdenv.hostPlatform.system}.default;
         in ''
           source ${./prompt.nu}
 
