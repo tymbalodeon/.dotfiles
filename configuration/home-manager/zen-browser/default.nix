@@ -26,12 +26,11 @@
                 };
               }
             ) [
-              "catppuccin-mocha-lavender-git"
               "darkreader"
               "proton-pass"
               "refined-github-"
               "subscription-feed-filter"
-              "tridactyl-vim"
+              "surfingkeys_ff"
               "undistracted-main"
             ]);
 

@@ -55,6 +55,7 @@
     [
       ./bat
       ./bottom
+      ./brave
       ./direnv
       ./eza
       ./fastfetch
@@ -74,9 +75,9 @@
       ./yazi
       ./zathura
       ./zellij
+      ./zen-browser
       ./zk
       ./zoxide
-      ./zen-browser
     ]
     ++ (
       if hostType == "darwin"
