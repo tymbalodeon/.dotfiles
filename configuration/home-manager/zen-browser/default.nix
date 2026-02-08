@@ -26,6 +26,7 @@
                 };
               }
             ) [
+              "adguard-adblocker"
               "darkreader"
               "proton-pass"
               "refined-github-"
