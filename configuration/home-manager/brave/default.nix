@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   programs.chromium = {
-    enable =true;
+    enable = true;
     package = pkgs.brave;
   };
 }
