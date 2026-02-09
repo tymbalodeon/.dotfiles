@@ -41,10 +41,21 @@
 
     news.display = "silent";
 
-    nix.gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
+    nix = {
+      extraOptions = "warn-dirty = false";
+
+      gc = {
+        automatic = true;
+        dates = "weekly";
+        options = "--delete-older-than 7d";
+      };
+
+      package = pkgs.nix;
+
+      settings.experimental-features = [
+        "flakes"
+        "nix-command"
+      ];
     };
 
     nixpkgs.config.allowUnfree = true;
