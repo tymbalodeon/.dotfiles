@@ -1,6 +1,10 @@
 {
   programs.zathura = {
     enable = true;
-    options.recolor = true;
+
+    options = {
+      selection-clipboard = "clipboard";
+      recolor = true;
+    };
   };
 }
