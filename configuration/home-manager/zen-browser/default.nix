@@ -11,29 +11,9 @@
         extraPolicies = {
           DisableTelemetry = true;
 
-          ExtensionSettings = builtins.listToAttrs (map (
-              shortId: {
-                name =
-                  (builtins.fromJSON
-                    (builtins.readFile (builtins.fetchurl
-                      {
-                        url = "https://addons.mozilla.org/api/v5/addons/addon/${shortId}/";
-                      }))).guid;
-
-                value = {
-                  installation_mode = "normal_installed";
-                  install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/${shortId}/latest.xpi";
-                };
-              }
-            ) [
-              "adguard-adblocker"
-              "darkreader"
-              "proton-pass"
-              "refined-github-"
-              "subscription-feed-filter"
-              "surfingkeys_ff"
-              "undistracted-main"
-            ]);
+          ExtensionSettings = builtins.listToAttrs (
+            builtins.fromJSON (builtins.readFile ./extensions.json)
+          );
 
           SearchEngines = {
             Add = [

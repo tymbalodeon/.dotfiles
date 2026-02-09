@@ -1,0 +1,51 @@
+[
+  {
+    "name": "adguardadblocker@adguard.com",
+    "value": {
+      "installation_mode": "normal_installed",
+      "install_url": "https://addons.mozilla.org/en-US/firefox/downloads/latest/adguard-adblocker/latest.xpi"
+    }
+  },
+  {
+    "name": "addon@darkreader.org",
+    "value": {
+      "installation_mode": "normal_installed",
+      "install_url": "https://addons.mozilla.org/en-US/firefox/downloads/latest/darkreader/latest.xpi"
+    }
+  },
+  {
+    "name": "78272b6fa58f4a1abaac99321d503a20@proton.me",
+    "value": {
+      "installation_mode": "normal_installed",
+      "install_url": "https://addons.mozilla.org/en-US/firefox/downloads/latest/proton-pass/latest.xpi"
+    }
+  },
+  {
+    "name": "{a4c4eda4-fb84-4a84-b4a1-f7c1cbf2a1ad}",
+    "value": {
+      "installation_mode": "normal_installed",
+      "install_url": "https://addons.mozilla.org/en-US/firefox/downloads/latest/refined-github-/latest.xpi"
+    }
+  },
+  {
+    "name": "{7d37f4c3-c6cf-4b18-a748-ed4a6e7eb281}",
+    "value": {
+      "installation_mode": "normal_installed",
+      "install_url": "https://addons.mozilla.org/en-US/firefox/downloads/latest/subscription-feed-filter/latest.xpi"
+    }
+  },
+  {
+    "name": "{a8332c60-5b6d-41ee-bfc8-e9bb331d34ad}",
+    "value": {
+      "installation_mode": "normal_installed",
+      "install_url": "https://addons.mozilla.org/en-US/firefox/downloads/latest/surfingkeys_ff/latest.xpi"
+    }
+  },
+  {
+    "name": "{991d8f63-23af-40a1-9011-21a68091be76}",
+    "value": {
+      "installation_mode": "normal_installed",
+      "install_url": "https://addons.mozilla.org/en-US/firefox/downloads/latest/undistracted-main/latest.xpi"
+    }
+  }
+]

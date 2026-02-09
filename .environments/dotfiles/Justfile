@@ -24,6 +24,10 @@ alias configs := configurations
 @diff *args:
     .environments/dotfiles/scripts/diff.nu {{ args }}
 
+# Fetch browser extension data
+@extensions *args:
+    .environments/dotfiles/scripts/extensions.nu {{ args }}
+
 # List configuration files
 [no-cd]
 @files *args:
