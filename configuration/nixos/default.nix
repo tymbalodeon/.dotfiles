@@ -41,27 +41,10 @@
       networkmanager.enable = true;
     };
 
-    nix = {
-      extraOptions = "warn-dirty = false";
-
-      gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 7d";
-      };
-
-      settings = {
-        experimental-features = [
-          "flakes"
-          "nix-command"
-        ];
-
-        trusted-users = [
-          "root"
-          cfg.username
-        ];
-      };
-    };
+    nix.settings.trusted-users = [
+      "root"
+      cfg.username
+    ];
 
     nixpkgs.config.allowUnfree = true;
     programs.nix-ld.enable = true;
@@ -103,6 +86,7 @@
     ./monitors
     ./nautilus
     ./niri
+    ../nix
     ./sddm
     ./solaar
     ./steam

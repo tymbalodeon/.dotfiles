@@ -40,24 +40,6 @@
     };
 
     news.display = "silent";
-
-    nix = {
-      extraOptions = "warn-dirty = false";
-
-      gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 7d";
-      };
-
-      package = pkgs.nix;
-
-      settings.experimental-features = [
-        "flakes"
-        "nix-command"
-      ];
-    };
-
     nixpkgs.config.allowUnfree = true;
     programs.home-manager.enable = true;
   };
@@ -79,6 +61,7 @@
       ./jujutsu
       ./kitty
       ./nb
+      ../nix
       ./ripgrep
       ./shell
       ./taskwarrior
