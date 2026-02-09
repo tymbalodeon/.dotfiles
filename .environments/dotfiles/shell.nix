@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   packages = with pkgs; [
+    helix
     hyprls
     kdlfmt
     ormolu

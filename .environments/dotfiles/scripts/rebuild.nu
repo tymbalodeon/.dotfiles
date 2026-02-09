@@ -50,7 +50,7 @@ def home-manager [
   host: string
   debug: bool
 ] {
-  let args = [--flake $host]
+  let args = [switch --flake $host]
 
   let args = if $debug {
     $args
@@ -59,7 +59,11 @@ def home-manager [
     $args
   }
 
-  ^home-manager switch ...$args
+  if (^which home-manager | is-empty) {
+    nix run home-manager/master -- ...$args
+  } else {
+    ^home-manager ...$args
+  }
 }
 
 # Rebuild and switch to (or --test) a configuration
