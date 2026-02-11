@@ -5,5 +5,6 @@
     ../mpv
     ../rclone
     ../storage
+    ../zen-browser
   ];
 }

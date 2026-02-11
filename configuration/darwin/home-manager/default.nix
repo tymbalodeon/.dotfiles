@@ -2,10 +2,10 @@
   channel,
   config,
   home-manager,
+  hostName,
   hostType,
   lib,
   src,
-  zen-browser,
   ...
 }: {
   config = let
@@ -17,7 +17,6 @@
           channel
           hostType
           src
-          zen-browser
           ;
       };
 

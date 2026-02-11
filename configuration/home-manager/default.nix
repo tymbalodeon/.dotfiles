@@ -69,7 +69,6 @@
       ./yazi
       ./zathura
       ./zellij
-      ./zen-browser
       ./zk
       ./zoxide
     ]

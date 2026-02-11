@@ -19,5 +19,5 @@
         "nix-command"
       ];
     }
-    // lib.optionalAttrs (hostType == "home-manager") {package = pkgs.nix;};
+    // lib.optionalAttrs (hostType != "nixos") {package = pkgs.nix;};
 }

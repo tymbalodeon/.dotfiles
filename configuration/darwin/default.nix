@@ -46,7 +46,10 @@
     users.users.${cfg.username}.home = /Users/${cfg.username};
   };
 
-  imports = [./stylix];
+  imports = [
+    ./home-manager
+    ./stylix
+  ];
 
   options.darwin = let
     user = import ../users;
