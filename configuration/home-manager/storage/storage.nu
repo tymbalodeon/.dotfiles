@@ -153,6 +153,8 @@ def "storage download" [
   --force (-f) # Re-download file even if it already exists locally
   --interactive (-i) # Interactively select the file or directory to download
   --linked # (Dropbox only) Download the file using the `maestral` service
+  --quiet # Suppress output
+  --to: string # (Not compatible with `--linked`) Download to this directory instead fo the standard one
 ] {
   let parsed_remote = (get-remote $remote)
   let path = (get-path $interactive $remote $path)
@@ -162,19 +164,29 @@ def "storage download" [
     maestral excluded remove $path
   } else {
     let remote_path = (get-remote-path $interactive $parsed_remote $path)
-    let local_path = (get-local-path $parsed_remote $path)
 
-    if not $force and ($local_path | path exists) {
+    let local_path = if ($to | is-not-empty) {
+      if ($to | path type) != dir {
+        print-error "`--to` must be a directory"
+      } else {
+        $to
+      }
+    } else {
+      (get-local-path $parsed_remote $path)
+    }
+
+    if not $force and ($to | is-empty) and ($local_path | path exists) {
       (
-        print
-          --stderr
+        print-error
           $"($local_path) already exists. Use `--force` to download again."
       )
 
       return
     }
 
-    let parent = if (
+    let parent = if ($to | is-not-empty) {
+      $to
+    } else if (
       rclone lsjson $remote_path
       | from json
       | is-empty
@@ -188,7 +200,9 @@ def "storage download" [
     let result = (rclone sync $remote_path $parent | complete) 
 
     if $result.exit_code == 0 {
-      print $"Downloaded ($local_path)"
+      if not $quiet {
+        print $"Downloaded ($remote_path) to ($parent)"
+      }
     } else {
       print-error $"could not find remote file \"($remote_path)\""
     }
