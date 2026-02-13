@@ -3,7 +3,6 @@
   hostType,
   lib,
   pkgs,
-  src,
   ...
 }: {
   config = {
@@ -27,7 +26,6 @@
         rainfrog
         repgrep
         sd
-        src.packages.${pkgs.stdenv.hostPlatform.system}.default
         tinty
         uutils-coreutils-noprefix
         wiki-tui
@@ -64,6 +62,7 @@
       ../nix
       ./ripgrep
       ./shell
+      ./src
       ./taskwarrior
       ./tealdeer
       ./yazi

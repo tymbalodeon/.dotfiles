@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  src,
   ...
 }: {
   config = let
@@ -10,9 +9,7 @@
   in {
     home.packages = [pkgs.fontconfig];
 
-    programs.nushell = let
-      srcHook = "~/.src-cd.nu";
-    in
+    programs.nushell =
       {
         enable = true;
         envFile.source = ./env.nu;
@@ -27,13 +24,9 @@
                   (builtins.readDir ./scripts)
                 ))
                 ++ cfg.extraScripts))}
-
-          source ${srcHook}
         '';
 
-        extraEnv = let
-          srcPackage = src.packages.${pkgs.stdenv.hostPlatform.system}.default;
-        in ''
+        extraEnv = ''
           source ${./prompt.nu}
 
           $env.PROMPT_COMMAND = {|| create_left_prompt}
@@ -41,8 +34,6 @@
           $env.PROMPT_INDICATOR_VI_INSERT = "> "
           $env.PROMPT_INDICATOR_VI_NORMAL = ">> "
           $env.PROMPT_MULTILINE_INDICATOR = "::: "
-
-          ${srcPackage}/bin/src hook | save --force ${srcHook}
         '';
 
         plugins = with pkgs.nushellPlugins; [
