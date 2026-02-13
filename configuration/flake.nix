@@ -1,8 +1,18 @@
 {
   inputs = {
+    home-manager-25_05 = {
+      inputs.nixpkgs.follows = "nixpkgs-25_05";
+      url = "github:nix-community/home-manager/release-25.05";
+    };
+
     home-manager-unstable = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:nix-community/home-manager";
+    };
+
+    nix-darwin-25_05 = {
+      inputs.nixpkgs.follows = "nixpkgs-25_05";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
     };
 
     nix-darwin-unstable = {
@@ -15,6 +25,7 @@
       url = "github:nix-community/nixGL";
     };
 
+    nixpkgs-25_05.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     solaar = {
@@ -25,6 +36,11 @@
     src = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:tymbalodeon/src";
+    };
+
+    stylix-25_05 = {
+      inputs.nixpkgs.follows = "nixpkgs-25_05";
+      url = "github:nix-community/stylix/release-25.05";
     };
 
     stylix-unstable = {
@@ -44,12 +60,16 @@
   };
 
   outputs = {
+    home-manager-25_05,
     home-manager-unstable,
+    nix-darwin-25_05,
     nix-darwin-unstable,
     nixgl,
+    nixpkgs-25_05,
     nixpkgs-unstable,
     solaar,
     src,
+    stylix-25_05,
     stylix-unstable,
     wayland-pipewire-idle-inhibit,
     zen-browser,
@@ -92,26 +112,47 @@
         hostType,
         hostName,
       }: {
-        ${hostName} = nix-darwin-unstable.lib.darwinSystem {
-          system = "x86_64-darwin";
+        ${hostName} = let
+          nix-darwin =
+            if channel == stable
+            then nix-darwin-25_05
+            else nix-darwin-unstable;
 
-          modules = [
-            ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
-          ];
+          stable = "25_05";
+        in
+          nix-darwin.lib.darwinSystem {
+            system = "x86_64-darwin";
 
-          specialArgs = {
-            inherit
-              channel
-              hostName
-              hostType
-              src
-              zen-browser
-              ;
+            modules = [
+              ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
+            ];
 
-            home-manager = home-manager-unstable;
-            stylix = stylix-unstable;
+            specialArgs = {
+              inherit
+                channel
+                hostName
+                hostType
+                src
+                zen-browser
+                ;
+
+              home-manager = let
+                home-manager =
+                  if channel == stable
+                  then home-manager-25_05
+                  else home-manager-unstable;
+              in
+                home-manager;
+
+              stylix = let
+                stylix =
+                  if channel == stable
+                  then stylix-25_05
+                  else stylix-unstable;
+              in
+                stylix;
+            };
           };
-        };
       })
       "darwin";
 

@@ -3,8 +3,8 @@
 
   imports = [
     ../mpv
-    ../rclone
     ../storage
+    ../taskwarrior
     ../zen-browser
   ];
 }

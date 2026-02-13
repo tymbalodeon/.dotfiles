@@ -1,16 +1,18 @@
 {
+  channel,
   hostType,
   lib,
   pkgs,
   ...
 }: {
-  nix =
+  nix = let
+    inherit (lib) optionalAttrs;
+  in
     {
       extraOptions = "warn-dirty = false";
 
       gc = {
         automatic = true;
-        dates = "weekly";
         options = "--delete-older-than 7d";
       };
 
@@ -19,5 +21,6 @@
         "nix-command"
       ];
     }
-    // lib.optionalAttrs (hostType != "nixos") {package = pkgs.nix;};
+    // optionalAttrs (hostType != "nixos") {package = pkgs.nix;}
+    // optionalAttrs (channel != "25_05") {gc.dates = "weekly";};
 }
