@@ -59,4 +59,18 @@
       }
     )
   ];
+
+  xdg.mimeApps = {
+    defaultApplications = let
+      zenBrowser = "zen.desktop";
+    in {
+      "text/html" = zenBrowser;
+      "x-scheme-handler/about" = zenBrowser;
+      "x-scheme-handler/http" = zenBrowser;
+      "x-scheme-handler/https" = zenBrowser;
+      "x-scheme-handler/unknown" = zenBrowser;
+    };
+
+    enable = true;
+  };
 }
