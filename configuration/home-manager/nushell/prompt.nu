@@ -1,4 +1,5 @@
 def create_left_prompt [] {
+  # TODO: use `home-path` on 25.05
   let home =  $nu.home-dir
 
   let dir = (

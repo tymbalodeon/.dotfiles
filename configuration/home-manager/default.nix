@@ -1,4 +1,5 @@
 {
+  channel,
   config,
   hostType,
   lib,
@@ -62,7 +63,6 @@
       ../nix
       ./ripgrep
       ./shell
-      # ./src
       ./tealdeer
       ./yazi
       ./zathura
@@ -77,6 +77,11 @@
       then [./home-manager]
       else if hostType == "nixos"
       then [./nixos]
+      else []
+    )
+    ++ (
+      if channel == "unstable"
+      then [./src]
       else []
     );
 
