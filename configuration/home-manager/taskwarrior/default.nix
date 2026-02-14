@@ -93,7 +93,7 @@
         | to json
         | save --force $temporary_file
 
-        storage upload --remote dropbox $temporary_file $DUMP_FILE
+        storage upload --remote dropbox $temporary_file $DUMP_FILE out+err> /dev/null
         rm $temporary_file
       }
 
