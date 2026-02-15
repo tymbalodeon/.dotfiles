@@ -183,6 +183,10 @@ in {
             ${binds}
         }
 
+        cursor {
+          hide-after-inactive-ms 1000
+        }
+
         hotkey-overlay {
             skip-at-startup
         }
