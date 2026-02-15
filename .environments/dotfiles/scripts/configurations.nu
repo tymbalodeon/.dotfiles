@@ -18,9 +18,13 @@ export def get-current-system [] {
   } else {
     (uname).kernel-name
   }
-
-  $system
   | str downcase
+
+  if ($system not-in [darwin nixos]) {
+    "home-manager"
+  } else {
+    $system
+  }
 }
 
 export def is-nixos [] {
@@ -32,18 +36,14 @@ export def is-linux [] {
 }
 
 export def get-all-systems [] {
-  ls --short-names configuration/systems
+  ls --short-names configuration/hosts
   | get name
 }
 
 export def get-hosts [system: string] {
-  ls --short-names (
-    "configuration"
-    | path join systems
-    | path join $system
-    | path join hosts
-  )
+  ls --short-names $"configuration/hosts/($system)"
   | get name
+  | where {($in | path split | length) == 5}
 }
 
 export def get-all-hosts [] {
@@ -67,24 +67,10 @@ export def get-all-configurations [] {
 }
 
 export def get-configuration-data [] {
-  let systems = (get-all-systems)
-
-  mut system_hosts = {}
-
-  for system in $systems {
-    $system_hosts = (
-      $system_hosts
-      | insert $system (
-          get-hosts $system
-        )
-    )
-  }
-
-  {
-    systems: $systems
-    hosts: (get-all-hosts)
-    system_hosts: $system_hosts
-  }
+  fd "" configuration/hosts
+  | lines
+  | where {($in | path split | length) == 5}
+  | parse "configuration/hosts/{system}/{channel}/{host}/"
 }
 
 export def get-built-host-name [] {
@@ -146,6 +132,13 @@ export def get-file-path [file: string] {
   | str replace --regex 'hosts/[^/]+/' ""
 }
 
+def get-system-hosts [system: string] {
+  get-configuration-data
+  | where system == $system
+  | get host
+  | sort
+}
+
 # List configurations
 export def main [
   system?: string # List hosts for $system
@@ -163,41 +156,36 @@ export def main [
     return (get-current-system)
   }
 
-  let configuration_data = (get-configuration-data)
-
   let output = if $current_system_hosts {
-    $configuration_data.system_hosts
-    | get (get-current-system)
+    get-system-hosts (get-current-system)
   } else if $systems {
-    $configuration_data.systems
+    (get-configuration-data).system
+    | uniq
+    | sort
   } else if ($system | is-not-empty) {
     validate-system-name $system
 
-    $configuration_data.system_hosts
-    | get $system
+    (get-configuration-data)
+    | where system == $system
+    | get host
   } else if $hosts {
-    $configuration_data.hosts
+    (get-configuration-data).host
   } else {
     null
   }
 
   if ($output | is-not-empty) {
-    return ($output | str join "\n")
+    return ($output | to text --no-newline)
   }
 
   let colors = (get-colors (get-all-configurations) (get-all-systems))
+  let configuration_data = (get-configuration-data)
 
-  $configuration_data.systems
+  $configuration_data
   | each {
-      |host_system|
+      |host|
 
-      $configuration_data.system_hosts
-      | get $host_system
-      | each {
-          |host|
-
-          $"($host) (get-colorized-configuration-name $host_system $colors)"
-        }
+      $"($host.host) (get-colorized-configuration-name $host.system $colors)"
     }
   | flatten
   | sort
