@@ -1,4 +1,4 @@
 {
-  imports = [../paneru];
+  imports = [../aerospace];
   kitty.font_size = 11.0;
 }

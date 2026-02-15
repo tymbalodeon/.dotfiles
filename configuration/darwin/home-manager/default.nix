@@ -5,8 +5,8 @@
   hostName,
   hostType,
   lib,
-  paneru,
   src,
+  tsundeoku,
   ...
 }: {
   config = let
@@ -17,8 +17,8 @@
         inherit
           channel
           hostType
-          paneru
           src
+          tsundeoku
           ;
       };
 

@@ -28,11 +28,6 @@
     nixpkgs-25_05.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    paneru = {
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-      url = "github:karinushka/paneru";
-    };
-
     solaar = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:Svenum/Solaar-Flake/main";
@@ -53,6 +48,11 @@
       url = "github:nix-community/stylix";
     };
 
+    tsundeoku = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:tymbalodeon/tsundeoku";
+    };
+
     wayland-pipewire-idle-inhibit = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
@@ -71,11 +71,11 @@
     nix-darwin-unstable,
     nixgl,
     nixpkgs-unstable,
-    paneru,
     solaar,
     src,
     stylix-25_05,
     stylix-unstable,
+    tsundeoku,
     wayland-pipewire-idle-inhibit,
     zen-browser,
     ...
@@ -137,9 +137,8 @@
                 channel
                 hostName
                 hostType
-                paneru
                 src
-                zen-browser
+                tsundeoku
                 ;
 
               home-manager = let
