@@ -5,6 +5,7 @@
   hostName,
   hostType,
   lib,
+  paneru,
   src,
   ...
 }: {
@@ -16,6 +17,7 @@
         inherit
           channel
           hostType
+          paneru
           src
           ;
       };

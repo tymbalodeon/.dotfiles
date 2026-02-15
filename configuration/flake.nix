@@ -28,6 +28,11 @@
     nixpkgs-25_05.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    paneru = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:karinushka/paneru";
+    };
+
     solaar = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:Svenum/Solaar-Flake/main";
@@ -65,8 +70,8 @@
     nix-darwin-25_05,
     nix-darwin-unstable,
     nixgl,
-    nixpkgs-25_05,
     nixpkgs-unstable,
+    paneru,
     solaar,
     src,
     stylix-25_05,
@@ -132,6 +137,7 @@
                 channel
                 hostName
                 hostType
+                paneru
                 src
                 zen-browser
                 ;
