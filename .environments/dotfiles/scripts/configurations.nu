@@ -27,12 +27,16 @@ export def get-current-system [] {
   }
 }
 
-export def is-nixos [] {
-  (get-current-system) == nixos
+export def is-darwin [] {
+  (get-current-system) == darwin
 }
 
-export def is-linux [] {
+export def is-home-manager [] {
   (get-current-system) == home-manager
+}
+
+export def is-nixos [] {
+  (get-current-system) == nixos
 }
 
 export def get-all-systems [] {
