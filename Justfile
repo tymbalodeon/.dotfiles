@@ -103,7 +103,6 @@ alias diff := dotfiles::diff
 alias extensions := dotfiles::extensions
 alias files := dotfiles::files
 alias generations := dotfiles::generations
-alias hosts := dotfiles::hosts
 alias inputs := dotfiles::inputs
 alias leaks := git::leaks
 alias optimise := dotfiles::optimise

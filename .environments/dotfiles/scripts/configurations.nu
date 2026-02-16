@@ -100,15 +100,6 @@ Available ($type)s:
     }
 }
 
-def validate-system-name [system?: string] {
-  if ($system | is-empty) {
-    return
-  }
-
-  if ($system not-in (get-all-systems)) {
-    raise_configuration_error $system --systems
-  }
-}
 
 export def validate-configuration-name [
   configuration?: string
@@ -140,44 +131,65 @@ def get-system-hosts [system: string] {
 }
 
 # List configurations
-export def main [
-  system?: string # List hosts for $system
-  --current-host # View current host
-  --current-system # View current system
-  --current-system-hosts # List hosts for current system
-  --hosts # List hosts
-  --systems # List systems
-] {
-  if $current_host {
-    return (get-built-host-name)
-  }
+export def main [] {
+  main hosts
+}
 
-  if $current_system {
-    return (get-current-system)
-  }
+# List darwin hosts
+export def "main darwin" [] {
+  get-configuration-data
+  | where system == darwin
+  | get host
+  | to text --no-newline
+}
 
-  let output = if $current_system_hosts {
-    get-system-hosts (get-current-system)
-  } else if $systems {
-    (get-configuration-data).system
-    | uniq
-    | sort
-  } else if ($system | is-not-empty) {
-    validate-system-name $system
+# List home-manager hosts
+export def "main home-manager" [] {
+  get-configuration-data
+  | where system == home-manager
+  | get host
+  | to text --no-newline
+}
 
-    (get-configuration-data)
-    | where system == $system
-    | get host
-  } else if $hosts {
-    (get-configuration-data).host
-  } else {
-    null
-  }
+# List nixos hosts
+export def "main nixos" [] {
+  get-configuration-data
+  | where system == nixos
+  | get host
+  | to text --no-newline
+}
 
-  if ($output | is-not-empty) {
-    return ($output | to text --no-newline)
-  }
+# List current configuration
+export def "main current" [] {
+  let colors = (get-colors (get-all-configurations) (get-all-systems))
 
+  let host = (
+    get-configuration-data
+    | where host == (get-built-host-name)
+    | first
+  )
+
+  $"($host.host) (get-colorized-configuration-name $host.system $colors)"
+}
+
+# List current host
+export def "main current host" [] {
+  get-built-host-name
+}
+
+# List current system
+export def "main current system" [] {
+  get-current-system 
+}
+
+# List hosts for current system
+export def "main current system hosts" [] {
+  get-system-hosts (get-current-system)
+  | to text --no-newline
+}
+
+# List hosts
+export def "main hosts" [] {
   let colors = (get-colors (get-all-configurations) (get-all-systems))
   let configuration_data = (get-configuration-data)
 
@@ -191,4 +203,13 @@ export def main [
   | sort
   | to text
   | column -t
+}
+
+# List systems
+export def "main systems" [] {
+  get-configuration-data
+  | get system
+  | uniq
+  | sort
+  | to text --no-newline
 }
