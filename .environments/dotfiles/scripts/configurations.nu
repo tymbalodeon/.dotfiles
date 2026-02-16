@@ -135,6 +135,16 @@ export def main [] {
   main hosts
 }
 
+# List channels
+export def "main channels" [] {
+  get-configuration-data
+  | get channel
+  | uniq
+  | str replace _ .
+  | sort
+  | to text --no-newline
+}
+
 # List darwin hosts
 export def "main darwin" [] {
   get-configuration-data
@@ -159,6 +169,22 @@ export def "main nixos" [] {
   | to text --no-newline
 }
 
+def colorize-host [
+  colors: table<configuration: string, name: string>
+  host: record<channel: string, host: string, system: string>
+] {
+  let system_and_channel = $"($host.system) \((
+    $host.channel
+    | str replace _ .
+  )\)"
+
+  let system_and_channel = (
+    get-colorized-configuration-name ($system_and_channel) $colors
+  )
+
+  $"($host.host) ($system_and_channel)"
+}
+
 # List current configuration
 export def "main current" [] {
   let colors = (get-colors (get-all-configurations) (get-all-systems))
@@ -169,7 +195,15 @@ export def "main current" [] {
     | first
   )
 
-  $"($host.host) (get-colorized-configuration-name $host.system $colors)"
+  colorize-host $colors $host
+}
+
+# List current channel
+export def "main current channel" [] {
+  get-configuration-data
+  | where host == (get-built-host-name)
+  | first
+  | get channel
 }
 
 # List current host
@@ -194,11 +228,7 @@ export def "main hosts" [] {
   let configuration_data = (get-configuration-data)
 
   $configuration_data
-  | each {
-      |host|
-
-      $"($host.host) (get-colorized-configuration-name $host.system $colors)"
-    }
+  | each {|host| colorize-host $colors $host}
   | flatten
   | sort
   | to text

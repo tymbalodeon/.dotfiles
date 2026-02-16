@@ -22,7 +22,12 @@ export def get-colorized-configuration-name [
     | where {
         |color|
 
-        $color.configuration == $configuration_name
+        $color.configuration == (
+          $configuration_name
+          | split row "\("
+          | first
+          | str trim
+        )
       }
     | first
     | get name
