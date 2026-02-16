@@ -63,6 +63,7 @@
       ../nix
       ./ripgrep
       ./shell
+      ./taskwarrior
       ./tealdeer
       ./yazi
       ./zathura

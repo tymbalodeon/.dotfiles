@@ -3,8 +3,6 @@
 
   imports = [
     ../mpv
-    ../storage
-    ../taskwarrior
     ../zen-browser
   ];
 }
