@@ -143,7 +143,6 @@
                 hostType
                 src
                 tsundeoku
-                zen-browser
                 ;
 
               home-manager = let
