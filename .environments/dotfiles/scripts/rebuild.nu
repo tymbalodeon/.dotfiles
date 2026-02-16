@@ -13,7 +13,16 @@ def darwin-rebuild [
   host: string
   debug: bool
 ] {
-  let args = [switch --flake $host]
+  let command = if (
+    which /run/current-system/sw/bin/darwin-rebuild
+    | is-empty
+  ) {
+    "nix run 'nix-darwin/master#darwin-rebuild' --"
+  } else {
+    "/run/current-system/sw/bin/darwin-rebuild"
+  }
+
+  let args = [switch --flake $host --impure]
 
   let args = if $debug {
     $args
@@ -22,11 +31,7 @@ def darwin-rebuild [
     $args
   }
 
-  if (which /run/current-system/sw/bin/darwin-rebuild | is-empty) {
-    sudo nix run "nix-darwin/master#darwin-rebuild" -- ...$args
-  } else {
-    sudo /run/current-system/sw/bin/darwin-rebuild ...$args
-  }
+  sudo --preserve-env="STYLIX_THEME" $command ...$args
 }
 
 def nixos-rebuild [
@@ -66,6 +71,18 @@ def home-manager [
   }
 }
 
+def "tinty list" [] {
+  try {
+    ^tinty list out+err> /dev/null
+  } catch {
+    tinty install
+  }
+
+  ^tinty list --json
+  | from json
+  | where {$in.system == base16}
+}
+
 # Rebuild and switch to (or --test) a configuration
 export def main [
     host?: string # The target host configuration (auto-detected if not specified)
@@ -90,11 +107,7 @@ export def main [
     if not $choose_theme and not $random_theme {
       $theme
     } else {
-      let themes = (
-        tinty list --json
-        | from json
-        | where {$in.system == base16}
-      )
+      let themes = (tinty list)
 
       let themes = if $dark_theme  {
         $themes

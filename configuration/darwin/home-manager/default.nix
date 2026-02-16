@@ -6,6 +6,7 @@
   hostType,
   lib,
   src,
+  tsundeoku,
   ...
 }: {
   config = let
@@ -17,6 +18,7 @@
           channel
           hostType
           src
+          tsundeoku
           ;
       };
 

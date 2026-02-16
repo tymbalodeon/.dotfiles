@@ -1,11 +1,13 @@
 {
   config,
+  hostName,
   lib,
   ...
 }: {
   config = let
     cfg = config.darwin;
   in {
+    networking.hostName = hostName;
     nix.enable = false;
     security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
 
@@ -20,9 +22,20 @@
         dock = {
           autohide = true;
           mineffect = "scale";
+          show-recents = false;
         };
 
-        menuExtraClock.IsAnalog = false;
+        finder = {
+          AppleShowAllExtensions = true;
+          FXEnableExtensionChangeWarning = false;
+          FXPreferredViewStyle = "Nlsv";
+          NewWindowTarget = "Other";
+          NewWindowTargetPath = "file:///Users/${cfg.username}";
+          ShowStatusBar = true;
+        };
+
+        iCal."first day of week" = "Monday";
+        loginwindow.autoLoginUser = cfg.username;
 
         NSGlobalDomain = {
           "com.apple.swipescrolldirection" = false;
@@ -31,7 +44,13 @@
           _HIHideMenuBar = true;
         };
 
+        screensaver.askForPassword = false;
         SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
+
+        trackpad = {
+          Clicking = true;
+          TrackpadRightClick = true;
+        };
       };
 
       keyboard = {
@@ -40,6 +59,7 @@
       };
 
       primaryUser = cfg.username;
+      startup.chime = false;
       stateVersion = 6;
     };
 

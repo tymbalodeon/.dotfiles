@@ -1,3 +1,6 @@
 {
-  imports = [../../../../home-manager];
+  imports = [
+    ../../../../home-manager
+    # ../../../../home-manager/tsundeoku
+  ];
 }

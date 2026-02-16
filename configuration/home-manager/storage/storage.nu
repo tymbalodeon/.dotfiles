@@ -147,7 +147,7 @@ def "storage browse local" [
 }
 
 # Download files from remote
-def "storage download" [
+export def "storage download" [
   remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
   --force (-f) # Re-download file even if it already exists locally
@@ -473,7 +473,7 @@ def "storage setup" [] {
 }
 
 # Upload a file to remote
-def "storage upload" [
+export def "storage upload" [
   local_path?: string # The local file to upload
   remote_path?: string # The remote path to upload to
   --remote: string # The name of the remote service

@@ -48,14 +48,23 @@
       url = "github:nix-community/stylix";
     };
 
+    tsundeoku = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:tymbalodeon/tsundeoku";
+    };
+
     wayland-pipewire-idle-inhibit = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
     };
 
     zen-browser = {
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-      url = "github:youwen5/zen-browser-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        home-manager.follows = "home-manager-unstable";
+      };
+
+      url = "github:0xc000022070/zen-browser-flake";
     };
   };
 
@@ -65,12 +74,12 @@
     nix-darwin-25_05,
     nix-darwin-unstable,
     nixgl,
-    nixpkgs-25_05,
     nixpkgs-unstable,
     solaar,
     src,
     stylix-25_05,
     stylix-unstable,
+    tsundeoku,
     wayland-pipewire-idle-inhibit,
     zen-browser,
     ...
@@ -133,7 +142,7 @@
                 hostName
                 hostType
                 src
-                zen-browser
+                tsundeoku
                 ;
 
               home-manager = let

@@ -3,6 +3,7 @@
 const SHORT_IDS = [
   "adguard-adblocker"
   "darkreader"
+  "enhancer-for-youtube"
   "proton-pass"
   "refined-github-"
   "subscription-feed-filter"
