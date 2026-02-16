@@ -1,5 +1,7 @@
 #!/usr/bin/env nu
 
+use ../../default/scripts/print.nu print-warning
+
 const SHORT_IDS = [
   "adguard-adblocker"
   "darkreader"
@@ -22,8 +24,14 @@ export def main [] {
 
       {
         name: (
-          http get $"https://addons.mozilla.org/api/v5/addons/addon/($shortId)/"
-          | get guid
+          try {
+            http get $"https://addons.mozilla.org/api/v5/addons/addon/($shortId)/"
+            | get guid
+          } catch {
+            print-warning "unable to fetch browser extensions"
+
+            exit
+          }
         )
 
         value: {

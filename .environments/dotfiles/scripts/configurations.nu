@@ -28,11 +28,11 @@ export def get-current-system [] {
 }
 
 export def is-nixos [] {
-  (get-current-system) == "nixos"
+  (get-current-system) == nixos
 }
 
 export def is-linux [] {
-  (is-nixos) or "linux" in (get-current-system)
+  (get-current-system) == home-manager
 }
 
 export def get-all-systems [] {
