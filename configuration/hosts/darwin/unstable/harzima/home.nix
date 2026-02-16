@@ -1,6 +1,6 @@
 {
   imports = [
     ../../../../home-manager
-    ../../../../home-manager/tsundeoku
+    # ../../../../home-manager/tsundeoku
   ];
 }

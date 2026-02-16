@@ -8,6 +8,7 @@
     cfg = config.darwin;
   in {
     networking.hostName = hostName;
+    nix.enable = false;
     security.sudo.extraConfig = ''Defaults env_keep += "TERM TERMINFO"'';
 
     system = {

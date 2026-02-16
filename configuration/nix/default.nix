@@ -21,6 +21,6 @@
         "nix-command"
       ];
     }
-    // optionalAttrs (hostType == "home-manager") {package = pkgs.nix;}
+    // optionalAttrs (hostType != "nixos") {package = pkgs.nix;}
     // optionalAttrs (channel != "25_05") {gc.dates = "weekly";};
 }
