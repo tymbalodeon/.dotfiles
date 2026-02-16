@@ -58,9 +58,19 @@
       url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
     };
 
+    # FIXME: migrate linux to the same flake as zen-browser-darwin
     zen-browser = {
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:youwen5/zen-browser-flake";
+    };
+
+    zen-browser-darwin = {
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        home-manager.follows = "home-manager-unstable";
+      };
+
+      url = "github:0xc000022070/zen-browser-flake";
     };
   };
 
@@ -78,6 +88,7 @@
     tsundeoku,
     wayland-pipewire-idle-inhibit,
     zen-browser,
+    zen-browser-darwin,
     ...
   }: let
     getChannels = hostType:
@@ -139,6 +150,7 @@
                 hostType
                 src
                 tsundeoku
+                zen-browser-darwin
                 ;
 
               home-manager = let
