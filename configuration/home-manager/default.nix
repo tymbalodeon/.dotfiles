@@ -63,7 +63,6 @@
       ../nix
       ./ripgrep
       ./shell
-      ./taskwarrior
       ./tealdeer
       ./yazi
       ./zathura
@@ -82,7 +81,10 @@
     )
     ++ (
       if channel == "unstable"
-      then [./src]
+      then [
+        ./src
+        ./taskwarrior
+      ]
       else []
     );
 
