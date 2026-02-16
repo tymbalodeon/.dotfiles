@@ -2,7 +2,7 @@
 
 use configurations.nu get-all-hosts
 use configurations.nu get-built-host-name
-use configurations.nu is-linux
+use configurations.nu is-home-manager
 use configurations.nu is-nixos
 use extensions.nu
 use prune.nu
@@ -157,7 +157,7 @@ export def main [
   if (is-nixos) {
     # TODO: is there a --debug here? If not, make a note in the help text above
     nixos-rebuild $host $test
-  } else if (is-linux) {
+  } else if (is-home-manager) {
     # TODO: handle what to do if home-manager is not yet installed. Does this
     # apply to darwin too?
     home-manager $host $debug
