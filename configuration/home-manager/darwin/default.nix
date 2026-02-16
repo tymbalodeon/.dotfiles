@@ -10,4 +10,6 @@
     );
 
   kitty.font_size = 11.0;
+  targets.darwin.copyApps.enable = true;
+  targets.darwin.linkApps.enable = false;
 }
