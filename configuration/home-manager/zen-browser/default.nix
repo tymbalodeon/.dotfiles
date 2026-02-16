@@ -1,64 +1,58 @@
-{
-  pkgs,
-  zen-browser,
-  ...
-}: {
-  home.packages = [
-    (
-      pkgs.wrapFirefox
-      zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.zen-browser-unwrapped
-      {
-        extraPolicies = {
-          DisableTelemetry = true;
+{zen-browser, ...}: {
+  imports = [zen-browser.homeModules.beta];
 
-          ExtensionSettings = builtins.listToAttrs (
-            builtins.fromJSON (builtins.readFile ./extensions.json)
-          );
+  programs.zen-browser = {
+    enable = true;
 
-          SearchEngines = {
-            Add = [
-              {
-                Alias = "@hm";
-                IconURL = "https://home-manager-options.extranix.com/favicon.ico";
-                Name = "Home-Manager options";
-                URLTemplate = "https://home-manager-options.extranix.com/favicon.ico?release=master&query=&{searchTerms}";
-              }
+    policies = {
+      DisableTelemetry = true;
 
-              {
-                Alias = "@ng";
-                IconURL = "https://noogle.dev/favicon.ico";
-                Name = "noogle";
-                URLTemplate = "https://noogle.dev/q?term={searchTerms}";
-              }
+      ExtensionSettings = builtins.listToAttrs (
+        builtins.fromJSON (builtins.readFile ./extensions.json)
+      );
 
-              {
-                Alias = "@no";
-                IconURL = "https://wiki.nixos.org/favicon.ico";
-                Name = "NixOS options";
-                URLTemplate = "https://search.nixos.org/options?channel=unstable&query={searchTerms}";
-              }
+      SearchEngines = {
+        Add = [
+          {
+            Alias = "@hm";
+            IconURL = "https://home-manager-options.extranix.com/favicon.ico";
+            Name = "Home-Manager options";
+            URLTemplate = "https://home-manager-options.extranix.com/favicon.ico?release=master&query=&{searchTerms}";
+          }
 
-              {
-                Alias = "@np";
-                IconURL = "https://wiki.nixos.org/favicon.ico";
-                Name = "nixpkgs";
-                URLTemplate = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}";
-              }
+          {
+            Alias = "@ng";
+            IconURL = "https://noogle.dev/favicon.ico";
+            Name = "noogle";
+            URLTemplate = "https://noogle.dev/q?term={searchTerms}";
+          }
 
-              {
-                Alias = "@nw";
-                IconURL = "https://wiki.nixos.org/favicon.ico";
-                Name = "NixOS Wiki";
-                URLTemplate = "https://wiki.nixos.org/w/index.php?search={searchTerms}";
-              }
-            ];
+          {
+            Alias = "@no";
+            IconURL = "https://wiki.nixos.org/favicon.ico";
+            Name = "NixOS options";
+            URLTemplate = "https://search.nixos.org/options?channel=unstable&query={searchTerms}";
+          }
 
-            Default = "ddg";
-          };
-        };
-      }
-    )
-  ];
+          {
+            Alias = "@np";
+            IconURL = "https://wiki.nixos.org/favicon.ico";
+            Name = "nixpkgs";
+            URLTemplate = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}";
+          }
+
+          {
+            Alias = "@nw";
+            IconURL = "https://wiki.nixos.org/favicon.ico";
+            Name = "NixOS Wiki";
+            URLTemplate = "https://wiki.nixos.org/w/index.php?search={searchTerms}";
+          }
+        ];
+
+        Default = "ddg";
+      };
+    };
+  };
 
   xdg.mimeApps = {
     defaultApplications = let

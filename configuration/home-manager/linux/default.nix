@@ -5,6 +5,5 @@
     ../mpv
     ../storage
     ../taskwarrior
-    ../zen-browser
   ];
 }
