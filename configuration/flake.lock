@@ -1710,7 +1710,8 @@
         "stylix-unstable": "stylix-unstable",
         "tsundeoku": "tsundeoku",
         "wayland-pipewire-idle-inhibit": "wayland-pipewire-idle-inhibit",
-        "zen-browser": "zen-browser"
+        "zen-browser": "zen-browser",
+        "zen-browser-darwin": "zen-browser-darwin"
       }
     },
     "rust-overlay": {
@@ -2256,6 +2257,29 @@
       },
       "original": {
         "owner": "youwen5",
+        "repo": "zen-browser-flake",
+        "type": "github"
+      }
+    },
+    "zen-browser-darwin": {
+      "inputs": {
+        "home-manager": [
+          "home-manager-unstable"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771199501,
+        "narHash": "sha256-tuE8yVny/RPIZ8Em1R3lyy4tWOB06YuHTh5qBH/tEnU=",
+        "owner": "0xc000022070",
+        "repo": "zen-browser-flake",
+        "rev": "cc8680395c8a65e4fde23372ef851671ff04947f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0xc000022070",
         "repo": "zen-browser-flake",
         "type": "github"
       }
