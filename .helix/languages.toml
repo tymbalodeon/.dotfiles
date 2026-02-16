@@ -24,7 +24,11 @@ auto-format = true
 
 [language.formatter]
 command = "just"
-args = ["--justfile", "/dev/stdin", "--dump"]
+args = [
+    "--justfile",
+    "/dev/stdin",
+    "--dump",
+]
 
 [[language]]
 name = "markdown"
@@ -55,7 +59,10 @@ auto-format = true
 
 [language.formatter]
 command = "taplo"
-args = ["format", "-"]
+args = [
+    "format",
+    "-",
+]
 
 [language-server.haskell-language-server.config]
 formattingProvider = "fourmolu"

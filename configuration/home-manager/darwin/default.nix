@@ -1,6 +1,16 @@
-{channel, ...}: {
+{
+  channel,
+  lib,
+  pkgs,
+  ...
+}: {
+  home.activation.defaultBrowser = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    ${pkgs.defaultbrowser}/bin/defaultbrowser browser
+  '';
+
   imports =
     [
+      ../brave
       ../kitty
     ]
     ++ (
