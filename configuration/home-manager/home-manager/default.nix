@@ -1,4 +1,3 @@
-# TODO: add /opt/paloaltonetworks/globalprotect/pangps.xml
 {
   config,
   nixgl,

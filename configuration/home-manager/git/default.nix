@@ -11,9 +11,6 @@
     home.packages = with pkgs; [
       gh
       glab
-      # TODO: replace this with my own version?
-      # FIXME: broken
-      # siketyan-ghr
     ];
 
     programs = let

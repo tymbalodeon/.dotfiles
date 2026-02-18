@@ -1,8 +1,4 @@
 {pkgs, ...}: {
   home.packages = [pkgs.dysk];
-
-  imports = [
-    ../mpv
-    ../zen-browser
-  ];
+  imports = [../mpv];
 }
