@@ -1,9 +1,17 @@
-{zen-browser, ...}: {
-  imports = [
-    zen-browser.homeModules.beta
-
-    ../../stylix
-  ];
+{
+  hostType,
+  lib,
+  zen-browser,
+  ...
+}:
+{
+  imports =
+    [zen-browser.homeModules.beta]
+    ++ (
+      if hostType != "home-manager"
+      then [../../stylix]
+      else []
+    );
 
   programs.zen-browser = {
     enable = true;
@@ -58,8 +66,6 @@
     };
   };
 
-  stylix.targets.zen-browser.profileNames = ["default"];
-
   xdg.mimeApps = {
     defaultApplications = let
       zenBrowser = "zen-browser.desktop";
@@ -74,4 +80,7 @@
 
     enable = true;
   };
+}
+// lib.optionalAttrs (hostType != "home-manager") {
+  stylix.targets.zen-browser.profileNames = ["default"];
 }
