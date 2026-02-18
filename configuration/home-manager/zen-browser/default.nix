@@ -1,5 +1,9 @@
 {zen-browser, ...}: {
-  imports = [zen-browser.homeModules.beta];
+  imports = [
+    zen-browser.homeModules.beta
+
+    ../../stylix
+  ];
 
   programs.zen-browser = {
     enable = true;
@@ -54,14 +58,17 @@
     };
   };
 
+  stylix.targets.zen-browser.profileNames = ["default"];
+
   xdg.mimeApps = {
     defaultApplications = let
-      zenBrowser = "zen.desktop";
+      zenBrowser = "zen-browser.desktop";
     in {
       "text/html" = zenBrowser;
       "x-scheme-handler/about" = zenBrowser;
       "x-scheme-handler/http" = zenBrowser;
       "x-scheme-handler/https" = zenBrowser;
+      "x-scheme-handler/mailto" = zenBrowser;
       "x-scheme-handler/unknown" = zenBrowser;
     };
 
