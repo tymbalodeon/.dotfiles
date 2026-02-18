@@ -98,6 +98,7 @@ in {
             Mod+Right { focus-column-right; }
             Mod+R { switch-preset-column-width; }
             Mod+Shift+Ctrl+Down { move-column-to-monitor-down; }
+            Mod+Shift+Ctrl+F hotkey-overlay-title="Make the window fullscreen (no status bar)" { fullscreen-window; }
             Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
             Mod+Shift+Ctrl+J { move-column-to-monitor-down; }
             Mod+Shift+Ctrl+K { move-column-to-monitor-up; }
@@ -107,7 +108,7 @@ in {
             Mod+Shift+Ctrl+Up { move-column-to-monitor-up; }
             Mod+Shift+Down { focus-monitor-down; }
             Mod+Shift+Equal { set-window-height "+10%"; }
-            Mod+Shift+F hotkey-overlay-title="Make the window fullscreen" { fullscreen-window; }
+            Mod+Shift+F hotkey-overlay-title="Make the window fullscreen (with status bar)" { maximize-window-to-edges; }
             Mod+Shift+H { focus-monitor-left; }
             Mod+Shift+J { focus-monitor-down; }
             Mod+Shift+K { focus-monitor-up; }
