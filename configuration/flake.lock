@@ -2185,11 +2185,11 @@
         "systems": "systems_6"
       },
       "locked": {
-        "lastModified": 1771461611,
-        "narHash": "sha256-InfYQgQkVvMZRKwsOVxPKOuyFwmcZpVsU6XMN0v9tH4=",
+        "lastModified": 1771462490,
+        "narHash": "sha256-WC+/ywcExGNnf/IV/mqMNsOjPOXmRCd3653SyNpGdFo=",
         "owner": "tymbalodeon",
         "repo": "tsundeoku",
-        "rev": "3aabd338f43d63f629bb3af056af2fb211c9a21a",
+        "rev": "ba297a1d4124bcc972a73c4980c0be83b41d82b7",
         "type": "github"
       },
       "original": {
