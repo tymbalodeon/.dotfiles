@@ -68,7 +68,7 @@
 
   xdg.mimeApps = {
     defaultApplications = let
-      zenBrowser = "zen-browser.desktop";
+      zenBrowser = "zen.desktop";
     in {
       "text/html" = zenBrowser;
       "x-scheme-handler/about" = zenBrowser;
