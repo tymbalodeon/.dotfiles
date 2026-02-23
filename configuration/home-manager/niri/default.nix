@@ -77,9 +77,11 @@ in {
             Mod+Ctrl+WheelScrollLeft { move-column-right; }
             Mod+Ctrl+WheelScrollRight { move-column-left; }
             Mod+Ctrl+WheelScrollUp cooldown-ms=150 { move-column-to-workspace-up; }
+            Mod+D hotkey-overlay-title="Define selected word" { spawn-sh "nu ${../dictionary/define.nu} --primary"; }
             Mod+Down { focus-window-down; }
             Mod+End { focus-column-last; }
             Mod+Equal { set-column-width "+10%"; }
+            Mod+Shift+D hotkey-overlay-title="Define selected word" { spawn-sh "nu ${../dictionary/define.nu}"; }
             Mod+F { maximize-column; }
             Mod+H { focus-column-left; }
             Mod+Home { focus-column-first; }
@@ -144,7 +146,6 @@ in {
             Super+Alt+S hotkey-overlay-title="Put the computer to sleep" { spawn-sh "niri msg action power-off-monitors; systemctl suspend"; }
             Super+Alt+V hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../wallpaper/wallpaper.nu} previous"; }
             Super+Alt+W hotkey-overlay-title="Restart waybar" { spawn "systemctl" "--user" "restart" "waybar"; }
-            Super+D hotkey-overlay-title="Define selected word" { spawn-sh "nu ${../dictionary/define.nu}"; }
             XF86AudioLowerVolume allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} lower"; }
             XF86AudioMicMute allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} mute mic"; }
             XF86AudioMute allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} mute"; }

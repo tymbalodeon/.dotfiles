@@ -1,7 +1,16 @@
 #!/usr/bin/env nu
 
-def main [] {
-  let word = (wl-paste --no-newline --primary)
+def main [--primary] {
+  let args = [--no-newline]
+
+  let args = if $primary {
+    $args
+    | append "--primary"
+  } else {
+    $args
+  }
+
+  let word = (wl-paste ...$args)
 
   if ($word | is-empty) {
     return
@@ -12,7 +21,7 @@ def main [] {
       --connect-timeout 5
       --max-time 10
       --silent
-      $"ttps://api.dictionaryapi.dev/api/v2/entries/en_US/($word)"
+      $"https://api.dictionaryapi.dev/api/v2/entries/en_US/($word)"
     | from json
   )
 

@@ -33,6 +33,7 @@
       {
         editor = {
           bufferline = "multiple";
+          clipboard-provider = "wayland";
           color-modes = true;
           cursorline = true;
 
