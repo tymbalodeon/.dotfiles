@@ -144,6 +144,7 @@ in {
             Super+Alt+S hotkey-overlay-title="Put the computer to sleep" { spawn-sh "niri msg action power-off-monitors; systemctl suspend"; }
             Super+Alt+V hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../wallpaper/wallpaper.nu} previous"; }
             Super+Alt+W hotkey-overlay-title="Restart waybar" { spawn "systemctl" "--user" "restart" "waybar"; }
+            Super+D hotkey-overlay-title="Define selected word" { spawn-sh "nu ${../dictionary/define.nu}"; }
             XF86AudioLowerVolume allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} lower"; }
             XF86AudioMicMute allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} mute mic"; }
             XF86AudioMute allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} mute"; }

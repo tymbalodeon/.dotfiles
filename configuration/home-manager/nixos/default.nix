@@ -17,7 +17,6 @@
         libnotify
         maestral
         wev
-        wordbook
       ];
 
       pointerCursor = {
@@ -44,6 +43,7 @@
   imports = [
     ../bluetooth
     ../clipboard
+    ../dictionary
     ../linux
     ../monitors
     ../niri
