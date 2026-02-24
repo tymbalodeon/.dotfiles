@@ -10,7 +10,7 @@
       use ${../storage/storage.nu} "storage download"
       use ${../storage/storage.nu} "storage upload"
 
-      const DUMP_FILE = ".task.dump.json"
+      const DUMP_FILE = "task/task.dump.json"
 
       def database-file [] {
         $"($env.HOME)/.local/share/task/taskchampion.sqlite3"
@@ -83,7 +83,24 @@
         }
       }
 
-      def "task dump" [] {
+      def "task archive" [] {
+        task dump $"task/(date now | format date %Y-%m-%d)-task-archive.json"
+        task clear
+      }
+
+      def "task clear" [] {
+        rm (database-file)
+      }
+
+      def get-dump-file [file?: string] {
+        if ($file | is-empty) {
+          $DUMP_FILE
+        } else {
+          $file
+        }
+      }
+
+      def "task dump" [file?: string] {
         let temporary_file = (mktemp --tmpdir XXX.json)
 
         open (database-file)
@@ -93,16 +110,23 @@
         | to json
         | save --force $temporary_file
 
-        storage upload --remote dropbox $temporary_file $DUMP_FILE out+err> /dev/null
+        (
+          storage upload
+            --remote dropbox
+            $temporary_file
+            (get-dump-file $file)
+            out+err> /dev/null
+        )
+
         rm $temporary_file
       }
 
-      def "task load" [] {
+      def "task load" [file?: string] {
         let temporary_directory = (mktemp --directory)
+        let dump_file = (get-dump-file $file)
 
-        storage download --quiet --to $temporary_directory dropbox $DUMP_FILE
-        ^task import ($temporary_directory | path join $DUMP_FILE)
-
+        storage download --quiet --to $temporary_directory dropbox $dump_file
+        ^task import ($temporary_directory | path join $dump_file)
         rm --force --recursive $temporary_directory
       }
     '')
