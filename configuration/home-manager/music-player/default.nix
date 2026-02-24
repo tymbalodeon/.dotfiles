@@ -41,7 +41,23 @@
       };
 
       rmpc = {
-        config = ''
+        config = let
+          notify = pkgs.writeText "notify.nu" ''
+            #!/usr/bin/env nu
+
+            let temporary_directory = "/tmp/rmpc"
+
+            mkdir $temporary_directory
+
+            let album_art_path = $"($temporary_directory)/notification_cover"
+
+            if ! rmpc albumart --output "$album_art_path"; then
+            	album_art_path="$tmp_dir/default_album_art.jpg"
+            fi
+
+            notify-send --icon "${album_art_path}" "Now Playing" "$ALBUMARTIST - $TITLE"
+          '';
+        in ''
           #![enable(implicit_some)]
           #![enable(unwrap_newtypes)]
           #![enable(unwrap_variant_newtypes)]
@@ -59,7 +75,7 @@
               navigation: { "<C-m>": InvertSelection, "m": Select }
             ),
 
-            on_song_change: ["${./notify.sh}"],
+            on_song_change: ["${notify}"],
             select_current_song_on_change: true,
           )
         '';
