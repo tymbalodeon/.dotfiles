@@ -53,6 +53,12 @@
             ),
 
             center_current_song_on_change: true,
+
+            keybinds: (
+              global: { "<Space>": TogglePause },
+              navigation: { "<C-m>": InvertSelection, "m": Select }
+            ),
+
             on_song_change: ["~/.config/rmpc/notify.sh"],
             select_current_song_on_change: true,
           )
