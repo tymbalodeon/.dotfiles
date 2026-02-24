@@ -121,9 +121,18 @@
         rm $temporary_file
       }
 
-      def "task load" [file?: string] {
+      def "task load" [
+        file?: string
+        --interactive (-i)
+      ] {
         let temporary_directory = (mktemp --directory)
-        let dump_file = (get-dump-file $file)
+
+        let dump_file = if ($file | is-empty) and $interactive {
+          storage ls dropbox task
+          | fzf
+        } else {
+          (get-dump-file $file)
+        }
 
         storage download --quiet --to $temporary_directory dropbox $dump_file
         ^task import ($temporary_directory | path join $dump_file)
