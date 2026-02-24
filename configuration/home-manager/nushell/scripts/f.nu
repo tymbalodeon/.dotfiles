@@ -53,6 +53,13 @@ def --env "f cd" [
   }
 }
 
+# Search for files interactively and edit them with $EDITOR
+def "f edit" [
+  directory?: string # Search this directory
+] {
+  ^$env.EDITOR (get-path $directory)
+}
+
 # Search for files interactively and open them
 def "f open" [
   directory?: string # Search this directory
