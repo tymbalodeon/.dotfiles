@@ -3,7 +3,10 @@
 in {
   home = {
     file."wallpaper/wallpaper.jpeg".source = wallpaper;
-    packages = [pkgs.swaybg];
+    packages = with pkgs; [
+      imagemagick
+      swaybg
+    ];
   };
 
   imports = [../nushell];

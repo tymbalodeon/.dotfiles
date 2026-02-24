@@ -1,7 +1,7 @@
 #!/usr/bin/env nu
 
 # Set wallpaper to a specific file
-export def wallpaper [wallpaper?: string] {
+def wallpaper [wallpaper?: string] {
   let wallpaper = if ($wallpaper | is-empty) {
     ls --short-names ~/wallpaper
     | get name
@@ -34,11 +34,13 @@ export def wallpaper [wallpaper?: string] {
   systemctl --user stop wpaperd
 }
 
-export def "wallpaper clear" [] {
+# Clear the wallpaper folder
+def "wallpaper clear" [] {
   rm ~/wallpaper/*
 }
 
-export def "wallpaper load" [path: string] {
+# Load wallpapers
+def "wallpaper load" [path: string] {
   let path = ($path | path expand)
 
   let files = if ($path | path type) == file {
@@ -69,22 +71,51 @@ def --wrapped wpaperctl-wrapper [...args: string] {
 }
 
 # Change to next (random) wallpaper
-export def "wallpaper next" [] {
+def "wallpaper next" [] {
   wpaperctl-wrapper next
+}
+
+# Add padding to image to account for status bar
+def "wallpaper pad" [image: string] {
+  const WAYBAR_HEIGHT = 55
+
+  let resolution = (xrandr | rg '\*' | split words | first | split row x)
+  let padded_width = ($resolution | first)
+  let padded_height = (($resolution | last | into int) + $WAYBAR_HEIGHT)
+  let resolution = ($resolution | str join x)
+  let padded_resolution = ([$padded_width $padded_height] | str join x)
+
+  (
+    magick
+      $image
+      -background black
+      -gravity north
+      -extent $padded_resolution
+      -resize $resolution
+      $image
+  )
+}
+
+# Add padding to all images in the wallpaper folder
+def "wallpaper pad all" [] {
+  for image in (ls ~/wallpaper | get name) {
+    wallpaper pad $image
+  }
 }
 
 alias "wallpaper start" = wallpaper next
 
 # Change to previous wallpaper
-export def "wallpaper previous" [] {
+def "wallpaper previous" [] {
   wpaperctl-wrapper previous
 }
 
 # Toggle pausing/resuming automatic cycling of wallpaper
-export def "wallpaper toggle-pause" [] {
+def "wallpaper toggle-pause" [] {
   wpaperctl-wrapper toggle-pause
 }
 
+# Manage wallpaper
 export def main [arg?: string] {
   match $arg {
     "next" => (wallpaper next)
