@@ -41,7 +41,27 @@
       };
 
       rmpc = {
-        config = ''
+        config = let
+          notify = pkgs.writeScript "notify.nu" ''
+            #!/usr/bin/env nu
+
+            let temporary_directory = "/tmp/rmpc"
+
+            mkdir $temporary_directory
+
+            let album_art_path = $"($temporary_directory)/notification_cover"
+
+            let album_art_path = try {
+              rmpc albumart --output $album_art_path
+
+              $album_art_path
+            } catch {
+              ${./default_album_art.jpg}
+            }
+
+            notify-send --icon $album_art_path "Now Playing" $"($env.ALBUMARTIST) - ($env.TITLE)"
+          '';
+        in ''
           #![enable(implicit_some)]
           #![enable(unwrap_newtypes)]
           #![enable(unwrap_variant_newtypes)]
@@ -59,7 +79,7 @@
               navigation: { "<C-m>": InvertSelection, "m": Select }
             ),
 
-            on_song_change: ["${./notify.sh}"],
+            on_song_change: ["${notify}"],
             select_current_song_on_change: true,
           )
         '';
@@ -88,8 +108,6 @@
     xdg =
       if pkgs.stdenv.isLinux
       then {
-        configFile."rmpc/default_album_art.jpg".source = ./default_album_art.jpg;
-
         desktopEntries.music = {
           exec = "kitty --hold rmpc";
           icon = ./icon.png;

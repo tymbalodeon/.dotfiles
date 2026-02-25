@@ -3,37 +3,38 @@
   hostType,
   lib,
   ...
-}: let
-  inherit (lib) optionalAttrs;
-in
-  {
-    home.sessionVariables = {EDITOR = "hx";};
+}:
+{
+  home.sessionVariables = {EDITOR = "hx";};
 
-    imports =
-      [
-        ./bash
-        ./json
-        ./markdown
-        ./nix
-        ./toml
-        ./txt
-        ./yaml
+  imports =
+    [
+      ./bash
+      ./json
+      ./markdown
+      ./nix
+      ./toml
+      ./txt
+      ./yaml
+    ]
+    ++ (
+      if hostType == "home-manager"
+      then []
+      else [
+        ../../stylix
       ]
-      ++ (
-        if hostType == "home-manager"
-        then []
-        else [
-          ../../stylix
-        ]
-      );
+    );
 
-    programs.helix = {
-      defaultEditor = true;
-      enable = true;
+  programs.helix = {
+    defaultEditor = true;
+    enable = true;
 
-      settings =
-        {
-          editor = {
+    settings = let
+      inherit (lib) optionalAttrs;
+    in
+      {
+        editor =
+          {
             bufferline = "multiple";
             color-modes = true;
             cursorline = true;
@@ -83,44 +84,46 @@ in
               space = "all";
               tab = "all";
             };
+          }
+          // optionalAttrs (hostType == "nixos") {
+            clipboard-provider = "wayland";
           };
 
-          keys = let
-            space = {w.S-q = ":quit!";};
-          in {
-            normal = {
-              inherit space;
+        keys = let
+          space = {w.S-q = ":quit!";};
+        in {
+          normal = {
+            inherit space;
 
-              C-g = [":reset-diff-change"];
-              C-j = ["extend_to_line_bounds" "delete_selection" "paste_after"];
+            C-g = [":reset-diff-change"];
+            C-j = ["extend_to_line_bounds" "delete_selection" "paste_after"];
 
-              C-k = [
-                "extend_to_line_bounds"
-                "delete_selection"
-                "move_line_up"
-                "paste_before"
-              ];
+            C-k = [
+              "extend_to_line_bounds"
+              "delete_selection"
+              "move_line_up"
+              "paste_before"
+            ];
 
-              esc = ["collapse_selection" "keep_primary_selection"];
-              X = ["extend_line_up" "extend_to_line_bounds"];
-            };
-
-            select = {
-              inherit space;
-
-              X = ["extend_line_up" "extend_to_line_bounds"];
-            };
+            esc = ["collapse_selection" "keep_primary_selection"];
+            X = ["extend_line_up" "extend_to_line_bounds"];
           };
-        }
-        // optionalAttrs
-        ((hostType
-          == "home-manager")
-        || (config.stylix.theme == "catppuccin-mocha")) {
-          theme = "catppuccin_mocha";
-        }
-        // optionalAttrs (hostType == "nixos") {clipboard-provider = "wayland";};
-    };
-  }
-  // optionalAttrs (hostType != "home-manager") {
-    stylix.targets.helix.enable = !(config.stylix.theme == "catppuccin-mocha");
-  }
+
+          select = {
+            inherit space;
+
+            X = ["extend_line_up" "extend_to_line_bounds"];
+          };
+        };
+      }
+      // optionalAttrs
+      ((hostType
+        == "home-manager")
+      || (config.stylix.theme == "catppuccin-mocha")) {
+        theme = "catppuccin_mocha";
+      };
+  };
+}
+// lib.optionalAttrs (hostType != "home-manager") {
+  stylix.targets.helix.enable = !(config.stylix.theme == "catppuccin-mocha");
+}
