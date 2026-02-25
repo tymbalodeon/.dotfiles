@@ -61,7 +61,12 @@ def "f edit" [
 
   ^$env.EDITOR $path
 
-  $path
+  try {
+    $path
+    | path relative-to (pwd)
+  } catch {
+    $path
+  }
 }
 
 # Search for files interactively and open them
