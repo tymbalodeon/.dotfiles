@@ -29,11 +29,12 @@
     defaultEditor = true;
     enable = true;
 
-    settings =
+    settings = let
+      inherit (lib) optionalAttrs;
+    in
       {
         editor = {
           bufferline = "multiple";
-          clipboard-provider = "wayland";
           color-modes = true;
           cursorline = true;
 
@@ -111,11 +112,14 @@
           };
         };
       }
-      // lib.optionalAttrs
+      // optionalAttrs
       ((hostType
         == "home-manager")
       || (config.stylix.theme == "catppuccin-mocha")) {
         theme = "catppuccin_mocha";
+      }
+      // optionalAttrs (hostType == "nixos") {
+        editor.clipboard-provider = "wayland";
       };
   };
 }
