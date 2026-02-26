@@ -70,10 +70,15 @@
     defaultApplications = let
       zenBrowser = "zen-beta.desktop";
     in {
+      # TODO: create "image" module?
+      "image/jpeg" = zenBrowser;
+      "image/jpg" = zenBrowser;
+      "image/png" = zenBrowser;
+      "image/webp" = zenBrowser;
       "text/html" = zenBrowser;
       "x-scheme-handler/about" = zenBrowser;
-      "x-scheme-handler/http" = zenBrowser;
       "x-scheme-handler/https" = zenBrowser;
+      "x-scheme-handler/http" = zenBrowser;
       "x-scheme-handler/mailto" = zenBrowser;
       "x-scheme-handler/unknown" = zenBrowser;
     };
