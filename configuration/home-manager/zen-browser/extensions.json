@@ -7,6 +7,13 @@
     }
   },
   {
+    "name": "{97d566da-42c5-4ef4-a03b-5a2e5f7cbcb2}",
+    "value": {
+      "installation_mode": "normal_installed",
+      "install_url": "https://addons.mozilla.org/en-US/firefox/downloads/latest/awesome-rss/latest.xpi"
+    }
+  },
+  {
     "name": "addon@darkreader.org",
     "value": {
       "installation_mode": "normal_installed",

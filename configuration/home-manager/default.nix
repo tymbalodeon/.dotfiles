@@ -62,6 +62,7 @@
       ./nb
       ../nix
       ./ripgrep
+      ./rss
       ./shell
       ./tealdeer
       ./yazi

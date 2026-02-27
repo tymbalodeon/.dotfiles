@@ -4,6 +4,7 @@ use ../../default/scripts/print.nu print-warning
 
 const SHORT_IDS = [
   "adguard-adblocker"
+  "awesome-rss"
   "darkreader"
   "enhancer-for-youtube"
   "proton-pass"
