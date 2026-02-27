@@ -57,7 +57,7 @@ in {
             Mod+Ctrl+8 { move-column-to-workspace 8; }
             Mod+Ctrl+9 { move-column-to-workspace 9; }
             Mod+Ctrl+C { center-visible-columns; }
-            Mod+Ctrl+D hotkey-overlay-title="Define selected (primary clipboard) word (offline)" { spawn-sh "${../dictionary/define.sh} --primary"; }
+            Mod+Ctrl+D hotkey-overlay-title="Define selected word (offline)" { spawn-sh "${../dictionary/define.sh}"; }
             Mod+Ctrl+Down { move-window-down; }
             Mod+Ctrl+End { move-column-to-last; }
             Mod+Ctrl+F { expand-column-to-available-width; }
@@ -71,7 +71,6 @@ in {
             Mod+Ctrl+P { move-column-to-workspace-up; }
             Mod+Ctrl+Right { move-column-right; }
             Mod+Ctrl+R { reset-window-height; }
-            Mod+Ctrl+Shift+D hotkey-overlay-title="Define selected word (offline)" { spawn-sh "${../dictionary/define.sh}"; }
             Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
             Mod+Ctrl+Shift+WheelScrollUp { move-column-left; }
             Mod+Ctrl+Up { move-window-up; }
@@ -79,7 +78,7 @@ in {
             Mod+Ctrl+WheelScrollLeft { move-column-right; }
             Mod+Ctrl+WheelScrollRight { move-column-left; }
             Mod+Ctrl+WheelScrollUp cooldown-ms=150 { move-column-to-workspace-up; }
-            Mod+D hotkey-overlay-title="Define selected (primary clipboard) word (online)" { spawn-sh "nu ${../dictionary/define.nu} --primary"; }
+            Mod+D hotkey-overlay-title="Define selected word (online)" { spawn-sh "nu ${../dictionary/define.nu}"; }
             Mod+Down { focus-window-down; }
             Mod+End { focus-column-last; }
             Mod+Equal { set-column-width "+10%"; }
@@ -100,16 +99,17 @@ in {
             Mod+Q repeat=false { close-window; }
             Mod+Right { focus-column-right; }
             Mod+R { switch-preset-column-width; }
+            Mod+Shift+Ctrl+D hotkey-overlay-title="Define selected (primary clipboard) word (offline)" { spawn-sh "${../dictionary/define.sh} --primary"; }
             Mod+Shift+Ctrl+Down { move-column-to-monitor-down; }
             Mod+Shift+Ctrl+F hotkey-overlay-title="Make the window fullscreen (no status bar)" { fullscreen-window; }
             Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
-            Mod+Shift+D hotkey-overlay-title="Define selected word (online)" { spawn-sh "nu ${../dictionary/define.nu}"; }
             Mod+Shift+Ctrl+J { move-column-to-monitor-down; }
             Mod+Shift+Ctrl+K { move-column-to-monitor-up; }
             Mod+Shift+Ctrl+Left { move-column-to-monitor-left; }
             Mod+Shift+Ctrl+L { move-column-to-monitor-right; }
             Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
             Mod+Shift+Ctrl+Up { move-column-to-monitor-up; }
+            Mod+Shift+D hotkey-overlay-title="Define selected (primary clipboard) word (online)" { spawn-sh "nu ${../dictionary/define.nu} --primary"; }
             Mod+Shift+Down { focus-monitor-down; }
             Mod+Shift+Equal { set-window-height "+10%"; }
             Mod+Shift+F hotkey-overlay-title="Make the window fullscreen (with status bar)" { maximize-window-to-edges; }
