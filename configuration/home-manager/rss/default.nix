@@ -1,4 +1,7 @@
 {
+  imports = [../nushell];
+  nushell.extraScripts = [./rss.nu];
+
   programs.newsboat = {
     autoFetchArticles.enable = true;
     autoReload = true;

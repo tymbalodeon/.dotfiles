@@ -44,6 +44,7 @@
     ../bluetooth
     ../clipboard
     ../dictionary
+    ../email
     ../linux
     ../monitors
     ../niri
