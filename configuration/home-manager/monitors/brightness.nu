@@ -94,7 +94,7 @@ def "main dim" [] {
   } else {
     $current_brightness
     | save --force $PREVIOUS_BRIGHTNESS_FILE
-    
+
     main set min
   }
 }
@@ -116,7 +116,7 @@ def "main decrease" [] {
   let current_brightness = (get-brightness)
   let new_brightness = (get-new-brightness ($current_brightness - $STEP))
 
-  set-brightness $new_brightness $current_brightness 
+  set-brightness $new_brightness $current_brightness
 }
 
 def "main get" [] {

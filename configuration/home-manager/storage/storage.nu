@@ -197,7 +197,7 @@ export def "storage download" [
       $local_path
     }
 
-    let result = (rclone sync $remote_path $parent | complete) 
+    let result = (rclone sync $remote_path $parent | complete)
 
     if $result.exit_code == 0 {
       if not $quiet {
@@ -298,7 +298,7 @@ def "storage list local" [
         $search_path
         | path join $item
       )
-    } 
+    }
   }
 
   let search_path = if not ($search_path | path exists) {
@@ -430,7 +430,7 @@ def "storage remove" [
       }
 
       let paths = if ($potential_files | length) == 0 {
-        return 
+        return
       } else if ($potential_files | length) == 1 {
         $potential_files
       } else {
@@ -500,7 +500,7 @@ export def "storage upload" [
     }
 
     (get-remote $remote)
-  } 
+  }
 
   let remote_path = if ($remote_path | is-not-empty) {
     $remote_path

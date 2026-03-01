@@ -217,7 +217,7 @@ export def "main current host" [] {
 
 # List current system
 export def "main current system" [] {
-  get-current-system 
+  get-current-system
 }
 
 # List hosts for current system

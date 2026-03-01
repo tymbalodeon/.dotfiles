@@ -6,7 +6,7 @@ def "main get" [] {
   let status = try {
     sunsetr status --json
     | from json
-  } 
+  }
 
   let day_icon = ""
 

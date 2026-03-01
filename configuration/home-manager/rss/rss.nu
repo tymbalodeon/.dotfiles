@@ -4,6 +4,6 @@ def --wrapped rss [...args: string] {
 }
 
 # Edit the urls files
-def "rss edit urls" [] {
+def "rss urls edit" [] {
   ^$env.EDITOR ($env.XDG_CONFIG_HOME | path join newsboat/urls)
 }

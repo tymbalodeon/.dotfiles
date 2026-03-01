@@ -34,4 +34,4 @@ Config {
         ] 10
         , Run Date "<fc=#ABABAB>%F (%a) %T</fc>" "date" 10
     ]
-}   
+}

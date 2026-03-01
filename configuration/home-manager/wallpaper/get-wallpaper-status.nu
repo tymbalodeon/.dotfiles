@@ -20,7 +20,7 @@ export def main [] {
   let status = (get-status)
 
   let text = if ($status | is-empty) {
-   "off" 
+   "off"
   } else {
     match $status.status {
       running => {

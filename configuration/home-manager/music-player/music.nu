@@ -23,7 +23,7 @@ def is-nixos [] {
       | parse "{key}={value}"
       | where key == "ID"
       | first
-      | get value 
+      | get value
     ) == nixos
   } catch {
     false

@@ -21,7 +21,7 @@ export def main [] {
 
   $SHORT_IDS
   | each {
-      |shortId| 
+      |shortId|
 
       {
         name: (
