@@ -10,7 +10,7 @@ def main [--primary] {
     $args
   }
 
-  let word = (wl-paste ...$args)
+  let word = (wl-paste ...$args | str replace --regex "-\n" "")
 
   if ($word | is-empty) {
     return
