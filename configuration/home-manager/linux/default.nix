@@ -1,4 +1,8 @@
 {pkgs, ...}: {
   home.packages = [pkgs.dysk];
-  imports = [../mpv];
+
+  imports = [
+    ../mpv
+    ../rss
+  ];
 }
