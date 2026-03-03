@@ -6,8 +6,7 @@ if [[ "${1}" == --primary ]]; then
   args+=(--primary)
 fi
 
-# TODO: implement stripping newlines and hyphens (see define.nu)
-word=$(wl-paste "${args[@]}")
+word=$(wl-paste "${args[@]}" | sed "s/-\n//g")
 
 if [[ -z "${word}" ]]; then
   exit
