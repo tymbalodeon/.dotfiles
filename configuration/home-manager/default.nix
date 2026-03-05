@@ -59,6 +59,7 @@
       ./jq
       ./jujutsu
       ./kitty
+      ./musescore
       ./nb
       ../nix
       ./ripgrep
