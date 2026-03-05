@@ -48,13 +48,23 @@ def "fountain pens empty" [
 
 # List empty pens
 def "fountain pens list empty" [] {
+  let currently_inked = (open-csv currently-inked)
+  let currently_empty = ($currently_inked | where {$in."ink id" | is-empty})
+
   fountain pens list pens
   | where {
       |pen|
 
+      if $pen.index not-in $currently_inked."pen id" {
+        return true
+      }
+
+      if ($currently_empty | is-empty) {
+        return false
+      }
+
       $pen.index == (
-        open-csv currently-inked
-        | where {$in."ink id" | is-empty}
+        $currently_empty
         | first
         | get "pen id"
       )
@@ -102,6 +112,15 @@ def "fountain pens list inks" [
 ] {
   open-csv inks $interactive
 }
+
+# List unused inks
+def "fountain pens list inks unused" [] {
+  let current_inks = (open-csv currently-inked)."ink id"
+
+  fountain pens list inks
+  | where {$in.index not-in $current_inks}
+}
+
 
 # Show pen collection
 def "fountain pens list pens" [
