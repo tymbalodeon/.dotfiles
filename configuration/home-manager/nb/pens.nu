@@ -19,6 +19,20 @@ def open-csv [name: string interactive = false] {
   }
 }
 
+def edit [item: string] {
+  ^$env.EDITOR (get-path $item)
+}
+
+# Edit ink records
+def "fountain pens edit inks" [] {
+  edit inks
+}
+
+# Edit pen records
+def "fountain pens edit pens" [] {
+  edit pens
+}
+
 # Clear the current ink record for a pen
 def "fountain pens empty" [
   pen_id?: int # The id of the pen to update (choose interactively if left blank)
