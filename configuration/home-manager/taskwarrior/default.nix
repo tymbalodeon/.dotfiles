@@ -135,7 +135,11 @@
         }
 
         storage download --quiet --to $temporary_directory dropbox $dump_file
-        ^task import ($temporary_directory | path join $dump_file)
+
+        ^task import (
+          $temporary_directory | path join ($dump_file | path basename)
+        )
+
         rm --force --recursive $temporary_directory
       }
     '')
