@@ -1,4 +1,8 @@
-{
+{pkgs, ...}: {
+  home.packages = [
+    pkgs.kdePackages.okular
+  ];
+
   programs.zathura = {
     enable = true;
 

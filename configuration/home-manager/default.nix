@@ -66,7 +66,7 @@
       ./shell
       ./tealdeer
       ./yazi
-      ./zathura
+      ./pdf
       ./zellij
       ./zk
       ./zoxide
