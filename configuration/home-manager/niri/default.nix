@@ -152,7 +152,7 @@ in {
             XF86AudioMicMute allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} mute mic"; }
             XF86AudioMute allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} mute"; }
             XF86AudioNext allow-when-locked=true { spawn-sh "playerctl next || rmpc next"; }
-            XF86AudioPlay allow-when-locked=true { spawn-sh "playerctl play-pause; rmpc togglepause"; }
+            XF86AudioPlay allow-when-locked=true { spawn-sh "playerctl play-pause || rmpc togglepause"; }
             XF86AudioPrev allow-when-locked=true { spawn-sh "playerctl previous || rmpc prev"; }
             XF86AudioRaiseVolume allow-when-locked=true {spawn-sh "nu ${../music-player/set-volume.nu} raise"; }
             XF86AudioStop allow-when-locked=true { spawn "playerctl" "stop"; }
