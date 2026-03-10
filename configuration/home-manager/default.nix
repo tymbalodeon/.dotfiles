@@ -91,14 +91,14 @@
 
   options = let
     inherit (lib) mkOption types;
+    inherit (types) bool listOf str;
   in {
     laptop = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
     };
 
     user = let
-      str = types.str;
       user = import ../users;
     in {
       email = mkOption {
@@ -121,13 +121,13 @@
         type = str;
       };
 
-      nbRemote = mkOption {
+      nbRemotes = mkOption {
         default =
-          if builtins.hasAttr "nbRemote" user
-          then user.nbRemote
-          else "git@github.com:${user.githubUsername}/notes.git";
+          if builtins.hasAttr "nbRemotes" user
+          then user.nbRemotes
+          else ["git@github.com:${user.githubUsername}/notes.git"];
 
-        type = str;
+        type = listOf str;
       };
 
       username = mkOption {

@@ -10,7 +10,7 @@
     git.gitlab.user = cfg.gitlabUsername;
     git.userEmail = cfg.email;
     jujutsu.email = cfg.email;
-    nb.remote = cfg.nbRemote;
+    nb.remotes = cfg.nbRemotes;
   };
 
   imports = [
@@ -20,6 +20,9 @@
   ];
 
   options.work.user = let
+    inherit (lib) types;
+    inherit (types) listOf str;
+
     getUserValue = attr: (
       if builtins.hasAttr attr user
       then user.${attr}
@@ -31,22 +34,22 @@
     with lib; {
       email = mkOption {
         default = getUserValue "email";
-        type = types.str;
+        type = str;
       };
 
       githubUsername = mkOption {
         default = getUserValue "githubUsername";
-        type = types.str;
+        type = str;
       };
 
       gitlabUsername = mkOption {
         default = getUserValue "gitlabUsername";
-        type = types.str;
+        type = str;
       };
 
-      nbRemote = mkOption {
-        default = getUserValue "nbRemote";
-        type = types.str;
+      nbRemotes = mkOption {
+        default = getUserValue "nbRemotes";
+        type = listOf str;
       };
     };
 }
