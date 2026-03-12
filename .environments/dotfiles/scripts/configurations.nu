@@ -31,6 +31,10 @@ export def is-darwin [] {
   (get-current-system) == darwin
 }
 
+export def is-linux [] {
+  (uname).kernel-name == Linux
+}
+
 export def is-home-manager [] {
   (get-current-system) == home-manager
 }
