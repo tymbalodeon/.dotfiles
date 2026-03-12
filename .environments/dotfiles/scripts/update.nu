@@ -36,7 +36,6 @@ def home-manager-inputs [] {
     nixpkgs-unstable
     src
     stylix-unstable
-    zen-browser
   ]
 }
 
@@ -48,7 +47,6 @@ def nixos-inputs [] {
     src
     stylix-unstable
     wayland-pipewire-idle-inhibit
-    zen-browser
   ]
 }
 

@@ -6,7 +6,6 @@
   hostType,
   lib,
   src,
-  zen-browser,
   ...
 }: {
   config = let
@@ -19,7 +18,6 @@
           hostName
           hostType
           src
-          zen-browser
           ;
       };
 

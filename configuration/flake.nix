@@ -57,15 +57,6 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
     };
-
-    zen-browser = {
-      inputs = {
-        nixpkgs.follows = "nixpkgs-unstable";
-        home-manager.follows = "home-manager-unstable";
-      };
-
-      url = "github:0xc000022070/zen-browser-flake";
-    };
   };
 
   outputs = {
@@ -81,7 +72,6 @@
     stylix-unstable,
     tsundeoku,
     wayland-pipewire-idle-inhibit,
-    zen-browser,
     ...
   }: let
     getChannels = hostType:
@@ -180,7 +170,6 @@
               home-manager-unstable
               nixgl
               src
-              zen-browser
               ;
           };
 
@@ -210,7 +199,6 @@
               solaar
               src
               wayland-pipewire-idle-inhibit
-              zen-browser
               ;
 
             home-manager = home-manager-unstable;

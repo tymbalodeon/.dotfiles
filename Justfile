@@ -100,7 +100,6 @@ mod yaml ".environments/yaml/Justfile"
 alias configs := dotfiles::configurations
 alias configurations := dotfiles::configurations
 alias diff := dotfiles::diff
-alias extensions := dotfiles::extensions
 alias files := dotfiles::files
 alias generations := dotfiles::generations
 alias inputs := dotfiles::inputs

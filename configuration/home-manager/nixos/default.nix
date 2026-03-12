@@ -51,6 +51,5 @@
     ../reaper
     ../swaync
     ../waybar
-    ../zen-browser
   ];
 }

@@ -4,7 +4,6 @@ use configurations.nu get-all-hosts
 use configurations.nu get-built-host-name
 use configurations.nu is-home-manager
 use configurations.nu is-nixos
-use extensions.nu
 use prune.nu
 use optimise.nu
 use update.nu
@@ -140,7 +139,6 @@ export def main [
   $env.STYLIX_THEME = $theme
 
   if $update {
-    extensions
     update
   }
 
