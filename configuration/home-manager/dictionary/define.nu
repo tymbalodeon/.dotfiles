@@ -1,6 +1,7 @@
 #!/usr/bin/env nu
 
 def main [--primary] {
+  # TODO: make a shared function with search.nu?
   let args = [--no-newline]
 
   let args = if $primary {

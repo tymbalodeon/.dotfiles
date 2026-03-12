@@ -122,11 +122,13 @@ in {
             Mod+Shift+N hotkey-overlay-title="Open notifications panel" { spawn "swaync-client" "--toggle-panel" "--skip-wait"; }
             Mod+Shift+Right { focus-monitor-right; }
             Mod+Shift+R { switch-preset-window-height; }
+            Mod+Shift+S hotkey-overlay-title="Search selected (primary clipboard) text online" { spawn-sh "nu ${../search/search.nu} --primary"; }
             Mod+Shift+Slash { show-hotkey-overlay; }
             Mod+Shift+Up { focus-monitor-up; }
             Mod+Shift+V { switch-focus-between-floating-and-tiling; }
             Mod+Shift+WheelScrollDown { focus-column-right; }
             Mod+Shift+WheelScrollUp { focus-column-left; }
+            Mod+S hotkey-overlay-title="Search selected text online" { spawn-sh "nu ${../search/search.nu}"; }
             Mod+Space hotkey-overlay-title="Run an Application" { spawn "fuzzel"; }
             Mod+U { focus-workspace-down; }
             Mod+Up { focus-window-up; }
