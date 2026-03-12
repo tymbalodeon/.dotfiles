@@ -89,7 +89,7 @@
       }
 
       def "task clear" [] {
-        rm (database-file)
+        mv (database-file) (mktemp --tmpdir task-backup-XXX.sqlite3)
       }
 
       def get-dump-file [file?: string] {
@@ -125,6 +125,8 @@
         file?: string
         --interactive (-i)
       ] {
+        task clear
+
         let temporary_directory = (mktemp --directory)
 
         let dump_file = if ($file | is-empty) and $interactive {
