@@ -24,15 +24,13 @@ def select-remote [] {
 
 def get-remote [remote?: string] {
   let remote = if ($remote | is-empty) {
-    select-remote
+    return "dropbox"
+  } else if ":" in $remote {
+    $remote
+    | split row :
+    | first
   } else {
-    if ":" in $remote {
-      $remote
-      | split row :
-      | first
-    } else {
-      $remote
-    }
+    $remote
   }
 
   validate-remote $remote
@@ -62,18 +60,6 @@ def get-path [interactive: bool remote?: string path?: string] {
   }
 }
 
-def get-remote-path [interactive: bool remote?: string path?: string] {
-  let parsed_remote = (get-remote $remote)
-
-  let remote = if $interactive {
-    $parsed_remote
-  } else {
-    $remote
-  }
-
-  $"($parsed_remote):(get-path $interactive $remote $path)"
-}
-
 def get-storage-directory [--linked] {
   if $linked {
     maestral config get path
@@ -99,13 +85,7 @@ def "storage browse" [
   remote?: string # The name of the remote service
   --web # Browse remote in the browser instead of the terminal
 ] {
-  validate-remote $remote
-
-  let remote = if ($remote | is-empty) {
-    select-remote
-  } else {
-    $remote
-  }
+  let remote = (get-remote $remote)
 
   if $web {
     let host = match $remote {
@@ -156,56 +136,86 @@ export def "storage download" [
   --quiet # Suppress output
   --to: string # (Not compatible with `--linked`) Download to this directory instead fo the standard one
 ] {
-  let parsed_remote = (get-remote $remote)
-  let path = (get-path $interactive $remote $path)
+  let remote = (get-remote $remote)
+  # let path = (get-path $interactive $remote $path)
+  # let remote_path = (get-remote-path $interactive $parsed_remote $path)
 
-  if $linked and $parsed_remote == dropbox {
-    # TODO: handle service not running, etc.
-    maestral excluded remove $path
-  } else {
-    let remote_path = (get-remote-path $interactive $parsed_remote $path)
+  const SELECT_ALL = "--- SELECT ALL ---"
 
-    let local_path = if ($to | is-not-empty) {
-      if ($to | path type) != dir {
-        print-error "`--to` must be a directory"
-      } else {
-        $to
-      }
-    } else {
-      (get-local-path $parsed_remote $path)
-    }
+  mut remote_path = ""
+  mut is_dir = true
 
-    if not $force and ($to | is-empty) and ($local_path | path exists) {
-      (
-        print-error
-          $"($local_path) already exists. Use `--force` to download again."
-      )
-
-      return
-    }
-
-    let parent = if ($to | is-not-empty) {
-      $to
-    } else if (
-      rclone lsjson $remote_path
+  while ($is_dir or ($remote_path | str ends-with $SELECT_ALL)) {
+    let files = (
+      rclone lsjson $"($remote):($remote_path)"
       | from json
-      | is-empty
-    ) {
-      $local_path
-      | path dirname
-    } else {
-      $local_path
+    )
+
+    $remote_path = (
+      $remote_path
+      | path join (
+        $files
+        | get Path
+        | append $SELECT_ALL
+        | to text
+        | fzf
+      )
+    )
+
+    if ($remote_path | str ends-with $SELECT_ALL) {
+      break
     }
 
-    let result = (rclone sync $remote_path $parent | complete)
+    $is_dir = (
+      $files
+      | where Path == ($remote_path | path basename)
+      | first
+      | get IsDir
+    )
+  }
 
-    if $result.exit_code == 0 {
-      if not $quiet {
-        print $"Downloaded ($remote_path) to ($parent)"
-      }
+  let remote_path = $"($remote):($remote_path)"
+
+  let local_path = if ($to | is-not-empty) {
+    if ($to | path type) != dir {
+      print-error "`--to` must be a directory"
     } else {
-      print-error $"could not find remote file \"($remote_path)\""
+      $to
     }
+  } else {
+    (get-local-path $remote $remote_path)
+  }
+
+  if not $force and ($to | is-empty) and ($local_path | path exists) {
+    (
+      print-error
+        $"($local_path) already exists. Use `--force` to download again."
+    )
+
+    return
+  }
+
+  let parent = if ($to | is-not-empty) {
+    $to
+  } else if (
+    rclone lsjson $remote_path
+    | from json
+    | is-empty
+  ) {
+    $local_path
+    | path dirname
+  } else {
+    $local_path
+  }
+
+  let result = (rclone sync $remote_path $parent | complete)
+
+  if $result.exit_code == 0 {
+    if not $quiet {
+      print $"Downloaded ($remote_path) to ($parent)"
+    }
+  } else {
+    print-error $"could not find remote file \"($remote_path)\""
   }
 }
 
