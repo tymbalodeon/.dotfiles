@@ -59,16 +59,15 @@
 
               try {
                 let branch = (
-                  (
-                    jj log
-                      --no-graph
-                      --revisions "ancestors(@)"
-                      --template "bookmarks ++ '\n'"
-                      err> /dev/null
-                    | lines
-                    | where {is-not-empty}
-                    | first
-                  )
+                  jj log
+                    --no-graph
+                    --revisions "ancestors(@)"
+                    --template "bookmarks ++ '\n'"
+                    err> /dev/null
+                  | lines
+                  | collect
+                  | where {is-not-empty}
+                  | first
                 )
 
                 let change_id = (
