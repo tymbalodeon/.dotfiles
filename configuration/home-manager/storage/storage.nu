@@ -3,8 +3,8 @@ def storage [] {
   help storage
 }
 
-def print-error [text: string] {
-  error make --unspanned {msg: $"(ansi red_bold)error(ansi reset): ($text)"}
+def print-warning [text: string] {
+  print $"(ansi yellow_bold)warning(ansi reset): ($text)"
 }
 
 def validate-remote [remote?: string] {
@@ -14,23 +14,16 @@ def validate-remote [remote?: string] {
     return
   }
 
-  print-error $"remote \"($remote)\" does not exist"
-}
-
-def select-remote [] {
-  storage list remotes
-  | fzf
+  print-warning $"remote \"($remote)\" does not exist"
 }
 
 def get-remote [remote?: string] {
   let remote = if ($remote | is-empty) {
     return "dropbox"
-  } else if ":" in $remote {
+  } else {
     $remote
     | split row :
     | first
-  } else {
-    $remote
   }
 
   validate-remote $remote
@@ -38,35 +31,9 @@ def get-remote [remote?: string] {
   $remote
 }
 
-def get-path [interactive: bool remote?: string path?: string] {
-  if $interactive {
-    let selected_path = (
-      rclone lsf $"($remote):($path)"
-      | fzf
-    )
-
-    $path
-    | path join $selected_path
-  } else {
-    if ($remote | is-not-empty) and ":" in $remote {
-      let parts = ($remote | split row :)
-
-      $parts
-      | drop nth 0
-      | str join :
-    } else {
-      $path
-    }
-  }
-}
-
 def get-storage-directory [--linked] {
-  if $linked {
-    maestral config get path
-  } else {
-    $env.HOME
-    | path join storage/
-  }
+  $env.HOME
+  | path join storage/
 }
 
 def get-local-path [remote: string path: string] {
@@ -102,23 +69,15 @@ def "storage browse" [
 # Browse local files
 def "storage browse local" [
   remote?: string # The name of the remote service
-  --linked # (Dropbox only) Browse the `maestral` managed folder
 ] {
-  if $linked and ($remote != dropbox) {
-    return
-  }
+  let path = (get-storage-directory)
+  let remote = (get-remote $remote)
 
-  let path = if $linked {
-    get-storage-directory --linked
+  let path = if ($remote | is-empty) {
+    $path
   } else {
-    let path = (get-storage-directory)
-
-    if ($remote | is-empty) {
-      $path
-    } else {
-      $path
-      | path join $remote
-    }
+    $path
+    | path join $remote
   }
 
   if ($path | path exists) {
@@ -126,24 +85,13 @@ def "storage browse local" [
   }
 }
 
-# Download files from remote
-export def "storage download" [
-  remote?: string # The name of the remote service
-  path?: string # A path relative to <remote>:
-  --force (-f) # Re-download file even if it already exists locally
-  --interactive (-i) # Interactively select the file or directory to download
-  --linked # (Dropbox only) Download the file using the `maestral` service
-  --quiet # Suppress output
-  --to: string # (Not compatible with `--linked`) Download to this directory instead fo the standard one
+def select-file [
+  remote: string
+  --allow-directories
 ] {
-  let remote = (get-remote $remote)
-  # let path = (get-path $interactive $remote $path)
-  # let remote_path = (get-remote-path $interactive $parsed_remote $path)
-
-  const SELECT_ALL = "--- SELECT ALL ---"
-
   mut remote_path = ""
   mut is_dir = true
+  const SELECT_ALL = "--- SELECT ALL ---"
 
   while ($is_dir or ($remote_path | str ends-with $SELECT_ALL)) {
     let files = (
@@ -155,8 +103,8 @@ export def "storage download" [
       $remote_path
       | path join (
         $files
-        | get Path
-        | append $SELECT_ALL
+        | each {|file| if $file.IsDir {$"($file.Path)/"} else {$file.Path}}
+        | append (if $allow_directories { $SELECT_ALL } else { null })
         | to text
         | fzf
       )
@@ -174,7 +122,26 @@ export def "storage download" [
     )
   }
 
-  let remote_path = $"($remote):($remote_path)"
+  $remote_path
+}
+
+# Download files from remote
+export def "storage download" [
+  remote?: string # The name of the remote service
+  path?: string # A path relative to <remote>:
+  --force (-f) # Re-download file even if it already exists locally
+  --interactive (-i) # Interactively select the file or directory to download
+  --linked # (Dropbox only) Download the file using the `maestral` service
+  --quiet # Suppress output
+  --to: string # (Not compatible with `--linked`) Download to this directory instead fo the standard one
+] {
+  let remote = (get-remote $remote)
+
+  let remote_path = if ($path | is-empty) {
+    select-file --allow-directories $remote
+  } else {
+    $path
+  }
 
   let local_path = if ($to | is-not-empty) {
     if ($to | path type) != dir {
@@ -188,7 +155,7 @@ export def "storage download" [
 
   if not $force and ($to | is-empty) and ($local_path | path exists) {
     (
-      print-error
+      print-warning
         $"($local_path) already exists. Use `--force` to download again."
     )
 
@@ -197,22 +164,28 @@ export def "storage download" [
 
   let parent = if ($to | is-not-empty) {
     $to
-  } else if (
-    rclone lsjson $remote_path
-    | from json
-    | is-empty
-  ) {
-    $local_path
-    | path dirname
   } else {
-    $local_path
+    let data = (
+      rclone lsjson $"($remote):($remote_path)"
+      | from json
+    )
+
+    if ($data | length) == 1 and not ($data | first | get IsDir) {
+      $local_path
+      | path dirname
+    } else {
+      $local_path
+    }
   }
 
-  let result = (rclone sync $remote_path $parent | complete)
+  let result = (rclone sync $"($remote):($remote_path)" $parent | complete)
 
   if $result.exit_code == 0 {
     if not $quiet {
-      print $"Downloaded ($remote_path) to ($parent)"
+      print $"Downloaded ($remote_path) to (
+        $parent
+        | path join ($remote_path | path basename)
+      )"
     }
   } else {
     print-error $"could not find remote file \"($remote_path)\""
@@ -225,57 +198,24 @@ def "storage edit" [
   path?: string # A path relative to <remote>:
 ] {
   let remote = (get-remote $remote)
-  let path = (get-path false $path)
 
-  storage download $remote $path
-  ^$env.EDITOR (get-local-path $remote $path)
-  storage upload $remote $path
-}
-
-# Search remote files
-def "storage find" [
-  pattern?: string # Pattern to search for
-  # TODO
-  # --remote: filter to just this remote
-] {
-  let pattern = if ($pattern | is-empty) {
-    ""
+  let remote_path = if ($path | is-empty) {
+    select-file $remote
   } else {
-    $pattern
+    $path
   }
 
-  # TODO: replace dropbox with $remote
-  storage list dropbox
-  | lines
-  | where {$in | str contains --ignore-case $pattern}
-  | to text --no-newline
-}
-
-# Search local files
-def "storage find local" [
-  pattern?: string # Pattern to search for
-  # TODO
-  # --remote: filter to just this remote
-] {
-  let files = (fd "" (get-storage-directory))
-
-  if ($pattern | is-empty) {
-    $files
-    | fzf --multi
-  } else {
-    $files
-    | rg --ignore-case $pattern
-  }
+  storage download $remote $remote_path
+  let local_path = (get-local-path $remote $remote_path)
+  ^$env.EDITOR $local_path
+  storage upload $local_path $remote_path
 }
 
 # Show remote info
 def "storage info" [
-  remote: string # The name of the remote service
+  remote?: string # The name of the remote service
 ] {
-  # TODO: allow passing both `dropbox` and `dropbox:` and automatically
-  # strip/add the colon as necessary (re-work validate-remote to handle this?)
-  validate-remote $remote
-
+  let remote = (get-remote $remote)
   rclone about $"($remote):"
 }
 
@@ -285,6 +225,7 @@ def "storage list" [
   path?: string # A path relative to <remote>:
   --interactive (-i) # Interactively select the subdirectory whose contents to list
 ] {
+  let remote = (get-remote $remote)
   let path = (get-remote-path $interactive $remote $path)
 
   rclone lsf $path
@@ -376,15 +317,7 @@ def "storage remove" [
     return
   }
 
-  let remote = if $interactive and ($remote | is-empty) {
-    if $linked {
-      "dropbox"
-    } else {
-      select-remote
-    }
-  } else {
-    $remote
-  }
+  let remote = (get-remote $remote)
 
   let storage_directory = if $linked {
     get-storage-directory --linked
@@ -476,6 +409,8 @@ def "storage remove" [
     }
   }
 }
+
+alias "storage rm" = storage remove
 
 # Setup remotes
 def "storage setup" [] {
