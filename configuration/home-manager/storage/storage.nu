@@ -52,7 +52,7 @@ def "storage browse local" [
 ] {
   let local_storage_path = (
     get-storage-directory
-    | local_storage_path join (get-remote $remote)
+    | path join (get-remote $remote)
   )
 
   if ($local_storage_path | path exists) {
@@ -110,6 +110,7 @@ def select-remote-path [
   }
 
   $remote_path
+  | str replace $SELECT_ALL ""
 }
 
 def get-local-path [remote: string path: string] {
@@ -181,6 +182,7 @@ export def "storage download" [
   let result = (rclone sync $"($remote):($remote_path)" $parent | complete)
 
   if $result.exit_code == 0 {
+    # FIXME: don't join with basename if basename is a dir in remote
     if not $quiet {
       print $"Downloaded ($remote_path) to (
         $parent
@@ -232,20 +234,6 @@ def "storage list" [
 
   let path = if $interactive {
     select-remote-path $remote --no-files
-  } else {
-    $path
-  }
-
-  let path_parts = if ($path | is-not-empty) {
-    $path | path split
-  } else {
-    []
-  }
-
-  let path = if ($path_parts | last) == $SELECT_ALL {
-    $path_parts
-    | where {$in != $SELECT_ALL}
-    | path join
   } else {
     $path
   }
@@ -305,6 +293,23 @@ def "storage list remotes" [] {
 }
 
 alias "storage ls remotes" = storage list remotes
+
+# Interactively select and open a file from local storage
+def "storage open" [
+  path?: string # A path relative to <remote>:
+  --remote: string # The name of the remote service
+] {
+  let remote = (get-remote $remote)
+
+  let path = if ($path | is-not-empty) {
+    $remote
+    | path join $path
+  } else {
+    $remote
+  }
+
+  start (fd --type file "" (get-storage-directory | path join $path) | fzf)
+}
 
 def confirm-remove [type?: string] {
   let type = if ($type | is-empty) {
