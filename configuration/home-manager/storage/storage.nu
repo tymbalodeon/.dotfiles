@@ -183,6 +183,7 @@ export def "storage download" [
 
   if $result.exit_code == 0 {
     # FIXME: don't join with basename if basename is a dir in remote
+    # TODO: display loading message while it runs (useful for downloading entire directories)
     if not $quiet {
       print $"Downloaded ($remote_path) to (
         $parent
@@ -311,14 +312,14 @@ def "storage open" [
   start (fd --type file "" (get-storage-directory | path join $path) | fzf)
 }
 
-def confirm-remove [type?: string] {
-  let type = if ($type | is-empty) {
+def confirm-remove [remote?: string] {
+  let remote = if ($remote | is-empty) {
     " "
   } else {
-    $" ($type) "
+    $" ($remote) "
   }
 
-  let prompt = $"Are you sure you want to clear all downloaded($type)files? "
+  let prompt = $"Are you sure you want to clear all downloaded($remote)files? "
 
   (input $prompt | str downcase) in [y yes]
 }
@@ -342,7 +343,13 @@ def "storage remove" [
   let storage_directory = (get-storage-directory)
 
   let paths = if $interactive {
-    fd --type file "" ($storage_directory | path join $remote)
+    let files = (fd --type file "" ($storage_directory | path join $remote))
+
+    if ($files | is-empty) {
+      return
+    }
+
+    $files
     | fzf --multi
     | lines
   } else {
@@ -396,6 +403,8 @@ def "storage remove" [
       [$parsed_path]
     }
   }
+
+  # TODO: confirm removal if not force
 
   for path in $paths {
     rm --force --recursive $path
