@@ -236,7 +236,11 @@ def "storage list" [
     $path
   }
 
-  let path_parts = ($path | path split)
+  let path_parts = if ($path | is-not-empty) {
+    $path | path split
+  } else {
+    []
+  }
 
   let path = if ($path_parts | last) == $SELECT_ALL {
     $path_parts
