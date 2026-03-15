@@ -3,18 +3,8 @@ def storage [] {
   help storage
 }
 
-def print-warning [text: string] {
-  print $"(ansi yellow_bold)warning(ansi reset): ($text)"
-}
-
-def validate-remote [remote?: string] {
-  if ($remote | is-empty) or (
-    $remote in (storage list remotes | lines)
-  ) {
-    return
-  }
-
-  print-warning $"remote \"($remote)\" does not exist"
+def print-error [text: string] {
+  error make --unspanned {msg: $'"($text)" does not exist'}
 }
 
 def get-remote [remote?: string] {
@@ -26,25 +16,15 @@ def get-remote [remote?: string] {
     | first
   }
 
-  validate-remote $remote
+  if ($remote not-in (storage list remotes | lines)) {
+    print-error $"remote \"($remote)\" does not exist"
+  }
 
   $remote
 }
 
-def get-storage-directory [--linked] {
-  $env.HOME
-  | path join storage/
-}
-
-def get-local-path [remote: string path: string] {
-  let path = if $remote in $path {
-    $path
-  } else {
-    $"($remote)/($path)"
-  }
-
-  get-storage-directory
-  | path join $path
+def get-storage-directory [] {
+  $env.HOME | path join storage/
 }
 
 # Browse remotes
@@ -70,45 +50,52 @@ def "storage browse" [
 def "storage browse local" [
   remote?: string # The name of the remote service
 ] {
-  let path = (get-storage-directory)
-  let remote = (get-remote $remote)
+  let local_storage_path = (
+    get-storage-directory
+    | local_storage_path join (get-remote $remote)
+  )
 
-  let path = if ($remote | is-empty) {
-    $path
-  } else {
-    $path
-    | path join $remote
-  }
-
-  if ($path | path exists) {
-    yazi $path
+  if ($local_storage_path | path exists) {
+    yazi $local_storage_path
   }
 }
 
-def select-file [
+const SELECT_ALL = "--- SELECT ALL ---"
+
+def select-remote-path [
   remote: string
   --allow-directories
+  --no-files
 ] {
   mut remote_path = ""
   mut is_dir = true
-  const SELECT_ALL = "--- SELECT ALL ---"
 
-  while ($is_dir or ($remote_path | str ends-with $SELECT_ALL)) {
+  while ($is_dir or (($remote_path | path split | last) == $SELECT_ALL)) {
     let files = (
       rclone lsjson $"($remote):($remote_path)"
       | from json
     )
 
-    $remote_path = (
-      $remote_path
-      | path join (
-        $files
-        | each {|file| if $file.IsDir {$"($file.Path)/"} else {$file.Path}}
-        | append (if $allow_directories { $SELECT_ALL } else { null })
-        | to text
-        | fzf
-      )
+    let options = if $no_files {
+      $files
+      | where {$in.IsDir}
+    } else {
+      $files
+    }
+
+    let options = (
+      $options
+      | each {|file| if $file.IsDir {$"($file.Path)/"} else {$file.Path}}
     )
+
+    let options = if $allow_directories or $no_files {
+      $options
+      | append $SELECT_ALL
+    } else {
+      $options
+    }
+
+    $remote_path = ($remote_path | path join ($options | to text | fzf))
 
     if ($remote_path | str ends-with $SELECT_ALL) {
       break
@@ -125,20 +112,33 @@ def select-file [
   $remote_path
 }
 
+def get-local-path [remote: string path: string] {
+  let path = if $remote in $path {
+    $path
+  } else {
+    $"($remote)/($path)"
+  }
+
+  get-storage-directory
+  | path join $path
+}
+
+def print-warning [text: string] {
+  print $"(ansi yellow_bold)warning(ansi reset): ($text)"
+}
+
 # Download files from remote
 export def "storage download" [
-  remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
   --force (-f) # Re-download file even if it already exists locally
-  --interactive (-i) # Interactively select the file or directory to download
-  --linked # (Dropbox only) Download the file using the `maestral` service
   --quiet # Suppress output
-  --to: string # (Not compatible with `--linked`) Download to this directory instead fo the standard one
+  --remote: string # The name of the remote service
+  --to: string # Download to this directory instead fo the standard one
 ] {
   let remote = (get-remote $remote)
 
   let remote_path = if ($path | is-empty) {
-    select-file --allow-directories $remote
+    select-remote-path --allow-directories $remote
   } else {
     $path
   }
@@ -194,73 +194,59 @@ export def "storage download" [
 
 # Download a file, open it in $EDITOR, and upload it after
 def "storage edit" [
-  remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
+  --remote: string # The name of the remote service
 ] {
   let remote = (get-remote $remote)
 
   let remote_path = if ($path | is-empty) {
-    select-file $remote
+    select-remote-path $remote
   } else {
     $path
   }
 
-  storage download $remote $remote_path
+  storage download --remote $remote $remote_path
   let local_path = (get-local-path $remote $remote_path)
   ^$env.EDITOR $local_path
-  storage upload $local_path $remote_path
+  storage upload --remote $remote $local_path $remote_path
 }
 
 # Show remote info
 def "storage info" [
   remote?: string # The name of the remote service
 ] {
-  let remote = (get-remote $remote)
-  rclone about $"($remote):"
-}
-
-def get-path [interactive: bool remote?: string path?: string] {
-  if $interactive {
-    let selected_path = (
-      rclone lsf $"($remote):($path)"
-      | fzf
-    )
- 
-    $path
-    | path join $selected_path
-  } else {
-    if ($remote | is-not-empty) and ":" in $remote {
-      let parts = ($remote | split row :)
- 
-      $parts
-      | drop nth 0
-      | str join :
-    } else {
-      $path
-    }
-  }
+  rclone about $"(get-remote $remote):"
 }
  
-def get-remote-path [interactive: bool remote?: string path?: string] {
-  let parsed_remote = (get-remote $remote)
-
-  let remote = if $interactive {
-    $parsed_remote
-  } else {
-    $remote
-  }
-
-  $"($parsed_remote):(get-path $interactive remote $path)"
+def get-remote-path [remote?: string path?: string] {
+  $"(get-remote $remote):($path)"
 }
 
 # List remote files
 def "storage list" [
-  remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
   --interactive (-i) # Interactively select the subdirectory whose contents to list
+  --remote: string # The name of the remote service
 ] {
   let remote = (get-remote $remote)
-  let path = (get-remote-path $interactive $remote $path)
+
+  let path = if $interactive {
+    select-remote-path $remote --no-files
+  } else {
+    $path
+  }
+
+  let path_parts = ($path | path split)
+
+  let path = if ($path_parts | last) == $SELECT_ALL {
+    $path_parts
+    | where {$in != $SELECT_ALL}
+    | path join
+  } else {
+    $path
+  }
+
+  let path = (get-remote-path $remote $path)
 
   rclone lsf $path
   | lines
@@ -328,22 +314,14 @@ def confirm-remove [type?: string] {
   (input $prompt | str downcase) in [y yes]
 }
 
-def remove-linked-file [path: string] {
-  maestral excluded add (
-    $path
-    | str replace $"(get-storage-directory --linked)/" ""
-  )
-}
-
 # Remove local files
 def "storage remove" [
-  remote?: string # The name of the remote service
   path?: string # A path relative to <remote>:
   --force (-f) # Remove without confirmation
   --interactive (-i) # Interactively select the subdirectory whose contents to list
-  --linked # (Dropbox only) Remove the file from the `maestral` managed folder
+  --remote: string # The name of the remote service
 ] {
-  validate-remote $remote
+  let remote = (get-remote $remote)
 
   if not $force and not $interactive and ($path | is-empty) and not (
     confirm-remove $remote
@@ -352,12 +330,7 @@ def "storage remove" [
   }
 
   let remote = (get-remote $remote)
-
-  let storage_directory = if $linked {
-    get-storage-directory --linked
-  } else {
-    get-storage-directory
-  }
+  let storage_directory = (get-storage-directory)
 
   let paths = if $interactive {
     fd --type file "" ($storage_directory | path join $remote)
@@ -367,20 +340,10 @@ def "storage remove" [
     let parsed_path = if ($remote | is-empty) {
       $storage_directory
     } else if ($path | is-empty) {
-      if $linked {
-        $storage_directory
-      } else {
-        $storage_directory
-        | path join $remote
-      }
+      $storage_directory
+      | path join $remote
     } else {
-      let path_parts = if $linked {
-        [$storage_directory $path]
-      } else {
-        [$storage_directory $remote $path]
-      }
-
-      $path_parts
+      [$storage_directory $remote $path]
       | path join
     }
 
@@ -425,22 +388,8 @@ def "storage remove" [
     }
   }
 
-  if $linked {
-    for path in $paths {
-      if $path == (get-storage-directory --linked) {
-        let paths = (fd --max-depth 1 --type dir "" $storage_directory | lines)
-
-        for path in $paths {
-          remove-linked-file $path
-        }
-      } else {
-        remove-linked-file $path
-      }
-    }
-  } else {
-    for path in $paths {
-      rm --force --recursive $path
-    }
+  for path in $paths {
+    rm --force --recursive $path
   }
 }
 
@@ -501,5 +450,5 @@ export def "storage upload" [
     "copy"
   }
 
-  rclone $command $local_path (get-remote-path false $remote $remote_path)
+  rclone $command $local_path (get-remote-path $remote $remote_path)
 }
