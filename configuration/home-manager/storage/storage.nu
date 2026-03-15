@@ -219,6 +219,40 @@ def "storage info" [
   rclone about $"($remote):"
 }
 
+def get-path [interactive: bool remote?: string path?: string] {
+  if $interactive {
+    let selected_path = (
+      rclone lsf $"($remote):($path)"
+      | fzf
+    )
+ 
+    $path
+    | path join $selected_path
+  } else {
+    if ($remote | is-not-empty) and ":" in $remote {
+      let parts = ($remote | split row :)
+ 
+      $parts
+      | drop nth 0
+      | str join :
+    } else {
+      $path
+    }
+  }
+}
+ 
+def get-remote-path [interactive: bool remote?: string path?: string] {
+  let parsed_remote = (get-remote $remote)
+
+  let remote = if $interactive {
+    $parsed_remote
+  } else {
+    $remote
+  }
+
+  $"($parsed_remote):(get-path $interactive remote $path)"
+}
+
 # List remote files
 def "storage list" [
   remote?: string # The name of the remote service
