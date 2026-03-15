@@ -130,13 +130,13 @@
         let temporary_directory = (mktemp --directory)
 
         let dump_file = if ($file | is-empty) and $interactive {
-          storage ls dropbox task
+          storage ls task
           | fzf
         } else {
           (get-dump-file $file)
         }
 
-        storage download --quiet --to $temporary_directory dropbox $dump_file
+        storage download --quiet --to $temporary_directory $dump_file
 
         ^task import (
           $temporary_directory | path join ($dump_file | path basename)
