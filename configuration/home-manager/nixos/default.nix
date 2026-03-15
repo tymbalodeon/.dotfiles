@@ -15,7 +15,6 @@
       packages = with pkgs; [
         equibop
         libnotify
-        maestral
         wev
       ];
 

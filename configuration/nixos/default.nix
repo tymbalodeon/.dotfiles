@@ -81,7 +81,6 @@
 
   imports = [
     ./bluetooth
-    ./dropbox
     ./home-manager
     ./monitors
     ./nautilus
