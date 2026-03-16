@@ -288,6 +288,7 @@ def "storage list local" [
 
   if ($path | path exists) {
     fd "" $path
+    | str replace --all $"($path)/" ""
   }
 }
 
