@@ -25,6 +25,15 @@ export def "main lower" [] {
 }
 
 export def "main raise" [] {
+  if (
+    wpctl get-volume @DEFAULT_AUDIO_SINK@
+    | split row " "
+    | last
+    | into float
+  ) == 1.00 {
+    return
+  }
+
   set-volume "+"
 }
 
