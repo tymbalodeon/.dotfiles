@@ -29,28 +29,9 @@ def get-storage-directory [] {
   $env.HOME | path join storage/
 }
 
-# Browse remotes
-def "storage browse" [
-  remote?: string # The name of the remote service
-  --web # Browse remote in the browser instead of the terminal
-] {
-  let remote = (get-remote $remote)
-
-  if $web {
-    let host = match $remote {
-      "dropbox" => "dropbox.com"
-      "google" => "drive.google.com"
-    }
-
-    start-process xdg-open $"https://($host)"
-  } else {
-    rclone ncdu $"($remote):"
-  }
-}
-
 # Browse local files
 def "storage browse local" [
-  remote?: string # The name of the remote service
+  --remote: string # The name of the remote service
 ] {
   let local_storage_path = (
     get-storage-directory
@@ -59,6 +40,28 @@ def "storage browse local" [
 
   if ($local_storage_path | path exists) {
     yazi $local_storage_path
+  }
+}
+
+# Browse remotes
+def "storage browse remote" [
+  --remote: string # The name of the remote service
+  --web # Browse remote in the browser, using remote website
+  --web-rclone # Browse remote in the browser, using rclone
+] {
+  let remote = (get-remote $remote)
+
+  if $web_rclone {
+    rclone rcd --rc-web-gui --rc-user=admin --rc-pass=pass --rc-addr=:5572
+  } else if $web {
+    let host = match $remote {
+      "dropbox" => "dropbox.com"
+      "google" => "drive.google.com"
+    }
+
+    start-process xdg-open $"https://($host)"
+  } else {
+    rclone ncdu $"($remote):"
   }
 }
 
@@ -239,7 +242,7 @@ def "storage edit" [
 
 # Show remote info
 def "storage info" [
-  remote?: string # The name of the remote service
+  --remote: string # The name of the remote service
 ] {
   rclone about $"(get-remote $remote):"
 }
