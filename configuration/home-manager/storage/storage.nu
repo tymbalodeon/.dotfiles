@@ -80,6 +80,10 @@ def select-remote-path [
   --allow-directories
   --no-files
 ] {
+  const TMP_FILE = "/tmp/storage"
+
+  "false" | save --force $TMP_FILE
+
   mut remote_path = ""
   mut recurse = true
 
@@ -120,14 +124,30 @@ def select-remote-path [
       fi
     "
 
-    $remote_path = (
-      $remote_path
-      | path join (
-        $options
-        | to text
-        | fzf --with-shell $"(^which bash) -c" --preview $preview_string
-      )
+    let selection = (
+      $options
+      | to text
+      | (
+          fzf
+            --bind $"backspace:execute-silent\(echo true > ($TMP_FILE)\)+abort"
+            --preview $preview_string
+        )
+      | complete
+      | get stdout
+      | str trim
     )
+
+    if (open $TMP_FILE | into bool) {
+      if ($remote_path | is-empty) {
+        return
+      }
+
+      $remote_path = ($remote_path | path split | drop | path join)
+
+      continue
+    }
+
+    $remote_path = ($remote_path | path join $selection)
 
     if ($remote_path | str ends-with $SELECT_ALL) {
       break
@@ -176,6 +196,10 @@ export def "storage download" [
     select-remote-path --allow-directories $remote
   } else {
     $path
+  }
+
+  if ($remote_path | is-empty) {
+    return
   }
 
   let local_path = if ($to | is-not-empty) {
@@ -228,6 +252,8 @@ export def "storage download" [
     print-error $"could not find remote file \"($remote_path)\""
   }
 }
+
+alias "storage down" = storage download
 
 # Download a file, open it in $EDITOR, and upload it after
 def "storage edit" [
@@ -298,7 +324,7 @@ def "storage list local" [
   }
 
   if ($path | path exists) {
-    fd "" $path
+    fd --type file "" $path
     | str replace --all $"($path)/" ""
   }
 }
@@ -517,3 +543,5 @@ export def "storage upload" [
 
   rclone $command $local_path (get-remote-path $remote $remote_path)
 }
+
+alias "storage up" = storage upload
