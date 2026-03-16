@@ -3,6 +3,8 @@ def storage [] {
   help storage
 }
 
+alias st = storage
+
 def print-error [text: string] {
   error make --unspanned {msg: $'"($text)" does not exist'}
 }
