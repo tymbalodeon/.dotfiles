@@ -43,6 +43,10 @@ def "storage browse local" [
   }
 }
 
+alias "storage br local" = storage browse local
+alias "storage br l" = storage browse local
+alias "storage browse l" = storage browse local
+
 # Browse remotes
 def "storage browse remote" [
   --remote: string # The name of the remote service
@@ -64,6 +68,10 @@ def "storage browse remote" [
     rclone ncdu $"($remote):"
   }
 }
+
+alias "storage br remote" = storage browse remote
+alias "storage br r" = storage browse remote
+alias "storage browse r" = storage browse remote
 
 const SELECT_ALL = "--- SELECT ALL ---"
 
