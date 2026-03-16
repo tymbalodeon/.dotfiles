@@ -70,9 +70,9 @@ def select-remote-path [
   --no-files
 ] {
   mut remote_path = ""
-  mut is_dir = true
+  mut recurse = true
 
-  while ($is_dir or (($remote_path | path split | last) == $SELECT_ALL)) {
+  while $recurse {
     let files = (
       rclone lsjson $"($remote):($remote_path)"
       | from json
@@ -97,6 +97,10 @@ def select-remote-path [
       $options
     }
 
+    if ($options | length) == 1 and ($options | first) == $SELECT_ALL {
+      break
+    }
+
     let preview_string = $"
       file={}
 
@@ -118,11 +122,13 @@ def select-remote-path [
       break
     }
 
-    $is_dir = (
+    $recurse = (
       $files
       | where Path == ($remote_path | path basename)
       | first
       | get IsDir
+    ) or (
+      ($remote_path | path split | last) == $SELECT_ALL
     )
   }
 
