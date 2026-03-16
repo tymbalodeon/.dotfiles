@@ -316,15 +316,37 @@ def "storage open" [
   --remote: string # The name of the remote service
 ] {
   let remote = (get-remote $remote)
+  let storage_directory = (get-storage-directory)
 
   let path = if ($path | is-not-empty) {
     $remote
     | path join $path
   } else {
-    $remote
+    $storage_directory
+    | path join $remote
   }
 
-  start (fd --type file "" (get-storage-directory | path join $path) | fzf)
+  let remove_prefix = if ($path | is-empty) {
+    let local_remotes = (ls $storage_directory)
+
+    if ($local_remotes | length) == 1 {
+      $local_remotes.name
+      | first
+    }
+  } else {
+    $path
+  }
+
+  let remove_prefix = $"($remove_prefix)/"
+
+  let file = (
+    fd --type file "" $path
+    | each {str replace --all $remove_prefix ""}
+    | to text
+    | fzf
+  )
+
+  start ($file | prepend $remove_prefix | str join)
 }
 
 def confirm-remove [remote?: string] {
