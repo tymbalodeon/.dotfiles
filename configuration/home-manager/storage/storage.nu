@@ -95,7 +95,22 @@ def select-remote-path [
       $options
     }
 
-    $remote_path = ($remote_path | path join ($options | to text | fzf))
+    let preview_string = $"
+      file={}
+
+      if [[ ! {} =~ .*\"($SELECT_ALL)\".* ]]; then
+        rclone lsf \"($remote):($remote_path)$file\"
+      fi
+    "
+
+    $remote_path = (
+      $remote_path
+      | path join (
+        $options
+        | to text
+        | fzf --with-shell $"(^which bash) -c" --preview $preview_string
+      )
+    )
 
     if ($remote_path | str ends-with $SELECT_ALL) {
       break
