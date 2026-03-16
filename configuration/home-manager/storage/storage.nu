@@ -40,7 +40,7 @@ def "storage browse" [
       "google" => "drive.google.com"
     }
 
-    job spawn { start $"https://($host)" } out> /dev/null
+    start-process xdg-open $"https://($host)"
   } else {
     rclone ncdu $"($remote):"
   }
@@ -310,6 +310,11 @@ def "storage list remotes" [] {
 
 alias "storage ls remotes" = storage list remotes
 
+# TODO: add this to nushell globally and use in other scripts (like f.nu, etc...)
+def start-process [...args: string] {
+  job spawn { run-external nohup ...$args } out+err> /dev/null
+}
+
 # Interactively select and open a file from local storage
 def "storage open" [
   path?: string # A path relative to <remote>:
@@ -346,7 +351,7 @@ def "storage open" [
     | fzf
   )
 
-  start ($file | prepend $remove_prefix | str join)
+  start-process xdg-open ($file | prepend $remove_prefix | str join)
 }
 
 def confirm-remove [remote?: string] {
