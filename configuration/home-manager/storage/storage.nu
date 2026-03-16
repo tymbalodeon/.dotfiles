@@ -273,36 +273,21 @@ alias "storage ls" = storage list
 
 # List locally downloaded files
 def "storage list local" [
-  remote?: string # The name of the remote service
-  search?: string # Search pattern
+  path?: string # A path relative to <remote>:
+  --remote: string # The name of the remote service
 ] {
-  let storage_directory = (get-storage-directory)
-  mut search_path = $storage_directory
+  let remote = (get-remote $remote)
+  let storage_directory = (get-storage-directory | path join $remote)
 
-  for item in [$remote $search] {
-    if ($item | is-not-empty) {
-      $search_path = (
-        $search_path
-        | path join $item
-      )
-    }
-  }
-
-  let search_path = if not ($search_path | path exists) {
-    $search_path
-    | path dirname
+  let path = if ($path | is-empty) {
+    $storage_directory
   } else {
-    $search_path
+    $storage_directory
+    | path join $path
   }
 
-  let search = if ($search | is-empty) {
-    ""
-  } else {
-    $search
-  }
-
-  if ($storage_directory | path exists) {
-    fd --type file $search $search_path
+  if ($path | path exists) {
+    fd "" $path
   }
 }
 
