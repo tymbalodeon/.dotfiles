@@ -291,7 +291,7 @@ def get-remote-path [remote?: string path?: string] {
 }
 
 # List remote files
-def "storage list" [
+def "storage list remote" [
   path?: string # A path relative to <remote>:
   --interactive (-i) # Interactively select the subdirectory whose contents to list
   --remote: string # The name of the remote service
@@ -311,7 +311,8 @@ def "storage list" [
   | to text --no-newline
 }
 
-alias "storage ls" = storage list
+alias "storage ls remote" = storage list remote
+alias "storage ls r" = storage list remote
 
 # List locally downloaded files
 def "storage list local" [
@@ -335,6 +336,7 @@ def "storage list local" [
 }
 
 alias "storage ls local" = storage list local
+alias "storage ls l" = storage list local
 
 # List available remotes
 def "storage list remotes" [] {
