@@ -523,7 +523,7 @@ def "storage remove remote" [
     "purge"
   }
 
-  if (
+  if $force or (
     input $"Are you sure you want to remove ($path)? [y/N]"
     | str downcase
   ) in [y yes] {
