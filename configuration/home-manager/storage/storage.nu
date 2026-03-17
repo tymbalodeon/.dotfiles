@@ -129,7 +129,7 @@ def select-remote-path [
       | to text
       | (
           fzf
-            --bind $"backspace:execute-silent\(echo true > ($TMP_FILE)\)+abort"
+            --bind $"ctrl-backspace:execute-silent\(echo true > ($TMP_FILE)\)+abort"
             --preview $preview_string
         )
       | complete
