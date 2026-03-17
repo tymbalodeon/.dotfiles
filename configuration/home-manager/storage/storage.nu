@@ -133,9 +133,10 @@ def select-remote-path [
             --preview $preview_string
         )
       | complete
-      | get stdout
-      | str trim
     )
+
+    let exit_code = $selection.exit_code
+    let selection = ($selection.stdout | str trim)
 
     if (open $TMP_FILE | into bool) {
       if ($remote_path | is-empty) {
@@ -145,6 +146,10 @@ def select-remote-path [
       $remote_path = ($remote_path | path split | drop | path join)
 
       continue
+    } else {
+      if ($exit_code == 130) {
+        return
+      }
     }
 
     $remote_path = ($remote_path | path join $selection)
@@ -398,7 +403,7 @@ def confirm-remove [remote?: string] {
 }
 
 # Remove local files
-def "storage remove" [
+def "storage remove local" [
   path?: string # A path relative to <remote>:
   --force (-f) # Remove without confirmation
   --interactive (-i) # Interactively select the subdirectory whose contents to list
@@ -484,7 +489,50 @@ def "storage remove" [
   }
 }
 
-alias "storage rm" = storage remove
+alias "storage rm local" = storage remove local
+alias "storage rm l" = storage remove local
+
+# Remove remote files
+def "storage remove remote" [
+  path?: string # A path relative to <remote>:
+  --force (-f) # Remove without confirmation
+  --remote: string # The name of the remote service
+] {
+  let remote = (get-remote $remote)
+
+  let path = if ($path | is-empty) {
+    select-remote-path --allow-directories $remote
+  } else {
+    $path
+  }
+
+  let remote_path = $"($remote):($path)"
+
+  let contents = try {
+    rclone lsjson $remote_path err> /dev/null
+    | from json
+  } catch {
+    print-warning $"($path) not found"
+
+    return
+  }
+
+  let command = if ($contents | length) == 1 and not ($contents | first | get IsDir) {
+    "delete"
+  } else {
+    "purge"
+  }
+
+  if (
+    input $"Are you sure you want to remove ($path)? [y/N]"
+    | str downcase
+  ) in [y yes] {
+    rclone $command $remote_path
+  }
+}
+
+alias "storage rm remote" = storage remove remote
+alias "storage rm r" = storage remove remote
 
 # Setup remotes
 def "storage setup" [] {
