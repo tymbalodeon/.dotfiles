@@ -130,7 +130,7 @@
         let temporary_directory = (mktemp --directory)
 
         let dump_file = if ($file | is-empty) and $interactive {
-          storage ls task
+          storage ls remote task
           | fzf
         } else {
           (get-dump-file $file)
