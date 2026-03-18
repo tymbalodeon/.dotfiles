@@ -404,6 +404,25 @@ def confirm-remove [remote?: string] {
   (input $prompt | str downcase) in [y yes]
 }
 
+# Remove files from local and remote
+def "storage remove" [
+  path?: string # A path relative to <remote>:
+  --force (-f) # Remove without confirmation
+  --remote: string # The name of the remote service
+] {
+  let remote = (get-remote $remote)
+
+  if $force {
+    storage remove local --force --remote $remote $path
+    storage remove remote --force --remote $remote $path
+  } else {
+    storage remove local --remote $remote $path
+    storage remove remote --remote $remote $path
+  }
+}
+
+alias "storage rm" = storage remove
+
 # Remove local files
 def "storage remove local" [
   path?: string # A path relative to <remote>:
