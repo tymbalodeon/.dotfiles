@@ -187,6 +187,10 @@ def print-warning [text: string] {
   print $"(ansi yellow_bold)warning(ansi reset): ($text)"
 }
 
+def is-directory [json: table] {
+  not (($json | length) == 1 and not ($json | first | get IsDir))
+}
+
 # Download files from remote
 export def "storage download" [
   path?: string # A path relative to <remote>:
@@ -229,16 +233,16 @@ export def "storage download" [
   let parent = if ($to | is-not-empty) {
     $to
   } else {
-    let data = (
+    let json = (
       rclone lsjson $"($remote):($remote_path)"
       | from json
     )
 
-    if ($data | length) == 1 and not ($data | first | get IsDir) {
+    if (is-directory $json) {
       $local_path
-      | path dirname
     } else {
       $local_path
+      | path dirname
     }
   }
 
@@ -352,6 +356,26 @@ alias "storage ls remotes" = storage list remotes
 def start-process [...args: string] {
   job spawn { run-external nohup ...$args } out+err> /dev/null
 }
+
+# Move/rename remote and local files
+def "storage move" [
+  from: string # The existing file to move/rename
+  to: string # The new name/path to move to
+  --remote: string # The name of the remote service
+] {
+  let remote = (get-remote $remote)
+
+  let json = (
+    rclone lsjson $"($remote):($from)"
+    | from json
+  )
+
+  if (is-directory $json) {
+    # TODO
+  }
+}
+
+alias "storage mv" = storage move
 
 # Interactively select and open a file from local storage
 def "storage open" [
