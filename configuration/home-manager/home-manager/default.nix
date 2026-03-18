@@ -9,11 +9,7 @@
     packages = [pkgs.xclip];
   };
 
-  imports = [
-    ../linux
-    ../xmonad
-  ];
-
+  imports = [../linux];
   kitty.font_size = 11.0;
   nixpkgs.config.allowUnfree = true;
 
