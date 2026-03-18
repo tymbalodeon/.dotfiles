@@ -13,7 +13,13 @@
       const DUMP_FILE = "task/task.dump.json"
 
       def database-file [] {
-        $"($env.HOME)/.local/share/task/taskchampion.sqlite3"
+        let database_file = $"($env.HOME)/.local/share/task/taskchampion.sqlite3"
+
+        if not ($database_file | path exists) {
+          ^task out+err> /dev/null
+        }
+
+        $database_file
       }
 
       def local-last-modified [] {
@@ -83,11 +89,46 @@
         }
       }
 
-      def "task archive" [] {
-        task dump $"task/(date now | format date %Y-%m-%d)-task-archive.json"
-        task clear
+      def temporary-json-file [] {
+        mktemp --tmpdir XXX.json
       }
 
+      # Save non-pending tasks to an archive file
+      def "task archive" [
+        --to # Where to save the archive
+      ] {
+        let tasks = (
+          open (database-file)
+          | get tasks.data
+          | each {from json}
+        )
+
+        let temporary_file = (temporary-json-file)
+
+        let pending_tasks = (
+          $tasks
+          | where status == pending
+          | save --force $temporary_file
+        )
+
+        let to = if ($to | is-empty) {
+          $"task/(date now | format date %Y-%m-%d)-task-archive.json"
+        } else {
+          $to
+        }
+
+        (
+          storage upload
+            $temporary_file
+            $to
+            out+err> /dev/null
+        )
+
+        task load $temporary_file
+        rm $temporary_file
+      }
+
+      # Remove all tasks from the database
       def "task clear" [] {
         mv (database-file) (mktemp --tmpdir task-backup-XXX.sqlite3)
       }
@@ -100,19 +141,19 @@
         }
       }
 
+      # Save the current state of the database to a json file
       def "task dump" [file?: string] {
-        let temporary_file = (mktemp --tmpdir XXX.json)
+        task archive
+
+        let temporary_file = (temporary-json-file)
 
         open (database-file)
-        | get tasks
-        | get data
+        | get tasks.data
         | each {from json}
-        | to json
         | save --force $temporary_file
 
         (
           storage upload
-            --remote dropbox
             $temporary_file
             (get-dump-file $file)
             out+err> /dev/null
@@ -129,19 +170,23 @@
 
         let temporary_directory = (mktemp --directory)
 
-        let dump_file = if ($file | is-empty) and $interactive {
-          storage ls remote task
-          | fzf
+        let dump_file = if ($file | is-not-empty) {
+          $file
         } else {
-          (get-dump-file $file)
+          let file = if $interactive {
+            storage ls remote task
+            | fzf
+          } else {
+            (get-dump-file $file)
+          }
+
+          storage download --quiet --to $temporary_directory $file
+
+          $temporary_directory
+          | path join ($file | path basename)
         }
 
-        storage download --quiet --to $temporary_directory $dump_file
-
-        ^task import (
-          $temporary_directory | path join ($dump_file | path basename)
-        )
-
+        ^task import $file
         rm --force --recursive $temporary_directory
       }
     '')
