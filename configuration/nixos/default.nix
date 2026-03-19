@@ -83,6 +83,7 @@
     ./bluetooth
     ./home-manager
     ./monitors
+    ./musnix
     ./nautilus
     ./niri
     ../nix

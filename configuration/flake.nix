@@ -10,6 +10,11 @@
       url = "github:nix-community/home-manager";
     };
 
+    musnix = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:musnix/musnix";
+    };
+
     nix-darwin-25_05 = {
       inputs.nixpkgs.follows = "nixpkgs-25_05";
       url = "github:LnL7/nix-darwin/nix-darwin-25.05";
@@ -62,6 +67,7 @@
   outputs = {
     home-manager-25_05,
     home-manager-unstable,
+    musnix,
     nix-darwin-25_05,
     nix-darwin-unstable,
     nixgl,
@@ -196,6 +202,7 @@
               channel
               hostName
               hostType
+              musnix
               solaar
               src
               wayland-pipewire-idle-inhibit
