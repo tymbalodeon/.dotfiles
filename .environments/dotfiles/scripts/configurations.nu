@@ -177,18 +177,22 @@ export def "main nixos" [] {
   | to text --no-newline
 }
 
-def colorize-host [
-  colors: table<configuration: string, name: string>
+def format-host [
   host: record<channel: string, host: string, system: string>
+  --color
 ] {
   let system_and_channel = $"($host.system) \((
     $host.channel
     | str replace _ .
   )\)"
 
-  let system_and_channel = (
+  let system_and_channel = if $color {
+    let colors = (get-colors (get-all-configurations) (get-all-systems))
+
     get-colorized-configuration-name ($system_and_channel) $colors
-  )
+  } else {
+    $system_and_channel
+  }
 
   $"($host.host) ($system_and_channel)"
 }
@@ -203,7 +207,7 @@ export def "main current" [] {
     | first
   )
 
-  colorize-host $colors $host
+  format-host $host
 }
 
 # List current channel
@@ -232,11 +236,10 @@ export def "main current system hosts" [] {
 
 # List hosts
 export def "main hosts" [] {
-  let colors = (get-colors (get-all-configurations) (get-all-systems))
   let configuration_data = (get-configuration-data)
 
   $configuration_data
-  | each {|host| colorize-host $colors $host}
+  | each {|host| format-host --color $host}
   | flatten
   | sort
   | to text
