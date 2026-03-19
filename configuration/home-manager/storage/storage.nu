@@ -357,21 +357,30 @@ def start-process [...args: string] {
   job spawn { run-external nohup ...$args } out+err> /dev/null
 }
 
-# Move/rename remote and local files
+# Move (rename) remote and local files
 def "storage move" [
   from: string # The existing file to move/rename
   to: string # The new name/path to move to
+  --force (-f) # Remove without confirmation
   --remote: string # The name of the remote service
 ] {
   let remote = (get-remote $remote)
 
-  let json = (
-    rclone lsjson $"($remote):($from)"
-    | from json
-  )
+  let confirmed = try {
+    rclone lsjson $"($remote):($to)" out+err> /dev/null
+    print-warning $"path \"($to)\" exists and would be overwritten"
 
-  if (is-directory $json) {
-    # TODO
+    let prompt = $"Are you sure you want to overwrite \"(
+      $to
+    )\" with \"($from)\"? [y/N]: "
+
+    (input $prompt) in [Yy]
+  }  catch {
+    true
+  }
+
+  if $confirmed {
+    rclone moveto $"($remote):($from)" $"($remote):($to)"
   }
 }
 
@@ -569,7 +578,7 @@ def "storage remove remote" [
   }
 
   if $force or (
-    input $"Are you sure you want to remove ($path)? [y/N]"
+    input $"Are you sure you want to remove ($path)? [y/N]: "
     | str downcase
   ) in [y yes] {
     rclone $command $remote_path
