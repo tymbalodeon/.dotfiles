@@ -186,7 +186,7 @@
           | path join ($file | path basename)
         }
 
-        ^task import $file
+        ^task import $dump_file
         rm --force --recursive $temporary_directory
       }
     '')
