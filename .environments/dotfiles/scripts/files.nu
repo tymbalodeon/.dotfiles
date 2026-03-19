@@ -189,7 +189,7 @@ def get-configuration-name [file: string configuration_type: string] {
 def colorize-configuration-name [
   file: string
   configuration_type: string
-  colors: table<configuration: string, name: string>
+  colors: record<darwin: string, home-manager: string, nixos: string>
 ] {
   let configuration_name = (
     get-configuration-name $file $configuration_type
@@ -204,41 +204,40 @@ def colorize-configuration-name [
 
 def get-file-color [
   file: string
-  colors: table<configuration: string, name: string>
+  colors: record<darwin: string, home-manager: string, nixos: string>
   unique: bool
   configuration?: string
 ] {
   let hosts = (get-all-hosts)
 
-  let color = (
-    $colors
-    | where {
-        |color|
-
-        $color.configuration in $file and $color.configuration in $hosts
-      }
+  let configuration = (
+    get-all-configurations
+    | where {$in in $file and $in in $hosts}
+    | first
   )
 
-  let color = if ($color | is-empty) {
+  let configuration = if ($configuration | is-empty) {
     let systems = (get-all-systems)
 
-    $colors
-    | where {
-        |color|
-
-        $color.configuration in $file and $color.configuration in $systems
-      }
+    get-all-configurations
+    | where {$in in $file and $in in $systems}
+    | first
   } else {
-    $color
+    $configuration
+  }
+
+  let color = if $configuration in ($colors | columns) {
+    $colors
+    | get $configuration
+  } else {
+    null
   }
 
   if ($color | is-empty) {
     return "default"
   }
 
-  let color = ($color | first)
-
-  $color.name
+  $color
 }
 
 def strip-configuration-name [configuration: string] {
@@ -249,7 +248,7 @@ def strip-configuration-name [configuration: string] {
 
 def colorize-files [
   files: list<string>
-  colors: table<configuration: string, name: string>
+  colors: record<darwin: string, home-manager: string, nixos: string>
   unique: bool
   configuration?: string
 ] {
@@ -263,7 +262,7 @@ def colorize-files [
 
 export def annotate-files-with-configurations [
   files: list<string>
-  colors: table<configuration: string, name: string>
+  colors: record<darwin: string, home-manager: string, nixos: string>
   is_host_configuration: bool
   is_system_configuration: bool
   no_labels: bool
@@ -345,7 +344,7 @@ export def annotate-files-with-configurations [
 
 export def get-unique-filenames [
   files: list<string>
-  colors: table<configuration: string, name: string>
+  colors: record<darwin: string, home-manager: string, nixos: string>
   all_configurations: list<string>
   use_colors: bool
 ] {
@@ -625,7 +624,7 @@ def get-header [text?: string configuration?: string] {
 
 export def group-files-by-configuration [
   files: list<string>
-  colors: table<configuration: string, name: string>
+  colors: record<darwin: string, home-manager: string, nixos: string>
   is_system_configuration: bool
   no_labels: bool
   unique: bool
@@ -772,7 +771,7 @@ def get-all-configuration-names [] {
 
 def colorize-configuration-names [
   line: string
-  colors: table<configuration: string, name: string>
+  colors: record<darwin: string, home-manager: string, nixos: string>
 ] {
   mut colorized_line = $line
 
@@ -808,7 +807,6 @@ def "main by-file" [
   let all_systems = (get-all-systems)
   let all_hosts = (get-all-hosts)
   let all_configurations = (get-all-configurations)
-  let colors = (get-colors $all_configurations $all_systems)
   let is_host_configuration = ($configuration in $all_hosts)
   let is_system_configuration = ($configuration in $all_systems)
   let use_colors = (use-colors $color)
@@ -1057,7 +1055,7 @@ def "main by-file" [
       if $no_labels {
         $line
       } else {
-        colorize-configuration-names $line $colors
+        colorize-configuration-names $line (get-colors)
       }
     }
   } else {
@@ -1249,7 +1247,7 @@ def main [
   )
 
   let all_configurations = (get-all-configurations)
-  let colors = (get-colors $all_configurations $all_systems)
+  let colors = (get-colors)
   let is_host_configuration = ($configuration in $all_hosts)
   let is_system_configuration = ($configuration in $all_systems)
   let use_colors = (use-colors $color)
