@@ -19,11 +19,6 @@ set working-directory := "../.."
 
 alias configs := configurations
 
-# List configuration files
-[no-cd]
-@files *args:
-    .environments/dotfiles/scripts/files.nu {{ args }}
-
 # View generations
 @generations *help:
     .environments/dotfiles/scripts/generations.nu {{ help }}

@@ -5,7 +5,7 @@ use color.nu get-colorized-configuration-name
 use color.nu get-colors
 use ../../default/scripts/print.nu print-error
 
-export def get-current-system [] {
+def get-current-system [] {
   let release_file = "/etc/os-release"
 
   # TODO (nixos): use ID instead?
@@ -43,38 +43,15 @@ export def is-nixos [] {
   (get-current-system) == nixos
 }
 
-export def get-all-systems [] {
+export def get-all-hosts [] {
   ls --short-names configuration/hosts
   | get name
-}
-
-export def get-hosts [system: string] {
-  ls --short-names $"configuration/hosts/($system)"
-  | get name
-  | where {($in | path split | length) == 5}
-}
-
-export def get-all-hosts [] {
-  get-all-systems
   | each {|system| get-hosts $system}
   | flatten
   | sort
 }
 
-export def get-all-configurations [] {
-  let systems = (get-all-systems)
-
-  $systems
-  | append (
-      $systems
-      | each {|system| get-hosts $system}
-    )
-  | append shared
-  | flatten
-  | sort
-}
-
-export def get-configuration-data [] {
+def get-configuration-data [] {
   fd "" configuration/hosts
   | lines
   | where {($in | path split | length) == 5}
@@ -83,59 +60,6 @@ export def get-configuration-data [] {
 
 export def get-built-host-name [] {
   (uname).nodename
-}
-
-def raise_configuration_error [configuration: string --systems] {
-  let available_configurations = if $systems {
-    get-all-systems
-  } else {
-    get-all-configurations
-  }
-  | each {|configuration| $"• ($configuration)"}
-  | str join "\n"
-
-  let type = if $systems {
-    "system"
-  } else {
-    "configuration"
-  }
-
-  error make --unspanned {
-    msg: $"unrecognized ($type) name '($configuration)'
-
-Available ($type)s:
-($available_configurations)"
-    }
-}
-
-
-export def validate-configuration-name [
-  configuration?: string
-  --validate-system
-] {
-  if ($configuration | is-empty) {
-    return
-  }
-
-  if ($configuration not-in (get-all-configurations)) {
-    raise_configuration_error $configuration
-  }
-
-  $configuration
-}
-
-export def get-file-path [file: string] {
-  $file
-  | str replace configuration/ ""
-  | str replace --regex 'systems/[^/]+/' ""
-  | str replace --regex 'hosts/[^/]+/' ""
-}
-
-def get-system-hosts [system: string] {
-  get-configuration-data
-  | where system == $system
-  | get host
-  | sort
 }
 
 # List configurations
@@ -239,7 +163,10 @@ export def "main current system" [] {
 
 # List hosts for current system
 export def "main current system hosts" [] {
-  get-system-hosts (get-current-system)
+  get-configuration-data
+  | where system == (get-current-system)
+  | get host
+  | sort
   | to text --no-newline
 }
 

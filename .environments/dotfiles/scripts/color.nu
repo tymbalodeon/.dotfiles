@@ -4,13 +4,6 @@ export def colorize [text: string style: string] {
   $"(ansi $style)($text)(ansi reset)"
 }
 
-export def colorize-file [file: string file_path: string style: string] {
-  $file
-  | str replace $file_path ""
-  | append (colorize $file_path $style)
-  | str join
-}
-
 export def get-colorized-configuration-name [
   configuration_name: string
   colors: record<darwin: string, home-manager: string, nixos: string>
