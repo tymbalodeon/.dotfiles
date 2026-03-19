@@ -61,6 +61,14 @@
           tooltip = false;
         };
 
+        "custom/media" = {
+          exec = "nu ${./media.nu}";
+          on-click = "playerctl play-pause";
+          on-click-right = "playerctl stop";
+          restart-interval = 1;
+          return-type = "json";
+        };
+
         "custom/power" = {
           format = "⏻  ";
 
@@ -165,6 +173,7 @@
 
         modules-right =
           [
+            "custom/media"
             "mpd"
             "network"
             "bluetooth"
@@ -203,12 +212,11 @@
 
         mpd = {
           consume-icons.on = " ";
-          format = "{title}    ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}]    {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
+          format = "{title} -- {albumArtist}    ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}]    {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
           format-disconnected = "Disconnected";
           format-stopped = "";
+          on-click-right = "rmpc stop";
           on-click = "rmpc togglepause";
-          on-click-middle = "rmpc prev";
-          on-click-right = "rmpc next";
           random-icons.on = " ";
           repeat-icons.on = " ";
           single-icons.on = "1 ";
@@ -219,7 +227,7 @@
           };
 
           title-len = 146;
-          tooltip-format = "{album} ({albumArtist})";
+          tooltip-format = "{album}";
         };
 
         network = {
