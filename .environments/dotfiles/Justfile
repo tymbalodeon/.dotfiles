@@ -19,11 +19,6 @@ set working-directory := "../.."
 
 alias configs := configurations
 
-# View the diff between hosts
-[no-cd]
-@diff *args:
-    .environments/dotfiles/scripts/diff.nu {{ args }}
-
 # List configuration files
 [no-cd]
 @files *args:
