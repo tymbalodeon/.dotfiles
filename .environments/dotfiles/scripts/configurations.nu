@@ -187,10 +187,17 @@ def format-host [
   )\)"
 
   let system_and_channel = if $color {
-    let colors = (get-colors (get-all-configurations) (get-all-systems))
-    let system = (get-colorized-configuration-name ($host.system) $colors)
+    let system = (get-colorized-configuration-name ($host.system) (get-colors))
 
-    $"($system) ($host.channel)"
+    let channel_color = if $host.channel == unstable {
+      "light_cyan"
+    } else {
+      "light_yellow"
+    }
+
+    let channel = $"(ansi $channel_color)\(($host.channel)\)(ansi reset)"
+
+    $"($system) ($channel)"
   } else {
     $"($host.system) \((
       $host.channel
@@ -203,8 +210,6 @@ def format-host [
 
 # List current configuration
 export def "main current" [] {
-  let colors = (get-colors (get-all-configurations) (get-all-systems))
-
   let host = (
     get-configuration-data
     | where host == (get-built-host-name)
