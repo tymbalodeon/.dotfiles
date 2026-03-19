@@ -188,10 +188,14 @@ def format-host [
 
   let system_and_channel = if $color {
     let colors = (get-colors (get-all-configurations) (get-all-systems))
+    let system = (get-colorized-configuration-name ($host.system) $colors)
 
-    get-colorized-configuration-name ($system_and_channel) $colors
+    $"($system) ($host.channel)"
   } else {
-    $system_and_channel
+    $"($host.system) \((
+      $host.channel
+      | str replace _ .
+    )\)"
   }
 
   $"($host.host) ($system_and_channel)"
