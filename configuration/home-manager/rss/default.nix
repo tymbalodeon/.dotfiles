@@ -11,6 +11,7 @@
     extraConfig = ''
       bind j everywhere down
       bind k everywhere up
+      feed-sort-order lastupdated
     '';
   };
 }
