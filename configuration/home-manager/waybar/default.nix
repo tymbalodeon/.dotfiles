@@ -241,8 +241,8 @@
         "niri/window".tooltip = false;
 
         "niri/workspaces" = {
-          current-only = true;
-          disable-click = true;
+          # current-only = true;
+          # disable-click = true;
         };
 
         position = "bottom";
