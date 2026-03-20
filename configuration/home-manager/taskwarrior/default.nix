@@ -6,9 +6,9 @@
   ];
 
   nushell.extraScripts = [
-    (pkgs.writeText "sync.nu" ''
-      use ${../storage/storage.nu} "storage download"
-      use ${../storage/storage.nu} "storage upload"
+    (pkgs.writeText "task.nu" ''
+      use ${../storage/storage.nu} download
+      use ${../storage/storage.nu} upload
 
       const DUMP_FILE = "task/task.dump.json"
 
@@ -60,7 +60,7 @@
         ) > (local-last-modified)
       }
 
-      def --wrapped task [...args: string] {
+      export def --wrapped main [...args: string] {
         if (is-outdated) {
           task load
         }
@@ -94,7 +94,7 @@
       }
 
       # Save non-pending tasks to an archive file
-      def "task archive" [
+      export def archive [
         --to # Where to save the archive
       ] {
         let tasks = (
@@ -118,7 +118,7 @@
         }
 
         (
-          storage upload
+          upload
             $temporary_file
             $to
             out+err> /dev/null
@@ -129,7 +129,7 @@
       }
 
       # Remove all tasks from the database
-      def "task clear" [] {
+      export def clear [] {
         mv (database-file) (mktemp --tmpdir task-backup-XXX.sqlite3)
       }
 
@@ -142,7 +142,7 @@
       }
 
       # Save the current state of the database to a json file
-      def "task dump" [file?: string] {
+      export def dump [file?: string] {
         task archive
 
         let temporary_file = (temporary-json-file)
@@ -153,7 +153,7 @@
         | save --force $temporary_file
 
         (
-          storage upload
+          upload
             $temporary_file
             (get-dump-file $file)
             out+err> /dev/null
@@ -162,7 +162,7 @@
         rm $temporary_file
       }
 
-      def "task load" [
+      export def load [
         file?: string
         --interactive (-i)
       ] {
@@ -180,7 +180,7 @@
             (get-dump-file $file)
           }
 
-          storage download --quiet --to $temporary_directory $file
+          download --quiet --to $temporary_directory $file
 
           $temporary_directory
           | path join ($file | path basename)

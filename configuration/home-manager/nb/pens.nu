@@ -1,5 +1,5 @@
-def "fountain pens" [] {
-  help fountain pens
+def main [] {
+  help main
 }
 
 def get-path [name: string] {
@@ -24,17 +24,17 @@ def edit [item: string] {
 }
 
 # Edit ink records
-def "fountain pens edit inks" [] {
+export def "edit inks" [] {
   edit inks
 }
 
 # Edit pen records
-def "fountain pens edit pens" [] {
+export def "edit pens" [] {
   edit pens
 }
 
 # Clear the current ink record for a pen
-def "fountain pens empty" [
+export def empty [
   pen_id?: int # The id of the pen to update (choose interactively if left blank)
 ] {
   let pen_id = (get-pen $pen_id)
@@ -46,16 +46,16 @@ def "fountain pens empty" [
   update-currently-inked-file $pen_id
 }
 
-def "fountain pens list" [] {
-  help fountain pens list
+export def list [] {
+  help list
 }
 
 # List empty pens
-def "fountain pens list empty" [] {
+export def "list empty" [] {
   let currently_inked = (open-csv currently-inked)
   let currently_empty = ($currently_inked | where {$in."ink id" | is-empty})
 
-  fountain pens list pens
+  list pens
   | where {
       |pen|
 
@@ -76,7 +76,7 @@ def "fountain pens list empty" [] {
 }
 
 # Show the inks currently recorded as being in each pen
-def "fountain pens list inked" [] {
+export def "list inked" [] {
   let inks = (open-csv inks)
   let currently_inked = (open-csv currently-inked)
 
@@ -111,23 +111,23 @@ def "fountain pens list inked" [] {
 }
 
 # Show ink collection
-def "fountain pens list inks" [
+export def "list inks" [
   --interactive
 ] {
   open-csv inks $interactive
 }
 
 # List unused inks
-def "fountain pens list inks unused" [] {
+export def "list inks unused" [] {
   let current_inks = (open-csv currently-inked)."ink id"
 
-  fountain pens list inks
+  ist inks
   | where {$in.index not-in $current_inks}
 }
 
 
 # Show pen collection
-def "fountain pens list pens" [
+export def "list pens" [
   --interactive
 ] {
   open-csv pens $interactive
@@ -158,7 +158,7 @@ def select-item [data: list<string>] {
 
 def get-pen [pen_id?: int] {
   if ($pen_id | is-empty) {
-    select-item (fountain pens list pens | each {display-pen})
+    select-item (list pens | each {display-pen})
   } else {
     $pen_id
   }
@@ -166,7 +166,7 @@ def get-pen [pen_id?: int] {
 
 def get-ink [ink_id?: int] {
   if ($ink_id | is-empty) {
-    select-item (fountain pens list inks | each {display-ink})
+    select-item (list inks | each {display-ink})
   } else {
     $ink_id
   }
@@ -183,7 +183,7 @@ def update-currently-inked-file [pen_id: int ink_id?: int] {
 }
 
 # Update the current ink record for a pen
-def "fountain pens update" [
+export def update [
   pen_id?: int # The id of the pen to update (choose interactively if left blank)
   ink_id?: int # The id of the ink to update to (choose interactively if left blank)
 ] {
@@ -202,8 +202,7 @@ def "fountain pens update" [
   update-currently-inked-file $pen_id $ink_id
 }
 
-alias fp = fountain pens
-alias "fp inked" = fountain pens list inked
-alias "fp inks" = fountain pens list inks
-alias "fp ls" = fountain pens list
-alias "fp pens" = fountain pens list pens
+alias inked = list inked
+alias inks = list inks
+alias ls = list
+alias pens = list pens

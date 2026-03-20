@@ -1,7 +1,7 @@
-def --wrapped email [...args: string] {
+export def --wrapped main [...args: string] {
   neomutt ...$args
 }
 
-def "email config edit" [] {
+export def "config edit" [] {
   ^$env.EDITOR ($env.XDG_CONFIG_HOME | path join neomutt/neomuttrc)
 }

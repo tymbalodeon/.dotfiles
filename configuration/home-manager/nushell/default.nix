@@ -16,15 +16,21 @@
         envFile.source = ./env.nu;
 
         extraConfig = ''
-          ${builtins.concatStringsSep
-            "\n"
-            (map
-              (file: "use " + file)
-              ((builtins.attrValues (
-                  builtins.mapAttrs (file: _: ./scripts/${file})
-                  (builtins.readDir ./scripts)
-                ))
-                ++ cfg.extraScripts))}
+          ${
+            builtins.concatStringsSep "\n"
+            (
+              map (file: let
+                basename = lib.removeSuffix ".nu" (baseNameOf file);
+              in "def --wrapped ${basename} [...args: string] { nu ${file} ...$args }")
+              ((
+                  builtins.attrValues (
+                    builtins.mapAttrs (file: _: ./scripts/${file})
+                    (builtins.readDir ./scripts)
+                  )
+                )
+                ++ cfg.extraScripts)
+            )
+          }
         '';
 
         extraEnv = let

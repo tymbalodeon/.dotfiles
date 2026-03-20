@@ -68,7 +68,7 @@
     };
 
     nushell.extraScripts = [
-      ./nb-cd.nu
+      ./nb.nu
       ./pens.nu
     ];
   };

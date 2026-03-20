@@ -1,7 +1,7 @@
 #!/usr/bin/env nu
 
 # Set wallpaper to a specific file
-def wallpaper [wallpaper?: string] {
+export def main [wallpaper?: string] {
   let wallpaper = if ($wallpaper | is-empty) {
     ls --short-names ~/wallpaper
     | get name
@@ -35,12 +35,12 @@ def wallpaper [wallpaper?: string] {
 }
 
 # Clear the wallpaper folder
-def "wallpaper clear" [] {
+export def clear [] {
   rm ~/wallpaper/*
 }
 
 # Load wallpapers
-def "wallpaper load" [path: string] {
+export def load [path: string] {
   let path = ($path | path expand)
 
   let files = if ($path | path type) == file {
@@ -71,12 +71,12 @@ def --wrapped wpaperctl-wrapper [...args: string] {
 }
 
 # Change to next (random) wallpaper
-def "wallpaper next" [] {
+export def next [] {
   wpaperctl-wrapper next
 }
 
 # Add padding to image to account for status bar
-def "wallpaper pad" [image: string] {
+export def pad [image: string] {
   const WAYBAR_HEIGHT = 55
 
   let resolution = (xrandr | rg '\*' | split words | first | split row x)
@@ -97,30 +97,20 @@ def "wallpaper pad" [image: string] {
 }
 
 # Add padding to all images in the wallpaper folder
-def "wallpaper pad all" [] {
+Export def "pad all" [] {
   for image in (ls ~/wallpaper | get name) {
-    wallpaper pad $image
+    pad $image
   }
 }
 
-alias "wallpaper start" = wallpaper next
+alias start = next
 
 # Change to previous wallpaper
-def "wallpaper previous" [] {
+export def previous [] {
   wpaperctl-wrapper previous
 }
 
 # Toggle pausing/resuming automatic cycling of wallpaper
-def "wallpaper toggle-pause" [] {
+export def toggle-pause [] {
   wpaperctl-wrapper toggle-pause
-}
-
-# Manage wallpaper
-export def main [arg?: string] {
-  match $arg {
-    "next" => (wallpaper next)
-    "previous" => (wallpaper previous)
-    "toggle-pause" => (wallpaper toggle-pause)
-    _ => (wallpaper $arg)
-  }
 }
