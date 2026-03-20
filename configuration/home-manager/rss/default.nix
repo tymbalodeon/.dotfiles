@@ -19,7 +19,7 @@
       color hint-separator     default color8
       color info               color4  color8
       color listfocus          default color8 bold
-      color listfocus_unread   color14 color8 bold
+      color listfocus_unread   color2 color8 bold
       color listnormal         default default
       color listnormal_unread  color2  default
       color title              color14 color8
