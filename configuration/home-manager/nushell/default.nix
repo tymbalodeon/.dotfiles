@@ -19,7 +19,7 @@
           ${builtins.concatStringsSep
             "\n"
             (map
-              (file: "source " + file)
+              (file: "use " + file)
               ((builtins.attrValues (
                   builtins.mapAttrs (file: _: ./scripts/${file})
                   (builtins.readDir ./scripts)
