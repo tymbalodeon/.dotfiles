@@ -24,7 +24,7 @@ def main [] {
     }
 
     let text = if $data.status in [Paused Playing] {
-      $"\"($data.title)\" by ($data.artist)    \(($data.position)/($data.length)\)    ($icon)"
+      $"\"($data.title)\" by ($data.artist)  \(($data.position)/($data.length)\)  ($icon)"
     }
 
     let tooltip = if $data.status == Playing {

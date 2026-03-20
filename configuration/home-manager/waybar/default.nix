@@ -213,7 +213,7 @@
 
         mpd = {
           consume-icons.on = " ";
-          format = "\"{title}\" by {albumArtist}    ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}]    {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
+          format = "\"{title}\" by {albumArtist}  ({elapsedTime:%M:%S}/{totalTime:%M:%S}) [{songPosition}/{queueLength}]  {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{stateIcon}";
           format-disconnected = "Disconnected";
           format-stopped = "";
           on-click-right = "rmpc stop";
