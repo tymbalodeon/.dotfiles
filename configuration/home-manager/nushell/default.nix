@@ -20,8 +20,10 @@
             builtins.concatStringsSep "\n"
             (
               map (file: let
-                basename = lib.removeSuffix ".nu" (baseNameOf file);
-              in "def --wrapped ${basename} [...args: string] { nu ${file} ...$args }")
+                commandName = lib.lists.last filenameParts;
+                filename = lib.removeSuffix ".nu" (baseNameOf file);
+                filenameParts = lib.splitString "-" filename;
+              in "def --wrapped ${commandName} [...args: string] { nu ${file} ...$args }")
               ((
                   builtins.attrValues (
                     builtins.mapAttrs (file: _: ./scripts/${file})

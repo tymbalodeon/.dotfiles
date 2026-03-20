@@ -60,9 +60,9 @@
         ) > (local-last-modified)
       }
 
-      export def --wrapped main [...args: string] {
+      export def main [...args: string] {
         if (is-outdated) {
-          task load
+          main load
         }
 
         ^task ...$args
@@ -85,7 +85,7 @@
           start
           stop
         ]} | any {into bool}) {
-          task dump
+          main dump
         }
       }
 
@@ -94,7 +94,7 @@
       }
 
       # Save non-pending tasks to an archive file
-      export def archive [
+      export def "main archive" [
         --to # Where to save the archive
       ] {
         let tasks = (
@@ -124,12 +124,12 @@
             out+err> /dev/null
         )
 
-        task load $temporary_file
+        main load $temporary_file
         rm $temporary_file
       }
 
       # Remove all tasks from the database
-      export def clear [] {
+      export def "main clear" [] {
         mv (database-file) (mktemp --tmpdir task-backup-XXX.sqlite3)
       }
 
@@ -142,8 +142,8 @@
       }
 
       # Save the current state of the database to a json file
-      export def dump [file?: string] {
-        task archive
+      export def "main dump" [file?: string] {
+        main archive
 
         let temporary_file = (temporary-json-file)
 
@@ -162,11 +162,11 @@
         rm $temporary_file
       }
 
-      export def load [
+      export def "main load" [
         file?: string
         --interactive (-i)
       ] {
-        task clear
+        main clear
 
         let temporary_directory = (mktemp --directory)
 
