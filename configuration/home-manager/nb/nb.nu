@@ -1,4 +1,6 @@
-export def main [] {}
+export def --wrapped main [...args: string] {
+  ^nb ...$args
+}
 
 # Cd to the `nb` home  directory
 export def --env cd [] {
