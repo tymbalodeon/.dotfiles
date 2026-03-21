@@ -1,4 +1,4 @@
-export def --wrapped main [...args: string] {
+export def main [...args: string] {
   ^nb ...$args
 }
 

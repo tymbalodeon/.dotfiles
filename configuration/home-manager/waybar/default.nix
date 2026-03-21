@@ -173,9 +173,15 @@
         ];
 
         modules-right =
-          [
-            "custom/media"
-            "mpd"
+          (
+            if cfg.laptop
+            then []
+            else [
+              "custom/media"
+              "mpd"
+            ]
+          )
+          ++ [
             "network"
             "bluetooth"
           ]
@@ -241,8 +247,8 @@
         "niri/window".tooltip = false;
 
         "niri/workspaces" = {
-          # current-only = true;
-          # disable-click = true;
+          current-only = cfg.laptop;
+          disable-click = cfg.laptop;
         };
 
         position = "bottom";
