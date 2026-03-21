@@ -2,7 +2,6 @@
   # TODO: keep zk-specific items in the zk module?
   programs.helix = {
     extraPackages = with pkgs; [
-      harper
       markdown-oxide
       marksman
       prettierd
@@ -23,7 +22,6 @@
             {name = "zk";}
             {name = "marksman";}
             {name = "markdown-oxide";}
-            {name = "harper-ls";}
           ];
 
           name = "markdown";
@@ -36,16 +34,9 @@
         }
       ];
 
-      language-server = {
-        harper-ls = {
-          args = ["--stdio"];
-          command = "${pkgs.harper}/bin/harper-ls";
-        };
-
-        zk = {
-          args = ["lsp"];
-          command = "${pkgs.zk}/bin/zk";
-        };
+      language-server.zk = {
+        args = ["lsp"];
+        command = "${pkgs.zk}/bin/zk";
       };
     };
   };
