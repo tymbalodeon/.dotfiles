@@ -1,10 +1,12 @@
 {pkgs, ...}: {
+  # TODO: keep zk-specific items in the zk module?
   programs.helix = {
     extraPackages = with pkgs; [
       harper
       markdown-oxide
       marksman
       prettierd
+      zk
     ];
 
     languages = {
@@ -17,7 +19,15 @@
             command = "prettierd";
           };
 
+          language-servers = [
+            {name = "zk";}
+            {name = "marksman";}
+            {name = "markdown-oxide";}
+            {name = "harper-ls";}
+          ];
+
           name = "markdown";
+          roots = [".zk"];
 
           soft-wrap = {
             enable = true;
@@ -26,9 +36,16 @@
         }
       ];
 
-      language-server.harper-ls = {
-        args = ["--stdio"];
-        command = "${pkgs.harper}/bin/harper-ls";
+      language-server = {
+        harper-ls = {
+          args = ["--stdio"];
+          command = "${pkgs.harper}/bin/harper-ls";
+        };
+
+        zk = {
+          args = ["lsp"];
+          command = "${pkgs.zk}/bin/zk";
+        };
       };
     };
   };
