@@ -1,9 +1,9 @@
 # View and manage RSS feeds
-export def main [] {
+def rss [] {
   newsboat
 }
 
 # Edit the urls files
-export def "main urls edit" [] {
+def "rss urls edit" [] {
   ^$env.EDITOR ($env.XDG_CONFIG_HOME | path join newsboat/urls)
 }

@@ -1,9 +1,9 @@
 # View, edit, and upload files to/from remote storage
-export def main [] {
-  help main
+export def storage [] {
+  help storage
 }
 
-alias st = main
+alias st = storage
 
 def print-error [text: string] {
   error make --unspanned {msg: $'"($text)" does not exist'}
@@ -18,7 +18,7 @@ def get-remote [remote?: string] {
     | first
   }
 
-  if ($remote not-in (list remotes | lines)) {
+  if ($remote not-in (storage list remotes | lines)) {
     print-error $"remote \"($remote)\" does not exist"
   }
 
@@ -30,7 +30,7 @@ def get-storage-directory [] {
 }
 
 # Browse local files
-export def "browse local" [
+def "storage browse local" [
   --remote: string # The name of the remote service
 ] {
   let local_storage_path = (
@@ -43,12 +43,12 @@ export def "browse local" [
   }
 }
 
-alias "br local" = browse local
-alias "br l" = browse local
-alias "browse l" = browse local
+alias "storage br local" = storage browse local
+alias "storage br l" = storage browse local
+alias "storage browse l" = storage browse local
 
 # Browse remotes
-export def "browse remote" [
+def "storage browse remote" [
   --remote: string # The name of the remote service
   --web # Browse remote in the browser, using remote website
   --web-rclone # Browse remote in the browser, using rclone
@@ -69,9 +69,9 @@ export def "browse remote" [
   }
 }
 
-alias "br remote" = browse remote
-alias "br r" = browse remote
-alias "browse r" = browse remote
+alias "storage br remote" = storage browse remote
+alias "storage br r" = storage browse remote
+alias "storage browse r" = storage browse remote
 
 const SELECT_ALL = "--- SELECT ALL ---"
 
@@ -192,7 +192,7 @@ def is-directory [json: table] {
 }
 
 # Download files from remote
-export def download [
+export def "storage download" [
   path?: string # A path relative to <remote>:
   --force (-f) # Re-download file even if it already exists locally
   --quiet # Suppress output
@@ -262,10 +262,10 @@ export def download [
   }
 }
 
-alias down = download
+alias "storage down" = storage download
 
 # Download a file, open it in $EDITOR, and upload it after
-def edit [
+def "storage edit" [
   path?: string # A path relative to <remote>:
   --remote: string # The name of the remote service
 ] {
@@ -277,14 +277,14 @@ def edit [
     $path
   }
 
-  download --remote $remote $remote_path
+  storage download --remote $remote $remote_path
   let local_path = (get-local-path $remote $remote_path)
   ^$env.EDITOR $local_path
-  upload --remote $remote $local_path $remote_path
+  storage upload --remote $remote $local_path $remote_path
 }
 
 # Show remote info
-export def info [
+def "storage info" [
   --remote: string # The name of the remote service
 ] {
   rclone about $"(get-remote $remote):"
@@ -295,7 +295,7 @@ def get-remote-path [remote?: string path?: string] {
 }
 
 # List remote files
-export def "list remote" [
+def "storage list remote" [
   path?: string # A path relative to <remote>:
   --interactive (-i) # Interactively select the subdirectory whose contents to list
   --remote: string # The name of the remote service
@@ -315,11 +315,11 @@ export def "list remote" [
   | to text --no-newline
 }
 
-alias "ls remote" = list remote
-alias "ls r" = list remote
+alias "storage ls remote" = storage list remote
+alias "storage ls r" = storage list remote
 
 # List locally downloaded files
-export def "list local" [
+def "storage list local" [
   path?: string # A path relative to <remote>:
   --remote: string # The name of the remote service
 ] {
@@ -339,18 +339,18 @@ export def "list local" [
   }
 }
 
-alias "ls local" = list local
-alias "ls l" = list local
+alias "storage ls local" = storage list local
+alias "storage ls l" = storage list local
 
 # List available remotes
-export def "list remotes" [] {
+def "storage list remotes" [] {
   rclone listremotes err> /dev/null
   | lines
   | str replace --regex ":$" ""
   | to text
 }
 
-alias "ls remotes" = list remotes
+alias "storage ls remotes" = storage list remotes
 
 # TODO: add this to nushell globally and use in other scripts (like f.nu, etc...)
 def start-process [...args: string] {
@@ -358,7 +358,7 @@ def start-process [...args: string] {
 }
 
 # Move (rename) remote and local files
-export def move [
+def "storage move" [
   from: string # The existing file to move/rename
   to: string # The new name/path to move to
   --force (-f) # Remove without confirmation
@@ -384,10 +384,10 @@ export def move [
   }
 }
 
-alias mv = move
+alias "storage mv" = storage move
 
 # Interactively select and open a file from local storage
-export def open [
+def "storage open" [
   path?: string # A path relative to <remote>:
   --remote: string # The name of the remote service
 ] {
@@ -438,7 +438,7 @@ def confirm-remove [remote?: string] {
 }
 
 # Remove files from local and remote
-export def remove [
+def "storage remove" [
   path?: string # A path relative to <remote>:
   --force (-f) # Remove without confirmation
   --remote: string # The name of the remote service
@@ -454,10 +454,10 @@ export def remove [
   }
 }
 
-alias rm = remove
+alias "storage rm" = storage remove
 
 # Remove local files
-export def "remove local" [
+def "storage remove local" [
   path?: string # A path relative to <remote>:
   --force (-f) # Remove without confirmation
   --interactive (-i) # Interactively select the subdirectory whose contents to list
@@ -543,11 +543,11 @@ export def "remove local" [
   }
 }
 
-alias "rm local" = remove local
-alias "rm l" = remove local
+alias "storage rm local" = storage remove local
+alias "storage rm l" = storage remove local
 
 # Remove remote files
-export def "remove remote" [
+def "storage remove remote" [
   path?: string # A path relative to <remote>:
   --force (-f) # Remove without confirmation
   --remote: string # The name of the remote service
@@ -585,8 +585,8 @@ export def "remove remote" [
   }
 }
 
-alias "rm remote" = remove remote
-alias "rm r" = remove remote
+alias "storage rm remote" = storage remove remote
+alias "storage rm r" = storage remove remote
 
 # Setup remotes
 def setup [] {
@@ -594,7 +594,7 @@ def setup [] {
 }
 
 # Upload a file to remote
-export def upload [
+export def "storage upload" [
   local_path?: string # The local file to upload
   remote_path?: string # The remote path to upload to
   --remote: string # The name of the remote service
@@ -646,4 +646,4 @@ export def upload [
   rclone $command $local_path (get-remote-path $remote $remote_path)
 }
 
-alias up = upload
+alias "storage up" = storage upload

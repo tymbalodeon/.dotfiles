@@ -1,5 +1,5 @@
 # List fonts
-export def main [] {
+def fonts [] {
   run-external fc-list : family
   | lines
   | sort
@@ -7,6 +7,6 @@ export def main [] {
 }
 
 # Update the font cache
-export def update [] {
+def "fonts update" [] {
   fc-cache --really-force
 }

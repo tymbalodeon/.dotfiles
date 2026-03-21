@@ -1,17 +1,20 @@
 # Start/stop wireguard
-export def main [] {
+def wg [] {
   wg status
 }
 
-export def start [] {
+# Start wireguard
+def "wg start" [] {
   sudo wg-quick up wg0
 }
 
-export def status [] {
+# Show wireguard connection status
+def "wg status" [] {
   sudo wg show
 }
 
-export def stop [] {
+# Stop wireguard
+def "wg stop" [] {
   if (wg status | is-not-empty) {
     sudo wg-quick down wg0
   }

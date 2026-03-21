@@ -31,7 +31,7 @@ def is-nixos [] {
 }
 
 # Open music player
-export def main [] {
+def music [] {
   let is_nixos = (is-nixos)
 
   if not (running) {
@@ -50,7 +50,7 @@ export def main [] {
 }
 
 # Show the track currently playing
-export def current [
+def "music current" [
   --all # Show all track information
 ] {
   if not (running) {
@@ -85,13 +85,13 @@ def get-playlist-directory [] {
   | path join $playlist_directory
 }
 
-export def playlist [] {
+def "music playlist" [] {
   help music
 }
 
 def get-playlist [playlist?: string] {
   let playlist = if ($playlist | is-empty) {
-    let playlists = (playlist list | lines)
+    let playlists = (music playlist list | lines)
 
     if ($playlists | length) > 1 {
       $playlists
@@ -122,7 +122,7 @@ def get-playlist [playlist?: string] {
 }
 
 # Add current song to playlists
-export def "playlist add" [
+def "music playlist add" [
   playlist?: string
 ] {
   if (rmpc status | from json).state not-in [Pause Play] {
@@ -145,7 +145,7 @@ export def "playlist add" [
     $playlist
   }
 
-  let playlist_file = (playlist create $playlist)
+  let playlist_file = (music playlist create $playlist)
 
   let paths = (
     open $playlist_file
@@ -158,7 +158,7 @@ export def "playlist add" [
 }
 
 # Create playlist
-export def "playlist create" [playlist?: string] {
+def "music playlist create" [playlist?: string] {
   let playlist_path = (get-playlist $playlist)
 
   touch $playlist_path
@@ -166,10 +166,10 @@ export def "playlist create" [playlist?: string] {
   $playlist_path
 }
 
-alias "playlist new" = playlist create
+alias "music playlist new" = music playlist create
 
 # Edit playlist
-export def "playlist edit" [playlist?: string] {
+def "music playlist edit" [playlist?: string] {
   let playlist = (get-playlist $playlist)
 
   if ($playlist | is-empty) {
@@ -180,7 +180,7 @@ export def "playlist edit" [playlist?: string] {
 }
 
 # List playlists
-export def "playlist list" [] {
+def "music playlist list" [] {
   ls (get-playlist-directory)
   | get name
   | path parse
@@ -188,10 +188,10 @@ export def "playlist list" [] {
   | to text --no-newline
 }
 
-alias playlists = playlist list
+alias "music playlists" = music playlist list
 
 # View playlist
-export def "playlist open" [playlist?: string] {
+def "music playlist open" [playlist?: string] {
   let playlist = (get-playlist $playlist)
 
   if ($playlist | is-empty) {
@@ -201,11 +201,11 @@ export def "playlist open" [playlist?: string] {
   open $playlist
 }
 
-alias "playlist show" = playlist open
-alias "playlist view" = playlist open
+alias "music playlist show" = music playlist open
+alias "music playlist view" = music playlist open
 
 # Show the status of the music player server
-export def status [] {
+def "music status" [] {
   if (running) {
     "running"
   } else {
@@ -214,7 +214,7 @@ export def status [] {
 }
 
 # Stop music server
-export def stop [] {
+def "music stop" [] {
   if (is-darwin) {
     pkill mpd
   } else {

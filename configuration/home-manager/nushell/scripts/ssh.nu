@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-export def --wrapped main [...args: string] {
+def --wrapped ssh [...args: string] {
   if $env.TERM == xterm-kitty {
     kitten ssh ...$args
   } else {

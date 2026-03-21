@@ -1,5 +1,5 @@
-def main [] {
-  help main
+def pens [] {
+  help pens
 }
 
 def get-path [name: string] {
@@ -24,17 +24,17 @@ def edit [item: string] {
 }
 
 # Edit ink records
-export def "edit inks" [] {
+def "pens edit inks" [] {
   edit inks
 }
 
 # Edit pen records
-export def "edit pens" [] {
+def "pens edit pens" [] {
   edit pens
 }
 
 # Clear the current ink record for a pen
-export def empty [
+def "pens empty" [
   pen_id?: int # The id of the pen to update (choose interactively if left blank)
 ] {
   let pen_id = (get-pen $pen_id)
@@ -46,16 +46,16 @@ export def empty [
   update-currently-inked-file $pen_id
 }
 
-export def list [] {
-  help list
+def "pens list" [] {
+  help pens list
 }
 
 # List empty pens
-export def "list empty" [] {
+def "pens list empty" [] {
   let currently_inked = (open-csv currently-inked)
   let currently_empty = ($currently_inked | where {$in."ink id" | is-empty})
 
-  list pens
+  pens list pens
   | where {
       |pen|
 
@@ -76,7 +76,7 @@ export def "list empty" [] {
 }
 
 # Show the inks currently recorded as being in each pen
-export def "list inked" [] {
+def "pens list inked" [] {
   let inks = (open-csv inks)
   let currently_inked = (open-csv currently-inked)
 
@@ -111,23 +111,23 @@ export def "list inked" [] {
 }
 
 # Show ink collection
-export def "list inks" [
+def "pens list inks" [
   --interactive
 ] {
   open-csv inks $interactive
 }
 
 # List unused inks
-export def "list inks unused" [] {
+def "pens list inks unused" [] {
   let current_inks = (open-csv currently-inked)."ink id"
 
-  ist inks
+  pens list inks
   | where {$in.index not-in $current_inks}
 }
 
 
 # Show pen collection
-export def "list pens" [
+def "pens list pens" [
   --interactive
 ] {
   open-csv pens $interactive
@@ -183,7 +183,7 @@ def update-currently-inked-file [pen_id: int ink_id?: int] {
 }
 
 # Update the current ink record for a pen
-export def update [
+def "pens update" [
   pen_id?: int # The id of the pen to update (choose interactively if left blank)
   ink_id?: int # The id of the ink to update to (choose interactively if left blank)
 ] {
@@ -202,7 +202,6 @@ export def update [
   update-currently-inked-file $pen_id $ink_id
 }
 
-alias inked = list inked
-alias inks = list inks
-alias ls = list
-alias pens = list pens
+alias "pens inked" = pens list inked
+alias "pens inks" = pens list inks
+alias "pens ls" = pens list

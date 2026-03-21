@@ -28,7 +28,7 @@ def get-path [directory?: string] {
 }
 
 # Search for files interactively
-export def --env main [
+def --env f [
   directory?: string # Search this directory
 ] {
   let path = (get-path $directory)
@@ -41,7 +41,7 @@ export def --env main [
 }
 
 # Search for files interactively and `cd` to directories, or parents of files
-export def --env cd [
+def --env "f cd" [
   directory?: string # Search this directory
 ] {
   let path = (get-path $directory)
@@ -54,7 +54,7 @@ export def --env cd [
 }
 
 # Search for files interactively and edit them with $EDITOR
-export def edit [
+def "f edit" [
   directory?: string # Search this directory
 ] {
   let path = (get-path $directory)
@@ -70,7 +70,7 @@ export def edit [
 }
 
 # Search for files interactively and open them
-export def open [
+def "f open" [
   directory?: string # Search this directory
   --application (-a): string # The command to open the file with
 ] {

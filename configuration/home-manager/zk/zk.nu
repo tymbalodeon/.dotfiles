@@ -1,3 +1,3 @@
-export def --wrapped main [...args: string] {
+def --wrapped zk [...args: string] {
   SHELL=$"(^which bash)" ^zk ...$args
 }

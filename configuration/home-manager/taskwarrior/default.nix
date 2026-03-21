@@ -7,8 +7,8 @@
 
   nushell.extraScripts = [
     (pkgs.writeText "task.nu" ''
-      use ${../storage/storage.nu} download
-      use ${../storage/storage.nu} upload
+      use ${../storage/storage.nu} "storage download"
+      use ${../storage/storage.nu} "storage upload"
 
       const DUMP_FILE = "task/task.dump.json"
 
@@ -60,9 +60,9 @@
         ) > (local-last-modified)
       }
 
-      export def main [...args: string] {
+      def --wrapped task [...args: string] {
         if (is-outdated) {
-          main load
+          task load
         }
 
         ^task ...$args
@@ -85,7 +85,7 @@
           start
           stop
         ]} | any {into bool}) {
-          main dump
+          task dump
         }
       }
 
@@ -94,7 +94,7 @@
       }
 
       # Save non-pending tasks to an archive file
-      export def "main archive" [
+      def "task archive" [
         --to # Where to save the archive
       ] {
         let tasks = (
@@ -118,18 +118,18 @@
         }
 
         (
-          upload
+          storage upload
             $temporary_file
             $to
             out+err> /dev/null
         )
 
-        main load $temporary_file
+        task load $temporary_file
         rm $temporary_file
       }
 
       # Remove all tasks from the database
-      export def "main clear" [] {
+      def "task clear" [] {
         mv (database-file) (mktemp --tmpdir task-backup-XXX.sqlite3)
       }
 
@@ -142,8 +142,8 @@
       }
 
       # Save the current state of the database to a json file
-      export def "main dump" [file?: string] {
-        main archive
+      def "task dump" [file?: string] {
+        task archive
 
         let temporary_file = (temporary-json-file)
 
@@ -153,7 +153,7 @@
         | save --force $temporary_file
 
         (
-          upload
+          storage upload
             $temporary_file
             (get-dump-file $file)
             out+err> /dev/null
@@ -162,11 +162,11 @@
         rm $temporary_file
       }
 
-      export def "main load" [
+      def "task load" [
         file?: string
         --interactive (-i)
       ] {
-        main clear
+        task clear
 
         let temporary_directory = (mktemp --directory)
 
@@ -180,7 +180,7 @@
             (get-dump-file $file)
           }
 
-          download --quiet --to $temporary_directory $file
+          storage download --quiet --to $temporary_directory $file
 
           $temporary_directory
           | path join ($file | path basename)
