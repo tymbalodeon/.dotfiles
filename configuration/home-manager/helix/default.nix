@@ -125,5 +125,5 @@
   };
 }
 // lib.optionalAttrs (hostType != "home-manager") {
-  stylix.targets.helix.enable = !(config.stylix.theme == "catppuccin-mocha");
+  stylix.targets.helix.enable = config.stylix.theme != "catppuccin-mocha";
 }
