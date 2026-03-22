@@ -24,22 +24,16 @@
 
         try {
           let subcommand = ($args | first)
-
-          let result = if $subcommand == graph {
-            _zk ...$args
-            | complete
-            | get stdout
-          } else {
-            _zk ...$args
-          }
+          let result = (_zk ...$args)
 
           if $is_main_zk and ($args | first) in [edit new] and (
-            git -C (get-nb-dir) status --short | is-not-empty
+            git -C (get-nb-dir) status --short
+            | is-not-empty
           ) {
               nb sync
-          } else if $subcommand == graph {
-            $result
           }
+
+          $result
         }
       }
     '')
