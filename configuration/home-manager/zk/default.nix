@@ -10,6 +10,8 @@
         let args = if not (".zk" | path exists) {
           $args
           | append [--working-dir (get-nb-dir)]
+        } else {
+          $args
         }
 
         SHELL=$"(^which bash)" ^zk ...$args
