@@ -20,7 +20,7 @@
   ];
 
   options.work.user = let
-    inherit (lib) types;
+    inherit (lib) mkOption types;
     inherit (types) listOf str;
 
     getUserValue = attr: (
@@ -30,26 +30,25 @@
     );
 
     user = import ../../users/work.nix;
-  in
-    with lib; {
-      email = mkOption {
-        default = getUserValue "email";
-        type = str;
-      };
-
-      githubUsername = mkOption {
-        default = getUserValue "githubUsername";
-        type = str;
-      };
-
-      gitlabUsername = mkOption {
-        default = getUserValue "gitlabUsername";
-        type = str;
-      };
-
-      nbRemotes = mkOption {
-        default = getUserValue "nbRemotes";
-        type = listOf str;
-      };
+  in {
+    email = mkOption {
+      default = getUserValue "email";
+      type = str;
     };
+
+    githubUsername = mkOption {
+      default = getUserValue "githubUsername";
+      type = str;
+    };
+
+    gitlabUsername = mkOption {
+      default = getUserValue "gitlabUsername";
+      type = str;
+    };
+
+    nbRemotes = mkOption {
+      default = getUserValue "nbRemotes";
+      type = listOf str;
+    };
+  };
 }
