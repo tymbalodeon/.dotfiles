@@ -6,6 +6,10 @@
     (pkgs.writeText "zk.nu" ''
       use ${../nb/get-nb-dir.nu} get-nb-dir
 
+      def --wrapped _zk [...args: string] {
+        SHELL=$"(^which bash)" ^zk ...$args
+      }
+
       def --wrapped zk [...args: string] {
         mut is_main_zk = false
 
@@ -19,15 +23,24 @@
         }
 
         try {
-          SHELL=$"(^which bash)" ^zk ...$args
+          let subcommand = ($args | first)
 
-          if $is_main_zk and ($args | first) in [edit new] {
-            if (git -C (get-nb-dir) status --short | is-not-empty) {
+          let result = if $subcommand == graph {
+            _zk ...$args
+            | complete
+            | get stdout
+          } else {
+            _zk ...$args
+          }
+
+          if $is_main_zk and ($args | first) in [edit new] and (
+            git -C (get-nb-dir) status --short | is-not-empty
+          ) {
               nb sync
-            }
+          } else if $subcommand == graph {
+            $result
           }
         }
-
       }
     '')
   ];
