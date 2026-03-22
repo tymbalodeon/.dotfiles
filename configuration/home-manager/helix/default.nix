@@ -8,6 +8,13 @@
     cfg = config.helix;
   in
     {
+      assertions = [
+        {
+          assertion = hostType != "home-manager";
+          message = "Home Manager systems do not use Stylix.";
+        }
+      ];
+
       home.sessionVariables = {EDITOR = "hx";};
 
       programs.helix = {
@@ -102,13 +109,13 @@
             };
           }
           // optionalAttrs
-          ((hostType == "home-manager") || !cfg.themeFollowsStylix) {
-            theme = "catppuccin_mocha";
+          ((hostType == "home-manager") || !cfg.stylix) {
+            theme = cfg.theme;
           };
       };
     }
     // lib.optionalAttrs (hostType != "home-manager") {
-      stylix.targets.helix.enable = cfg.themeFollowsStylix;
+      stylix.targets.helix.enable = cfg.stylix;
     };
 
   imports =
@@ -130,11 +137,13 @@
     );
 
   options.helix = let
-    inherit (lib) mkOption types;
+    inherit (lib) mkEnableOption mkOption types;
   in {
-    themeFollowsStylix = mkOption {
-      default = false;
-      type = types.bool;
+    stylix = mkEnableOption "Use stylix to manage the theme";
+
+    theme = mkOption {
+      default = "catppuccin_mocha";
+      type = types.str;
     };
   };
 }
