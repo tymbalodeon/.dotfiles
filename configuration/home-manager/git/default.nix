@@ -106,11 +106,15 @@
                 user
                 ;
             };
+
+            signing.format = null;
           };
         }
         else {
           git = {
             inherit enable;
+
+            aliases = alias;
 
             extraConfig = {
               inherit
@@ -126,7 +130,7 @@
                 ;
             };
 
-            aliases = alias;
+            signing.format = null;
             userEmail = user.email;
             userName = user.name;
           };

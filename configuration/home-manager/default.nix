@@ -7,6 +7,8 @@
   ...
 }: {
   config = {
+    gtk.gtk4.theme = null;
+
     home = {
       packages = with pkgs; [
         doggo
