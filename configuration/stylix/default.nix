@@ -16,7 +16,7 @@
 
       theme =
         if themeOverride == ""
-        then "tarot"
+        then "catppuccin-mocha"
         else themeOverride;
     in
       theme;

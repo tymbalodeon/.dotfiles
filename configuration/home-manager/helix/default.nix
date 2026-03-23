@@ -144,7 +144,7 @@
     stylix = mkEnableOption "Use stylix to manage the theme";
 
     theme = mkOption {
-      default = "theme";
+      default = "catppuccin_mocha";
       type = types.str;
     };
   };
