@@ -139,9 +139,12 @@
     );
 
   options.helix = let
-    inherit (lib) mkEnableOption mkOption types;
+    inherit (lib) mkOption types;
   in {
-    stylix = mkEnableOption "Use stylix to manage the theme";
+    stylix = mkOption {
+      default = true;
+      type = types.bool;
+    };
 
     theme = mkOption {
       default = "catppuccin_mocha";
