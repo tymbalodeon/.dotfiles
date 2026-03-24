@@ -54,8 +54,6 @@
           macos_quit_when_last_window_closed = "yes";
         }
         // optionalAttrs isLinux {kitty_mod = "ctrl+shift";};
-
-      themeFile = "Catppuccin-Mocha";
     };
   };
 

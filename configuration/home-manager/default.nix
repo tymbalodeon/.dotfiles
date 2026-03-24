@@ -64,11 +64,12 @@
       ./musescore
       ./nb
       ../nix
+      ./pdf
       ./ripgrep
       ./shell
       ./tealdeer
+      ./vivid
       ./yazi
-      ./pdf
       ./zellij
       ./zk
       ./zoxide
