@@ -1,4 +1,5 @@
 {
+  base16-helix,
   config,
   hostType,
   lib,
@@ -88,7 +89,12 @@
                 inherit space;
 
                 C-g = [":reset-diff-change"];
-                C-j = ["extend_to_line_bounds" "delete_selection" "paste_after"];
+
+                C-j = [
+                  "extend_to_line_bounds"
+                  "delete_selection"
+                  "paste_after"
+                ];
 
                 C-k = [
                   "extend_to_line_bounds"
@@ -108,24 +114,39 @@
               };
             };
           }
-          // lib.optionalAttrs (hostType == "home-manager" || !cfg.stylix) {theme = cfg.theme;};
-
-        themes.stylix-modified = {
-          inherits = "stylix";
-
-          "ui.cursor.primary" = {
-            bg = "base0E";
-            fg = "base01";
+          // lib.optionalAttrs (hostType == "home-manager") {
+            theme = cfg.theme;
+          }
+          // lib.optionalAttrs (
+            hostType
+            != "home-manager"
+            && cfg.stylix.enable
+            && !cfg.useDefaultStylixTheme
+          ) {
+            theme = "stylix-modified";
           };
 
-          "ui.gutter.selected" = {bg = "base01";};
-          "ui.virtual.indent-guide" = "base01";
-          "ui.virtual.whitespace" = "base01";
-        };
+        themes.stylix-modified = let
+          stylixTheme = fromTOML (
+            builtins.readFile
+            "${base16-helix}/base16-${config.stylix.theme}.toml"
+          );
+        in
+          stylixTheme
+          // {
+            "ui.cursor.primary" = {
+              bg = "base0E";
+              fg = "base01";
+            };
+
+            "ui.gutter.selected" = {bg = "base01";};
+            "ui.virtual.indent-guide" = "base01";
+            "ui.virtual.whitespace" = "base01";
+          };
       };
     }
     // lib.optionalAttrs (hostType != "home-manager") {
-      stylix.targets.helix.enable = cfg.stylix;
+      stylix.targets.helix.enable = cfg.stylix.enable && cfg.useDefaultStylixTheme;
     };
 
   imports =
@@ -147,9 +168,9 @@
     );
 
   options.helix = let
-    inherit (lib) mkOption types;
+    inherit (lib) mkEnableOption mkOption types;
   in {
-    stylix = mkOption {
+    stylix.enable = mkOption {
       default = true;
       type = types.bool;
     };
@@ -158,5 +179,8 @@
       default = "catppuccin_mocha";
       type = types.str;
     };
+
+    useDefaultStylixTheme =
+      mkEnableOption "Use the default stylix theme, if using stylix";
   };
 }

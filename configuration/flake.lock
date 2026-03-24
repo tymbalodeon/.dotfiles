@@ -55,6 +55,24 @@
     "base16-helix": {
       "flake": false,
       "locked": {
+        "dir": "themes",
+        "lastModified": 1760703920,
+        "narHash": "sha256-m82fGUYns4uHd+ZTdoLX2vlHikzwzdu2s2rYM2bNwzw=",
+        "owner": "tinted-theming",
+        "repo": "base16-helix",
+        "rev": "d646af9b7d14bff08824538164af99d0c521b185",
+        "type": "github"
+      },
+      "original": {
+        "dir": "themes",
+        "owner": "tinted-theming",
+        "repo": "base16-helix",
+        "type": "github"
+      }
+    },
+    "base16-helix_2": {
+      "flake": false,
+      "locked": {
         "lastModified": 1748408240,
         "narHash": "sha256-9M2b1rMyMzJK0eusea0x3lyh3mu5nMeEDSc4RZkGm+g=",
         "owner": "tinted-theming",
@@ -68,7 +86,7 @@
         "type": "github"
       }
     },
-    "base16-helix_2": {
+    "base16-helix_3": {
       "flake": false,
       "locked": {
         "lastModified": 1760703920,
@@ -1717,6 +1735,7 @@
     },
     "root": {
       "inputs": {
+        "base16-helix": "base16-helix",
         "home-manager-25_05": "home-manager-25_05",
         "home-manager-unstable": "home-manager-unstable",
         "musnix": "musnix",
@@ -1819,7 +1838,7 @@
       "inputs": {
         "base16": "base16",
         "base16-fish": "base16-fish",
-        "base16-helix": "base16-helix",
+        "base16-helix": "base16-helix_2",
         "base16-vim": "base16-vim",
         "firefox-gnome-theme": "firefox-gnome-theme",
         "flake-parts": "flake-parts_3",
@@ -1854,7 +1873,7 @@
       "inputs": {
         "base16": "base16_2",
         "base16-fish": "base16-fish_2",
-        "base16-helix": "base16-helix_2",
+        "base16-helix": "base16-helix_3",
         "base16-vim": "base16-vim_2",
         "firefox-gnome-theme": "firefox-gnome-theme_2",
         "flake-parts": "flake-parts_4",

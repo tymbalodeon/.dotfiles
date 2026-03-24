@@ -1,5 +1,10 @@
 {
   inputs = {
+    base16-helix = {
+      flake = false;
+      url = "github:tinted-theming/base16-helix?dir=themes";
+    };
+
     home-manager-25_05 = {
       inputs.nixpkgs.follows = "nixpkgs-25_05";
       url = "github:nix-community/home-manager/release-25.05";
@@ -65,6 +70,7 @@
   };
 
   outputs = {
+    base16-helix,
     home-manager-25_05,
     home-manager-unstable,
     musnix,
@@ -199,6 +205,7 @@
 
           specialArgs = {
             inherit
+              base16-helix
               channel
               hostName
               hostType
