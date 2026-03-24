@@ -113,8 +113,6 @@
             theme = cfg.theme;
           };
       };
-
-      xdg.configFile."helix/themes/theme.toml".source = ./theme.toml;
     }
     // lib.optionalAttrs (hostType != "home-manager") {
       stylix.targets.helix.enable = cfg.stylix;

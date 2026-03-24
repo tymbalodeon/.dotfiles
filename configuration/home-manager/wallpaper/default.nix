@@ -9,7 +9,11 @@ in {
     ];
   };
 
-  imports = [../nushell];
+  imports = [
+    ../fzf
+    ../nushell
+  ];
+
   nushell.extraScripts = [./wallpaper.nu];
 
   services = {

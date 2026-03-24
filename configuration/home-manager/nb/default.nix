@@ -84,6 +84,7 @@
   imports = [
     ../bash
     ../bat
+    ../fzf
     ../git
     ../helix
     ../helix/markdown
