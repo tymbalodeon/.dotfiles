@@ -108,10 +108,15 @@
               };
             };
           }
-          // optionalAttrs
-          ((hostType == "home-manager") || !cfg.stylix) {
-            theme = cfg.theme;
-          };
+          // lib.optionalAttrs (hostType == "home-manager" || !cfg.stylix) {theme = cfg.theme;};
+
+        themes.stylix-modified = {
+          inherits = "stylix";
+          "ui.gutter.selected" = {bg = "base01";};
+          "ui.selection" = {bg = "base01";};
+          "ui.virtual.indent-guide" = "base01";
+          "ui.virtual.whitespace" = "base01";
+        };
       };
     }
     // lib.optionalAttrs (hostType != "home-manager") {
