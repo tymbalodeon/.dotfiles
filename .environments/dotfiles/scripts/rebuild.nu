@@ -123,7 +123,7 @@ export def main [
       let theme = if $choose_theme {
         $themes
         | to text
-        | fzf
+        | fzf --preview "tinty info {}"
       } else if $random_theme {
         let index = (random int 0..($themes | length))
 
@@ -135,6 +135,8 @@ export def main [
       | str replace base16- ""
     }
   }
+
+  print $"Using theme: \"($theme)\""
 
   $env.STYLIX_THEME = $theme
 
