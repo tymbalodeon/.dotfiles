@@ -22,18 +22,19 @@
           $args
         }
 
-        try {
-          let subcommand = ($args | first)
-          let result = (_zk ...$args)
+        let subcommand = ($args | first)
 
-          if $is_main_zk and ($args | first) in [edit new] and (
+        if $is_main_zk and ($args | first) in [edit new] {
+          _zk ...$args
+
+          if (
             git -C (get-nb-dir) status --short
             | is-not-empty
           ) {
               nb sync
           }
-
-          $result
+        } else {
+          _zk ...$args
         }
       }
     '')
