@@ -134,6 +134,14 @@
         in
           stylixTheme
           // {
+            "markup.heading.marker" = "";
+            "markup.heading.1" = "base09";
+            "markup.heading.2" = "base0A";
+            "markup.heading.3" = "base0B";
+            "markup.heading.4" = "base0C";
+            "markup.heading.5" = "base0D";
+            "markup.heading.6" = "base0E";
+
             "ui.cursor.primary" = {
               bg = "base0E";
               fg = "base01";
