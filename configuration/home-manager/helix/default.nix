@@ -113,8 +113,6 @@
             theme = cfg.theme;
           };
       };
-
-      xdg.configFile."helix/themes/theme.toml".source = ./theme.toml;
     }
     // lib.optionalAttrs (hostType != "home-manager") {
       stylix.targets.helix.enable = cfg.stylix;
@@ -139,9 +137,12 @@
     );
 
   options.helix = let
-    inherit (lib) mkEnableOption mkOption types;
+    inherit (lib) mkOption types;
   in {
-    stylix = mkEnableOption "Use stylix to manage the theme";
+    stylix = mkOption {
+      default = true;
+      type = types.bool;
+    };
 
     theme = mkOption {
       default = "catppuccin_mocha";

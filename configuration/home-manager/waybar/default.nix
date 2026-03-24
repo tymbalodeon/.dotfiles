@@ -62,8 +62,9 @@
         };
 
         "custom/media" = {
-          exec = "nu ${./media.nu}";
+          escape = true;
           exec-if = "pgrep playerctld";
+          exec = "nu ${./media.nu}";
           on-click = "playerctl play-pause";
           on-click-right = "playerctl stop";
           restart-interval = 1;

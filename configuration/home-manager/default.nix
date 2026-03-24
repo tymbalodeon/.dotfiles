@@ -7,6 +7,8 @@
   ...
 }: {
   config = {
+    gtk.gtk4.theme = null;
+
     home = {
       packages = with pkgs; [
         doggo
@@ -62,11 +64,12 @@
       ./musescore
       ./nb
       ../nix
+      ./pdf
       ./ripgrep
       ./shell
       ./tealdeer
+      ./vivid
       ./yazi
-      ./pdf
       ./zellij
       ./zk
       ./zoxide

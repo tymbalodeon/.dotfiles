@@ -114,3 +114,13 @@ def "wallpaper previous" [] {
 def "wallpaper toggle-pause" [] {
   wpaperctl-wrapper toggle-pause
 }
+
+# Manage wallpaper
+export def main [arg?: string] {
+  match $arg {
+    "next" => (wallpaper next)
+    "previous" => (wallpaper previous)
+    "toggle-pause" => (wallpaper toggle-pause)
+    _ => (wallpaper $arg)
+  }
+}

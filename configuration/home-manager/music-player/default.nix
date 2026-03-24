@@ -118,7 +118,10 @@
       else {};
   };
 
-  imports = [../nushell];
+  imports = [
+    ../fzf
+    ../nushell
+  ];
 
   options.music-player = with lib; {
     musicDirectory = mkOption {

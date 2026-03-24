@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ../fzf
     ../nushell
     ../sqlite
     ../storage
