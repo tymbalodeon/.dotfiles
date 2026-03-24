@@ -112,8 +112,13 @@
 
         themes.stylix-modified = {
           inherits = "stylix";
+
+          "ui.cursor.primary" = {
+            bg = "base0E";
+            fg = "base01";
+          };
+
           "ui.gutter.selected" = {bg = "base01";};
-          "ui.selection" = {bg = "base01";};
           "ui.virtual.indent-guide" = "base01";
           "ui.virtual.whitespace" = "base01";
         };
