@@ -13,8 +13,7 @@ in {
       alias = {
         journal = "zk new --no-input \"$ZK_NOTEBOOK_DIR/journal\"";
         last = "zk edit --limit 1 --sort modified- $@";
-        random = "zk list --format full --limit 1 --quiet --sort random";
-        recent = "zk edit --created-after 'last two weeks' --interactive --sort created-";
+        random = "zk edit --limit 1 --sort random";
       };
 
       group.journal = {
