@@ -1,4 +1,6 @@
 export def get-nb-dir [] {
-  nb settings get nb_dir
-  | path join (open ~/.nb/.current | str trim)
+  const NB_HOME = "~/.nb"
+
+  $NB_HOME
+  | path join (open ($NB_HOME | path join .current) | str trim)
 }
