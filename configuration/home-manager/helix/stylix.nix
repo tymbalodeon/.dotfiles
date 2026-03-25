@@ -11,7 +11,7 @@
       {
         themes.stylix-modified = let
           stylixTheme = fromTOML (
-            builtins.readFile "${base16-helix}/${config.stylix.theme}.toml"
+            builtins.readFile "${base16-helix}/base16-${config.stylix.theme}.toml"
           );
         in
           stylixTheme
