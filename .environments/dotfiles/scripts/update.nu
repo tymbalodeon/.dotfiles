@@ -7,7 +7,7 @@ use configurations.nu is-nixos
 
 def shared-inputs [] {
   [
-    base-16-helix
+    base16-helix
     src
   ]
 }
