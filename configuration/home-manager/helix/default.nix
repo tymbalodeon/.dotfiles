@@ -9,13 +9,6 @@
     cfg = config.helix;
   in
     {
-      assertions = [
-        {
-          assertion = hostType != "home-manager";
-          message = "Home Manager systems do not use Stylix.";
-        }
-      ];
-
       home.sessionVariables = {EDITOR = "hx";};
 
       programs.helix = {
@@ -128,9 +121,15 @@
 
         themes.stylix-modified = let
           stylixTheme = fromTOML (
-            builtins.readFile
-            "${base16-helix}/base16-${config.stylix.theme}.toml"
+            builtins.readFile "${base16-helix}/${themeName}.toml"
           );
+
+          themeName = let
+            prefix = "base16";
+          in
+            if hostType == "home-manager"
+            then "themes/${prefix}-catppuccin-mocha"
+            else "${prefix}-${config.stylix.theme}";
         in
           stylixTheme
           // {

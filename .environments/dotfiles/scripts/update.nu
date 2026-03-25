@@ -5,46 +5,55 @@ use configurations.nu is-darwin
 use configurations.nu is-home-manager
 use configurations.nu is-nixos
 
-def darwin-unstable-inputs [] {
+def shared-inputs [] {
   [
+    base-16-helix
+    src
+  ]
+}
+
+def darwin-unstable-inputs [] {
+  shared-inputs
+  | append [
     home-manager-unstable
     nix-darwin-unstable
     nixpkgs-unstable
-    src
     stylix-unstable
   ]
 }
 
 def darwin-25_05-inputs [] {
-  [
+  shared-inputs
+  | append [
     home-manager-25_05
     nix-darwin-25_05
     nixpkgs-25_05
-    src
     stylix-25_05
   ]
 }
 
 def harzima-inputs [] {
-  [tsundeoku]
+  darwin-25_05-inputs
+  | append [tsundeoku]
 }
 
 def home-manager-inputs [] {
-  [
+  shared-inputs
+  | append [
     home-manager-unstable
     nixgl
     nixpkgs-unstable
-    src
     stylix-unstable
   ]
 }
 
 def nixos-inputs [] {
-  [
+  shared-inputs
+  | append [
     home-manager-unstable
+    musnix
     nixpkgs-unstable
     solaar
-    src
     stylix-unstable
     wayland-pipewire-idle-inhibit
   ]
@@ -56,21 +65,11 @@ export def main [
   ...inputs: string # Inputs to update (see `inputs`)
 ] {
   let inputs = if ($inputs | is-empty) {
-    let inputs = (
-      nix flake metadata --json
-      | from json
-      | get locks.nodes.root.inputs
-      | columns
-    )
-
     if (is-darwin) {
-      let inputs = (darwin-unstable-inputs)
-
       if (get-built-host-name) == harzima {
-        $inputs
-        | append (harzima-inputs)
+        harzima-inputs
       } else {
-        $inputs
+        darwin-unstable-inputs
       }
     } else if (is-home-manager) {
       home-manager-inputs

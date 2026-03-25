@@ -177,6 +177,7 @@
         ${hostName} = home-manager-unstable.lib.homeManagerConfiguration {
           extraSpecialArgs = {
             inherit
+              base16-helix
               channel
               hostType
               home-manager-unstable
