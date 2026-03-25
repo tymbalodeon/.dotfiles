@@ -1,6 +1,6 @@
 export def get-nb-dir [] {
-  const NB_HOME = "~/.nb"
+  let nb_home = ($env.HOME | path join .nb)
 
-  $NB_HOME
-  | path join (open ($NB_HOME | path join .current) | str trim)
+  $nb_home
+  | path join (open ($nb_home | path join .current) | str trim)
 }
