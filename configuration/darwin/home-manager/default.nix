@@ -1,4 +1,5 @@
 {
+  base16-helix,
   channel,
   config,
   home-manager,
@@ -15,6 +16,7 @@
     home-manager = {
       extraSpecialArgs = {
         inherit
+          base16-helix
           channel
           hostType
           src
