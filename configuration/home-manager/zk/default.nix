@@ -6,27 +6,6 @@ in {
     ../nushell
   ];
 
-  programs.zk = {
-    enable = true;
-
-    settings = {
-      alias = {
-        journal = "zk new --no-input \"$ZK_NOTEBOOK_DIR/journal\"";
-        last = "zk edit --limit 1 --sort modified- $@";
-        random = "zk edit --limit 1 --sort random";
-      };
-
-      group.journal = {
-        note = {
-          filename = "{{format-date now}}";
-          tempalte = "journal.md";
-        };
-
-        paths = [journalDirectory];
-      };
-    };
-  };
-
   nushell.extraScripts = [
     (pkgs.writeText "zk.nu" ''
       use ${../nb/get-nb-dir.nu} get-nb-dir
@@ -71,6 +50,27 @@ in {
       }
     '')
   ];
+
+  programs.zk = {
+    enable = true;
+
+    settings = {
+      alias = {
+        journal = "zk new --no-input \"$ZK_NOTEBOOK_DIR/journal\"";
+        last = "zk edit --limit 1 --sort modified- $@";
+        random = "zk edit --limit 1 --sort random";
+      };
+
+      group.journal = {
+        note = {
+          filename = "{{format-date now}}";
+          tempalte = "journal.md";
+        };
+
+        paths = [journalDirectory];
+      };
+    };
+  };
 
   xdg.configFile.".zk/templates/journal.md".text = "# {{format-date now \"long\"}}";
 }
