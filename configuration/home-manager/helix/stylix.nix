@@ -9,29 +9,40 @@
   in {
     programs.helix =
       {
-        themes.stylix-modified = let
-          stylixTheme = fromTOML (
-            builtins.readFile "${base16-helix}/base16-${config.stylix.theme}.toml"
-          );
-        in
-          stylixTheme
+        themes =
+          builtins.foldl'
+          (a: b: a // b)
+          {}
+          (map
+            (filename: let
+              name =
+                builtins.replaceStrings [".toml"] [""] filename;
+            in {"${name}" = fromTOML (builtins.readFile "${base16-helix}/${filename}");})
+            (builtins.attrNames (builtins.readDir base16-helix)))
           // {
-            "markup.heading.marker" = "";
-            "markup.heading.1" = "base09";
-            "markup.heading.2" = "base0A";
-            "markup.heading.3" = "base0B";
-            "markup.heading.4" = "base0C";
-            "markup.heading.5" = "base0D";
-            "markup.heading.6" = "base0E";
+            stylix-modified =
+              fromTOML (
+                builtins.readFile
+                "${base16-helix}/base16-${config.stylix.theme}.toml"
+              )
+              // {
+                "markup.heading.marker" = "";
+                "markup.heading.1" = "base09";
+                "markup.heading.2" = "base0A";
+                "markup.heading.3" = "base0B";
+                "markup.heading.4" = "base0C";
+                "markup.heading.5" = "base0D";
+                "markup.heading.6" = "base0E";
 
-            "ui.cursor.primary" = {
-              bg = "base0E";
-              fg = "base01";
-            };
+                "ui.cursor.primary" = {
+                  bg = "base0E";
+                  fg = "base01";
+                };
 
-            "ui.gutter.selected" = {bg = "base01";};
-            "ui.virtual.indent-guide" = "base01";
-            "ui.virtual.whitespace" = "base01";
+                "ui.gutter.selected" = {bg = "base01";};
+                "ui.virtual.indent-guide" = "base01";
+                "ui.virtual.whitespace" = "base01";
+              };
           };
       }
       // lib.optionalAttrs (
