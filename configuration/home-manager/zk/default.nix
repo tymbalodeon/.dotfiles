@@ -104,6 +104,7 @@ in {
       };
 
       notebook.dir = "~/.nb/home";
+      tool.fzf-preview = "bat --plain --color always {-1}";
     };
   };
 
