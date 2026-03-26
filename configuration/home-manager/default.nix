@@ -64,6 +64,7 @@
       ./musescore
       ./nb
       ../nix
+      ./nushell
       ./pdf
       ./ripgrep
       ./shell

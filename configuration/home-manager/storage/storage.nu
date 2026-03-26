@@ -289,7 +289,7 @@ def "storage info" [
 ] {
   rclone about $"(get-remote $remote):"
 }
- 
+
 def get-remote-path [remote?: string path?: string] {
   $"(get-remote $remote):($path)"
 }

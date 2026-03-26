@@ -1,6 +1,8 @@
 {
+  channel,
   config,
   hostName,
+  hostType,
   lib,
   pkgs,
   ...
@@ -82,6 +84,7 @@
   imports = [
     ./bluetooth
     ./home-manager
+    ../hosts/${hostType}/${channel}/${hostName}/configuration.nix
     ./monitors
     ./musnix
     ./nautilus

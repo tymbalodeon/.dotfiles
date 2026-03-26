@@ -10,7 +10,7 @@ export def get-nb-dir [] {
 
     if not ($home_notebook | path exists) {
       mkdir $home_notebook
-    } 
+    }
 
     $home_notebook
   }

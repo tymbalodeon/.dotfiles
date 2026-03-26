@@ -2,7 +2,7 @@
 
 def main [] {
   if (
-    rmpc status  
+    rmpc status
     | from json
     | get state
   ) != Play {

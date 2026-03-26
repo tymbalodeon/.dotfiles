@@ -1,5 +1,8 @@
 {
+  channel,
   config,
+  hostName,
+  hostType,
   nixgl,
   pkgs,
   ...
@@ -9,7 +12,11 @@
     packages = [pkgs.xclip];
   };
 
-  imports = [../linux];
+  imports = [
+    ./hosts/${hostType}/${channel}/${hostName}/home.nix
+    ../linux
+  ];
+
   kitty.font_size = 11.0;
   nixpkgs.config.allowUnfree = true;
 

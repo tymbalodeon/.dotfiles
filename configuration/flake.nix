@@ -132,11 +132,7 @@
           stable = "25_05";
         in
           nix-darwin.lib.darwinSystem {
-            system = "x86_64-darwin";
-
-            modules = [
-              ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
-            ];
+            modules = [./darwin];
 
             specialArgs = {
               inherit
@@ -164,6 +160,8 @@
               in
                 stylix;
             };
+
+            system = "x86_64-darwin";
           };
       })
       "darwin";
@@ -186,7 +184,7 @@
               ;
           };
 
-          modules = [./hosts/${hostType}/${channel}/${hostName}/home.nix];
+          modules = [./home-manager/home-manager];
           pkgs = nixpkgs-unstable.legacyPackages.x86_64-linux;
         };
       })
@@ -200,9 +198,7 @@
         hostName,
       }: {
         ${hostName} = nixpkgs-unstable.lib.nixosSystem {
-          modules = [
-            ./hosts/${hostType}/${channel}/${hostName}/configuration.nix
-          ];
+          modules = [./nixos];
 
           specialArgs = {
             inherit

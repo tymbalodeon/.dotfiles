@@ -8,12 +8,9 @@
   };
 
   imports = [
-    ../../../../home-manager
     ../../../../home-manager/nushell
     ../../../../home-manager/users/work.nix
   ];
 
-  nushell.extraScripts = [
-    ./wireguard.nu
-  ];
+  nushell.extraScripts = [./wireguard.nu];
 }

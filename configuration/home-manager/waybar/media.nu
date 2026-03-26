@@ -18,7 +18,7 @@ def main [] {
     let icon = if $data.status == Playing {
       ""
     } else if $data.status == Paused {
-      "" 
+      ""
     } else {
       ""
     }
