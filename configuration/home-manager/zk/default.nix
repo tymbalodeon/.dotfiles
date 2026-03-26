@@ -32,13 +32,55 @@ in {
         }
       }
 
+      def "zk edit" [...search_terms: string] {
+        if ($search_terms | is-not-empty) {
+          run-zk edit --match ...$search_terms --interactive
+        } else {
+          run-zk edit --interactive
+        }
+      }
+
       def "zk journal" [] {
         let working_dir = (get-nb-dir)
 
         mkdir ($working_dir | path join "${journalDirectory}")
-        run-zk --working-dir (get-nb-dir) journal
+
+        (
+          run-zk new
+            --no-input "$ZK_NOTEBOOK_DIR/journal"
+            --working-dir $working_dir
+        )
+
         sync-zk-directory
       }
+
+      def note-title [title: list<string>] {
+        $title
+        | str join " "
+      }
+
+      def "zk links" [...title: string] {
+        zk list --interactive --link-to (
+          zk list
+            --format "{{path}}"
+            --limit 1
+            --match $"title: (note-title $title)"
+            --no-pager
+            err> /dev/null
+          | str trim
+        ) err> /dev/null
+      }
+
+      def "zk new" [...title: string] {
+        if ($title | is-not-empty) {
+          run-zk new --title (note-title $title)
+        } else {
+          run-zk new
+        }
+
+        sync-zk-directory
+      }
+
     '')
   ];
 
@@ -47,13 +89,8 @@ in {
 
     settings = {
       alias = {
-        edit = "zk edit --interactive \"$@\"";
-        find = "zk list --match \"$@\"";
-        journal = "zk new --no-input \"$ZK_NOTEBOOK_DIR/journal\"";
         last = "zk edit --limit 1 --sort modified- \"$@\"";
-        links = "zk list --interactive --link-to \"$@\"";
         ls = "zk list \"$@\"";
-        new = "zk new --title \"$*\"";
         random = "zk edit --limit 1 --sort random";
       };
 
