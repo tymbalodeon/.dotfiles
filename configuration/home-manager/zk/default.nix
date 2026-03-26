@@ -32,11 +32,34 @@ in {
         }
       }
 
+      def note-title [title: list<string>] {
+        $title
+        | str join " "
+      }
+
+      def note [title: list<string>] {
+        (
+          zk list
+            --format "{{path}}"
+            --limit 1
+            --match $"title: (note-title $title)"
+            --no-pager
+            err> /dev/null
+          | str trim
+        )
+      }
+
       def "zk edit" [...search_terms: string] {
-        if ($search_terms | is-not-empty) {
-          run-zk edit --match ...$search_terms --interactive
-        } else {
+        if ($search_terms | is-empty) {
           run-zk edit --interactive
+        } else {
+          let note = (note $search_terms)
+
+          if ($note | is-empty) {
+            run-zk edit --match ...$search_terms --interactive
+          } else {
+            run-zk edit $note
+          }
         }
       }
 
@@ -54,21 +77,8 @@ in {
         sync-zk-directory
       }
 
-      def note-title [title: list<string>] {
-        $title
-        | str join " "
-      }
-
       def "zk links" [...title: string] {
-        zk list --interactive --link-to (
-          zk list
-            --format "{{path}}"
-            --limit 1
-            --match $"title: (note-title $title)"
-            --no-pager
-            err> /dev/null
-          | str trim
-        ) err> /dev/null
+        zk list --interactive --link-to (note $title) err> /dev/null
       }
 
       def "zk new" [...title: string] {
