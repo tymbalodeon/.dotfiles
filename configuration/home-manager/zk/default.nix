@@ -46,15 +46,13 @@ in {
     enable = true;
 
     settings = {
-      alias = let
-        listCommand = "zk list --match \"$@\"";
-      in {
+      alias = {
         edit = "zk edit --interactive \"$@\"";
+        find = "zk list --match \"$@\"";
         journal = "zk new --no-input \"$ZK_NOTEBOOK_DIR/journal\"";
         last = "zk edit --limit 1 --sort modified- \"$@\"";
         links = "zk list --interactive --link-to \"$@\"";
-        list = listCommand;
-        ls = listCommand;
+        ls = "zk list \"$@\"";
         new = "zk new --title \"$*\"";
         random = "zk edit --limit 1 --sort random";
       };
