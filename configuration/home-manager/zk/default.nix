@@ -65,15 +65,10 @@ in {
 
       def "zk journal" [] {
         let working_dir = (get-nb-dir)
+        let journal = ($working_dir | path join "${journalDirectory}")
 
-        mkdir ($working_dir | path join "${journalDirectory}")
-
-        (
-          run-zk new
-            --no-input "$ZK_NOTEBOOK_DIR/journal"
-            --working-dir $working_dir
-        )
-
+        mkdir $journal
+        run-zk new $journal --no-input --working-dir $working_dir
         sync-zk-directory
       }
 
