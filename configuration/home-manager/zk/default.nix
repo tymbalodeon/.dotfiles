@@ -24,20 +24,7 @@ in {
       }
 
       def --wrapped zk [...args: string] {
-        mut is_main_zk = false
-
-        let args = if not (".zk" | path exists) {
-          $is_main_zk = true
-
-          $args
-          | append [--working-dir (get-nb-dir)]
-        } else {
-          $args
-        }
-
-        let subcommand = ($args | first)
-
-        if $is_main_zk and ($args | first) in [edit new] {
+        if ($args | first) in [edit new] {
           run-zk ...$args
           sync-zk-directory
         } else {
@@ -73,6 +60,8 @@ in {
 
         paths = [journalDirectory];
       };
+
+      notebook.dir = "~/.nb/home";
     };
   };
 
