@@ -10,8 +10,17 @@ in {
     (pkgs.writeText "zk.nu" ''
       use ${../nb/get-nb-dir.nu} get-nb-dir
 
-      def --wrapped _zk [...args: string] {
+      def --wrapped run-zk [...args: string] {
         SHELL=$"(^which bash)" ^zk ...$args
+      }
+
+      def sync-zk-directory [] {
+        if (
+          git -C (get-nb-dir) status --short
+          | is-not-empty
+        ) {
+          nb sync
+        }
       }
 
       def --wrapped zk [...args: string] {
@@ -29,16 +38,10 @@ in {
         let subcommand = ($args | first)
 
         if $is_main_zk and ($args | first) in [edit new] {
-          _zk ...$args
-
-          if (
-            git -C (get-nb-dir) status --short
-            | is-not-empty
-          ) {
-              nb sync
-          }
+          run-zk ...$args
+          sync-zk-directory
         } else {
-          _zk ...$args
+          run-zk ...$args
         }
       }
 
@@ -46,7 +49,8 @@ in {
         let working_dir = (get-nb-dir)
 
         mkdir ($working_dir | path join "${journalDirectory}")
-        _zk --working-dir (get-nb-dir) journal
+        run-zk --working-dir (get-nb-dir) journal
+        sync-zk-directory
       }
     '')
   ];
