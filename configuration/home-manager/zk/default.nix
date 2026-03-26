@@ -87,7 +87,7 @@ in {
           $note
         }
 
-        zk edit --interactive --link-to $note err> /dev/null
+        ^zk edit --interactive --link-to $note err> /dev/null
       }
 
       def "zk new" [...title: string] {
