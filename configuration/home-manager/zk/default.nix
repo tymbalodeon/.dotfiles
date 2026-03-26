@@ -78,7 +78,16 @@ in {
       }
 
       def "zk links" [...title: string] {
-        zk list --interactive --link-to (note $title) err> /dev/null
+        let note = (note $title)
+
+        let note = if ($note | is-empty) {
+          $title
+          | first
+        } else {
+          $note
+        }
+
+        zk edit --interactive --link-to $note err> /dev/null
       }
 
       def "zk new" [...title: string] {
