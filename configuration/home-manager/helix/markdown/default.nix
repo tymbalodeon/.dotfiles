@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   # TODO: keep zk-specific items in the zk module?
   programs.helix = {
     extraPackages = with pkgs; [
@@ -36,7 +40,7 @@
 
       language-server.zk = {
         args = ["lsp"];
-        command = "${pkgs.zk}/bin/zk";
+        command = lib.getExe pkgs.zk;
       };
     };
   };

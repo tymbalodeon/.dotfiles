@@ -6,7 +6,7 @@
 }:
 {
   home.activation.defaultBrowser = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    ${pkgs.defaultbrowser}/bin/defaultbrowser browser
+    ${lib.getExe pkgs.defaultbrowser} browser
   '';
 
   imports =

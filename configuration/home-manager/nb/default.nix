@@ -11,7 +11,7 @@
       # TODO: handle $VERBOSE and $DRY_RUN
       # TODO: is it possible to git pull the remote notes here?
       activation.nb = let
-        git = "${pkgs.git}/bin/git";
+        git = lib.getExe pkgs.git;
       in
         lib.hm.dag.entryAfter ["writeBoundary"]
         ''
@@ -29,7 +29,7 @@
 
               read domain user name < <(
                 echo $url |
-                ${pkgs.gawk}/bin/awk --field-separator [/:] '{print $1, $(NF-1), $NF}'
+                ${lib.getExe pkgs.gawk} --field-separator [/:] '{print $1, $(NF-1), $NF}'
               )
 
               name=''${name/.git/}

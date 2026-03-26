@@ -44,7 +44,7 @@
             enabled_layouts = "grid, stack, vertical, horizontal, tall";
             font_size = cfg.font_size;
             inactive_text_alpha = 0.5;
-            shell = "${pkgs.nushell}/bin/nu";
+            shell = lib.getExe pkgs.nushell;
             tab_bar_edge = "top";
             tab_bar_style = "powerline";
             tab_powerline_style = "slanted";
