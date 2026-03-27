@@ -1,11 +1,9 @@
 {pkgs, ...}: {
-  home = {
-    packages = with pkgs; [
-      slack
-      teams-for-linux
-      wireguard-tools
-    ];
-  };
+  home.packages = with pkgs; [
+    slack
+    teams-for-linux
+    wireguard-tools
+  ];
 
   imports = [
     ../../../../home-manager/nushell

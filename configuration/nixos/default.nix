@@ -62,6 +62,8 @@
       };
 
       udisks2.enable = true;
+
+      # TODO: move to idle module
       wayland-pipewire-idle-inhibit.enable = true;
     };
 
@@ -81,23 +83,32 @@
     };
   };
 
-  imports = [
-    ./bluetooth
-    ./home-manager
-    ../hosts/${hostType}/${channel}/${hostName}/configuration.nix
-    ./monitors
-    ./musnix
-    ./nautilus
-    ./niri
-    ../nix
-    ./sddm
-    ./solaar
-    ./steam
-    ./stylix
-    ./waybar
-    ./wayland
-    ./wayland-pipewire-idle-inhibit
-  ];
+  imports = let
+    hostPath = file: ../hosts/${hostType}/${channel}/${hostName}/${file};
+  in
+    [
+      ./bluetooth
+      ./home-manager
+      (hostPath "hardware.nix")
+      ./monitors
+      ./musnix
+      ./nautilus
+      ./niri
+      ../nix
+      ./sddm
+      ./solaar
+      ./steam
+      ./stylix
+      ./waybar
+      ./wayland
+      ./wayland-pipewire-idle-inhibit
+    ]
+    ++ (let
+      hostConfigurationFile = hostPath "configuration.nix";
+    in
+      if builtins.pathExists hostConfigurationFile
+      then [hostConfigurationFile]
+      else []);
 
   options.nixos = let
     inherit (lib) mkOption types;
