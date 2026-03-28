@@ -62,9 +62,6 @@
       };
 
       udisks2.enable = true;
-
-      # TODO: move to idle module
-      wayland-pipewire-idle-inhibit.enable = true;
     };
 
     system.stateVersion = "23.11";
@@ -90,6 +87,7 @@
       ./bluetooth
       ./home-manager
       (hostPath "hardware.nix")
+      ./idle
       ./monitors
       ./musnix
       ./nautilus
@@ -101,7 +99,6 @@
       ./stylix
       ./waybar
       ./wayland
-      ./wayland-pipewire-idle-inhibit
     ]
     ++ (let
       hostConfigurationFile = hostPath "configuration.nix";
