@@ -15,8 +15,9 @@
       systemd-boot.enable = true;
     };
 
-    environment.systemPackages = [
-      pkgs.xdg-utils
+    environment.systemPackages = with pkgs; [
+      popsicle
+      xdg-utils
     ];
 
     i18n = let
