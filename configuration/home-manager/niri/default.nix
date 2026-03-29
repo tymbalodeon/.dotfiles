@@ -82,7 +82,7 @@ in {
             Mod+Down { focus-window-down; }
             Mod+End { focus-column-last; }
             Mod+Equal { set-column-width "+10%"; }
-            Mod+F { maximize-column; }
+            Mod+F hotkey-overlay-title="Make the window fullscreen (with status bar)" { maximize-window-to-edges; }
             Mod+H { focus-column-left; }
             Mod+Home { focus-column-first; }
             Mod+J { focus-window-down; }
@@ -112,7 +112,7 @@ in {
             Mod+Shift+D hotkey-overlay-title="Define selected (primary clipboard) word (online)" { spawn-sh "nu ${../dictionary/define.nu} --primary"; }
             Mod+Shift+Down { focus-monitor-down; }
             Mod+Shift+Equal { set-window-height "+10%"; }
-            Mod+Shift+F hotkey-overlay-title="Make the window fullscreen (with status bar)" { maximize-window-to-edges; }
+            Mod+Shift+F { maximize-column; }
             Mod+Shift+H { focus-monitor-left; }
             Mod+Shift+J { focus-monitor-down; }
             Mod+Shift+K { focus-monitor-up; }
