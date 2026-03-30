@@ -6,7 +6,7 @@ export def storage [] {
 alias st = storage
 
 def print-error [text: string] {
-  error make --unspanned {msg: $'"($text)" does not exist'}
+  error make --unspanned {msg: $text}
 }
 
 def get-remote [remote?: string] {
@@ -25,21 +25,27 @@ def get-remote [remote?: string] {
   $remote
 }
 
-def get-storage-directory [] {
-  $env.HOME | path join storage/
+def get-storage-directory [remote?: string] {
+  $env.HOME
+  | path join storage $remote
 }
 
 # Browse local files
 def "storage browse local" [
+  path?: string # A path relative to <remote>:
   --remote: string # The name of the remote service
 ] {
-  let local_storage_path = (
-    get-storage-directory
-    | path join (get-remote $remote)
-  )
+  let local_storage_path = (get-storage-directory (get-remote $remote))
 
-  if ($local_storage_path | path exists) {
-    yazi $local_storage_path
+  let path = if ($path | is-empty) {
+    $local_storage_path
+  } else {
+    $local_storage_path
+    | path join $path
+  }
+
+  if ($path | path exists) {
+    yazi $path
   }
 }
 
@@ -175,11 +181,13 @@ def select-remote-path [
 def get-local-path [remote: string path: string] {
   let path = if $remote in $path {
     $path
+    | str replace $"($remote)/" ""
+    | str replace $"($remote):" ""
   } else {
-    $"($remote)/($path)"
+    $path
   }
 
-  get-storage-directory
+  get-storage-directory $remote
   | path join $path
 }
 
@@ -211,14 +219,10 @@ export def "storage download" [
     return
   }
 
-  let local_path = if ($to | is-not-empty) {
-    if ($to | path type) != dir {
-      print-error "`--to` must be a directory"
-    } else {
-      $to
-    }
+  let local_path = if ($to | is-empty) {
+    get-local-path $remote $remote_path
   } else {
-    (get-local-path $remote $remote_path)
+    $to
   }
 
   if not $force and ($to | is-empty) and ($local_path | path exists) {
@@ -230,19 +234,33 @@ export def "storage download" [
     return
   }
 
-  let parent = if ($to | is-not-empty) {
-    $to
-  } else {
-    let json = (
-      rclone lsjson $"($remote):($remote_path)"
-      | from json
-    )
+  let json = (
+    rclone lsjson $"($remote):($remote_path)"
+    | from json
+  )
 
+  let parent = if ($to | is-empty) {
     if (is-directory $json) {
       $local_path
     } else {
       $local_path
       | path dirname
+    }
+  } else {
+    if ($local_path | path exists) {
+      if (is-directory $json) and ($local_path | path type) != dir {
+        $local_path
+        | path dirname
+      } else {
+        $local_path
+      }
+    } else {
+      if ($local_path | path parse | get extension | is-empty) {
+        $local_path
+      } else {
+        $local_path
+        | path dirname
+      }
     }
   }
 
@@ -321,10 +339,10 @@ alias "storage ls r" = storage list remote
 # List locally downloaded files
 def "storage list local" [
   path?: string # A path relative to <remote>:
+  --absolute-path # Show the absolute path of the files
   --remote: string # The name of the remote service
 ] {
-  let remote = (get-remote $remote)
-  let storage_directory = (get-storage-directory | path join $remote)
+  let storage_directory = (get-storage-directory (get-remote $remote))
 
   let path = if ($path | is-empty) {
     $storage_directory
@@ -334,8 +352,18 @@ def "storage list local" [
   }
 
   if ($path | path exists) {
-    fd --type file "" $path
-    | str replace --all $"($path)/" ""
+    let files = (fd --type file "" $path)
+
+    if ($files | is-empty) {
+      return
+    }
+
+    if $absolute_path {
+      $files
+    } else {
+      $files
+      | str replace --all $"($path)/" ""
+    }
   }
 }
 
@@ -391,15 +419,13 @@ def "storage open" [
   path?: string # A path relative to <remote>:
   --remote: string # The name of the remote service
 ] {
-  let remote = (get-remote $remote)
-  let storage_directory = (get-storage-directory)
+  let storage_directory = (get-storage-directory (get-remote $remote))
 
   let path = if ($path | is-not-empty) {
-    $remote
+    $storage_directory
     | path join $path
   } else {
     $storage_directory
-    | path join $remote
   }
 
   let remove_prefix = if ($path | is-empty) {
@@ -471,8 +497,7 @@ def "storage remove local" [
     return
   }
 
-  let remote = (get-remote $remote)
-  let storage_directory = (get-storage-directory)
+  let storage_directory = (get-storage-directory $remote)
 
   let paths = if $interactive {
     let files = (fd --type file "" ($storage_directory | path join $remote))
@@ -485,14 +510,11 @@ def "storage remove local" [
     | fzf --multi
     | lines
   } else {
-    let parsed_path = if ($remote | is-empty) {
+    let parsed_path = if ($path | is-not-empty) {
       $storage_directory
-    } else if ($path | is-empty) {
-      $storage_directory
-      | path join $remote
+      | path join $path
     } else {
-      [$storage_directory $remote $path]
-      | path join
+      $storage_directory
     }
 
     if ($path | is-not-empty) and not ($parsed_path | path exists) {
@@ -604,29 +626,12 @@ export def "storage upload" [
   }
 
   let local_path = (realpath ($local_path | path expand))
-
-  let remote = if ($remote | is-not-empty) {
-    $remote
-  } else {
-    let storage_directory = (get-storage-directory)
-
-    let remote = if ($local_path | str starts-with $storage_directory) {
-      $local_path
-      | split row $storage_directory
-      | last
-      | split row /
-      | first
-    } else {
-      $remote
-    }
-
-    (get-remote $remote)
-  }
+  let remote = (get-remote $remote)
 
   let remote_path = if ($remote_path | is-not-empty) {
     $remote_path
   } else {
-    let storage_directory = (get-storage-directory)
+    let storage_directory = (get-storage-directory $remote)
 
     if $storage_directory in $local_path {
       $local_path

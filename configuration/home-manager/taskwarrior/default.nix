@@ -94,39 +94,67 @@
         mktemp --tmpdir XXX.json
       }
 
+      def tasks-file [tasks: table --pending] {
+        let temporary_file = (temporary-json-file)
+
+        $tasks
+        | where {
+            |task|
+
+            if $pending {
+              $task.status == pending
+            } else {
+              $task.status != pending
+            }
+          }
+        | save --force $temporary_file
+
+        $temporary_file
+      }
+
+      def archive-file [] {
+        "task/archive.json"
+      }
+
       # Save non-pending tasks to an archive file
-      def "task archive" [
-        --to # Where to save the archive
-      ] {
+      def "task archive" [] {
         let tasks = (
           open (database-file)
           | get tasks.data
           | each {from json}
         )
 
-        let temporary_file = (temporary-json-file)
+        let completed_tasks_file = (tasks-file $tasks)
+        let existing_archived_tasks_file = (temporary-json-file)
+        let merged_archived_tasks_file = (temporary-json-file)
+        let pending_tasks_file = (tasks-file $tasks --pending)
 
-        let pending_tasks = (
-          $tasks
-          | where status == pending
-          | save --force $temporary_file
-        )
+        if (open $completed_tasks_file | is-not-empty) {
+          let archive_file = (archive-file)
 
-        let to = if ($to | is-empty) {
-          $"task/(date now | format date %Y-%m-%d)-task-archive.json"
-        } else {
-          $to
+          let archive = try {
+            (
+              storage download
+                --force $archive_file
+                --to $existing_archived_tasks_file
+            )
+
+            open $existing_archived_tasks_file
+          }
+
+          $archive
+          | append (open $completed_tasks_file)
+          | save --force $merged_archived_tasks_file
+
+          storage upload $merged_archived_tasks_file $archive_file
         }
 
-        (
-          storage upload
-            $temporary_file
-            $to
-            out+err> /dev/null
-        )
+        task load $pending_tasks_file
 
-        task load $temporary_file
-        rm $temporary_file
+        rm $completed_tasks_file
+        rm $existing_archived_tasks_file
+        rm $merged_archived_tasks_file
+        rm $pending_tasks_file
       }
 
       # Remove all tasks from the database
@@ -163,6 +191,7 @@
         rm $temporary_file
       }
 
+      # Load the remote tasks into the local database
       def "task load" [
         file?: string
         --interactive (-i)
@@ -189,6 +218,53 @@
 
         ^task import $dump_file
         rm --force --recursive $temporary_directory
+      }
+
+      # List projects
+      def "task projects" [
+        --all # Include projects from archived task
+        --pending # Only include pending tasks
+      ] {
+        let current_projects = (
+          open (database-file)
+          | get tasks.data
+          | each {from json}
+        )
+
+        let tasks = if $all {
+          let archive_filename = (archive-file)
+
+          let archive_file = (
+            "/tmp"
+            | path join ($archive_filename | path basename)
+          )
+
+          (
+            storage download
+              (archive-file)
+              --quiet
+              --to ($archive_file | path dirname)
+          )
+
+          let archived_projects = (open $archive_file)
+
+          rm $archive_file
+
+          $archived_projects
+          | append $current_projects
+        } else if $pending {
+          $current_projects
+          | where status == pending
+        } else {
+          $current_projects
+        }
+
+        $tasks
+        | get --optional project
+        | where {is-not-empty}
+        | uniq
+        | sort
+        | to text --no-newline
       }
     '')
   ];
