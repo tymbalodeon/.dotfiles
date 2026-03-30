@@ -7,15 +7,18 @@
   boot = {
     extraModulePackages = [];
 
-    initrd.availableKernelModules = [
-      "nvme"
-      "sd_mod"
-      "uas"
-      "usb_storage"
-      "xhci_pci"
-    ];
+    initrd = {
+      availableKernelModules = [
+        "nvme"
+        "sd_mod"
+        "uas"
+        "usb_storage"
+        "xhci_pci"
+      ];
 
-    initrd.kernelModules = [];
+      kernelModules = [];
+    };
+
     kernelModules = ["kvm-intel"];
   };
 
