@@ -1,31 +1,48 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }: {
-  environment.systemPackages = with pkgs; [
-    bibata-cursors
-    (catppuccin-sddm.override
-      {
-        accent = "lavender";
-        flavor = "mocha";
-        fontSize = "12";
-      })
-  ];
+  config = let
+    cfg = config.sddm;
+  in {
+    environment.systemPackages = with pkgs; [
+      bibata-cursors
+      (catppuccin-sddm.override
+        {
+          accent = "lavender";
+          flavor = "mocha";
+          fontSize = "12";
+        })
+    ];
 
-  services.displayManager.sddm = {
-    enable = true;
+    services.displayManager = {
+      defaultSession = cfg.defaultSession;
 
-    settings = {
-      AutoLogin.User = config.nixos.username;
+      sddm = {
+        enable = true;
 
-      Theme = {
-        CursorSize = 16;
-        CursorTheme = "Bibata-Modern-Classic";
+        settings = {
+          AutoLogin.User = config.nixos.username;
+
+          Theme = {
+            CursorSize = 16;
+            CursorTheme = "Bibata-Modern-Classic";
+          };
+        };
+
+        theme = "catppuccin-mocha-lavender";
+        wayland.enable = true;
       };
     };
-
-    theme = "catppuccin-mocha-lavender";
-    wayland.enable = true;
   };
+
+  options.sddm.defaultSession = let
+    inherit (lib) mkOption types;
+  in
+    mkOption {
+      default = "niri";
+      type = types.str;
+    };
 }

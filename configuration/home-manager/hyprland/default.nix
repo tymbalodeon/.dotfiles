@@ -20,6 +20,8 @@ with lib; {
 
     wayland.windowManager.hyprland = {
       enable = true;
+      package = null;
+      portalPackage = null;
 
       settings = {
         bind = [
@@ -113,6 +115,8 @@ with lib; {
         misc.force_default_wallpaper = 0;
         monitor = cfg.hyprland.settings.monitor;
       };
+
+      systemd.enable = false;
     };
   };
 
