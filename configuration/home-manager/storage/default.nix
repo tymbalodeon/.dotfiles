@@ -272,7 +272,10 @@
           }
         }
 
-        let result = (rclone sync $"($remote):($remote_path)" $parent | complete)
+        let result = (
+          rclone sync --fix-case $"($remote):($remote_path)" $parent
+          | complete
+        )
 
         if $result.exit_code == 0 {
           # FIXME: don't join with basename if basename is a dir in remote
@@ -624,12 +627,22 @@
         remote_path?: string # The remote path to upload to
         --remote: string # The name of the remote service
       ] {
+        let remote = (get-remote $remote)
+
+        let local_path = if ($local_path | is-empty) {
+          fd "" (get-storage-directory $remote)
+          | lines
+          | to text
+          | fzf
+        } else {
+          $local_path
+        }
+
         if not ($local_path | path exists) {
           print-error $"\"($local_path)\" not found"
         }
 
         let local_path = (realpath ($local_path | path expand))
-        let remote = (get-remote $remote)
 
         let remote_path = if ($remote_path | is-not-empty) {
           $remote_path
