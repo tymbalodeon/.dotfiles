@@ -7,6 +7,7 @@ use configurations.nu is-nixos
 use prune.nu
 use optimise.nu
 use update.nu
+use theme-preview.nu 
 
 def darwin-rebuild [
   host: string
@@ -186,7 +187,9 @@ export def main [
   }
 
   if ($theme | is-not-empty) {
-    print $"Using theme: \"($theme)\""
+    print (
+      theme-preview $theme $env_theme.dark_theme $env_theme.light_theme
+    )
   }
 
   $env.STYLIX_THEME = $theme

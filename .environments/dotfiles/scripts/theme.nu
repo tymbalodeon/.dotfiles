@@ -1,61 +1,17 @@
 #!/usr/bin/env nu
 
 use rebuild.nu
+use theme-preview.nu
+use theme-preview.nu get-theme
+use theme-preview.nu get-themes
 
 def main [] {}
-
-def get-themes [variant?: string] {
-  let themes = (
-    tinty list --json
-    | from json
-    | where system == base16
-  )
-
-  if $variant == dark {
-    $themes
-    | where variant == dark
-  } else if $variant == light {
-    $themes
-    | where variant == light
-  } else {
-    $themes
-  }
-}
 
 # List available themes
 def "main list" [] {
   get-themes
   | get name
   | to text --no-newline
-}
-
-def get-theme [theme: string] {
-  let themes = (get-themes)
-
-  let theme = if ($theme | str starts-with base16-) {
-    $themes
-    | where id == ($theme | str downcase)
-  } else {
-    let theme_by_name = (
-      $themes
-      | where name == $theme
-    )
-
-    if ($theme_by_name | is-empty) {
-      $themes
-      | where id == $"base16-($theme | str downcase)"
-    } else {
-      $theme_by_name
-    }
-  }
-
-  if ($theme | is-empty) {
-    return
-  }
-
-  $theme
-  | first
-  | get id
 }
 
 def get-random-theme [variant?: string] {
@@ -96,19 +52,7 @@ def "main preview" [
   --dark # Select dark themes only
   --light # Select light themes only
 ] {
-  let theme = if ($theme | is-empty) {
-    select-theme (get-variant $dark $light)
-  } else {
-    $theme
-  }
-
-  let theme = (get-theme $theme)
-
-  if ($theme | is-empty) {
-    return
-  }
-
-  tinty info $theme
+  theme-preview $theme $dark $light
 }
 
 # Preview a random theme
