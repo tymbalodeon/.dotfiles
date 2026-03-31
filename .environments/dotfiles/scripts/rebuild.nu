@@ -120,21 +120,23 @@ def get-env-value [values: table<key: string, value: string> key: string] {
   | first
 }
 
-def get-variant-value [values: table<key: string, value: string> value: string] {
-  try {
-    get-env-value $values $value
-    | into bool
-  } catch {
-    false
-  }
-}
-
 def get-env-theme [] {
   try {
     let values = (open ../.env | parse "{key}={value}")
     let theme = try { get-env-value $values STYLIX_THEME }
-    let dark_theme = (get-variant-value $values DARK_THEME)
-    let light_theme = (get-variant-value $values LIGHT_THEME)
+    let variant = try { get-env-value $values STYLIX_VARIANT }
+
+    let dark_theme = if ($variant | is-empty) {
+      false
+    } else {
+      ($variant | str downcase) == dark
+    }
+
+    let light_theme = if ($variant | is-empty) {
+      false
+    } else {
+      ($variant | str downcase) == light
+    }
 
     let theme = if $theme == random {
       choose-theme true $dark_theme $light_theme
