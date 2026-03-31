@@ -13,7 +13,7 @@
   };
 
   imports = [
-    ./hosts/${hostType}/${channel}/${hostName}/home.nix
+    ../../hosts/${hostType}/${channel}/${hostName}/home.nix
     ../linux
   ];
 

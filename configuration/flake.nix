@@ -177,6 +177,7 @@
           extraSpecialArgs = {
             inherit
               channel
+              hostName
               hostType
               home-manager-unstable
               nixgl
@@ -184,7 +185,7 @@
               ;
           };
 
-          modules = [./home-manager/home-manager];
+          modules = [./home-manager];
           pkgs = nixpkgs-unstable.legacyPackages.x86_64-linux;
         };
       })
