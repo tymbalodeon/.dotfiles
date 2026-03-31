@@ -82,6 +82,79 @@ def "tinty list" [] {
   | where {$in.system == base16}
 }
 
+def choose-theme [random_theme: bool dark_theme: bool light_theme: bool] {
+  let themes = (tinty list)
+
+  let themes = if $dark_theme  {
+    $themes
+    | where variant == dark
+  } else if $light_theme {
+    $themes
+    | where variant == light
+  } else {
+    $themes
+  }
+
+  let themes = $themes.id
+
+  let theme = if $random_theme {
+    let index = (random int 0..($themes | length))
+
+    $themes
+    | get $index
+  } else if $random_theme {
+    $themes
+    | to text
+    | fzf --preview "tinty info {}"
+  }
+
+  $theme
+  | str replace base16- ""
+}
+
+def get-env-value [values: table<key: string, value: string> key: string] {
+  $values
+  | where key == $key
+  | get value
+  | first
+}
+
+def get-variant-value [values: table<key: string, value: string> value: string] {
+  try {
+    get-env-value $values $value
+    | into bool
+  } catch {
+    false
+  }
+}
+
+def get-env-theme [] {
+  try {
+    let values = (open ../.env | parse "{key}={value}")
+    let theme = try { get-env-value $values STYLIX_THEME }
+    let dark_theme = (get-variant-value $values DARK_THEME)
+    let light_theme = (get-variant-value $values LIGHT_THEME)
+
+    let theme = if $theme == random {
+      choose-theme true $dark_theme $light_theme
+    } else {
+      $theme
+    }
+   
+    {
+      theme: $theme
+      dark_theme: $dark_theme
+      light_theme: $light_theme
+    }
+  } catch {
+    {
+      theme: null
+      dark_theme: null
+      light_theme: null
+    }
+  }
+}
+
 # Rebuild and switch to (or --test) a configuration
 export def main [
     host?: string # The target host configuration (auto-detected if not specified)
@@ -100,39 +173,15 @@ export def main [
     --theme: string # Override the stylix theme
     --update # Update the flake lock before rebuilding
 ] {
+  let env_theme = (get-env-theme)
+
   let theme = if ($theme | is-not-empty)  {
     $theme
   } else {
     if not $choose_theme and not $random_theme {
-      $theme
+      $env_theme.theme
     } else {
-      let themes = (tinty list)
-
-      let themes = if $dark_theme  {
-        $themes
-        | where variant == dark
-      } else if $light_theme {
-        $themes
-        | where variant == light
-      } else {
-        $themes
-      }
-
-      let themes = $themes.id
-
-      let theme = if $choose_theme {
-        $themes
-        | to text
-        | fzf --preview "tinty info {}"
-      } else if $random_theme {
-        let index = (random int 0..($themes | length))
-
-        $themes
-        | get $index
-      }
-
-      $theme
-      | str replace base16- ""
+      choose-theme $random_theme $dark_theme $light_theme
     }
   }
 
