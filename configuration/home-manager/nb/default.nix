@@ -73,7 +73,7 @@
 
         # Cd to the `nb` home  directory
         def --env "nb cd" [] {
-          cd (nb settings get nb_dir | path join (nb notebooks current))
+          cd (get-nb-dir)
         }
       '')
 

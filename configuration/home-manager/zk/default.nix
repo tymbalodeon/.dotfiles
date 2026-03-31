@@ -49,6 +49,12 @@ in {
         )
       }
 
+      # Cd to the `zk` home  directory
+      def --env "zk cd" [] {
+        cd (get-nb-dir)
+      }
+
+      # Edit notes
       def "zk edit" [...search_terms: string] {
         if ($search_terms | is-empty) {
           run-zk edit --interactive
@@ -63,6 +69,7 @@ in {
         }
       }
 
+      # Create or edit the current day's journal entry
       def "zk journal" [] {
         let working_dir = (get-nb-dir)
         let journal = ($working_dir | path join "${journalDirectory}")
@@ -72,6 +79,19 @@ in {
         sync-zk-directory
       }
 
+      # Interactively select a journal entry to edit
+      def "zk journal edit" [] {
+        ^zk edit --interactive --tag journal
+      }
+
+      # List journal entries
+      def "zk journal list" [] {
+        zk list --tag journal
+      }
+
+      alias "zk journal ls" = zk journal list
+
+      # Show links for notes
       def "zk links" [...title: string] {
         let note = (note $title)
 
@@ -85,6 +105,7 @@ in {
         ^zk edit --interactive --link-to $note err> /dev/null
       }
 
+      # Add new note
       def "zk new" [...title: string] {
         if ($title | is-not-empty) {
           run-zk new --title (note-title $title)
@@ -95,6 +116,33 @@ in {
         sync-zk-directory
       }
 
+      # Remove notes
+      def "zk remove" [note?: string] {
+        let notes = if ($note | is-not-empty) {
+          zk list --format "{{abs-path}}" --no-pager --match $note --quiet
+          | lines
+        } else {
+          try {
+            zk list --format "{{abs-path}}" --interactive --quiet
+          } catch {
+            return
+          }
+        }
+
+        if ($notes | is-empty) {
+          return
+        }
+
+        for note in $notes {
+          if (input $"Are you sure you want to remove ($note)? [y/N]: ") in [Y y] {
+            rm $note
+          }
+        }
+
+        sync-zk-directory
+      }
+
+      alias "zk rm" = zk remove
     '')
   ];
 
@@ -122,5 +170,10 @@ in {
     };
   };
 
-  xdg.configFile.".zk/templates/journal.md".text = "# {{format-date now \"long\"}}";
+  xdg.configFile.".zk/templates/journal.md".text = ''
+    ---
+    tags: [journal]
+    ---
+
+    # {{format-date now \"long\"}}'';
 }
