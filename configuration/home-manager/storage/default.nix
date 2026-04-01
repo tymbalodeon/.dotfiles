@@ -658,13 +658,29 @@
           }
         }
 
+        let remote_path = ((get-remote-path $remote $remote_path))
+
+        let remote_path = if (
+          $local_path
+          | path type
+        ) == file {
+          if $local_path in $remote_path {
+            $remote_path
+          } else {
+            $remote_path
+            | path join ($local_path | path basename)
+          }
+        } else {
+          $remote_path
+        }
+
         let command = if ($local_path | path type) == file {
           "copyto"
         } else {
           "copy"
         }
 
-        rclone $command $local_path (get-remote-path $remote $remote_path)
+        rclone $command $local_path $remote_path
       }
 
       alias "storage up" = storage upload
