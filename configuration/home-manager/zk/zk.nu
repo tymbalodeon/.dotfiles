@@ -36,6 +36,7 @@ def sync-zk-directory [] {
     git -C (get-main-notebook-directory) status --short
     | is-not-empty
   ) {
+    nb use home
     nb sync
   }
 }
@@ -45,7 +46,11 @@ def --wrapped zk [...args: string] {
     run-zk ...$args
     sync-zk-directory
   } else {
-    run-zk ...$args
+    if ($args | is-empty) {
+      zk edit
+    } else {
+      run-zk ...$args
+    }
   }
 }
 
