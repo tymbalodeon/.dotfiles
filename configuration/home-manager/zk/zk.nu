@@ -42,15 +42,10 @@ def sync-zk-directory [] {
 }
 
 def --wrapped zk [...args: string] {
-  if ($args | first) in [edit new] {
-    run-zk ...$args
-    sync-zk-directory
+  if ($args | is-empty) {
+    zk edit
   } else {
-    if ($args | is-empty) {
-      zk edit
-    } else {
-      run-zk ...$args
-    }
+    run-zk ...$args
   }
 }
 
@@ -89,6 +84,8 @@ def "zk edit" [...search_terms: string] {
       run-zk edit $note
     }
   }
+
+  sync-zk-directory
 }
 
 # Create or edit the current day's journal entry
