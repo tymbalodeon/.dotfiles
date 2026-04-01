@@ -68,15 +68,7 @@
     };
 
     nushell.extraScripts = [
-      (pkgs.writeText "nb.nu" ''
-        use ${./get-nb-dir.nu} get-nb-dir
-
-        # Cd to the `nb` home  directory
-        def --env "nb cd" [] {
-          cd (get-nb-dir)
-        }
-      '')
-
+      ./nb.nu
       ./pens.nu
     ];
   };

@@ -1,8 +1,9 @@
-export def get-nb-dir [] {
+# Cd to the currently selected notebook
+def --env "nb cd" [] {
   let nb_home = ($env.HOME | path join .nb)
   let current_notebook_file = ($nb_home | path join .current)
 
-  if ($current_notebook_file | path exists) {
+  let current_notebook = if ($current_notebook_file | path exists) {
     $nb_home
     | path join (open $current_notebook_file | str trim)
   } else {
@@ -14,4 +15,6 @@ export def get-nb-dir [] {
 
     $home_notebook
   }
+
+  cd $current_notebook
 }
