@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-def wallpaper-directory [] {
+export def wallpaper-directory [] {
   $"($env.HOME)/wallpaper"
 }
 
@@ -42,21 +42,6 @@ def wallpaper [wallpaper?: string] {
 }
 
 alias wp = wallpaper
-
-# Clear the wallpaper folder
-def "wallpaper clear" [] {
-  let user_wallpapers = (
-    ls (wallpaper-directory)
-    | get name
-    | to text
-    | rg --pcre2 "^(?!.*(wallpaper.jpeg))"
-    | lines
-  )
-
-  for file in ($user_wallpapers) {
-    rm $file
-  }
-}
 
 # List loaded wallpapers
 def "wallpaper list" [
