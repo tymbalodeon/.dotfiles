@@ -1,9 +1,15 @@
 #!/usr/bin/env nu
 
+def wallpaper-directory [] {
+  $"($env.HOME)/wallpaper"
+}
+
 # Set wallpaper to a specific file
 def wallpaper [wallpaper?: string] {
+  let wallpaper_directory = (wallpaper-directory)
+
   let wallpaper = if ($wallpaper | is-empty) {
-    ls --short-names ~/wallpaper
+    ls --short-names $wallpaper_directory
     | get name
     | to text
     | fzf
@@ -14,7 +20,7 @@ def wallpaper [wallpaper?: string] {
 
   let wallpaper = if ($wallpaper | path dirname) not-in [
     $"($env.HOME)/wallpaper"
-    "~/wallpaper"
+    $wallpaper_directory
   ] {
     [
       $env.HOME
@@ -38,7 +44,7 @@ def wallpaper [wallpaper?: string] {
 # Clear the wallpaper folder
 def "wallpaper clear" [] {
   let user_wallpapers = (
-    ls ~/wallpaper
+    ls (wallpaper-directory)
     | get name
     | to text
     | rg --pcre2 "^(?!.*(wallpaper.jpeg))"
@@ -49,6 +55,21 @@ def "wallpaper clear" [] {
     rm $file
   }
 }
+
+# List loaded wallpapers
+def "wallpaper list" [
+  --absolute-path # Show the absolute path of the files
+] {
+  if $absolute_path {
+    ls (wallpaper-directory)
+  } else {
+    ls --short-names (wallpaper-directory)
+  }
+  | get name
+  | to text --no-newline
+}
+
+alias "wallpaper ls" = wallpaper list
 
 # Load wallpapers
 def "wallpaper load" [path: string] {
@@ -62,7 +83,7 @@ def "wallpaper load" [path: string] {
   }
 
   for file in $files {
-    ln --force --symbolic $file ~/wallpaper
+    ln --force --symbolic $file (wallpaper-directory)
   }
 
   systemctl --user restart wpaperd
@@ -112,7 +133,7 @@ def "wallpaper pad" [image: string] {
 
 # Add padding to all images in the wallpaper folder
 def "wallpaper pad all" [] {
-  for image in (ls ~/wallpaper | get name) {
+  for image in (ls (wallpaper-directory) | get name) {
     wallpaper pad $image
   }
 }
