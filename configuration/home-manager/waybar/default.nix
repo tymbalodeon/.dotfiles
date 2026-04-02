@@ -111,7 +111,7 @@
         "custom/wallpaper" = {
           escape = true;
           exec-if = "pgrep swaybg || pgrep wpaperd";
-          exec = "nu ${../wallpaper/get-wallpaper-status.nu}";
+          exec = "nu ${../wallpaper/wallpaper-status.nu}";
           format = " {}";
           hide-empty-text = true;
           interval = 60;

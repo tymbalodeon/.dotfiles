@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-export def wallpaper-directory [] {
+def wallpaper-directory [] {
   $"($env.HOME)/wallpaper"
 }
 
@@ -43,6 +43,36 @@ def wallpaper [wallpaper?: string] {
 
 alias wp = wallpaper
 
+# Clear the wallpaper folder
+def "wallpaper clear" [] {
+  let user_wallpapers = (
+    ls (wallpaper-directory)
+    | get name
+    | to text
+    | rg --pcre2 "^(?!.*(wallpaper.jpeg))"
+    | lines
+  )
+
+  for file in ($user_wallpapers) {
+    rm $file
+  }
+}
+
+def --wrapped wpaperctl-wrapper [...args: string] {
+  if (systemctl --user list-units | rg wpaperd | is-empty) {
+    systemctl --user start wpaperd
+    sleep 500ms
+
+    if toggle-pause in $args {
+      wpaperctl toggle-pause
+    }
+  }
+
+  wpaperctl ...$args
+  pkill -RTMIN+2 waybar
+  try { pkill swaybg }
+}
+
 # List loaded wallpapers
 def "wallpaper list" [
   --absolute-path # Show the absolute path of the files
@@ -76,25 +106,12 @@ def "wallpaper load" [path: string] {
   systemctl --user restart wpaperd
 }
 
-def --wrapped wpaperctl-wrapper [...args: string] {
-  if (systemctl --user list-units | rg wpaperd | is-empty) {
-    systemctl --user start wpaperd
-    sleep 500ms
-
-    if toggle-pause in $args {
-      wpaperctl toggle-pause
-    }
-  }
-
-  wpaperctl ...$args
-  pkill -RTMIN+2 waybar
-  try { pkill swaybg }
-}
-
 # Change to next (random) wallpaper
 def "wallpaper next" [] {
   wpaperctl-wrapper next
 }
+
+alias "wallpaper start" = wallpaper next
 
 # Add padding to image to account for status bar
 def "wallpaper pad" [image: string] {
@@ -124,8 +141,6 @@ def "wallpaper pad all" [] {
     wallpaper pad $image
   }
 }
-
-alias "wallpaper start" = wallpaper next
 
 # Change to previous wallpaper
 def "wallpaper previous" [] {
