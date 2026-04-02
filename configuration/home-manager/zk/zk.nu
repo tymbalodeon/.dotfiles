@@ -36,11 +36,7 @@ def sync-zk-directory [] {
     git -C (get-main-notebook-directory) status --short
     | is-not-empty
   ) {
-    if (nb notebook current) != home {
-      nb use home
-    }
-
-    nb sync
+    nb sync --all
   }
 }
 
