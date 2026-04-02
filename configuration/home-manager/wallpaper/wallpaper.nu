@@ -10,6 +10,7 @@ def wallpaper [wallpaper?: string] {
   } else {
     $wallpaper
   }
+  | path expand
 
   let wallpaper = if ($wallpaper | path dirname) not-in [
     $"($env.HOME)/wallpaper"
@@ -36,7 +37,17 @@ def wallpaper [wallpaper?: string] {
 
 # Clear the wallpaper folder
 def "wallpaper clear" [] {
-  rm ~/wallpaper/*
+  let user_wallpapers = (
+    ls ~/wallpaper
+    | get name
+    | to text
+    | rg --pcre2 "^(?!.*(wallpaper.jpeg))"
+    | lines
+  )
+
+  for file in ($user_wallpapers) {
+    rm $file
+  }
 }
 
 # Load wallpapers
@@ -51,8 +62,10 @@ def "wallpaper load" [path: string] {
   }
 
   for file in $files {
-    ln --symbolic $file ~/wallpaper
+    ln --force --symbolic $file ~/wallpaper
   }
+
+  systemctl --user restart wpaperd
 }
 
 def --wrapped wpaperctl-wrapper [...args: string] {
@@ -79,11 +92,12 @@ def "wallpaper next" [] {
 def "wallpaper pad" [image: string] {
   const WAYBAR_HEIGHT = 55
 
-  let resolution = (xrandr | rg '\*' | split words | first | split row x)
-  let padded_width = ($resolution | first)
-  let padded_height = (($resolution | last | into int) + $WAYBAR_HEIGHT)
-  let resolution = ($resolution | str join x)
+  let resolution = (xrandr | rg '\*' | split words | first)
+  let resolution_parts = ($resolution | split row x)
+  let padded_width = ($resolution_parts | first)
+  let padded_height = (($resolution_parts | last | into int) + $WAYBAR_HEIGHT)
   let padded_resolution = ([$padded_width $padded_height] | str join x)
+  let image = ($image | path expand)
 
   (
     magick
@@ -92,7 +106,7 @@ def "wallpaper pad" [image: string] {
       -gravity north
       -extent $padded_resolution
       -resize $resolution
-      $image
+      $"($image)"
   )
 }
 
