@@ -41,6 +41,8 @@ def wallpaper [wallpaper?: string] {
   systemctl --user stop wpaperd
 }
 
+alias wp = wallpaper
+
 # Clear the wallpaper folder
 def "wallpaper clear" [] {
   let user_wallpapers = (
@@ -125,9 +127,9 @@ def "wallpaper pad" [image: string] {
       $image
       -background black
       -gravity north
-      -extent $padded_resolution
       -resize $resolution
-      $"($image)"
+      -extent $padded_resolution
+      $image
   )
 }
 
