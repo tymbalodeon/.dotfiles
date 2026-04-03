@@ -8,101 +8,119 @@
   config = let
     cfg = config.nushell;
   in {
-    home.packages = [pkgs.fontconfig];
+    home = let
+      autoload_directory = (
+        lib.removeSuffix "\n" (
+          lib.readFile "${
+            pkgs.runCommand "nushell-user-autoload-dirs"
+            {buildInputs = [pkgs.nushell];}
+            "echo `nu --commands 'print (
+                $nu.user-autoload-dirs
+                | first
+                | path split
+                | drop nth 0..1
+                | path join
+                | str trim
+            )'` > $out"
+          }"
+        )
+      );
+    in {
+      file."${autoload_directory}/f.nu".source = pkgs.writeText "f.nu" ''
+        def get-path [directory?: string] {
+          let directory = if ($directory | is-empty) {
+            $env.HOME
+          } else {
+            $directory
+            | path expand
+          }
+
+          let type = if ($directory | is-empty) {
+            "directory"
+          } else {
+            if ($directory | path type) == dir {
+              "file"
+            } else {
+              "directory"
+            }
+          }
+
+          $directory
+          | path join (
+              fd --hidden "" $directory
+              | str replace --all $"($directory)/" ""
+              | lines
+              | sort
+              | to text
+              | fzf --exact --scheme path
+            )
+        }
+
+        # Search for files interactively
+        def --env f [
+          directory?: string # Search this directory
+        ] {
+          let path = (get-path $directory)
+
+          if ($path | path type) == dir {
+            cd $path
+          } else {
+            start-process xdg-open $path
+          }
+        }
+
+        # Search for files interactively and `cd` to directories, or parents of files
+        def --env "f cd" [
+          directory?: string # Search this directory
+        ] {
+          let path = (get-path $directory)
+
+          if ($path | path type) == dir {
+            cd $path
+          } else {
+            cd ($path | path dirname)
+          }
+        }
+
+        # Search for files interactively and edit them with $EDITOR
+        def "f edit" [
+          directory?: string # Search this directory
+        ] {
+          let path = (get-path $directory)
+
+          ^$env.EDITOR $path
+
+          try {
+            $path
+            | path relative-to (pwd)
+          } catch {
+            $path
+          }
+        }
+
+        # Search for files interactively and open them
+        def "f open" [
+          directory?: string # Search this directory
+          --application (-a): string # The command to open the file with
+        ] {
+          let path = (get-path $directory)
+
+          if ($application | is-not-empty) {
+            run-external $application $path
+          } else {
+            start-process xdg-open $path
+          }
+        }
+      '';
+      packages = [pkgs.fontconfig];
+    };
 
     programs.nushell =
       {
         enable = true;
         envFile.source = ./env.nu;
 
-        extraConfig = let
-          f = pkgs.writeText "f.nu" ''
-            def get-path [directory?: string] {
-              let directory = if ($directory | is-empty) {
-                $env.HOME
-              } else {
-                $directory
-                | path expand
-              }
-
-              let type = if ($directory | is-empty) {
-                "directory"
-              } else {
-                if ($directory | path type) == dir {
-                  "file"
-                } else {
-                  "directory"
-                }
-              }
-
-              $directory
-              | path join (
-                  fd --hidden "" $directory
-                  | str replace --all $"($directory)/" ""
-                  | lines
-                  | sort
-                  | to text
-                  | fzf --exact --scheme path
-                )
-            }
-
-            # Search for files interactively
-            def --env f [
-              directory?: string # Search this directory
-            ] {
-              let path = (get-path $directory)
-
-              if ($path | path type) == dir {
-                cd $path
-              } else {
-                start-process xdg-open $path
-              }
-            }
-
-            # Search for files interactively and `cd` to directories, or parents of files
-            def --env "f cd" [
-              directory?: string # Search this directory
-            ] {
-              let path = (get-path $directory)
-
-              if ($path | path type) == dir {
-                cd $path
-              } else {
-                cd ($path | path dirname)
-              }
-            }
-
-            # Search for files interactively and edit them with $EDITOR
-            def "f edit" [
-              directory?: string # Search this directory
-            ] {
-              let path = (get-path $directory)
-
-              ^$env.EDITOR $path
-
-              try {
-                $path
-                | path relative-to (pwd)
-              } catch {
-                $path
-              }
-            }
-
-            # Search for files interactively and open them
-            def "f open" [
-              directory?: string # Search this directory
-              --application (-a): string # The command to open the file with
-            ] {
-              let path = (get-path $directory)
-
-              if ($application | is-not-empty) {
-                run-external $application $path
-              } else {
-                start-process xdg-open $path
-              }
-            }
-          '';
-        in ''
+        extraConfig = ''
           ${
             builtins.concatStringsSep "\n"
             (
@@ -113,7 +131,7 @@
                     (builtins.readDir ./scripts)
                   )
                 )
-                ++ cfg.extraScripts ++ [f])
+                ++ cfg.extraScripts)
             )
           }
         '';
