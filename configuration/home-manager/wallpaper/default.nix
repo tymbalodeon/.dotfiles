@@ -19,6 +19,7 @@
   imports = [
     ../fzf
     ../nushell
+    ../storage
   ];
 
   nushell.extraScripts = [./wallpaper.nu];

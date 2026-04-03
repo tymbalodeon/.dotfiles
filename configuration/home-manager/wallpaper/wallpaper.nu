@@ -43,6 +43,11 @@ def wallpaper [wallpaper?: string] {
 
 alias wp = wallpaper
 
+# `cd` to the wallpaper directory
+def --env "wallpaper cd" [] {
+  cd (wallpaper-directory)
+}
+
 # Clear the wallpaper folder
 def "wallpaper clear" [] {
   let user_wallpapers = (
@@ -99,8 +104,15 @@ def "wallpaper load" [path: string] {
     | get name
   }
 
+
   for file in $files {
-    ln --force --symbolic $file (wallpaper-directory)
+    let temporary_file = (mktemp --tmpdir wallpaper-XXX)
+
+    wallpaper pad $file $temporary_file
+    # TODO: storage command is not available here, how to link it??
+    # storage upload $temporary_file $"wallpaper/($file | path basename)"
+    cp $temporary_file (wallpaper-directory)
+    rm $temporary_file
   }
 
   systemctl --user restart wpaperd
@@ -114,7 +126,7 @@ def "wallpaper next" [] {
 alias "wallpaper start" = wallpaper next
 
 # Add padding to image to account for status bar
-def "wallpaper pad" [image: string] {
+def "wallpaper pad" [image: string output_file?: string] {
   const WAYBAR_HEIGHT = 55
 
   let resolution = (xrandr | rg '\*' | split words | first)
@@ -124,6 +136,12 @@ def "wallpaper pad" [image: string] {
   let padded_resolution = ([$padded_width $padded_height] | str join x)
   let image = ($image | path expand)
 
+  let output_file = if ($output_file | is-empty) {
+    $image
+  } else {
+    $output_file
+  }
+
   (
     magick
       $image
@@ -131,7 +149,7 @@ def "wallpaper pad" [image: string] {
       -gravity north
       -resize $resolution
       -extent $padded_resolution
-      $image
+      $output_file
   )
 }
 
@@ -146,6 +164,22 @@ def "wallpaper pad all" [] {
 def "wallpaper previous" [] {
   wpaperctl-wrapper previous
 }
+
+# Remove wallpaper from the wallpaper directory
+def "wallpaper remove" [] {
+  # TODO: add the ability to remove from remote as well
+  
+  let files = (
+    fd "" (wallpaper-directory)
+    | fzf --multi
+  )
+
+  for file in $file {
+    rm $file
+  }
+}
+
+alias "wallpaper rm" = wallpaper remove
 
 # Toggle pausing/resuming automatic cycling of wallpaper
 def "wallpaper toggle-pause" [] {
