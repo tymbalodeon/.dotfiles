@@ -111,7 +111,7 @@ def "wallpaper load" [path: string] {
     wallpaper pad $file $temporary_file
     # TODO: storage command is not available here, how to link it??
     # storage upload $temporary_file $"wallpaper/($file | path basename)"
-    cp $temporary_file (wallpaper-directory)
+    cp $temporary_file $"(wallpaper-directory)/($file | path basename)"
     rm $temporary_file
   }
 
@@ -172,9 +172,10 @@ def "wallpaper remove" [] {
   let files = (
     fd "" (wallpaper-directory)
     | fzf --multi
+    | lines
   )
 
-  for file in $file {
+  for file in $files {
     rm $file
   }
 }
