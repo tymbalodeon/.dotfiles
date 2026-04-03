@@ -22,7 +22,18 @@
     ../storage
   ];
 
-  nushell.extraScripts = [./wallpaper.nu];
+  nushell.extraScripts = [
+    {
+      includes = [
+        {
+          command = "storage";
+          function = "'storage upload'";
+        }
+      ];
+
+      source = ./wallpaper.nu;
+    }
+  ];
 
   services = {
     wpaperd = {

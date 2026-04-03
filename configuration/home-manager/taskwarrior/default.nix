@@ -6,7 +6,7 @@
     ../storage
   ];
 
-  nushell.extraScripts = [./task.nu];
+  nushell.extraScripts = [{source = ./task.nu;}];
 
   programs.taskwarrior = {
     colorTheme = "dark-16";

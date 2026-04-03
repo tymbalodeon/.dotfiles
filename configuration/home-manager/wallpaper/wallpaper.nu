@@ -1,5 +1,3 @@
-#!/usr/bin/env nu
-
 def wallpaper-directory [] {
   $"($env.HOME)/wallpaper"
 }
@@ -109,8 +107,7 @@ def "wallpaper load" [path: string] {
     let temporary_file = (mktemp --tmpdir wallpaper-XXX)
 
     wallpaper pad $file $temporary_file
-    # TODO: storage command is not available here, how to link it??
-    # storage upload $temporary_file $"wallpaper/($file | path basename)"
+    storage upload $temporary_file $"wallpaper/($file | path basename)"
     cp $temporary_file $"(wallpaper-directory)/($file | path basename)"
     rm $temporary_file
   }

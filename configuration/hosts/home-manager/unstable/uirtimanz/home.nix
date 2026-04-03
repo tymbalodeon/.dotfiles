@@ -10,5 +10,5 @@
     ../../../../home-manager/users/work.nix
   ];
 
-  nushell.extraScripts = [./wireguard.nu];
+  nushell.extraScripts = [{source = ./wireguard.nu;}];
 }

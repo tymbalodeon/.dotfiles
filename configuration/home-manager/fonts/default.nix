@@ -20,5 +20,5 @@
     );
 
   imports = [../nushell];
-  nushell.extraScripts = [./fonts.nu];
+  nushell.extraScripts = [{source = ./fonts.nu;}];
 }

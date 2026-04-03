@@ -1,6 +1,6 @@
 {
   imports = [../nushell];
-  nushell.extraScripts = [./rss.nu];
+  nushell.extraScripts = [{source = ./rss.nu;}];
 
   programs.newsboat = {
     autoFetchArticles.enable = true;

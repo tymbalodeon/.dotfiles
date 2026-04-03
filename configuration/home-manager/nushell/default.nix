@@ -6,15 +6,12 @@
   ...
 }: {
   config = let
-    cfg = config.nushell;
-  in {
-    home = let
-      autoload_directory = (
-        lib.removeSuffix "\n" (
-          lib.readFile "${
-            pkgs.runCommand "nushell-user-autoload-dirs"
-            {buildInputs = [pkgs.nushell];}
-            "echo `nu --commands 'print (
+    autoload_directory = (
+      lib.removeSuffix "\n" (
+        lib.readFile "${
+          pkgs.runCommand "nushell-user-autoload-dirs"
+          {buildInputs = [pkgs.nushell];}
+          "echo `nu --commands 'print (
                 $nu.user-autoload-dirs
                 | first
                 | path split
@@ -22,119 +19,167 @@
                 | path join
                 | str trim
             )'` > $out"
-          }"
-        )
-      );
-    in {
-      file."${autoload_directory}/f.nu".source = pkgs.writeText "f.nu" ''
-        def get-path [directory?: string] {
-          let directory = if ($directory | is-empty) {
-            $env.HOME
-          } else {
-            $directory
-            | path expand
-          }
+        }"
+      )
+    );
 
-          let type = if ($directory | is-empty) {
-            "directory"
-          } else {
-            if ($directory | path type) == dir {
-              "file"
-            } else {
-              "directory"
+    cfg = config.nushell;
+  in {
+    home = {
+      file = builtins.listToAttrs (
+        map
+        (script: let
+          filename =
+            if builtins.hasAttr "source" script && script.source != null
+            then baseNameOf script.source
+            else if builtins.hasAttr "name" script && script.name != null
+            then "${script.name}.nu"
+            else null;
+
+          includes =
+            if builtins.hasAttr "includes" script
+            then
+              lib.strings.join "\n" (map (
+                  include: let
+                    statement = "use ${cfg.autoloadDirectory}/${include.command}.nu";
+                  in
+                    if builtins.hasAttr "function" include && include.function != null
+                    then "${statement} ${include.function}"
+                    else statement
+                )
+                script.includes)
+            else "";
+
+          originalText =
+            if builtins.hasAttr "source" script && script.source != null
+            then builtins.readFile script.source
+            else script.text;
+
+          text =
+            if includes != ""
+            then includes + "\n" + originalText
+            else originalText;
+        in {
+          name = "${autoload_directory}/${filename}";
+          value = {inherit text;};
+        })
+        ([
+            {
+              name = "f";
+
+              text =
+                # nushell
+                ''
+                  def get-path [directory?: string] {
+                    let directory = if ($directory | is-empty) {
+                      $env.HOME
+                    } else {
+                      $directory
+                      | path expand
+                    }
+
+                    let type = if ($directory | is-empty) {
+                      "directory"
+                    } else {
+                      if ($directory | path type) == dir {
+                        "file"
+                      } else {
+                        "directory"
+                      }
+                    }
+
+                    $directory
+                    | path join (
+                        fd --hidden "" $directory
+                        | str replace --all $"($directory)/" ""
+                        | lines
+                        | sort
+                        | to text
+                        | fzf --exact --scheme path
+                      )
+                  }
+
+                  # Search for files interactively
+                  def --env f [
+                    directory?: string # Search this directory
+                  ] {
+                    let path = (get-path $directory)
+
+                    if ($path | path type) == dir {
+                      cd $path
+                    } else {
+                      start-process xdg-open $path
+                    }
+                  }
+
+                  # Search for files interactively and `cd` to directories, or parents of files
+                  def --env "f cd" [
+                    directory?: string # Search this directory
+                  ] {
+                    let path = (get-path $directory)
+
+                    if ($path | path type) == dir {
+                      cd $path
+                    } else {
+                      cd ($path | path dirname)
+                    }
+                  }
+
+                  # Search for files interactively and edit them with $EDITOR
+                  def "f edit" [
+                    directory?: string # Search this directory
+                  ] {
+                    let path = (get-path $directory)
+
+                    ^$env.EDITOR $path
+
+                    try {
+                      $path
+                      | path relative-to (pwd)
+                    } catch {
+                      $path
+                    }
+                  }
+
+                  # Search for files interactively and open them
+                  def "f open" [
+                    directory?: string # Search this directory
+                    --application (-a): string # The command to open the file with
+                  ] {
+                    let path = (get-path $directory)
+
+                    if ($application | is-not-empty) {
+                      run-external $application $path
+                    } else {
+                      start-process xdg-open $path
+                    }
+                  }
+                '';
             }
-          }
 
-          $directory
-          | path join (
-              fd --hidden "" $directory
-              | str replace --all $"($directory)/" ""
-              | lines
-              | sort
-              | to text
-              | fzf --exact --scheme path
-            )
-        }
+            {
+              name = "ssh";
+              source = ./scripts/ssh.nu;
+            }
 
-        # Search for files interactively
-        def --env f [
-          directory?: string # Search this directory
-        ] {
-          let path = (get-path $directory)
+            {
+              name = "start-process";
+              source = ./scripts/start-process.nu;
+            }
+          ]
+          ++ cfg.extraScripts)
+      );
 
-          if ($path | path type) == dir {
-            cd $path
-          } else {
-            start-process xdg-open $path
-          }
-        }
-
-        # Search for files interactively and `cd` to directories, or parents of files
-        def --env "f cd" [
-          directory?: string # Search this directory
-        ] {
-          let path = (get-path $directory)
-
-          if ($path | path type) == dir {
-            cd $path
-          } else {
-            cd ($path | path dirname)
-          }
-        }
-
-        # Search for files interactively and edit them with $EDITOR
-        def "f edit" [
-          directory?: string # Search this directory
-        ] {
-          let path = (get-path $directory)
-
-          ^$env.EDITOR $path
-
-          try {
-            $path
-            | path relative-to (pwd)
-          } catch {
-            $path
-          }
-        }
-
-        # Search for files interactively and open them
-        def "f open" [
-          directory?: string # Search this directory
-          --application (-a): string # The command to open the file with
-        ] {
-          let path = (get-path $directory)
-
-          if ($application | is-not-empty) {
-            run-external $application $path
-          } else {
-            start-process xdg-open $path
-          }
-        }
-      '';
       packages = [pkgs.fontconfig];
     };
+
+    nushell.autoloadDirectory =
+      lib.mkForce "${config.home.homeDirectory}/${autoload_directory}";
 
     programs.nushell =
       {
         enable = true;
         envFile.source = ./env.nu;
-
-        extraConfig = ''
-          ${
-            builtins.concatStringsSep "\n"
-            (
-              map (file: "source ${file}")
-              ((
-                  builtins.attrValues (
-                    builtins.mapAttrs (file: _: ./scripts/${file})
-                    (builtins.readDir ./scripts)
-                  )
-                )
-                ++ cfg.extraScripts)
-            )
-          }
-        '';
 
         extraEnv = let
           homeDir =
@@ -263,12 +308,41 @@
     ../yazi
   ];
 
-  options.nushell.extraScripts = let
+  options.nushell = let
     inherit (lib) mkOption types;
   in
-    with types;
-      mkOption {
-        default = [];
-        type = listOf path;
+    with types; {
+      autoloadDirectory = mkOption {
+        type = str;
       };
+
+      extraScripts = mkOption {
+        type = listOf (
+          submodule {
+            options = {
+              includes = mkOption {
+                type = listOf (submodule {
+                  options = {
+                    command = mkOption {type = str;};
+                    function = mkOption {type = nullOr str;};
+                  };
+                });
+              };
+
+              name = mkOption {
+                type = str;
+              };
+
+              source = mkOption {
+                type = nullOr path;
+              };
+
+              text = mkOption {
+                type = nullOr str;
+              };
+            };
+          }
+        );
+      };
+    };
 }

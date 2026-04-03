@@ -68,8 +68,8 @@
     };
 
     nushell.extraScripts = [
-      ./nb.nu
-      ./pens.nu
+      {source = ./nb.nu;}
+      {source = ./pens.nu;}
     ];
   };
 

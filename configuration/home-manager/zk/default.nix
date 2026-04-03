@@ -6,7 +6,7 @@ in {
     ../nushell
   ];
 
-  nushell.extraScripts = [./zk.nu];
+  nushell.extraScripts = [{source = ./zk.nu;}];
 
   programs.zk = {
     enable = true;
