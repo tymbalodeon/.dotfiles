@@ -104,11 +104,12 @@ def "wallpaper load" [path: string] {
 
 
   for file in $files {
-    let temporary_file = (mktemp --tmpdir wallpaper-XXX)
+    let temporary_file = (mktemp --tmpdir wallpaper-XXX.image)
+    let basename = ($file | path basename)
 
     wallpaper pad $file $temporary_file
-    storage upload $temporary_file $"wallpaper/($file | path basename)"
-    cp $temporary_file $"(wallpaper-directory)/($file | path basename)"
+    storage upload $temporary_file $"wallpaper/($basename)"
+    cp $temporary_file $"(wallpaper-directory)/($basename)"
     rm $temporary_file
   }
 

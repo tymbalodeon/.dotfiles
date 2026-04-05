@@ -669,11 +669,18 @@
               $local_path
               | path type
             ) == file {
-              if $local_path in $remote_path {
+              let basename = ($local_path | path basename)
+
+              if $basename in $remote_path or (
+                $local_path
+                | path parse
+                | get extension
+                | is-not-empty
+              ) {
                 $remote_path
               } else {
                 $remote_path
-                | path join ($local_path | path basename)
+                | path join $basename
               }
             } else {
               $remote_path
