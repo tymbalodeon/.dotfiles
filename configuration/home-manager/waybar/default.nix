@@ -155,7 +155,7 @@
           };
 
           on-click = "pgrep hypridle && systemctl --user stop hypridle || systemctl --user start hypridle";
-          timeout = 180;
+          timeout = 720;
         };
 
         memory.format = " {}%";
