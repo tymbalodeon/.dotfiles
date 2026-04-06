@@ -94,8 +94,9 @@
 
           const SELECT_ALL = "--- SELECT ALL ---"
 
-          def select-remote-path [
+          export def select-remote-path [
             remote: string
+            path?: string
             --allow-directories
             --no-files
           ] {
@@ -103,7 +104,12 @@
 
             "false" | save --force $TMP_FILE
 
-            mut remote_path = ""
+            mut remote_path = if ($path | is-empty) {
+              ""
+            } else {
+              $path
+            }
+
             mut recurse = true
 
             while $recurse {
@@ -208,7 +214,12 @@
             print $"(ansi yellow_bold)warning(ansi reset): ($text)"
           }
 
-          def is-directory [json: table] {
+          export def is-directory [remote: string remote_path: string] {
+            let json = (
+              rclone lsjson $"($remote):($remote_path)"
+              | from json
+            )
+
             not (($json | length) == 1 and not ($json | first | get IsDir))
           }
 
@@ -216,14 +227,16 @@
           export def "storage download" [
             path?: string # A path relative to <remote>:
             --force (-f) # Re-download file even if it already exists locally
+            --interactive (-i) # Interactively select the path to download
             --quiet # Suppress output
+            --pipe # Output downloaded filenames for piping to other commands
             --remote: string # The name of the remote service
             --to: string # Download to this directory instead fo the standard one
           ] {
             let remote = (get-remote $remote)
 
-            let remote_path = if ($path | is-empty) {
-              select-remote-path --allow-directories $remote
+            let remote_path = if $interactive or ($path | is-empty) {
+              select-remote-path --allow-directories $remote $path
             } else {
               $path
             }
@@ -247,13 +260,10 @@
               return
             }
 
-            let json = (
-              rclone lsjson $"($remote):($remote_path)"
-              | from json
-            )
+            let is_directory = (is-directory $remote $remote_path)
 
             let parent = if ($to | is-empty) {
-              if (is-directory $json) {
+              if $is_directory {
                 $local_path
               } else {
                 $local_path
@@ -261,7 +271,7 @@
               }
             } else {
               if ($local_path | path exists) {
-                if (is-directory $json) and ($local_path | path type) != dir {
+                if $is_directory and ($local_path | path type) != dir {
                   $local_path
                   | path dirname
                 } else {
@@ -283,13 +293,31 @@
             )
 
             if $result.exit_code == 0 {
-              # FIXME: don't join with basename if basename is a dir in remote
-              # TODO: display loading message while it runs (useful for downloading entire directories)
-              if not $quiet {
-                print $"Downloaded ($remote_path) to (
-                  $parent
-                  | path join ($remote_path | path basename)
-                )"
+              let files = if $is_directory {
+                rclone lsjson $"($remote):($remote_path)"
+                | from json
+                | get Path
+                | each {
+                    |path|
+
+                    {
+                      from: ($remote_path | path join $path)
+                      to: ($parent | path join $path)
+                    }
+                  }
+              } else {
+                {
+                  from: ($remote_path)
+                  to: ($parent | path join ($remote_path | path basename))
+                }
+              }
+
+              if $pipe {
+                $files.to
+              } else if not $quiet {
+                for file in $files {
+                  print $"Downloaded ($file.from) to ($file.to)"
+                }
               }
             } else {
               print-error $"could not find remote file \"($remote_path)\""

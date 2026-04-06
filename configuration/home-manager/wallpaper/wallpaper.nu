@@ -92,22 +92,45 @@ def "wallpaper list" [
 alias "wallpaper ls" = wallpaper list
 
 # Load wallpapers
-def "wallpaper load" [path: string] {
-  let path = ($path | path expand)
+def "wallpaper load" [path?: string] {
+  let files = if ($path | is-empty) {
+    let path = (select-remote-path --allow-directories dropbox wallpaper)
+    let temporary_directory = (mktemp --directory)
+    let wallpaper_directory = (wallpaper-directory)
 
-  let files = if ($path | path type) == file {
-    $path
+    storage download --force --pipe --to $temporary_directory $path
+
+    let files = (
+      ls $temporary_directory
+      | get name
+      | each {|path| $wallpaper_directory | path join ($path | path basename)}
+    )
+
+    mv ($"($temporary_directory)/*" | into glob) $wallpaper_directory
+    rm --force $temporary_directory
+
+    $files
   } else {
-    ls $path
-    | get name
+    let path = ($path | path expand)
+
+    let files = if ($path | path type) == file {
+      $path
+    } else {
+      ls $path
+      | get name
+    }
+
+    for file in $files {
+      let basename = ($file | path basename)
+
+      storage upload $file $"wallpaper/($basename)"
+      cp $file $"(wallpaper-directory)/($basename)"
+    }
+
+    $files
   }
 
-
   for file in $files {
-    let basename = ($file | path basename)
-
-    storage upload $file $"wallpaper/($basename)"
-    cp $file $"(wallpaper-directory)/($basename)"
     wallpaper pad $file $file
   }
 
