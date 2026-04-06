@@ -1,5 +1,6 @@
 #!/usr/bin/env nu
 
+use configurations.nu is-home-manager
 use configurations.nu is-nixos
 
 # Collect garbage and remove old generations
@@ -38,11 +39,8 @@ export def main [
     $args
   }
 
-  for command in [
-    $args
-    ($args | prepend sudo)
-  ] {
-    run-external $command
+  if not (is-home-manager) {
+    run-external ($args | prepend sudo)
   }
 }
 
