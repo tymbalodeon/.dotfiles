@@ -49,7 +49,6 @@
     [
       ./bat
       ./bottom
-      ./brave
       ./direnv
       ./eza
       ./fastfetch
@@ -86,10 +85,7 @@
     )
     ++ (
       if channel == "unstable"
-      then [
-        ./src
-        ./taskwarrior
-      ]
+      then [./taskwarrior]
       else []
     );
 

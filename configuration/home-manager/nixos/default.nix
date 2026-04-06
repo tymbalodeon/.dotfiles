@@ -40,6 +40,7 @@
   };
 
   imports = [
+    ../brave
     ../bluetooth
     ../clipboard
     ../dictionary
@@ -48,6 +49,7 @@
     ../monitors
     ../niri
     ../reaper
+    ../src
     ../swaync
     ../waybar
   ];
