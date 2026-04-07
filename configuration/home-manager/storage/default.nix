@@ -357,7 +357,7 @@
           }
 
           # List remote files
-          def "storage list remote" [
+          export def "storage list remote" [
             path?: string # A path relative to <remote>:
             --interactive (-i) # Interactively select the subdirectory whose contents to list
             --remote: string # The name of the remote service

@@ -91,6 +91,13 @@ def "wallpaper list" [
 
 alias "wallpaper ls" = wallpaper list
 
+# List remote wallpapers
+def "wallpaper list remote" [] {
+  storage list remote wallpaper
+}
+
+alias "wallpaper list r" = wallpaper list remote
+
 # Load wallpapers
 def "wallpaper load" [path?: string] {
   let files = if ($path | is-empty) {

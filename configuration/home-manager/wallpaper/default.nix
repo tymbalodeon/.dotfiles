@@ -29,6 +29,11 @@
           command = "storage";
           function = "'storage upload'";
         }
+
+        {
+          command = "storage";
+          function = "'storage list remote'";
+        }
       ];
 
       source = ./wallpaper.nu;
