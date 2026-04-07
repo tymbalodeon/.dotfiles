@@ -6,7 +6,12 @@ in {
     ../nushell
   ];
 
-  nushell.extraScripts = [{source = ./zk.nu;}];
+  nushell.extraScripts = [
+    {
+      includes = [{command = "start-process";}];
+      source = ./zk.nu;
+    }
+  ];
 
   programs.zk = {
     enable = true;

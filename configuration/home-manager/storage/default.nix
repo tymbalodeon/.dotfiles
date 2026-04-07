@@ -6,6 +6,7 @@
 
   nushell.extraScripts = [
     {
+      includes = [{command = "start-process";}];
       name = "storage";
 
       text =
