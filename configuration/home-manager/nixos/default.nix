@@ -49,7 +49,6 @@
     ../monitors
     ../niri
     ../reaper
-    ../src
     ../swaync
     ../waybar
   ];

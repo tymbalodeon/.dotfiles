@@ -66,6 +66,7 @@
       ./nushell
       ./pdf
       ./ripgrep
+      ./src
       ./shell
       ./tealdeer
       ./vivid
