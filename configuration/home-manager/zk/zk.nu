@@ -125,10 +125,20 @@ def "zk links" [...title: string] {
 
 # Add new note
 def "zk new" [...title: string] {
-  if ($title | is-not-empty) {
-    run-zk new --title (note-title $title)
+  let title = (note-title $title)
+
+  let existing_note = (
+    zk list --formmat "{{path}}" --limit 1 --match $"title:($title)"
+  )
+
+  if ($existing_note | is-not-empty) {
+    zk edit $existing_note
   } else {
-    run-zk new
+    if ($title | is-not-empty) {
+      run-zk new --title (note-title $title)
+    } else {
+      run-zk new
+    }
   }
 
   sync-zk-directory
