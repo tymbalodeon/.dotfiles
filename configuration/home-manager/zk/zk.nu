@@ -36,7 +36,7 @@ def sync-zk-directory [] {
     git -C (get-main-notebook-directory) status --short
     | is-not-empty
   ) {
-    nb sync --all
+    start-process nb sync "--all"
   }
 }
 
