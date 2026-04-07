@@ -156,6 +156,7 @@
                 | (
                     fzf
                       --bind $"ctrl-backspace:execute-silent\(echo true > ($TMP_FILE)\)+abort"
+                      --multi
                       --preview $preview_string
                   )
                 | complete
@@ -176,6 +177,17 @@
                 if ($exit_code == 130) {
                   return
                 }
+              }
+
+              if ($selection | lines | length) > 1 {
+                let remote_path = $remote_path
+
+                return (
+                  $selection
+                  | lines
+                  | each {|path| $remote_path | path join $path}
+                  | to text --no-newline
+                )
               }
 
               $remote_path = ($remote_path | path join $selection)
