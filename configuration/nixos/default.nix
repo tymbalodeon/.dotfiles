@@ -20,8 +20,6 @@
       xdg-utils
     ];
 
-    hardware.graphics.enable = true;
-
     i18n = let
       locale = "en_US.UTF-8";
     in {
