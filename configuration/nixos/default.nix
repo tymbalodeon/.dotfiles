@@ -92,7 +92,7 @@
       (hostPath "hardware.nix")
       ./idle
       ./monitors
-      # ./musnix
+      ./musnix
       ./nautilus
       ./niri
       ../nix
