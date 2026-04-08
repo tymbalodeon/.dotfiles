@@ -192,6 +192,7 @@ in {
 
         cursor {
           hide-after-inactive-ms 1000
+          xcursor-size 16
         }
 
         hotkey-overlay {

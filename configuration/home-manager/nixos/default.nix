@@ -1,12 +1,10 @@
 {pkgs, ...}: {
-  gtk = let
-    gnomeTheme = pkgs.gnome-themes-extra;
-  in {
+  gtk = {
     enable = true;
 
     iconTheme = {
       name = "Adwaita";
-      package = gnomeTheme;
+      package = pkgs.gnome-themes-extra;
     };
   };
 

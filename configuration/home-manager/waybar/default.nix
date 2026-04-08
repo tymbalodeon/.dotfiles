@@ -1,6 +1,5 @@
 {
   config,
-  hostName,
   lib,
   ...
 }: {
@@ -169,17 +168,10 @@
           "custom/systemd-failed-units"
         ];
 
-        modules-left =
-          # FIXME
-          if hostName == "bumbirich"
-          then [
-            "hyprland/workspaces"
-            "hyprland/window"
-          ]
-          else [
-            "niri/workspaces"
-            "niri/window"
-          ];
+        modules-left = [
+          "niri/workspaces"
+          "niri/window"
+        ];
 
         modules-right =
           (

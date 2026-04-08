@@ -9,6 +9,7 @@
   in {
     environment.systemPackages = with pkgs; [
       bibata-cursors
+
       (catppuccin-sddm.override
         {
           accent = "lavender";
