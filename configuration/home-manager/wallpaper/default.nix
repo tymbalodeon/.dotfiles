@@ -20,6 +20,7 @@
     ../fzf
     ../nushell
     ../storage
+    ../yazi
   ];
 
   nushell.extraScripts = [

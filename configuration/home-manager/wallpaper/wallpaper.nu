@@ -41,6 +41,32 @@ def wallpaper [wallpaper?: string] {
 
 alias wp = wallpaper
 
+# Browse local wallpapers
+def "wallpaper browse local" [] {
+  yazi (wallpaper-directory)
+}
+
+alias "wallpaper br local" = wallpaper browse local
+alias "wallpaper br l" = wallpaper browse local
+alias "wallpaper browse l" = wallpaper browse local
+alias "wallpaper browse" = wallpaper browse local
+alias "wallpaper br" = wallpaper browse local
+
+# Browse remote wallpapers
+def "wallpaper browse remote" [
+  --web # Browse remote in the browser, using remote website
+] {
+  if $web {
+    start-process xdg-open $"https://dropbox.com/home/wallpaper"
+  } else {
+    rclone ncdu $"dropbox:wallpaper"
+  }
+}
+
+alias "wallpaper br remote" = wallpaper browse remote
+alias "wallpaper br r" = wallpaper browse remote
+alias "wallpaper browse r" = wallpaper browse remote
+
 # `cd` to the wallpaper directory
 def --env "wallpaper cd" [] {
   cd (wallpaper-directory)

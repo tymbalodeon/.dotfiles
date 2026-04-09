@@ -66,6 +66,8 @@
           alias "storage br local" = storage browse local
           alias "storage br l" = storage browse local
           alias "storage browse l" = storage browse local
+          alias "storage browse" = storage browse local
+          alias "storage br" = storage browse local
 
           # Browse remotes
           def "storage browse remote" [
