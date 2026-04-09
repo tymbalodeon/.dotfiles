@@ -148,7 +148,8 @@
                 file={}
 
                 if [[ ! {} =~ .*\"($SELECT_ALL)\".* ]]; then
-                  rclone lsf \"($remote):($remote_path)$file\"
+                  remote_path="($remote_path)"
+                  rclone lsf \"($remote):''${remote_path%/}/$file\"
                 fi
               "
 
