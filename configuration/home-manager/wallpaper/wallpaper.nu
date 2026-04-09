@@ -103,7 +103,7 @@ def --wrapped wpaperctl-wrapper [...args: string] {
 }
 
 # List loaded wallpapers
-def "wallpaper list" [
+def "wallpaper list local" [
   --absolute-path # Show the absolute path of the files
 ] {
   if $absolute_path {
@@ -115,7 +115,11 @@ def "wallpaper list" [
   | to text --no-newline
 }
 
-alias "wallpaper ls" = wallpaper list
+alias "wallpaper list l" = wallpaper list local
+alias "wallpaper list" = wallpaper list local
+alias "wallpaper ls local" = wallpaper list local
+alias "wallpaper ls l" = wallpaper list local
+alias "wallpaper ls" = wallpaper list local
 
 # List remote wallpapers
 def "wallpaper list remote" [] {
@@ -123,20 +127,27 @@ def "wallpaper list remote" [] {
 }
 
 alias "wallpaper list r" = wallpaper list remote
+alias "wallpaper ls remote" = wallpaper list remote
+alias "wallpaper ls r" = wallpaper list remote
 
 # Load wallpapers
 def "wallpaper load" [path?: string] {
   let files = if ($path | is-empty) {
-    let path = (select-remote-path --allow-directories dropbox wallpaper)
+    let paths = (
+      select-remote-path --allow-directories dropbox wallpaper
+      | lines
+    )
 
-    if ($path | is-empty) {
+    if ($paths | is-empty) {
       return
     }
 
     let temporary_directory = (mktemp --directory)
     let wallpaper_directory = (wallpaper-directory)
 
-    storage download --force --pipe --to $temporary_directory $path
+    for path in $paths {
+      storage download --force --pipe --to $temporary_directory $path
+    }
 
     let files = (
       ls $temporary_directory

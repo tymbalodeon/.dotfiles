@@ -368,34 +368,6 @@
             rclone about $"(get-remote $remote):"
           }
 
-          def get-remote-path [remote?: string path?: string] {
-            $"(get-remote $remote):($path)"
-          }
-
-          # List remote files
-          export def "storage list remote" [
-            path?: string # A path relative to <remote>:
-            --interactive (-i) # Interactively select the subdirectory whose contents to list
-            --remote: string # The name of the remote service
-          ] {
-            let remote = (get-remote $remote)
-
-            let path = if $interactive {
-              select-remote-path $remote --no-files
-            } else {
-              $path
-            }
-
-            let path = (get-remote-path $remote $path)
-
-            rclone lsf $path
-            | lines
-            | to text --no-newline
-          }
-
-          alias "storage ls remote" = storage list remote
-          alias "storage ls r" = storage list remote
-
           # List locally downloaded files
           def "storage list local" [
             path?: string # A path relative to <remote>:
@@ -427,8 +399,38 @@
             }
           }
 
+          alias "storage list" = storage list local
           alias "storage ls local" = storage list local
           alias "storage ls l" = storage list local
+          alias "storage ls" = storage list local
+
+          def get-remote-path [remote?: string path?: string] {
+            $"(get-remote $remote):($path)"
+          }
+
+          # List remote files
+          export def "storage list remote" [
+            path?: string # A path relative to <remote>:
+            --interactive (-i) # Interactively select the subdirectory whose contents to list
+            --remote: string # The name of the remote service
+          ] {
+            let remote = (get-remote $remote)
+
+            let path = if $interactive {
+              select-remote-path $remote --no-files
+            } else {
+              $path
+            }
+
+            let path = (get-remote-path $remote $path)
+
+            rclone lsf $path
+            | lines
+            | to text --no-newline
+          }
+
+          alias "storage ls remote" = storage list remote
+          alias "storage ls r" = storage list remote
 
           # List available remotes
           def "storage list remotes" [] {
