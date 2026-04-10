@@ -6,11 +6,24 @@ def wallpaper-directory [] {
 def wallpaper [wallpaper?: string] {
   let wallpaper_directory = (wallpaper-directory)
 
+  print $"kitten icat ($wallpaper_directory)/{}"
+
   let wallpaper = if ($wallpaper | is-empty) {
     ls --short-names $wallpaper_directory
     | get name
     | to text
-    | fzf
+    | fzf --preview $"
+        file='($wallpaper_directory)/{}'
+
+        if [[ $\(file --mime-type -b $file\) == image/* ]]; then
+          kitten icat \\
+            --clear \\
+            --place ${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}@0x0 \\
+            --stdin no \\
+            --transfer-mode memory \\
+            $file
+        fi
+      "
   } else {
     $wallpaper
   }
