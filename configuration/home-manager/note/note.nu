@@ -62,6 +62,14 @@ def --wrapped note [...args: string] {
   }
 }
 
+alias n = note
+
+def "note browse" [] {
+  start http://localhost:7000
+}
+
+alias "note br" = note browse
+
 def get-note-title [title: list<string>] {
   $title
   | str join " "

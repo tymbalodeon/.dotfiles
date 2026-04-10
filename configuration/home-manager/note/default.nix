@@ -4,6 +4,10 @@
   pkgs,
   ...
 }: let
+  emanote = import (
+    fetchTarball "https://github.com/srid/emanote/archive/master.tar.gz"
+  );
+
   journalDirectory = "journal";
 in {
   config = let
@@ -102,6 +106,12 @@ in {
       };
     };
 
+    services.emanote = {
+      enable = true;
+      notes = ["${config.home.homeDirectory}/.nb/home"];
+      package = emanote.packages.${builtins.currentSystem}.default;
+    };
+
     xdg.configFile.".zk/templates/journal.md".text = ''
       ---
       tags: [journal]
@@ -113,6 +123,7 @@ in {
   imports = [
     ../bash
     ../bat
+    emanote.homeManagerModule
     ../fzf
     ../git
     ../helix
