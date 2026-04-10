@@ -50,7 +50,7 @@ def sync-zk-directory [] {
     git -C (get-current-notebook-path) status --short
     | is-not-empty
   ) {
-    job spawn { nb sync }
+    job spawn { nb sync } out+err> /dev/null
   }
 }
 
