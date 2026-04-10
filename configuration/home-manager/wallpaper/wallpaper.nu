@@ -6,8 +6,6 @@ def wallpaper-directory [] {
 def wallpaper [wallpaper?: string] {
   let wallpaper_directory = (wallpaper-directory)
 
-  print $"kitten icat ($wallpaper_directory)/{}"
-
   let wallpaper = if ($wallpaper | is-empty) {
     ls --short-names $wallpaper_directory
     | get name
