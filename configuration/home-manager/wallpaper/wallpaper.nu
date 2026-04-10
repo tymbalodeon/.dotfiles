@@ -144,13 +144,13 @@ alias "wallpaper ls r" = wallpaper list remote
 # Load wallpapers
 def "wallpaper load" [path?: string] {
   let files = if ($path | is-empty) {
-    let paths = (
-      select-remote-path --allow-directories dropbox wallpaper
-      | lines
-    )
+    let paths = (select-remote-path --allow-directories dropbox wallpaper)
 
-    if ($paths | is-empty) {
+    let paths = if ($paths | is-empty) {
       return
+    } else {
+      $paths
+      | lines
     }
 
     let temporary_directory = (mktemp --directory)
