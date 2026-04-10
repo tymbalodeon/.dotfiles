@@ -61,8 +61,8 @@
       ./jujutsu
       ./kitty
       ./musescore
-      ./nb
       ../nix
+      ./note
       ./nushell
       ./pdf
       ./ripgrep
@@ -72,7 +72,6 @@
       ./vivid
       ./yazi
       ./zellij
-      ./zk
       ./zoxide
     ]
     ++ (

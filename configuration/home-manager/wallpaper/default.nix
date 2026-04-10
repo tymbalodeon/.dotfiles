@@ -25,18 +25,7 @@
 
   nushell.extraScripts = [
     {
-      includes = [
-        {
-          command = "storage";
-          function = "'storage upload'";
-        }
-
-        {
-          command = "storage";
-          function = "'storage list remote'";
-        }
-      ];
-
+      includes = ["storage"];
       source = ./wallpaper.nu;
     }
   ];

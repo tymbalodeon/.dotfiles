@@ -39,15 +39,10 @@
           includes =
             if builtins.hasAttr "includes" script
             then
-              lib.strings.join "\n" (map (
-                  include: let
-                    statement = "use ${cfg.autoloadDirectory}/${include.command}.nu";
-                  in
-                    if builtins.hasAttr "function" include && include.function != null
-                    then "${statement} ${include.function}"
-                    else statement
-                )
-                script.includes)
+              lib.strings.join "\n" (
+                map (include: "source ${cfg.autoloadDirectory}/${include}.nu")
+                script.includes
+              )
             else "";
 
           originalText =
@@ -69,8 +64,7 @@
         })
         ([
             {
-              # TODO: why does this not work? Possibly a nushell bug?
-              # includes = [{command = "start-process";}];
+              includes = ["start-process"];
               source = ./f.nu;
             }
 
@@ -227,32 +221,25 @@
       };
 
       extraScripts = mkOption {
-        type = listOf (
-          submodule {
-            options = {
-              includes = mkOption {
-                type = listOf (submodule {
-                  options = {
-                    command = mkOption {type = str;};
-                    function = mkOption {type = nullOr str;};
-                  };
-                });
-              };
-
-              name = mkOption {
-                type = str;
-              };
-
-              source = mkOption {
-                type = nullOr path;
-              };
-
-              text = mkOption {
-                type = nullOr str;
-              };
+        type = listOf (submodule {
+          options = {
+            includes = mkOption {
+              type = listOf str;
             };
-          }
-        );
+
+            name = mkOption {
+              type = str;
+            };
+
+            source = mkOption {
+              type = nullOr path;
+            };
+
+            text = mkOption {
+              type = nullOr str;
+            };
+          };
+        });
       };
     };
 }

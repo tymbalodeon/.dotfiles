@@ -16,7 +16,7 @@
   imports = [
     ../git
     ../jujutsu
-    ../nb
+    ../note
   ];
 
   options.work.user = let
