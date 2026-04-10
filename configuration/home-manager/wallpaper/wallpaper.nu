@@ -83,7 +83,7 @@ def "wallpaper clear" [] {
   )
 
   for file in ($user_wallpapers) {
-    rm $file
+    rm --recursive $file
   }
 }
 
@@ -184,6 +184,10 @@ def "wallpaper load" [path?: string] {
   }
 
   systemctl --user restart wpaperd
+}
+
+def "wallpaper load all" [] {
+  storage download --force --to (wallpaper-directory) --quiet wallpaper
 }
 
 # Change to next (random) wallpaper
