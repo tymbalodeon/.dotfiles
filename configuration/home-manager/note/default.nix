@@ -92,6 +92,8 @@ in {
           random = "zk edit --limit 1 --sort random";
         };
 
+        format.markdown.link-format = "[[{{filename}}]]";
+
         group.journal = {
           note = {
             filename = "{{format-date now}}";
@@ -101,6 +103,7 @@ in {
           paths = [journalDirectory];
         };
 
+        lsp.diagnostics.wiki-title = "hint";
         notebook.dir = "~/.nb/home";
         tool.fzf-preview = "bat --plain --color always {-1}";
       };

@@ -65,7 +65,7 @@ def --wrapped note [...args: string] {
 alias n = note
 
 def "note browse" [] {
-  start http://localhost:7000
+  start-process xdg-open http://localhost:7000
 }
 
 alias "note br" = note browse
