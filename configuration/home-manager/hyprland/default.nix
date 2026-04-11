@@ -112,7 +112,12 @@ with lib; {
         };
 
         "$mainMod" = "ALT";
-        misc.force_default_wallpaper = 0;
+
+        misc = {
+          disable_hyprland_logo = true;
+          force_default_wallpaper = 0;
+        };
+
         monitor = cfg.hyprland.settings.monitor;
       };
 
