@@ -17,7 +17,7 @@ def wallpaper [wallpaper?: string] {
     | fzf --preview $"
         file='($wallpaper_directory)/{}'
 
-        if [[ $\(file --mime-type -b $file\) == image/* ]]; then
+        if [[ $\(file --brief --mime-type $file\) == image/* ]]; then
           kitten icat \\
             --clear \\
             --place ${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}@0x0 \\
@@ -190,7 +190,7 @@ def "wallpaper load" [
     )
 
     for file in $files {
-      wallpaper pad $file $file
+      wallpaper pad $file
     }
 
     mv ($"($temporary_directory)/*" | into glob) $wallpaper_directory
