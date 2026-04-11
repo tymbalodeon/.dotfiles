@@ -85,6 +85,8 @@ def --env "wallpaper cd" [] {
 
 # Clear the wallpaper folder
 def "wallpaper clear" [] {
+  # TODO: load the default wallpaper if missing
+  
   let user_wallpapers = (
     ls (wallpaper-directory)
     | get name
@@ -142,7 +144,13 @@ alias "wallpaper ls remote" = wallpaper list remote
 alias "wallpaper ls r" = wallpaper list remote
 
 # Load wallpapers
-def "wallpaper load" [path?: string] {
+def "wallpaper load" [
+  path?: string # Local image file or directory to load
+  --keep-default # Don't remove the default wallpaper when loading others
+] {
+  # TODO: check mime type to make sure everything is an image?
+  # readprofile: /proc/profile: No such file or directory
+  
   let files = if ($path | is-empty) {
     let paths = (select-remote-path --allow-directories dropbox wallpaper)
 
@@ -194,6 +202,7 @@ def "wallpaper load" [path?: string] {
     wallpaper pad $file $file
   }
 
+  rm (wallpaper-directory | path join wallpaper.jpeg)
   systemctl --user restart wpaperd
 }
 
