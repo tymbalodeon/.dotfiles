@@ -8,7 +8,7 @@
       mkdir --parents ~/wallpaper
     '';
 
-    file."wallpaper/wallpaper.jpeg".source = ./wallpaper.jpeg;
+    file."wallpaper/default-wallpaper.jpeg".source = ./default-wallpaper.jpeg;
 
     packages = with pkgs; [
       imagemagick
@@ -26,7 +26,16 @@
   nushell.extraScripts = [
     {
       includes = ["storage"];
-      source = ./wallpaper.nu;
+      name = "wallpaper";
+
+      text =
+        ''
+          def default-wallpaper [] {
+            "${./default-wallpaper.jpeg}"
+          }
+        ''
+        + "\n"
+        + builtins.readFile ./wallpaper.nu;
     }
   ];
 

@@ -2,6 +2,10 @@ def wallpaper-directory [] {
   $"($env.HOME)/wallpaper"
 }
 
+def default-wallpaper-filename [] {
+  "default-wallpaper.jpeg"
+}
+
 # Set wallpaper to a specific file
 def wallpaper [wallpaper?: string] {
   let wallpaper_directory = (wallpaper-directory)
@@ -85,19 +89,16 @@ def --env "wallpaper cd" [] {
 
 # Clear the wallpaper folder
 def "wallpaper clear" [] {
-  # TODO: load the default wallpaper if missing
-  
-  let user_wallpapers = (
-    ls (wallpaper-directory)
-    | get name
-    | to text
-    | rg --pcre2 "^(?!.*(wallpaper.jpeg))"
-    | lines
+  let wallpaper_directory = (wallpaper-directory)
+  rm --force --recursive $wallpaper_directory
+  mkdir $wallpaper_directory
+
+  cp (default-wallpaper) (
+    $wallpaper_directory
+    | path join (default-wallpaper-filename)
   )
 
-  for file in ($user_wallpapers) {
-    rm --recursive $file
-  }
+  restart-wallpaper
 }
 
 def --wrapped wpaperctl-wrapper [...args: string] {
@@ -143,14 +144,27 @@ alias "wallpaper list r" = wallpaper list remote
 alias "wallpaper ls remote" = wallpaper list remote
 alias "wallpaper ls r" = wallpaper list remote
 
+def is-image []: string -> bool {
+  try {
+    (
+      file --brief --mime-type $in
+      | split row /
+      | first
+    ) == image
+  } catch {
+    return false
+  }
+}
+
+def restart-wallpaper [] {
+  systemctl --user restart wpaperd
+}
+
 # Load wallpapers
 def "wallpaper load" [
   path?: string # Local image file or directory to load
   --keep-default # Don't remove the default wallpaper when loading others
 ] {
-  # TODO: check mime type to make sure everything is an image?
-  # readprofile: /proc/profile: No such file or directory
-  
   let files = if ($path | is-empty) {
     let paths = (select-remote-path --allow-directories dropbox wallpaper)
 
@@ -172,6 +186,7 @@ def "wallpaper load" [
       ls $temporary_directory
       | get name
       | each {|path| $wallpaper_directory | path join ($path | path basename)}
+      | where {is-image}
     )
 
     mv ($"($temporary_directory)/*" | into glob) $wallpaper_directory
@@ -189,6 +204,10 @@ def "wallpaper load" [
     }
 
     for file in $files {
+      if not ($file | is-image) {
+        continue
+      }
+
       let basename = ($file | path basename)
 
       storage upload $file $"wallpaper/($basename)"
@@ -202,8 +221,8 @@ def "wallpaper load" [
     wallpaper pad $file $file
   }
 
-  rm (wallpaper-directory | path join wallpaper.jpeg)
-  systemctl --user restart wpaperd
+  rm (wallpaper-directory | path join (default-wallpaper-filename))
+  restart-wallpaper
 }
 
 def "wallpaper load all" [] {
@@ -259,8 +278,6 @@ def "wallpaper previous" [] {
 
 # Remove wallpaper from the wallpaper directory
 def "wallpaper remove" [] {
-  # TODO: add the ability to remove from remote as well
-  
   let files = (
     fd "" (wallpaper-directory)
     | fzf --multi
