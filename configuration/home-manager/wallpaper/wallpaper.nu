@@ -178,20 +178,26 @@ def "wallpaper load" [
     let temporary_directory = (mktemp --directory)
     let wallpaper_directory = (wallpaper-directory)
 
+    # TODO: Show some kind of progress bar or something...
     for path in $paths {
-      storage download --force --pipe --to $temporary_directory $path
+      storage download --force --quiet --to $temporary_directory $path
     }
 
     let files = (
       ls $temporary_directory
       | get name
-      | each {|path| $wallpaper_directory | path join ($path | path basename)}
       | where {is-image}
     )
 
+    # TODO: Show some kind of progress bar or something...
     for file in $files {
       wallpaper pad $file
     }
+
+    let files = (
+      $files
+      | each {|path| $wallpaper_directory | path join ($path | path basename)}
+    )
 
     mv ($"($temporary_directory)/*" | into glob) $wallpaper_directory
     rm --force $temporary_directory
@@ -221,7 +227,7 @@ def "wallpaper load" [
     }
   }
 
-  rm (wallpaper-directory | path join (default-wallpaper-filename))
+  rm --force (wallpaper-directory | path join (default-wallpaper-filename))
   restart-wallpaper
 }
 
