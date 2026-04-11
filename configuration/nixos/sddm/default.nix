@@ -16,6 +16,8 @@
           flavor = "mocha";
           fontSize = "12";
         })
+
+      kdePackages.layer-shell-qt
     ];
 
     services.displayManager = {
