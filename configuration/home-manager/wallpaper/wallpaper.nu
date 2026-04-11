@@ -189,10 +189,12 @@ def "wallpaper load" [
       | where {is-image}
     )
 
+    for file in $files {
+      wallpaper pad $file $file
+    }
+
     mv ($"($temporary_directory)/*" | into glob) $wallpaper_directory
     rm --force $temporary_directory
-
-    $files
   } else {
     let path = ($path | path expand)
 
@@ -211,14 +213,12 @@ def "wallpaper load" [
       let basename = ($file | path basename)
 
       storage upload $file $"wallpaper/($basename)"
-      cp $file $"(wallpaper-directory)/($basename)"
+
+      let to = $"(wallpaper-directory)/($basename)"
+
+      cp $file $to
+      wallpaper pad $to
     }
-
-    $files
-  }
-
-  for file in $files {
-    wallpaper pad $file $file
   }
 
   rm (wallpaper-directory | path join (default-wallpaper-filename))
