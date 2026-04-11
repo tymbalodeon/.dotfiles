@@ -96,7 +96,10 @@ with lib; {
           "XCURSOR_SIZE,16"
         ];
 
-        exec-once = ["waybar"];
+        exec-once = [
+          "waybar"
+          "wpaperd"
+        ];
 
         general = {
           allow_tearing = false;

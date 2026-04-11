@@ -39,16 +39,14 @@
     }
   ];
 
-  services = {
-    wpaperd = {
-      enable = true;
+  services.wpaperd = {
+    enable = true;
 
-      settings.default = {
-        duration = "15m";
-        exec = ./signal-waybar.sh;
-        mode = "fit";
-        path = "~/wallpaper";
-      };
+    settings.default = {
+      duration = "15m";
+      exec = ./signal-waybar.sh;
+      mode = "fit";
+      path = "~/wallpaper";
     };
   };
 }
