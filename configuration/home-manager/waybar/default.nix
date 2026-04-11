@@ -168,7 +168,11 @@
           "custom/systemd-failed-units"
         ];
 
+        # TODO: swap between these programmatically depending on a value for
+        # "default window manager" or something?
         modules-left = [
+          "hyprland/workspaces"
+          "hyprland/window"
           "niri/workspaces"
           "niri/window"
         ];

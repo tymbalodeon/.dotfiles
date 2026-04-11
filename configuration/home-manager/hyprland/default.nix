@@ -106,11 +106,7 @@ with lib; {
         };
 
         input = {
-          kb_options = [
-            "altwin:swap_alt_win"
-            "caps:swapescape"
-          ];
-
+          kb_options = cfg.hyprland.settings.input.kb_options;
           repeat_delay = 200;
           repeat_rate = 50;
         };
@@ -141,8 +137,8 @@ with lib; {
       };
 
       input.kb_options = mkOption {
-        default = "caps:escape";
-        type = str;
+        default = ["altwin:swap_alt_win" "caps:escape"];
+        type = listOf str;
       };
 
       monitor = mkOption {
