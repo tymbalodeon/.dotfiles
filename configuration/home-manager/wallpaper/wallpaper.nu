@@ -29,7 +29,7 @@ def wallpaper [wallpaper?: string] {
   } else {
     $wallpaper
   }
-  | path expand
+  | str replace ~ $env.HOME
 
   let wallpaper = if ($wallpaper | path dirname) not-in [
     $"($env.HOME)/wallpaper"
@@ -49,7 +49,7 @@ def wallpaper [wallpaper?: string] {
     return
   }
 
-  bash -c $"swaybg --image '($wallpaper)' &" out+err> /dev/null
+  bash -c $"swaybg --image '($wallpaper)' --mode fit &" out+err> /dev/null
   pkill -RTMIN+2 waybar
   systemctl --user stop wpaperd
 }
@@ -102,7 +102,7 @@ def "wallpaper clear" [] {
 }
 
 def --wrapped wpaperctl-wrapper [...args: string] {
-  if (systemctl --user list-units | rg wpaperd | is-empty) {
+  if (systemctl --user list-units | find wpaperd | is-empty) {
     systemctl --user start wpaperd
     sleep 500ms
 
