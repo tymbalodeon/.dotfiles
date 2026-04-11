@@ -668,7 +668,7 @@
           alias "storage rm r" = storage remove remote
 
           # Setup remotes
-          def setup [] {
+          def "storage setup" [] {
             rclone config
           }
 
