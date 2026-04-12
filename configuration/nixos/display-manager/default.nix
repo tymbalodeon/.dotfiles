@@ -40,7 +40,7 @@
           };
         };
 
-        setupScript = "export XCURSOR_THEME='${cursorTheme}''";
+        setupScript = "export XCURSOR_THEME=${cursorTheme}";
         theme = "catppuccin-mocha-lavender";
         wayland.enable = true;
       };
