@@ -97,10 +97,8 @@ with lib; {
           "XCURSOR_SIZE,16"
         ];
 
-        exec-once = [
-          "waybar"
-          "wpaperd"
-        ];
+        exec = ["systemctl --user restart waybar"];
+        exec-once = ["wpaperd"];
 
         general = {
           allow_tearing = false;

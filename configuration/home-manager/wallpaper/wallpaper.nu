@@ -26,24 +26,13 @@ def wallpaper [wallpaper?: string] {
             $file
         fi
       "
-  } else {
-    $wallpaper
-  }
-  | str replace ~ $env.HOME
-
-  let wallpaper = if ($wallpaper | path dirname) not-in [
-    $"($env.HOME)/wallpaper"
-    $wallpaper_directory
-  ] {
-    [
-      $env.HOME
-      wallpaper
-      $wallpaper
-    ]
+    | lines
+    | prepend $wallpaper_directory
     | path join
   } else {
     $wallpaper
   }
+  | str replace ~ $env.HOME
 
   if not ($wallpaper | path exists) {
     return
@@ -244,12 +233,10 @@ alias "wallpaper start" = wallpaper next
 
 # Add padding to image to account for status bar
 def "wallpaper pad" [image: string output_file?: string] {
-  const WAYBAR_HEIGHT = 55
-
   let resolution = (xrandr | rg '\*' | split words | first)
   let resolution_parts = ($resolution | split row x)
   let padded_width = ($resolution_parts | first)
-  let padded_height = (($resolution_parts | last | into int) + $WAYBAR_HEIGHT)
+  let padded_height = (($resolution_parts | last | into int) + (waybar-height))
   let padded_resolution = ([$padded_width $padded_height] | str join x)
   let image = ($image | path expand)
 
