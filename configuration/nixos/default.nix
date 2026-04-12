@@ -86,6 +86,7 @@
   in
     [
       ./bluetooth
+      ./display-manager
       ./home-manager
       (hostPath "hardware.nix")
       ./idle
@@ -94,7 +95,6 @@
       ./nautilus
       ./niri
       ../nix
-      ./sddm
       ./solaar
       ./steam
       ./stylix

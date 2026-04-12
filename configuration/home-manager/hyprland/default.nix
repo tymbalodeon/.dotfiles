@@ -10,7 +10,9 @@ with lib; {
   in {
     home.packages = with pkgs;
       [
+        gnome-keyring
         hyprpicker
+        xdg-desktop-portal-hyprland
       ]
       ++ (
         if cfg.laptop
@@ -65,9 +67,8 @@ with lib; {
           "$mainMod SHIFT, O, resizeactive, 0 -25"
           "$mainMod SHIFT, P, resizeactive, 25 0"
           "$mainMod SHIFT, S, movetoworkspace, special:magic"
-          "$mainMod SHIFT, space, exec, rofi"
           "$mainMod SHIFT, U, resizeactive, -25 0"
-          "$mainMod, space, exec, rofi -show drun"
+          "$mainMod, space, exec, fuzzel"
           "$mainMod, S, togglespecialworkspace, magic"
           "$mainMod, T, exec, kitty"
           "$mainMod, V, exec, cliphist list | rofi -dmenu -display-columns 2 | cliphist decode | wl-copy"
@@ -96,11 +97,6 @@ with lib; {
           "XCURSOR_SIZE,16"
         ];
 
-        exec-once = [
-          "waybar"
-          "wpaperd"
-        ];
-
         general = {
           allow_tearing = false;
           gaps_in = 8;
@@ -124,16 +120,21 @@ with lib; {
         monitor = cfg.hyprland.settings.monitor;
       };
 
-      systemd.enable = false;
+      systemd = {
+        enable = false;
+        variables = ["--all"];
+      };
     };
   };
 
   imports = [
+    ../fuzzel
     ../hypridle
     ../hyprlock
     ../nushell
     ../playerctl
-    ../rofi
+    ../polkit
+    ../swaync
     ../wallpaper
   ];
 

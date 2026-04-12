@@ -23,6 +23,7 @@ in {
         ]
         ++ (
           if cfg.laptop
+          # TODO: put into its own module
           then [pkgs.brightnessctl]
           else []
         );
