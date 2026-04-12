@@ -13,12 +13,19 @@
       (catppuccin-sddm.override
         {
           accent = "lavender";
+          background = ../../home-manager/wallpaper/default-wallpaper.jpeg;
+          clockEnabled = false;
           flavor = "mocha";
-          fontSize = "12";
+          font = config.stylix.fonts.sansSerif.name;
+          fontSize = "11";
+          loginBackground = true;
         })
     ];
 
-    services.displayManager = {
+    services.displayManager = let
+      cursorSize = 24;
+      cursorTheme = "Bibata-Modern-Classic";
+    in {
       defaultSession = cfg.defaultSession;
 
       sddm = {
@@ -28,11 +35,12 @@
           AutoLogin.User = config.nixos.username;
 
           Theme = {
-            CursorSize = 16;
-            CursorTheme = "Bibata-Modern-Classic";
+            CursorSize = cursorSize;
+            CursorTheme = cursorTheme;
           };
         };
 
+        setupScript = "export XCURSOR_THEME='${cursorTheme}''";
         theme = "catppuccin-mocha-lavender";
         wayland.enable = true;
       };

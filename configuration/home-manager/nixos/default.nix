@@ -1,6 +1,16 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  cursorTheme = "Bibata-Modern-Classic";
+in {
   gtk = {
     enable = true;
+
+    cursorTheme = {
+      name = cursorTheme;
+      package = pkgs.bibata-cursors;
+    };
+
+    gtk3.extraConfig."gtk-cursor-theme-name" = cursorTheme;
+    gtk4.extraConfig.Settings = cursorTheme;
 
     iconTheme = {
       name = "Adwaita";
@@ -18,8 +28,9 @@
     pointerCursor = {
       gtk.enable = true;
       package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Classic";
+      name = cursorTheme;
       size = 16;
+      x11.enable = true;
     };
   };
 
