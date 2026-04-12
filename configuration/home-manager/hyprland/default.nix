@@ -97,6 +97,11 @@ with lib; {
           "XCURSOR_SIZE,16"
         ];
 
+        exec-once = [
+          "waybar"
+          "wpaperd"
+        ];
+
         general = {
           allow_tearing = false;
           gaps_in = 8;
