@@ -162,11 +162,10 @@
                       --multi
                       --preview $preview_string
                   )
-                | complete
+                | str trim
               )
 
-              let exit_code = $selection.exit_code
-              let selection = ($selection.stdout | str trim)
+              let exit_code = $env.LAST_EXIT_CODE
 
               if (open $TMP_FILE | into bool) {
                 if ($remote_path | is-empty) {
@@ -303,12 +302,9 @@
               }
             }
 
-            let result = (
-              rclone sync --fix-case $"($remote):($remote_path)" $parent
-              | complete
-            )
+            rclone sync --fix-case $"($remote):($remote_path)" $parent
 
-            if $result.exit_code == 0 {
+            if $env.LAST_EXIT_CODE == 0 {
               let files = if $is_directory {
                 rclone lsjson $"($remote):($remote_path)"
                 | from json

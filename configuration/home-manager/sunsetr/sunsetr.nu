@@ -51,9 +51,10 @@ def "main get" [] {
 }
 
 def "main toggle" [] {
-  if (pgrep sunsetr | complete | get exit_code) == 0 {
+  try {
+    pgrep sunsetr
     sunsetr stop
-  } else {
+  } catch {
     sunsetr --background
     sleep 500ms
   }
