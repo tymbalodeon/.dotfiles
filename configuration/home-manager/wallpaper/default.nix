@@ -50,7 +50,7 @@
       settings.default = {
         duration = "15m";
         exec = ./signal-waybar.sh;
-        mode = "fit";
+        mode = "fit-border-color";
         path = "~/wallpaper";
       };
     };
