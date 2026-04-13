@@ -2,10 +2,14 @@
   config,
   lib,
   pkgs,
+  system ? builtins.currentSystem,
   ...
 }: let
   emanote = import (
-    fetchTarball "https://github.com/srid/emanote/archive/master.tar.gz"
+    fetchTarball {
+      sha256 = "sha256:15vskz64nh2jw8zi65fy580lygvi8ybgvf8dl93lw861ck2nw0b5";
+      url = "https://github.com/srid/emanote/archive/master.tar.gz";
+    }
   );
 
   journalDirectory = "journal";
@@ -112,7 +116,7 @@ in {
     services.emanote = {
       enable = true;
       notes = ["${config.home.homeDirectory}/.nb/home"];
-      package = emanote.packages.${builtins.currentSystem}.default;
+      package = emanote.packages.${system}.default;
     };
 
     xdg.configFile.".zk/templates/journal.md".text = ''

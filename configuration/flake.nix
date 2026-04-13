@@ -172,7 +172,9 @@
         channel,
         hostType,
         hostName,
-      }: {
+      }: let
+        system = "x86_64-linux";
+      in {
         ${hostName} = home-manager-unstable.lib.homeManagerConfiguration {
           extraSpecialArgs = {
             inherit
@@ -182,11 +184,12 @@
               home-manager-unstable
               nixgl
               src
+              system
               ;
           };
 
           modules = [./home-manager];
-          pkgs = nixpkgs-unstable.legacyPackages.x86_64-linux;
+          pkgs = nixpkgs-unstable.legacyPackages.${system};
         };
       })
       "home-manager";
