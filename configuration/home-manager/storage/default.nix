@@ -153,12 +153,19 @@
               let preview_string = $"
                 if {} !~ \"($select_all_value)\" {
                   let remote_path = \(
-                    \"($remote_path)\"
-                    | str replace --regex /$ \"\"
-                    | path join {}
+                    [
+                      ($remote)
+                      :
+                      \(
+                        \"($remote_path)\"
+                        | str replace --regex /$ \"\"
+                        | path join {}
+                      \)
+                    ]
+                    | str join
                   \)
 
-                  rclone lsf \"($remote):($remote_path)\"
+                  rclone lsf \($remote_path\)
                 }
               "
 
