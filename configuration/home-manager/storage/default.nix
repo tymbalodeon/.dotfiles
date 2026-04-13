@@ -536,25 +536,6 @@
             (input $prompt | str downcase) in [y yes]
           }
 
-          # Remove files from local and remote
-          def "storage remove" [
-            path?: string # A path relative to <remote>:
-            --force (-f) # Remove without confirmation
-            --remote: string # The name of the remote service
-          ] {
-            let remote = (get-remote $remote)
-
-            if $force {
-              storage remove local --force --remote $remote $path
-              storage remove remote --force --remote $remote $path
-            } else {
-              storage remove local --remote $remote $path
-              storage remove remote --remote $remote $path
-            }
-          }
-
-          alias "storage rm" = storage remove
-
           # Remove local files
           def "storage remove local" [
             path?: string # A path relative to <remote>:
@@ -573,7 +554,7 @@
             let storage_directory = (get-storage-directory $remote)
 
             let paths = if $interactive {
-              let files = (fd --type file "" ($storage_directory | path join $remote))
+              let files = (fd "" $storage_directory)
 
               if ($files | is-empty) {
                 return
@@ -682,6 +663,27 @@
 
           alias "storage rm remote" = storage remove remote
           alias "storage rm r" = storage remove remote
+
+          # Remove files from local and remote
+          def "storage remove" [
+            path?: string # A path relative to <remote>:
+            --force (-f) # Remove without confirmation
+            --remote: string # The name of the remote service
+          ] {
+            let remote = (get-remote $remote)
+
+            if $force {
+              storage remove local --force --remote $remote $path
+              # TODO: only run if the above was not canceled
+              storage remove remote --force --remote $remote $path
+            } else {
+              storage remove local --remote $remote $path
+              # TODO: only run if the above was not canceled
+              storage remove remote --remote $remote $path
+            }
+          }
+
+          alias "storage rm" = storage remove
 
           # Setup remotes
           def "storage setup" [] {
