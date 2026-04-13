@@ -1,8 +1,8 @@
 {
   config,
+  hostType,
   lib,
   pkgs,
-  system ? builtins.currentSystem,
   ...
 }: let
   emanote = import (
@@ -113,7 +113,12 @@ in {
       };
     };
 
-    services.emanote = {
+    services.emanote = let
+      system =
+        if hostType == "home-manager"
+        then system
+        else builtins.currentSystem;
+    in {
       enable = true;
       notes = ["${config.home.homeDirectory}/.nb/home"];
       package = emanote.packages.${system}.default;
