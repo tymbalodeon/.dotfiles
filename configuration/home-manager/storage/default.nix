@@ -95,7 +95,9 @@
           alias "storage br r" = storage browse remote
           alias "storage browse r" = storage browse remote
 
-          const SELECT_ALL = "--- SELECT ALL ---"
+          def select-all-value [] {
+            "--- SELECT ALL ---"
+          }
 
           export def select-remote-path [
             remote: string
@@ -113,6 +115,7 @@
               $path
             }
 
+            let select_all_value = (select-all-value)
             mut recurse = true
 
             while $recurse {
@@ -135,22 +138,28 @@
 
               let options = if $allow_directories or $no_files {
                 $options
-                | append $SELECT_ALL
+                | append $select_all_value
               } else {
                 $options
               }
 
-              if ($options | length) == 1 and ($options | first) == $SELECT_ALL {
+              if ($options | length) == 1 and (
+                $options
+                | first
+              ) == $select_all_value {
                 break
               }
 
               let preview_string = $"
-                file={}
+                if {} !~ \"($select_all_value)\" {
+                  let remote_path = \(
+                    \"($remote_path)\"
+                    | str replace --regex /$ \"\"
+                    | path join {}
+                  \)
 
-                if [[ ! {} =~ .*\"($SELECT_ALL)\".* ]]; then
-                  remote_path="($remote_path)"
-                  rclone lsf \"($remote):''${remote_path%/}/$file\"
-                fi
+                  rclone lsf \"($remote):($remote_path)\"
+                }
               "
 
               let selection = (
@@ -161,6 +170,7 @@
                       --bind $"ctrl-backspace:execute-silent\(echo true > ($TMP_FILE)\)+abort"
                       --multi
                       --preview $preview_string
+                      --with-shell "nu -c"
                   )
                 | str trim
               )
@@ -194,7 +204,7 @@
 
               $remote_path = ($remote_path | path join $selection)
 
-              if ($remote_path | str ends-with $SELECT_ALL) {
+              if ($remote_path | str ends-with $select_all_value) {
                 break
               }
 
@@ -204,12 +214,12 @@
                 | first
                 | get IsDir
               ) or (
-                ($remote_path | path split | last) == $SELECT_ALL
+                ($remote_path | path split | last) == $select_all_value
               )
             }
 
             $remote_path
-            | str replace $SELECT_ALL ""
+            | str replace $select_all_value ""
           }
 
           def get-local-path [remote: string path: string] {

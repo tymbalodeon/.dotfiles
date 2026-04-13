@@ -177,9 +177,8 @@ def "wallpaper load" [
     let temporary_directory = (mktemp --directory)
     let wallpaper_directory = (wallpaper-directory)
 
-    # TODO: Show some kind of progress bar or something...
     for path in $paths {
-      storage download --force --quiet --to $temporary_directory $path
+      storage download --force --to $temporary_directory $path
     }
 
     let files = (
