@@ -319,6 +319,9 @@
               }
             }
 
+            # TODO: printing should happen here, since the sync command can take
+            # a while...
+
             rclone sync --fix-case $"($remote):($remote_path)" $parent
 
             if $env.LAST_EXIT_CODE == 0 {
@@ -542,11 +545,11 @@
             let remote = (get-remote $remote)
 
             if $force {
-              remove local --force --remote $remote $path
-              remove remote --force --remote $remote $path
+              storage remove local --force --remote $remote $path
+              storage remove remote --force --remote $remote $path
             } else {
-              remove local --remote $remote $path
-              remove remote --remote $remote $path
+              storage remove local --remote $remote $path
+              storage remove remote --remote $remote $path
             }
           }
 
