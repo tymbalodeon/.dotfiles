@@ -31,6 +31,10 @@
               "${./default-wallpaper.jpeg}"
             }
 
+            def stylix-background [] {
+              "#${config.lib.stylix.colors.base00}"
+            }
+
             def waybar-height [] {
               ${toString cfg.padSize}
             }

@@ -249,7 +249,7 @@ def "wallpaper pad" [image: string output_file?: string] {
   (
     magick
       $image
-      -background black
+      -background (stylix-background)
       -gravity north
       -resize $resolution
       -extent $padded_resolution
