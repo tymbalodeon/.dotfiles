@@ -6,11 +6,10 @@ def default-wallpaper-filename [] {
   "default-wallpaper.jpeg"
 }
 
-# Set wallpaper to a specific file
-def wallpaper [wallpaper?: string] {
+def select-local-wallpaper [] {
   let wallpaper_directory = (wallpaper-directory)
 
-  let wallpaper = if ($wallpaper | is-empty) {
+  let selection = (
     ls --short-names $wallpaper_directory
     | get name
     | to text
@@ -27,14 +26,25 @@ def wallpaper [wallpaper?: string] {
         fi
       "
     | lines
+  )
+
+  if ($selection | is-not-empty) {
+    $selection
     | prepend $wallpaper_directory
     | path join
+  }
+}
+
+# Set wallpaper to a specific file
+def wallpaper [wallpaper?: string] {
+  let wallpaper = if ($wallpaper | is-empty) {
+    select-local-wallpaper
   } else {
     $wallpaper
   }
   | str replace ~ $env.HOME
 
-  if not ($wallpaper | path exists) {
+  if ($wallpaper | is-empty) or not ($wallpaper | path exists) {
     return
   }
 
@@ -232,7 +242,17 @@ def "wallpaper next" [] {
 alias "wallpaper start" = wallpaper next
 
 # Add padding to image to account for status bar
-def "wallpaper pad" [image: string output_file?: string] {
+def "wallpaper pad" [image?: string output_file?: string] {
+  let image = if ($image | is-empty) {
+    select-local-wallpaper
+  } else {
+    $image
+  }
+
+  if ($image | is-empty) {
+    return
+  }
+
   let resolution = (xrandr | rg '\*' | split words | first)
   let resolution_parts = ($resolution | split row x)
   let padded_width = ($resolution_parts | first)
