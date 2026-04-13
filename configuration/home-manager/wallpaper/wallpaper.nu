@@ -162,8 +162,13 @@ def restart-wallpaper [] {
 # Load wallpapers
 def "wallpaper load" [
   path?: string # Local image file or directory to load
+  --clear # Clear existing wallpapers before loading new ones
   --keep-default # Don't remove the default wallpaper when loading others
 ] {
+  if $clear {
+    wallpaper clear
+  }
+
   let files = if ($path | is-empty) {
     let paths = (select-remote-path --allow-directories dropbox wallpaper)
 
