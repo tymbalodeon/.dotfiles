@@ -192,18 +192,13 @@ def "wallpaper load" [
       | where {is-image}
     )
 
-    # TODO: Show some kind of progress bar or something...
     for file in $files {
-      wallpaper pad $file
+      # TODO: Improve this messaging
+      print $"Padding ($file)..."
+      wallpaper pad $file $wallpaper_directory
     }
 
-    let files = (
-      $files
-      | each {|path| $wallpaper_directory | path join ($path | path basename)}
-    )
-
-    mv ($"($temporary_directory)/*" | into glob) $wallpaper_directory
-    rm --force $temporary_directory
+    rm --force --recursive $temporary_directory
   } else {
     let path = ($path | path expand)
 
@@ -246,7 +241,7 @@ def "wallpaper next" [] {
 alias "wallpaper start" = wallpaper next
 
 # Add padding to image to account for status bar
-def "wallpaper pad" [image?: string output_file?: string] {
+def "wallpaper pad" [image?: string output_path?: string] {
   let image = if ($image | is-empty) {
     select-local-wallpaper
   } else {
@@ -264,10 +259,13 @@ def "wallpaper pad" [image?: string output_file?: string] {
   let padded_resolution = ([$padded_width $padded_height] | str join x)
   let image = ($image | path expand)
 
-  let output_file = if ($output_file | is-empty) {
+  let output_path = if ($output_path | is-empty) {
     $image
+  } else if ($output_path | path type) == dir {
+    $output_path
+    | path join ($image | path basename)
   } else {
-    $output_file
+    $output_path
   }
 
   (
@@ -277,7 +275,7 @@ def "wallpaper pad" [image?: string output_file?: string] {
       -gravity north
       -resize $resolution
       -extent $padded_resolution
-      $output_file
+      $output_path
   )
 }
 
