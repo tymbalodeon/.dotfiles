@@ -3,6 +3,7 @@
   hostType,
   lib,
   pkgs,
+  zk-graph,
   ...
 }: let
   emanote = import (
@@ -80,7 +81,16 @@ in {
     nushell.extraScripts = [
       {
         includes = ["start-process"];
-        source = ./note.nu;
+        name = "note";
+
+        text =
+          (builtins.readFile ./note.nu)
+          + "\n"
+          + ''
+            def zk-graph-source [] {
+              "${zk-graph}"
+            }
+          '';
       }
 
       {source = ./pens.nu;}

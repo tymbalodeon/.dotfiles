@@ -7,6 +7,7 @@
   hostType,
   lib,
   src,
+  zk-graph,
   ...
 }: {
   config = let
@@ -20,6 +21,7 @@
           hostName
           hostType
           src
+          zk-graph
           ;
       };
 

@@ -67,6 +67,11 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       url = "github:rafaelrc7/wayland-pipewire-idle-inhibit";
     };
+
+    zk-graph = {
+      flake = false;
+      url = "sourcehut:~whynothugo/zk-graph";
+    };
   };
 
   outputs = {
@@ -84,6 +89,7 @@
     stylix-unstable,
     tsundeoku,
     wayland-pipewire-idle-inhibit,
+    zk-graph,
     ...
   }: let
     getChannels = hostType:
@@ -214,6 +220,7 @@
               solaar
               src
               wayland-pipewire-idle-inhibit
+              zk-graph
               ;
 
             home-manager = home-manager-unstable;

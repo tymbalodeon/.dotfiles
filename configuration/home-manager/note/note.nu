@@ -55,6 +55,10 @@ def sync-zk-directory [] {
 }
 
 def --wrapped note [...args: string] {
+  if ($args | any {$in in [--help -h]}) {
+    return (help note)
+  }
+
   if ($args | is-empty) {
     note edit
   } else {
@@ -120,6 +124,30 @@ def "note edit" [...search_terms: string] {
   }
 
   sync-zk-directory
+}
+
+def "note graph" [] {
+  let zk_graph_directory = (
+    get-current-notebook-path
+    | path join .zk-graph
+  )
+
+  mkdir $zk_graph_directory
+
+  for file in [
+    d3.v7.min.js
+    favicon.ico
+    index.html
+  ] {
+    cp $"(zk-graph-source)/($file)" $zk_graph_directory
+  }
+
+  zk graph --format json --quiet
+  | save --force $"($zk_graph_directory)/data.json"
+
+  cd $zk_graph_directory
+  job spawn { python -m http.server }
+  start-process xdg-open http://localhost:8000
 }
 
 # Create or edit the current day's journal entry
