@@ -319,39 +319,36 @@
               }
             }
 
-            # TODO: printing should happen here, since the sync command can take
-            # a while...
+            let files = if $is_directory {
+              rclone lsjson $"($remote):($remote_path)"
+              | from json
+              | get Path
+              | each {
+                  |path|
+
+                  {
+                    from: ($remote_path | path join $path)
+                    to: ($parent | path join $path)
+                  }
+                }
+            } else {
+              {
+                from: ($remote_path)
+                to: ($parent | path join ($remote_path | path basename))
+              }
+            }
+
+            if $pipe {
+              $files.to
+            } else if not $quiet {
+              for file in $files {
+                print $"Downloading ($file.from)..."
+              }
+            }
 
             rclone sync --fix-case $"($remote):($remote_path)" $parent
 
-            if $env.LAST_EXIT_CODE == 0 {
-              let files = if $is_directory {
-                rclone lsjson $"($remote):($remote_path)"
-                | from json
-                | get Path
-                | each {
-                    |path|
-
-                    {
-                      from: ($remote_path | path join $path)
-                      to: ($parent | path join $path)
-                    }
-                  }
-              } else {
-                {
-                  from: ($remote_path)
-                  to: ($parent | path join ($remote_path | path basename))
-                }
-              }
-
-              if $pipe {
-                $files.to
-              } else if not $quiet {
-                for file in $files {
-                  print $"Downloaded ($file.from) to ($file.to)"
-                }
-              }
-            } else {
+            if $env.LAST_EXIT_CODE != 0 {
               print-error $"could not find remote file \"($remote_path)\""
             }
           }

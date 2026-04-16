@@ -163,6 +163,7 @@ def restart-wallpaper [] {
 def "wallpaper load" [
   path?: string # Local image file or directory to load
   --clear # Clear existing wallpapers before loading new ones
+  --force # Re-download even if already present locally
   --keep-default # Don't remove the default wallpaper when loading others
 ] {
   if $clear {
@@ -183,7 +184,25 @@ def "wallpaper load" [
     let wallpaper_directory = (wallpaper-directory)
 
     for path in $paths {
-      storage download --force --to $temporary_directory $path
+      if $force {
+        storage download --force --to $temporary_directory $path
+      } else {
+        let filenames = (
+          rclone lsjson $"dropbox:($path)"
+          | from json
+          | get Path
+        )
+
+        for filename in $filenames {
+          if not (
+            $wallpaper_directory
+            | path join $filename
+            | path exists
+          ) {
+            storage download --to $temporary_directory $path
+          }
+        }
+      }
     }
 
     let files = (
@@ -193,7 +212,6 @@ def "wallpaper load" [
     )
 
     for file in $files {
-      # TODO: Improve this messaging
       print $"Padding ($file)..."
       wallpaper pad $file $wallpaper_directory
     }
