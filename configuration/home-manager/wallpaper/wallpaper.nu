@@ -187,19 +187,39 @@ def "wallpaper load" [
       if $force {
         storage download --force --to $temporary_directory $path
       } else {
-        let filenames = (
-          rclone lsjson $"dropbox:($path)"
+        let parent_directory = ($path | path split | drop | path join)
+
+        let is_directory = (
+          rclone lsjson $"dropbox:($parent_directory)"
           | from json
-          | get Path
+          | where Path == ($path | path basename)
+          | first
+          | get IsDir
         )
 
-        for filename in $filenames {
+        let files = (
+          rclone lsjson $"dropbox:($path)"
+          | from json
+        )
+
+        for file in $files {
           if not (
             $wallpaper_directory
-            | path join $filename
+            | path join $file.Path
             | path exists
           ) {
-            storage download --to $temporary_directory $path
+            let file_path = if $is_directory {
+              if $file.IsDir {
+                $path
+              } else {
+                $path
+                | path join $file.Path
+              }
+            } else {
+              $path
+            }
+
+            storage download --to $temporary_directory $file_path
           }
         }
       }
