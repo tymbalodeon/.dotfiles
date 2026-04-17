@@ -221,6 +221,9 @@ export def main [
     darwin-rebuild $host $debug
   }
 
+  $env.LS_COLORS
+  | save --force ($env.XDG_STATE_HOME | path join ls-colors)
+
   bat cache --build
 
   if $clean or $clean_all or $prune or $prune_all {
