@@ -184,44 +184,50 @@ def "wallpaper load" [
     let wallpaper_directory = (wallpaper-directory)
 
     for path in $paths {
-      if $force {
-        storage download --force --to $temporary_directory $path
-      } else {
-        let parent_directory = ($path | path split | drop | path join)
+      try {
+        if $force {
+          storage download --force --to $temporary_directory $path
+        } else {
+          let parent_directory = ($path | path split | drop | path join)
 
-        let is_directory = (
-          rclone lsjson $"dropbox:($parent_directory)"
-          | from json
-          | where Path == ($path | path basename)
-          | first
-          | get IsDir
-        )
+          let is_directory = (
+            rclone lsjson $"dropbox:($parent_directory)"
+            | from json
+            | where Path == ($path | path basename)
+            | first
+            | get IsDir
+          )
 
-        let files = (
-          rclone lsjson $"dropbox:($path)"
-          | from json
-        )
+          let files = (
+            rclone lsjson $"dropbox:($path)"
+            | from json
+          )
 
-        for file in $files {
-          if not (
-            $wallpaper_directory
-            | path join $file.Path
-            | path exists
-          ) {
-            let file_path = if $is_directory {
-              if $file.IsDir {
-                $path
+          for file in $files {
+            if not (
+              $wallpaper_directory
+              | path join $file.Path
+              | path exists
+            ) {
+              let file_path = if $is_directory {
+                if $file.IsDir {
+                  $path
+                } else {
+                  $path
+                  | path join $file.Path
+                }
               } else {
                 $path
-                | path join $file.Path
               }
-            } else {
-              $path
-            }
 
-            storage download --to $temporary_directory $file_path
+              storage download --to $temporary_directory $file_path
+            }
           }
         }
+      } catch {
+        |error|
+
+        print $error.msg
       }
     }
 
@@ -233,7 +239,14 @@ def "wallpaper load" [
 
     for file in $files {
       print $"Padding ($file)..."
-      wallpaper pad $file $wallpaper_directory
+
+      try {
+        wallpaper pad $file $wallpaper_directory
+      } catch {
+        |error|
+
+        print $error.msg
+      }
     }
 
     rm --force --recursive $temporary_directory
