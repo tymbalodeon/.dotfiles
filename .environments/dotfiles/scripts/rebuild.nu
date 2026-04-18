@@ -185,13 +185,11 @@ export def main [
     get-theme $dark_theme $light_theme $random_theme $theme
   }
 
-  let theme = (get-stylix-theme-name $theme)
-
   if $random_theme {
     tinty info $theme
   }
 
-  $env.STYLIX_THEME = $theme
+  $env.STYLIX_THEME = (get-stylix-theme-name $theme)
 
   if $update {
     update
@@ -218,8 +216,12 @@ export def main [
     darwin-rebuild $host $debug
   }
 
-  $env.LS_COLORS
-  | save --force ($env.XDG_STATE_HOME | path join ls-colors)
+  # TODO: update wallpaper fill color to match new theme here!
+  # FIXME: this doesn't work!
+  try {
+    vivid generate stylix
+    | save --force ($env.XDG_STATE_HOME | path join ls-colors)
+  }
 
   bat cache --build
 
