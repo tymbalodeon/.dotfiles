@@ -15,6 +15,7 @@
       file."wallpaper/default-wallpaper.jpeg".source = ./default-wallpaper.jpeg;
 
       packages = with pkgs; [
+        file
         imagemagick
         swaybg
       ];
