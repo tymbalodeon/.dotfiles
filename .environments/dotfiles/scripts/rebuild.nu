@@ -4,10 +4,11 @@ use configurations.nu get-all-hosts
 use configurations.nu get-built-host-name
 use configurations.nu is-home-manager
 use configurations.nu is-nixos
-use prune.nu
 use optimise.nu
+use prune.nu
+use theme-preview.nu get-stylix-theme-name
+use theme-preview.nu get-theme
 use update.nu
-use theme-preview.nu 
 
 def darwin-rebuild [
   host: string
@@ -83,36 +84,6 @@ def "tinty list" [] {
   | where {$in.system == base16}
 }
 
-def choose-theme [random_theme: bool dark_theme: bool light_theme: bool] {
-  let themes = (tinty list)
-
-  let themes = if $dark_theme  {
-    $themes
-    | where variant == dark
-  } else if $light_theme {
-    $themes
-    | where variant == light
-  } else {
-    $themes
-  }
-
-  let themes = $themes.id
-
-  let theme = if $random_theme {
-    let index = (random int 0..($themes | length))
-
-    $themes
-    | get $index
-  } else if $random_theme {
-    $themes
-    | to text
-    | fzf --preview "tinty info {}"
-  }
-
-  $theme
-  | str replace base16- ""
-}
-
 def get-env-value [values: table<key: string, value: string> key: string] {
   $values
   | where key == $key
@@ -136,12 +107,6 @@ def get-env-theme [] {
       false
     } else {
       ($variant | str downcase) == light
-    }
-
-    let theme = if $theme == random {
-      choose-theme true $dark_theme $light_theme
-    } else {
-      $theme
     }
    
     {
@@ -178,20 +143,52 @@ export def main [
 ] {
   let env_theme = (get-env-theme)
 
-  let theme = if ($theme | is-not-empty)  {
-    $theme
+  let dark_theme = if ($dark_theme | is-empty) {
+    $env_theme.dark_theme
   } else {
-    if not $choose_theme and not $random_theme {
-      $env_theme.theme
-    } else {
-      choose-theme $random_theme $dark_theme $light_theme
-    }
+    $dark_theme
   }
 
-  if ($theme | is-not-empty) {
-    print (
-      theme-preview $theme $env_theme.dark_theme $env_theme.light_theme
-    )
+  let light_theme = if ($light_theme | is-empty) {
+    $env_theme.light_theme
+  } else {
+    $light_theme
+  }
+
+  let random_theme = (
+    $random_theme or ($env_theme.theme | str downcase) == random
+  )
+
+  let theme = if (
+    [$choose_theme $dark_theme $light_theme $random_theme $theme]
+    | all {|item| ($item | is-empty) or ($item == false)}
+  ) {
+    $env_theme.theme
+  } else {
+    $theme
+  }
+
+  let theme = if not (
+    [
+      $choose_theme
+      $dark_theme
+      $light_theme
+      $random_theme
+      $theme
+    ] | each {
+        |item|
+
+        ($item | is-not-empty) and ($item != false)
+      } | any {into bool}) {
+    null
+  } else {
+    get-theme $dark_theme $light_theme $random_theme $theme
+  }
+
+  let theme = (get-stylix-theme-name $theme)
+
+  if $random_theme {
+    tinty info $theme
   }
 
   $env.STYLIX_THEME = $theme
