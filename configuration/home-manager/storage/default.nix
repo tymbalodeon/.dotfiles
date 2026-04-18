@@ -41,7 +41,7 @@
 
           def get-storage-directory [remote?: string] {
             $env.HOME
-            | path join storage $remote
+            | path join storage (get-remote $remote)
           }
 
           # Browse local files
@@ -94,6 +94,22 @@
           alias "storage br remote" = storage browse remote
           alias "storage br r" = storage browse remote
           alias "storage browse r" = storage browse remote
+
+          # `Cd` to the storage directory (or interactively select a subdirectory)
+          def --env "storage cd" [
+            --interactive (-i) # Interactively select the path to `cd` to
+          ] {
+            let storage_directory = (get-storage-directory)
+
+            let directory = if $interactive {
+              fd --type directory "" $storage_directory
+              | fzf
+            } else {
+              $storage_directory
+            }
+
+            cd $directory
+          }
 
           def select-all-value [] {
             "--- SELECT ALL ---"
