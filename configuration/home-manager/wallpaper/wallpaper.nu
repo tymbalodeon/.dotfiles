@@ -14,15 +14,16 @@ def select-local-wallpaper [] {
     | get name
     | to text
     | fzf --preview $"
-        file='($wallpaper_directory)/{}'
+        file={}
+        file=\"($wallpaper_directory)/$file\"
 
-        if [[ $\(file --brief --mime-type $file\) == image/* ]]; then
+        if [[ $\(file --brief --mime-type \"$file\"\) == image/* ]]; then
           kitten icat \\
             --clear \\
             --place ${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}@0x0 \\
             --stdin no \\
             --transfer-mode memory \\
-            $file
+            \"$file\"
         fi
       "
     | lines
