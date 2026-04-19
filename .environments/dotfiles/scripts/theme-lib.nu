@@ -192,5 +192,5 @@ export def get-built-theme [] {
 
 export def set-built-theme [theme: string] {
   $theme
-  | save (stylix-theme-path)
+  | save --force (stylix-theme-path)
 }
