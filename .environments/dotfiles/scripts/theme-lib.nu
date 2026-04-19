@@ -1,3 +1,15 @@
+def "tinty list" [] {
+  try {
+    ^tinty list out+err> /dev/null
+  } catch {
+    tinty install
+  }
+
+  ^tinty list --json
+  | from json
+  | where {$in.system == base16}
+}
+
 def get-themes [variant?: string] {
   let themes = (
     ^tinty list --json
@@ -104,11 +116,13 @@ export def get-theme [dark: bool light: bool random: bool theme?: string] {
   } else {
     try {
       select-theme (get-variant $dark $light)
+    } catch {
+      exit
     }
   }
 }
 
-export def main [
+export def theme-preview [
   dark: bool
   light: bool
   random: bool
@@ -128,3 +142,55 @@ export def get-stylix-theme-name [theme: string] {
   | str replace base16- ""
 }
 
+def get-env-value [values: table<key: string, value: string> key: string] {
+  try {
+    $values
+    | where key == $key
+    | get value
+    | first
+  }
+}
+
+export def get-env-values [] {
+  try {
+    let values = (open ../.env | parse "{key}={value}")
+    let variant = (get-env-value $values DOTFILES_RANDOM_THEME_VARIANT)
+    let random_theme = (get-env-value $values DOTFILES_RANDOM_THEME)
+
+    {
+      dark_theme: (($variant | str downcase) == dark)
+      light_theme: (($variant | str downcase) == light)
+
+      random_theme: (
+        if ($random_theme | is-empty) {
+          false
+        } else {
+          $random_theme
+        }
+      )
+    }
+  } catch {
+    {
+      dark_theme: false
+      light_theme: false
+      random_theme: false
+    }
+  }
+}
+
+export def stylix-theme-path [] {
+  $env.XDG_STATE_HOME
+  | path join stylix-theme
+}
+
+export def get-built-theme [] {
+  try {
+    open (stylix-theme-path)
+    | str trim
+  }
+}
+
+export def set-built-theme [theme: string] {
+  $theme
+  | save (stylix-theme-path)
+}

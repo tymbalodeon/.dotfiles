@@ -1,9 +1,17 @@
 #!/usr/bin/env nu
 
 use rebuild.nu
-use theme-preview.nu get-theme
+use theme-lib.nu get-built-theme
+use theme-lib.nu get-theme
+use theme-lib.nu stylix-theme-path
 
-def main [] {}
+def main [] {
+  get-built-theme
+}
+
+def "main clear" [] {
+  rm --force (stylix-theme-path)  
+}
 
 # List available themes
 def "main list" [] {

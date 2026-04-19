@@ -6,8 +6,11 @@ use configurations.nu is-home-manager
 use configurations.nu is-nixos
 use optimise.nu
 use prune.nu
-use theme-preview.nu get-stylix-theme-name
-use theme-preview.nu get-theme
+use theme-lib.nu get-built-theme
+use theme-lib.nu get-env-values
+use theme-lib.nu get-stylix-theme-name
+use theme-lib.nu get-theme
+use theme-lib.nu set-built-theme
 use update.nu
 
 def darwin-rebuild [
@@ -72,98 +75,52 @@ def home-manager [
   }
 }
 
-def "tinty list" [] {
-  try {
-    ^tinty list out+err> /dev/null
-  } catch {
-    tinty install
-  }
-
-  ^tinty list --json
-  | from json
-  | where {$in.system == base16}
-}
-
-def get-env-value [values: table<key: string, value: string> key: string] {
-  $values
-  | where key == $key
-  | get value
-  | first
-}
-
-def get-env-theme [] {
-  try {
-    let values = (open ../.env | parse "{key}={value}")
-    let theme = try { get-env-value $values STYLIX_THEME }
-    let variant = try { get-env-value $values STYLIX_VARIANT }
-
-    let dark_theme = if ($variant | is-empty) {
-      false
-    } else {
-      ($variant | str downcase) == dark
-    }
-
-    let light_theme = if ($variant | is-empty) {
-      false
-    } else {
-      ($variant | str downcase) == light
-    }
-   
-    {
-      theme: $theme
-      dark_theme: $dark_theme
-      light_theme: $light_theme
-    }
-  } catch {
-    {
-      theme: null
-      dark_theme: null
-      light_theme: null
-    }
-  }
-}
-
 # Rebuild and switch to (or --test) a configuration
 export def main [
-    host?: string # The target host configuration (auto-detected if not specified)
-    --choose-theme # Choose the stylix theme interactively
-    --clean # Run `just prune` and `just optimise` after rebuilding
-    --clean-all # Clean, removing all old generations
-    --dark-theme # Select only dark themes
-    --debug # Run and show verbose trace
-    --light-theme # Select only light themes
-    --older-than: string # (with `--clean` or `--prune`)
-    --optimise # Run `just optimise` after rebuilding
-    --prune # Run `just prune` after rebuilding
-    --prune-all # Prune, removing all old generations
-    --random-theme # Select a random stylix theme
-    --test # Apply the configuration without adding it to the boot menu
-    --theme: string # Override the stylix theme
-    --update # Update the flake lock before rebuilding
+  host?: string # The target host configuration (auto-detected if not specified)
+  --choose-theme # Choose the stylix theme interactively
+  --clean # Run `just prune` and `just optimise` after rebuilding
+  --clean-all # Clean, removing all old generations
+  --dark-theme # Select only dark themes
+  --debug # Run and show verbose trace
+  --default-theme # Ignore $XDG_STATE_HOME/stylix-theme value and build with default theme
+  --light-theme # Select only light themes
+  --older-than: string # (with `--clean` or `--prune`)
+  --optimise # Run `just optimise` after rebuilding
+  --prune # Run `just prune` after rebuilding
+  --prune-all # Prune, removing all old generations
+  --random-theme # Select a random stylix theme
+  --test # Apply the configuration without adding it to the boot menu
+  --theme: string # Override the stylix theme
+  --update # Update the flake lock before rebuilding
 ] {
-  let env_theme = (get-env-theme)
+  let env_values = (get-env-values)
 
-  let dark_theme = if ($dark_theme | is-empty) {
-    $env_theme.dark_theme
-  } else {
-    $dark_theme
-  }
-
-  let light_theme = if ($light_theme | is-empty) {
-    $env_theme.light_theme
-  } else {
-    $light_theme
-  }
-
-  let random_theme = (
-    $random_theme or ($env_theme.theme | str downcase) == random
+  let dark_theme = (
+    $dark_theme or $env_values.random_theme and $env_values.dark_theme
   )
 
-  let theme = if (
+  let light_theme = (
+    $light_theme or $env_values.random_theme and $env_values.light_theme
+  )
+
+  let random_theme = if ($random_theme | is-empty) {
+    $env_values.random_theme
+  } else {
+    $random_theme
+  }
+
+  let theme = if not $default_theme and (
     [$choose_theme $dark_theme $light_theme $random_theme $theme]
     | all {|item| ($item | is-empty) or ($item == false)}
   ) {
-    $env_theme.theme
+    let theme = (get-built-theme)
+    let info = $"(ansi default_bold)info(ansi reset)"
+
+    print $"($info): Using previously built theme \"($theme)\""
+    print $"($info): Use `--default-theme` to build with the default theme"
+
+    $theme
   } else {
     $theme
   }
@@ -189,7 +146,9 @@ export def main [
     tinty info $theme
   }
 
-  $env.STYLIX_THEME = (get-stylix-theme-name $theme)
+  if ($theme | is-not-empty) {
+    $env.STYLIX_THEME = (get-stylix-theme-name $theme)
+  }
 
   if $update {
     update
@@ -216,10 +175,12 @@ export def main [
     darwin-rebuild $host $debug
   }
 
+  set-built-theme $theme  
+
   # TODO: update wallpaper fill color to match new theme here!
   # FIXME: this doesn't work!
   try {
-    vivid generate stylix
+    nu -c "vivid generate stylix"
     | save --force ($env.XDG_STATE_HOME | path join ls-colors)
   }
 
