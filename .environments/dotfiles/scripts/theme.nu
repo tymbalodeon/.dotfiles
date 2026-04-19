@@ -4,6 +4,7 @@ use rebuild.nu
 use theme-lib.nu get-built-theme
 use theme-lib.nu get-theme
 use theme-lib.nu stylix-theme-path
+use theme-lib.nu theme-preview
 
 def main [] {
   get-built-theme

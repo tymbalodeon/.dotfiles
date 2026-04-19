@@ -255,6 +255,10 @@ in {
         spawn-at-startup "systemctl" "--user" "enable" "wpaperd"
 
         window-rule {
+          focus-ring {
+            active-color "#${config.lib.stylix.colors.base06}"
+          }
+
           open-maximized-to-edges true
         }
       '';
