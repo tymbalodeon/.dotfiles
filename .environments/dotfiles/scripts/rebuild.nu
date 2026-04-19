@@ -179,8 +179,10 @@ export def main [
 
   # TODO: update wallpaper fill color to match new theme here!
   # FIXME: this doesn't work!
-  try {
-    nu -c "vivid generate stylix"
+  let ls_colors = try { nu -c "vivid generate stylix" }
+
+  if ($ls_colors | is-not-empty) {
+    $ls_colors
     | save --force ($env.XDG_STATE_HOME | path join ls-colors)
   }
 

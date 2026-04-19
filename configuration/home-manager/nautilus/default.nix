@@ -1,12 +1,13 @@
-{pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   home.packages = [pkgs.nautilus];
 
   services.udiskie = {
     enable = true;
-
-    settings.program_options.file_manager = "${
-      pkgs.nautilus
-    }/bin/nautilus";
+    settings.program_options.file_manager = "${lib.getBin pkgs.nautilus}";
   };
 
   xdg = {
