@@ -75,6 +75,15 @@ def home-manager [
   }
 }
 
+def xdg-state-home [] {
+  try {
+    $env.XDG_STATE_HOME
+  } catch {
+    $env.HOME
+    | path join .local/state
+  }
+}
+
 # Rebuild and switch to (or --test) a configuration
 export def main [
   host?: string # The target host configuration (auto-detected if not specified)
@@ -186,7 +195,7 @@ export def main [
 
   if ($ls_colors | is-not-empty) {
     $ls_colors
-    | save --force ($env.XDG_STATE_HOME | path join ls-colors)
+    | save --force (xdg-state-home | path join ls-colors)
   }
 
   bat cache --build
