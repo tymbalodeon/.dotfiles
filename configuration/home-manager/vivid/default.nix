@@ -4,11 +4,16 @@
   ...
 }: {
   programs = {
-    nushell.extraConfig = ''
+    nushell.extraConfig = let
+      theme =
+        if hostType == "home-manager"
+        then "catppuccin-mocha"
+        else "stylix";
+    in ''
       # FIXME: only necessary because stylix theme is not found when launching a
       # new kitty window from a direnv subdirectory
       try {
-        $env.LS_COLORS = (vivid generate stylix)
+        $env.LS_COLORS = (vivid generate ${theme})
       } catch {
         let xdg_state_home = try {
           $env.XDG_STATE_HOME

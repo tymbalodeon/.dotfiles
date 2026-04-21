@@ -110,7 +110,7 @@ export def main [
   if (is-nixos) {
     nh os switch . --hostname $host --impure
   } else if (is-home-manager) {
-    nh home switch . --hostname $host --impure
+    nh home switch . --configuration $host --impure
   } else {
     nh darwin switch . --hostname $host --impure
   }
