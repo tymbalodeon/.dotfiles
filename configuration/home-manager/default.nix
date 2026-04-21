@@ -21,6 +21,7 @@
         just
         mprocs
         nix-search-cli
+        nurl
         ov
         pipx
         presenterm
@@ -49,6 +50,7 @@
     [
       ./bat
       ./bottom
+      ./comma
       ./direnv
       ./eza
       ./fastfetch

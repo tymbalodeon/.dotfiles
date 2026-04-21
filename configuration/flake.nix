@@ -35,6 +35,11 @@
       url = "github:nix-community/nixGL";
     };
 
+    nix-index-database = {
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      url = "github:nix-community/nix-index-database";
+    };
+
     nixpkgs-25_05.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -82,6 +87,7 @@
     nix-darwin-25_05,
     nix-darwin-unstable,
     nixgl,
+    nix-index-database,
     nixpkgs-unstable,
     solaar,
     src,
@@ -146,6 +152,7 @@
                 channel
                 hostName
                 hostType
+                nix-index-database
                 src
                 tsundeoku
                 ;
@@ -189,6 +196,7 @@
               hostType
               home-manager-unstable
               nixgl
+              nix-index-database
               src
               system
               ;
@@ -217,6 +225,7 @@
               hostName
               hostType
               musnix
+              nix-index-database
               solaar
               src
               wayland-pipewire-idle-inhibit

@@ -6,6 +6,7 @@
   hostName,
   hostType,
   lib,
+  nix-index-database,
   src,
   zk-graph,
   ...
@@ -20,6 +21,7 @@
           channel
           hostName
           hostType
+          nix-index-database
           src
           zk-graph
           ;

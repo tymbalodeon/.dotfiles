@@ -6,6 +6,7 @@
   hostName,
   hostType,
   lib,
+  nix-index-database,
   src,
   tsundeoku,
   ...
@@ -19,6 +20,7 @@
           base16-helix
           channel
           hostType
+          nix-index-database
           src
           tsundeoku
           ;
