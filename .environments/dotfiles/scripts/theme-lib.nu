@@ -190,7 +190,9 @@ export def get-built-theme [] {
   }
 }
 
-export def set-built-theme [theme: string] {
-  $theme
-  | save --force (stylix-theme-path)
+export def set-built-theme [theme?: string] {
+  if ($theme | is-not-empty) {
+    $theme
+    | save --force (stylix-theme-path)
+  }
 }

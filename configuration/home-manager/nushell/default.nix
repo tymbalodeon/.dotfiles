@@ -7,10 +7,10 @@
 }: {
   config = let
     autoload_directory = lib.removeSuffix "\n" (
-        lib.readFile "${
-          pkgs.runCommand "nushell-user-autoload-dirs"
-          {buildInputs = [pkgs.nushell];}
-          "echo `nu --commands 'print (
+      lib.readFile "${
+        pkgs.runCommand "nushell-user-autoload-dirs"
+        {buildInputs = [pkgs.nushell];}
+        "echo `nu --commands 'print (
                 $nu.user-autoload-dirs
                 | first
                 | path split
@@ -18,8 +18,8 @@
                 | path join
                 | str trim
             )'` > $out"
-        }"
-      );
+      }"
+    );
 
     cfg = config.nushell;
   in {

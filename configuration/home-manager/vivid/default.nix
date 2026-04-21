@@ -10,7 +10,14 @@
       try {
         $env.LS_COLORS = (vivid generate stylix)
       } catch {
-        let ls_colors_file = ($env.XDG_STATE_HOME | path join ls-colors)
+        let xdg_state_home = try {
+          $env.XDG_STATE_HOME
+        } catch {
+          $env.HOME
+          | path join .local/state
+        }
+
+        let ls_colors_file = ($xdg_state_home | path join ls-colors)
 
         if ($ls_colors_file | path exists) {
           let colors = (open $ls_colors_file)

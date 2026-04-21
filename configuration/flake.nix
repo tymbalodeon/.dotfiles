@@ -199,6 +199,7 @@
               nix-index-database
               src
               system
+              zk-graph
               ;
           };
 
