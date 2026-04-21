@@ -178,7 +178,7 @@ export def main [
     darwin-rebuild $host $debug
   }
 
-  set-built-theme $theme  
+  set-built-theme $theme
 
   # TODO: update wallpaper fill color to match new theme here!
   # FIXME: this doesn't work!
