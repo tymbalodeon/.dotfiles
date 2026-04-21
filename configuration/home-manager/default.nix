@@ -20,7 +20,6 @@
         hyperfine
         just
         mprocs
-        nh
         nix-search-cli
         nurl
         ov
@@ -64,6 +63,7 @@
       ./jujutsu
       ./kitty
       ./musescore
+      ./nh
       ../nix
       ./note
       ./nushell

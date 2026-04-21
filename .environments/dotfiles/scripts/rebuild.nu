@@ -38,23 +38,6 @@ def darwin-rebuild [
   sudo --preserve-env="STYLIX_THEME" $command ...$args
 }
 
-def nixos-rebuild [
-  host: string
-  test: bool
-] {
-  let args = [--flake $host --impure]
-
-  let args = if $test {
-    $args
-    | append test
-  } else {
-    $args
-    | append switch
-  }
-
-  sudo --preserve-env="STYLIX_THEME" nixos-rebuild ...$args
-}
-
 def home-manager [
   host: string
   debug: bool
@@ -160,13 +143,11 @@ export def main [
     $host
   }
 
-  let host = $".#($host)"
-
   git add .
 
+  # TODO: update HM and Darwin to `nh`
   if (is-nixos) {
-    # TODO: is there a --debug here? If not, make a note in the help text above
-    nixos-rebuild $host $test
+    nh os switch . --hostname $host --impure
   } else if (is-home-manager) {
     # TODO: handle what to do if home-manager is not yet installed. Does this
     # apply to darwin too?
