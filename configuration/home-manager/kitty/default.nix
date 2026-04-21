@@ -42,7 +42,7 @@
             confirm_os_window_close = 0;
             enable_audio_bell = "no";
             enabled_layouts = "grid, stack, vertical, horizontal, tall";
-            font_size = cfg.font_size;
+            inherit (cfg) font_size;
             inactive_text_alpha = 0.5;
             shell = lib.getExe pkgs.nushell;
             tab_bar_edge = "top";
@@ -50,7 +50,7 @@
             tab_powerline_style = "slanted";
             wheel_scroll_multiplier = 1;
           }
-          // optionalAttrs (cfg.font_family != "") {font_family = cfg.font_family;}
+          // optionalAttrs (cfg.font_family != "") {inherit (cfg) font_family;}
           // optionalAttrs isDarwin {
             hide_window_decorations = "yes";
             macos_quit_when_last_window_closed = "yes";

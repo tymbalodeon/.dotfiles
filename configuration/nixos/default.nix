@@ -111,7 +111,7 @@
   options.nixos = let
     inherit (lib) mkOption types;
 
-    str = types.str;
+    inherit (types) str;
     user = import ../users;
   in {
     name = mkOption {

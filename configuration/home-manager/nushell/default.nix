@@ -6,8 +6,7 @@
   ...
 }: {
   config = let
-    autoload_directory = (
-      lib.removeSuffix "\n" (
+    autoload_directory = lib.removeSuffix "\n" (
         lib.readFile "${
           pkgs.runCommand "nushell-user-autoload-dirs"
           {buildInputs = [pkgs.nushell];}
@@ -20,8 +19,7 @@
                 | str trim
             )'` > $out"
         }"
-      )
-    );
+      );
 
     cfg = config.nushell;
   in {

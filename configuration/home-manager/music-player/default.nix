@@ -101,7 +101,7 @@
         max_output_buffer_size "131072"
       '';
 
-      musicDirectory = cfg.musicDirectory;
+      inherit (cfg) musicDirectory;
       network.startWhenNeeded = true;
     };
 

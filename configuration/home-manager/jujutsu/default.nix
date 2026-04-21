@@ -21,8 +21,8 @@
         };
 
         user = {
-          email = cfg.email;
-          name = cfg.name;
+          inherit (cfg) email;
+          inherit (cfg) name;
         };
       };
     };
@@ -31,7 +31,7 @@
   options.jujutsu = let
     inherit (lib) mkOption types;
 
-    str = types.str;
+    inherit (types) str;
   in {
     email = mkOption {
       default = config.user.email;

@@ -141,7 +141,7 @@
   options.git = let
     inherit (lib) mkOption types;
 
-    str = types.str;
+    inherit (types) str;
   in {
     github.user = mkOption {
       default = config.user.githubUsername;

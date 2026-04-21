@@ -108,7 +108,7 @@ with lib; {
         };
 
         input = {
-          kb_options = cfg.hyprland.settings.input.kb_options;
+          inherit (cfg.hyprland.settings.input) kb_options;
           repeat_delay = 200;
           repeat_rate = 50;
         };
@@ -120,7 +120,7 @@ with lib; {
           force_default_wallpaper = 0;
         };
 
-        monitor = cfg.hyprland.settings.monitor;
+        inherit (cfg.hyprland.settings) monitor;
       };
 
       systemd = {

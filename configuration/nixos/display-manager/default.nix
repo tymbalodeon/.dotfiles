@@ -26,7 +26,7 @@
       cursorSize = 24;
       cursorTheme = "Bibata-Modern-Classic";
     in {
-      defaultSession = cfg.defaultSession;
+      inherit (cfg) defaultSession;
 
       sddm = {
         enable = true;

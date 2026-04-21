@@ -106,7 +106,7 @@
           };
         }
         // lib.optionalAttrs (hostType == "home-manager") {
-          theme = cfg.theme;
+          inherit (cfg) theme;
         };
     };
   };

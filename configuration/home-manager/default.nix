@@ -20,6 +20,7 @@
         hyperfine
         just
         mprocs
+        nh
         nix-search-cli
         nurl
         ov
@@ -38,7 +39,7 @@
       ];
 
       stateVersion = "23.11";
-      username = config.user.username;
+      inherit (config.user) username;
     };
 
     news.display = "silent";
