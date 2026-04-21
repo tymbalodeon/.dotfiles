@@ -3,12 +3,13 @@
   hostType,
   lib,
   pkgs,
+  system,
   zk-graph,
   ...
 }: let
   emanote = import (
     fetchTarball {
-      sha256 = "sha256:0a02x01yrh46dnlrnixhmb0xp8p4sziam4g1hmbxqf15gzmivfhc";
+      sha256 = "sha256:033h8vk4wdwla0dhjmaqfzbch386balpjcnxah5gyk3w5q16fwds";
       url = "https://github.com/srid/emanote/archive/master.tar.gz";
     }
   );
@@ -124,14 +125,14 @@ in {
     };
 
     services.emanote = let
-      system =
+      currentSystem =
         if hostType == "home-manager"
         then system
         else builtins.currentSystem;
     in {
       enable = true;
       notes = ["${config.home.homeDirectory}/.nb/home"];
-      package = emanote.packages.${system}.default;
+      package = emanote.packages.${currentSystem}.default;
     };
 
     xdg.configFile.".zk/templates/journal.md".text = ''

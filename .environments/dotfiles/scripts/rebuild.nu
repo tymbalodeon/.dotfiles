@@ -115,10 +115,13 @@ export def main [
     | all {|item| ($item | is-empty) or ($item == false)}
   ) {
     let theme = (get-built-theme)
-    let info = $"(ansi default_bold)info(ansi reset)"
 
-    print $"($info): Using previously built theme \"($theme)\""
-    print $"($info): Use `--default-theme` to build with the default theme"
+    if ($theme | is-not-empty) {
+      let info = $"(ansi default_bold)info(ansi reset)"
+
+      print $"($info): Using previously built theme \"($theme)\""
+      print $"($info): Use `--default-theme` to build with the default theme"
+    }
 
     $theme
   } else {
