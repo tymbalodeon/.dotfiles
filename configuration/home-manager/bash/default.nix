@@ -10,8 +10,8 @@
     initExtra = ''
       set -o vi
 
-      PS1="\[\e[1m\e[1;32m\w\n$\e[0m\] "
-      PS2="\[\e[37m>\e[0m\] "
+      PS1="\[\e[1m\e[1;36m\w\n$\e[0m\] "
+      PS2="\[\e[1m\e[1;32m>\e[0m\] "
     '';
 
     shellAliases = {
