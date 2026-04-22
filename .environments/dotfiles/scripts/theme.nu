@@ -3,6 +3,7 @@
 use rebuild.nu
 use theme-lib.nu get-built-theme
 use theme-lib.nu get-theme
+use theme-lib.nu get-themes
 use theme-lib.nu stylix-theme-path
 use theme-lib.nu theme-preview
 
@@ -14,8 +15,20 @@ def "main clear" [] {
   rm --force (stylix-theme-path)  
 }
 
-# List available themes
 def "main list" [] {
+  main list ids
+}
+
+# List available theme ids
+def "main list ids" [] {
+  get-themes
+  | get id
+  | to text --no-newline
+  | str replace --all base16- ""
+}
+
+# List available theme names
+def "main list names" [] {
   get-themes
   | get name
   | to text --no-newline

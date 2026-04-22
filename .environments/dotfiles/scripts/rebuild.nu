@@ -5,6 +5,7 @@ use configurations.nu get-all-hosts
 use configurations.nu get-built-host-name
 use configurations.nu is-home-manager
 use configurations.nu is-nixos
+use ../../default/scripts/print.nu print-error
 use theme-lib.nu get-built-theme
 use theme-lib.nu get-env-values
 use theme-lib.nu get-stylix-theme-name
@@ -83,7 +84,13 @@ export def main [
       } | any {into bool}) {
     null
   } else {
-    get-theme $dark_theme $light_theme $random_theme $theme
+    let found_theme = (get-theme $dark_theme $light_theme $random_theme $theme)
+
+    if ($found_theme | is-empty) {
+      print-error $"theme \"($theme)\" not found"
+    } else {
+      $found_theme
+    }
   }
 
   if $random_theme {
