@@ -44,6 +44,7 @@ in {
     ../monitors
     ../niri
     ../reaper
+    ../../stylix
     ../swaync
     ../waybar
   ];
