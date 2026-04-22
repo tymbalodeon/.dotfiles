@@ -106,7 +106,6 @@ export def main [
 
   git add .
 
-  # TODO: update HM and Darwin to `nh`
   if (is-nixos) {
     nh os switch . --hostname $host --impure
   } else if (is-home-manager) {
@@ -115,8 +114,10 @@ export def main [
     nh darwin switch . --hostname $host --impure
   }
 
-  # TODO: if $theme is different from the previously built theme, restart waybar
-  set-built-theme $theme
+  if (get-built-theme) != $theme {
+    set-built-theme $theme
+    systemctl --user restart waybar
+  }
 
   # TODO: update wallpaper fill color to match new theme here!
   # FIXME: this doesn't work!
