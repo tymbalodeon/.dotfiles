@@ -6,6 +6,5 @@
     };
 
     enable = true;
-    # flake = "/home/user/my-nixos-config"; # sets NH_OS_FLAKE variable for you
   };
 }
