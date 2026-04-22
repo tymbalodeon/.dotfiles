@@ -17,7 +17,7 @@
         enable = true;
 
         extraConfig =
-          if cfg.font_family == "Fira Code"
+          if cfg.fontFamily == "Fira Code"
           then ''
             font_features FiraCodeRoman-Regular +zero +onum +cv30 +ss09 +cv25 +cv26 +cv32 +ss07
             font_features FiraCodeRoman-SemiBold +zero +onum +cv30 +ss09 +cv25 +cv26 +cv32 +ss07
@@ -42,7 +42,7 @@
             confirm_os_window_close = 0;
             enable_audio_bell = "no";
             enabled_layouts = "grid, stack, vertical, horizontal, tall";
-            inherit (cfg) font_size;
+            inherit (cfg) fontSize;
             inactive_text_alpha = 0.5;
             shell = lib.getExe pkgs.nushell;
             tab_bar_edge = "top";
@@ -50,7 +50,7 @@
             tab_powerline_style = "slanted";
             wheel_scroll_multiplier = 1;
           }
-          // optionalAttrs (cfg.font_family != "") {inherit (cfg) font_family;}
+          // optionalAttrs (cfg.fontFamily != "") {inherit (cfg) fontFamily;}
           // optionalAttrs isDarwin {
             hide_window_decorations = "yes";
             macos_quit_when_last_window_closed = "yes";
@@ -64,7 +64,7 @@
 
   options.kitty = with lib;
   with types; {
-    font_family = mkOption {
+    fontFamily = mkOption {
       default = "Fira Code";
 
       description = ''
@@ -73,7 +73,7 @@
       type = str;
     };
 
-    font_size = mkOption {
+    fontSize = mkOption {
       default = 8.0;
       type = float;
     };
