@@ -88,6 +88,8 @@ export def main [
 
     if ($found_theme | is-empty) {
       print-error $"theme \"($theme)\" not found"
+
+      return
     } else {
       $found_theme
     }

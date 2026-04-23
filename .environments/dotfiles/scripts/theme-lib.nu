@@ -28,26 +28,33 @@ export def get-themes [variant?: string] {
   }
 }
 
+def available-themes [] {
+  let state_path = ($env.XDG_STATE_HOME | path join stylix-available-themes.txt)
+
+  let themes = try {
+    open $state_path
+  } catch {
+    let themes = (
+      gh api --jq ".[].name" /repos/tinted-theming/schemes/contents/base16
+      | str replace --all .yaml ""
+    )
+
+    $themes
+    | save --force $state_path
+  }
+
+  $themes
+  | lines
+}
+
 def format-theme-name [theme: string] {
-  let themes = (get-themes)
+  let theme = ($theme | str downcase | str replace base16- "")
 
-  let theme = ($theme | str downcase)
-
-  let theme = if ($theme | str starts-with base16-) {
-    $themes
-    | where id == $theme
-  } else {
-    $themes
-    | where {($in.name | str downcase) == $theme or ($in.id) == $"base16-($theme)"}
+  try {
+    available-themes
+    | where $it == $theme
+    | first
   }
-
-  if ($theme | is-empty) {
-    return
-  }
-
-  $theme
-  | first
-  | get id
 }
 
 def get-variant [dark?: bool light?: bool] {
