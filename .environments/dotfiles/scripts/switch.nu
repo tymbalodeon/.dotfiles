@@ -138,7 +138,7 @@ export def main [
   bat cache --build
 
   if $clean {
-    clean --keep 3 --keep-since 3d
+    clean --keep-since 3d
   }
 
   if not (git status --short | is-empty) {
