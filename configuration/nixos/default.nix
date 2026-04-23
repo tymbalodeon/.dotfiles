@@ -85,7 +85,6 @@
     hostPath = file: ../hosts/${hostType}/${channel}/${hostName}/${file};
   in
     [
-      ./angrr
       ./bluetooth
       ./display-manager
       ./home-manager
