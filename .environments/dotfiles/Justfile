@@ -36,10 +36,10 @@ alias configs := configurations
 @prune *args:
     .environments/dotfiles/scripts/prune.nu {{ args }}
 
-# Rebuild and switch to (or --test) a configuration
+# Rebuild and switch to a configuration
 [working-directory("./configuration")]
-@rebuild *args:
-    ../.environments/dotfiles/scripts/rebuild.nu {{ args }}
+@switch *args:
+    ../.environments/dotfiles/scripts/switch.nu {{ args }}
 
 # Rollback to a previous generation
 [macos]

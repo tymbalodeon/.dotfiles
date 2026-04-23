@@ -42,7 +42,7 @@
             confirm_os_window_close = 0;
             enable_audio_bell = "no";
             enabled_layouts = "grid, stack, vertical, horizontal, tall";
-            inherit (cfg) fontSize;
+            font_size = cfg.fontSize;
             inactive_text_alpha = 0.5;
             shell = lib.getExe pkgs.nushell;
             tab_bar_edge = "top";

@@ -104,5 +104,5 @@ alias inputs := dotfiles::inputs
 alias leaks := git::leaks
 alias optimise := dotfiles::optimise
 alias prune := dotfiles::prune
-alias rebuild := dotfiles::rebuild
+alias switch := dotfiles::switch
 alias update := dotfiles::update
