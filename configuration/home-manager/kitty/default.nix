@@ -50,7 +50,7 @@
             tab_powerline_style = "slanted";
             wheel_scroll_multiplier = 1;
           }
-          // optionalAttrs (cfg.fontFamily != "") {inherit (cfg) fontFamily;}
+          // optionalAttrs (cfg.fontFamily != "") {font_family = cfg.fontFamily;}
           // optionalAttrs isDarwin {
             hide_window_decorations = "yes";
             macos_quit_when_last_window_closed = "yes";
