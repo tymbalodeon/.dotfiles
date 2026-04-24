@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-use rebuild.nu
+use switch.nu
 use theme-lib.nu get-built-theme
 use theme-lib.nu get-theme
 use theme-lib.nu get-themes

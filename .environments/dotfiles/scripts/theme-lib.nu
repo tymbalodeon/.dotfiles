@@ -134,7 +134,7 @@ export def theme-preview [
     return
   }
 
-  tinty info $theme
+  tinty info $"base16-($theme)"
 }
 
 export def get-stylix-theme-name [theme: string] {

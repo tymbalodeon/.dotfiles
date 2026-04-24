@@ -100,7 +100,7 @@ export def main [
   }
 
   if ($theme | is-not-empty) {
-    $env.STYLIX_THEME = (get-stylix-theme-name $theme)
+    $env.DOTFILES_STYLIX_THEME = (get-stylix-theme-name $theme)
   }
 
   if $update {

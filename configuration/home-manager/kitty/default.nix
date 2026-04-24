@@ -16,13 +16,10 @@
       {
         enable = true;
 
-        extraConfig =
-          if cfg.fontFamily == "Fira Code"
-          then ''
-            font_features FiraCodeRoman-Regular +zero +onum +cv30 +ss09 +cv25 +cv26 +cv32 +ss07
-            font_features FiraCodeRoman-SemiBold +zero +onum +cv30 +ss09 +cv25 +cv26 +cv32 +ss07
-          ''
-          else "";
+        extraConfig = ''
+          font_features FiraCodeRoman-Regular +zero +onum +cv30 +ss09 +cv25 +cv26 +cv32 +ss07
+          font_features FiraCodeRoman-SemiBold +zero +onum +cv30 +ss09 +cv25 +cv26 +cv32 +ss07
+        '';
 
         keybindings = {
           "ctrl+shift+h" = "launch --stdin-source=@screen_scrollback hx";
@@ -42,6 +39,7 @@
             confirm_os_window_close = 0;
             enable_audio_bell = "no";
             enabled_layouts = "grid, stack, vertical, horizontal, tall";
+            font_family = "${config.stylix.fonts.sansSerif.name}";
             font_size = cfg.fontSize;
             inactive_text_alpha = 0.5;
             shell = lib.getExe pkgs.nushell;
@@ -50,7 +48,6 @@
             tab_powerline_style = "slanted";
             wheel_scroll_multiplier = 1;
           }
-          // optionalAttrs (cfg.fontFamily != "") {font_family = cfg.fontFamily;}
           // optionalAttrs isDarwin {
             hide_window_decorations = "yes";
             macos_quit_when_last_window_closed = "yes";
@@ -62,20 +59,9 @@
       };
   };
 
-  options.kitty = with lib;
-  with types; {
-    fontFamily = mkOption {
-      default = "Fira Code";
-
-      description = ''
-        Set the font family for kitty. Set to an empty string to use the default font provided by stylix.'';
-
-      type = str;
-    };
-
-    fontSize = mkOption {
+  options.kitty.fontSize = with lib;
+    mkOption {
       default = 8.0;
-      type = float;
+      type = types.float;
     };
-  };
 }
