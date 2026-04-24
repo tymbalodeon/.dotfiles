@@ -17,7 +17,7 @@
           clockEnabled = false;
           flavor = "mocha";
           font = config.stylix.fonts.sansSerif.name;
-          fontSize = "11";
+          fontSize = "16";
           loginBackground = true;
         })
     ];

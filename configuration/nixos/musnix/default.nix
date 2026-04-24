@@ -22,7 +22,7 @@
 
   options.musnix.kernelPackages = with lib;
     mkOption {
-      default = pkgs.linuxPackages;
+      default = pkgs.linuxPackages_7_0;
       type = types.attrs;
     };
 }
