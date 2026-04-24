@@ -1,18 +1,8 @@
 {pkgs, ...}: {
-  displayManager.defaultSession = "hyprland";
-
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-
-    extraPackages = with pkgs; [
-      mesa
-    ];
-  };
-
   imports = [
-    ../../../../nixos/display-manager
-    ../../../../nixos/hyprland
     ../../../../nixos/laptop
+    ../../../../nixos/musnix
   ];
+
+  musnix.kernelPackages = pkgs.linuxPackages_7_0;
 }

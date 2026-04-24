@@ -1,8 +1,28 @@
-{musnix, ...}: {
+{
+  config,
+  lib,
+  musnix,
+  pkgs,
+  ...
+}: {
+  config = let
+    cfg = config.musnix;
+  in {
+    musnix = {
+      enable = true;
+
+      kernel = {
+        packages = cfg.kernelPackages;
+        realtime = true;
+      };
+    };
+  };
+
   imports = [musnix.nixosModules.musnix];
 
-  musnix = {
-    enable = true;
-    kernel.realtime = true;
-  };
+  options.musnix.kernelPackages = with lib;
+    mkOption {
+      default = pkgs.linuxPackages;
+      type = types.attrs;
+    };
 }
