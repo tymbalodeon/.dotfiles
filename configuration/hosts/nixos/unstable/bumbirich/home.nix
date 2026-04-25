@@ -5,7 +5,7 @@
     ../../../../home-manager/wallpaper
   ];
 
-  kitty.fontSize = 10.0;
+  kitty.fontSize = 9.0;
   laptop = true;
   niri.input.keyboard.xkb.options = "altwin:swap_alt_win";
   wallpaper.padSize = 37;

@@ -260,11 +260,6 @@
           format = " {temperatureF}°F";
         };
 
-        tray = {
-          icon-size = 21;
-          spacing = 10;
-        };
-
         wireplumber = {
           format = "{icon} {volume}%";
           format-icons = ["" "" ""];
@@ -274,7 +269,8 @@
 
       style = ''
         * {
-          font-family: ${config.stylix.fonts.sansSerif.name}, "Font Awesome 7 Free"
+          font-family: ${config.stylix.fonts.sansSerif.name}, "Font Awesome 7 Free";
+          font-size: 16px;
         }
       '';
 
