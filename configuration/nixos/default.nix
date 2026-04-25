@@ -91,7 +91,6 @@
       (hostPath "hardware.nix")
       ./idle
       ./monitors
-      ./musnix
       ./nautilus
       ./niri
       ../nix
