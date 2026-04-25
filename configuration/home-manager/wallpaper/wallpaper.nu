@@ -245,7 +245,7 @@ def "wallpaper load" [
     )
 
     for file in $files {
-      print $"Padding ($file)..."
+      print $"Padding ($file | path basename)..."
 
       try {
         wallpaper pad $file $wallpaper_directory
