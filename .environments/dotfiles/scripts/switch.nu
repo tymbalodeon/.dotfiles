@@ -12,15 +12,7 @@ use theme-lib.nu get-stylix-theme-name
 use theme-lib.nu get-theme
 use theme-lib.nu set-built-theme
 use update.nu
-
-def xdg-state-home [] {
-  try {
-    $env.XDG_STATE_HOME
-  } catch {
-    $env.HOME
-    | path join .local/state
-  }
-}
+use xdg-state-home.nu
 
 # TODO: create a separate function for testing (`nh test`)
 # Switch to the current state of the configuration files

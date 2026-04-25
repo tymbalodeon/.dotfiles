@@ -1,3 +1,5 @@
+use xdg-state-home.nu 
+
 def "tinty list" [] {
   try {
     ^tinty list out+err> /dev/null
@@ -29,7 +31,7 @@ export def get-themes [variant?: string] {
 }
 
 def available-themes [] {
-  let state_path = ($env.XDG_STATE_HOME | path join stylix-available-themes.txt)
+  let state_path = (xdg-state-home | path join stylix-available-themes.txt)
 
   let themes = try {
     open $state_path
@@ -179,7 +181,7 @@ export def get-env-values [] {
 }
 
 export def stylix-theme-path [] {
-  $env.XDG_STATE_HOME
+  xdg-state-home
   | path join stylix-theme
 }
 

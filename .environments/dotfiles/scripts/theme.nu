@@ -66,6 +66,6 @@ def "main switch" [
     input "Are you sure you want to apply this theme? [y/N] "
     | str downcase
   ) in [yes y] {
-    rebuild --theme (get-stylix-theme-name $theme)
+    switch --theme (get-stylix-theme-name $theme)
   }
 }
