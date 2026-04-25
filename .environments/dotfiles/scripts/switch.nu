@@ -15,9 +15,10 @@ use update.nu
 use xdg-state-home.nu
 
 # TODO: create a separate function for testing (`nh test`)
-# Switch to the current state of the configuration files
+# Build and activate the new configuration (and, on NixOS, make it the boot default)
 export def main [
   host?: string # The target host configuration (auto-detected if not specified)
+  --boot-only # (NixOS only) Build the new configuration and make it the boot default, but don't activate it
   --choose-theme # Choose the stylix theme interactively
   --clean # Run `clean` after rebuilding
   --dark-theme # Select only dark themes
@@ -108,7 +109,11 @@ export def main [
   git add .
 
   if (is-nixos) {
-    nh os switch . --hostname $host --impure
+    if $boot_only {
+      nh os boot . --hostname $host --impure
+    } else {
+      nh os switch . --hostname $host --impure
+    }
   } else if (is-home-manager) {
     nh home switch . --configuration $host --impure
   } else {
