@@ -270,7 +270,7 @@
       style = ''
         * {
           font-family: ${config.stylix.fonts.sansSerif.name}, "Font Awesome 7 Free";
-          font-size: 16px;
+          font-size: 14px;
         }
       '';
 
