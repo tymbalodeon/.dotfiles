@@ -98,10 +98,12 @@
     zk-graph,
     ...
   }: let
-    getChannels = hostType:
+    inherit (nixpkgs-unstable.lib.lists) flatten;
+
+    channels = hostType:
       builtins.attrNames (builtins.readDir ./hosts/${hostType});
 
-    getChannelHosts = {
+    channelHosts = {
       channel,
       hostType,
     }:
@@ -111,25 +113,40 @@
         (builtins.readDir ./hosts/${hostType}/${channel})
       );
 
-    getHosts = hostType:
-      nixpkgs-unstable.lib.lists.flatten (
+    hosts = hostType:
+      flatten (
         map
-        (channel: getChannelHosts {inherit channel hostType;})
-        (getChannels hostType)
+        (channel: channelHosts {inherit channel hostType;})
+        (channels hostType)
       );
 
-    mkHosts = mkHost: hostType:
+    allHosts = flatten (
+      map hosts
+      (builtins.attrNames (builtins.readDir ./hosts))
+    );
+
+    mkHomeConfigurations = mkConfiguration:
       builtins.foldl' (a: b: a // b) {}
-      (map mkHost
+      (map mkConfiguration
         (map ({
           channel,
           hostName,
           hostType,
         }: {inherit channel hostName hostType;})
-        (getHosts hostType)));
+        allHosts));
+
+    mkNixConfigurations = mkConfiguration: hostType:
+      builtins.foldl' (a: b: a // b) {}
+      (map mkConfiguration
+        (map ({
+          channel,
+          hostName,
+          hostType,
+        }: {inherit channel hostName hostType;})
+        (hosts hostType)));
   in {
     darwinConfigurations =
-      mkHosts
+      mkNixConfigurations
       ({
         channel,
         hostType,
@@ -180,7 +197,7 @@
       "darwin";
 
     homeConfigurations =
-      mkHosts
+      mkHomeConfigurations
       ({
         channel,
         hostType,
@@ -191,6 +208,7 @@
         ${hostName} = home-manager-unstable.lib.homeManagerConfiguration {
           extraSpecialArgs = {
             inherit
+              base16-helix
               channel
               hostName
               hostType
@@ -201,16 +219,18 @@
               system
               zk-graph
               ;
+
+            isHomeConfiguration = true;
+            stylix = stylix-unstable;
           };
 
           modules = [./home-manager];
           pkgs = nixpkgs-unstable.legacyPackages.${system};
         };
-      })
-      "home-manager";
+      });
 
     nixosConfigurations =
-      mkHosts
+      mkNixConfigurations
       ({
         channel,
         hostType,
@@ -233,7 +253,7 @@
               zk-graph
               ;
 
-            home-manager = home-manager-unstable;
+            isHomeConfiguration = false;
             stylix = stylix-unstable;
           };
         };

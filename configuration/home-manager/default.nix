@@ -1,6 +1,7 @@
 {
   channel,
   config,
+  hostName,
   hostType,
   lib,
   pkgs,
@@ -10,6 +11,8 @@
     gtk.gtk4.theme = null;
 
     home = {
+      homeDirectory = "/home/${config.home.username}";
+
       packages = with pkgs; [
         doggo
         dua
@@ -59,6 +62,7 @@
       ./git
       ./gpg
       ./helix
+      ../hosts/${hostType}/${channel}/${hostName}/home.nix
       ./jq
       ./jujutsu
       ./kitty
@@ -69,8 +73,8 @@
       ./nushell
       ./pdf
       ./ripgrep
-      ./src
       ./shell
+      ./src
       ./tealdeer
       ./vivid
       ./yazi

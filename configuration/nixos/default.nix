@@ -87,7 +87,7 @@
     [
       ./bluetooth
       ./display-manager
-      ./home-manager
+      # ./home-manager
       (hostPath "hardware.nix")
       ./idle
       ./monitors

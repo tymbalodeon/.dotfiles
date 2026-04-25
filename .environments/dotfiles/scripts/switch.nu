@@ -3,6 +3,7 @@
 use clean.nu
 use configurations.nu get-all-hosts
 use configurations.nu get-built-host-name
+use configurations.nu is-darwin
 use configurations.nu is-home-manager
 use configurations.nu is-nixos
 use ../../default/scripts/print.nu print-error
@@ -109,11 +110,11 @@ export def main [
 
   if (is-nixos) {
     nh os switch . --hostname $host --impure
-  } else if (is-home-manager) {
-    nh home switch . --configuration $host --impure
-  } else {
+  } else if (is-darwin) {
     nh darwin switch . --hostname $host --impure
   }
+
+  nh home switch . --configuration $host --impure
 
   if (get-built-theme) != $theme {
     set-built-theme $theme

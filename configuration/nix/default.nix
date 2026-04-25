@@ -1,6 +1,6 @@
 {
   channel,
-  hostType,
+  isHomeConfiguration,
   lib,
   pkgs,
   ...
@@ -21,6 +21,6 @@
         "nix-command"
       ];
     }
-    // optionalAttrs (hostType != "nixos") {package = pkgs.nix;}
+    // optionalAttrs isHomeConfiguration {package = pkgs.nix;}
     // optionalAttrs (channel != "25_05") {gc.dates = "weekly";};
 }

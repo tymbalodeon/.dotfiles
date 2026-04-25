@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  stylix,
+  ...
+}: let
   cursorTheme = "Bibata-Modern-Classic";
 in {
   gtk = {
@@ -35,8 +39,9 @@ in {
   };
 
   imports = [
-    ../brave
+    stylix.homeModules.stylix
     ../bluetooth
+    ../brave
     ../clipboard
     ../dictionary
     ../email
@@ -44,6 +49,7 @@ in {
     ../monitors
     ../niri
     ../reaper
+    ../../stylix
     ../swaync
     ../waybar
   ];
