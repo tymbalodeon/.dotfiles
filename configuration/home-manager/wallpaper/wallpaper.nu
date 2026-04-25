@@ -39,7 +39,13 @@ def select-local-wallpaper [] {
 # Set wallpaper to a specific file
 def wallpaper [wallpaper?: string] {
   let wallpaper = if ($wallpaper | is-empty) {
-    select-local-wallpaper
+    let wallpaper = (select-local-wallpaper)
+
+    if ($wallpaper | is-empty) {
+      return
+    }
+
+    $wallpaper
   } else {
     $wallpaper
   }
