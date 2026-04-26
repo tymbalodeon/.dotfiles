@@ -260,6 +260,8 @@
           format = " {temperatureF}°F";
         };
 
+        tray.spacing = 4;
+
         wireplumber = {
           format = "{icon} {volume}%";
           format-icons = ["" "" ""];

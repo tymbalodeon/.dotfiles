@@ -9,7 +9,7 @@
 }: let
   emanote = import (
     fetchTarball {
-      sha256 = "sha256:1y72r2lxz3w0azndqx8kq06k114cn54pl71djilnx0q6h6p1rzl7";
+      sha256 = "sha256:1sv99x37b7zp5aqn62cikfi9d1vcm4s6i80vr6qa8zx5rxv6kd7j";
       url = "https://github.com/srid/emanote/archive/master.tar.gz";
     }
   );
