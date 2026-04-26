@@ -1,13 +1,3 @@
-$env.PATH = (
-  "/nix/var/nix/profiles/default/bin"
-  | append ($env.HOME | path join ".nix-profile/bin")
-  | append ($env.HOME | path join ".cargo/bin")
-  | append ($env.HOME | path join ".local/bin")
-  | append "/usr/local/bin"
-  | append $env.PATH
-  | uniq
-)
-
 $env.EDITOR = "hx"
 
 $env.ENV_CONVERSIONS = {
@@ -21,8 +11,8 @@ $env.ENV_CONVERSIONS = {
   }
 }
 
-$env.NU_LIB_DIRS = [($nu.default-config-dir | path join 'scripts')]
-$env.NU_PLUGIN_DIRS = [($nu.default-config-dir | path join 'plugins')]
+$env.NU_LIB_DIRS = [($nu.default-config-dir | path join "scripts")]
+$env.NU_PLUGIN_DIRS = [($nu.default-config-dir | path join "plugins")]
 
 if (uname).kernel-name == "Darwin" {
   $env.SHELL = "nu"
