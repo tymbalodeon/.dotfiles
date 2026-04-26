@@ -12,10 +12,6 @@ def running [] {
   | is-not-empty
 }
 
-def is-darwin [] {
-  (uname).kernel-name == Darwin
-}
-
 def is-nixos [] {
   try {
     (
@@ -75,11 +71,7 @@ def "music current" [
 }
 
 def get-playlist-directory [] {
-  let playlist_directory = if (is-darwin) {
-    ".mpd/playlists"
-  } else {
-    ".local/share/mpd/playlists"
-  }
+  let playlist_directory = ".local/share/mpd/playlists"
 
   $env.HOME
   | path join $playlist_directory
@@ -210,14 +202,5 @@ def "music status" [] {
     "running"
   } else {
     "stopped"
-  }
-}
-
-# Stop music server
-def "music stop" [] {
-  if (is-darwin) {
-    pkill mpd
-  } else {
-    error make --unspanned {msg: "only implemented on Darwin systems"}
   }
 }

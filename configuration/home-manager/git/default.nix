@@ -1,5 +1,4 @@
 {
-  channel,
   config,
   lib,
   pkgs,
@@ -69,73 +68,41 @@
         name = cfg.userName;
       };
     in
-      (
-        if channel == "unstable"
-        then {
-          delta = {
-            enable = true;
-            enableGitIntegration = true;
+      {
+        delta = {
+          enable = true;
+          enableGitIntegration = true;
 
-            options = {
-              diff-so-fancy = true;
-              navigate = true;
-              syntax-theme = "base16";
-            };
+          options = {
+            diff-so-fancy = true;
+            navigate = true;
+            syntax-theme = "base16";
           };
-        }
-        else {}
-      )
-      // (
-        if channel == "unstable"
-        then {
-          git = {
-            inherit enable;
+        };
+      }
+      // {
+        git = {
+          inherit enable;
 
-            settings = {
-              inherit
-                alias
-                core
-                default
-                diff
-                github
-                gitlab
-                init
-                merge
-                pull
-                push
-                user
-                ;
-            };
-
-            signing.format = null;
+          settings = {
+            inherit
+              alias
+              core
+              default
+              diff
+              github
+              gitlab
+              init
+              merge
+              pull
+              push
+              user
+              ;
           };
-        }
-        else {
-          git = {
-            inherit enable;
 
-            aliases = alias;
-
-            extraConfig = {
-              inherit
-                core
-                default
-                diff
-                github
-                gitlab
-                init
-                merge
-                pull
-                push
-                ;
-            };
-
-            signing.format = null;
-            userEmail = user.email;
-            userName = user.name;
-          };
-        }
-      );
+          signing.format = null;
+        };
+      };
   };
 
   options.git = let

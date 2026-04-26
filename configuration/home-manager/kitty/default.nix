@@ -10,9 +10,7 @@
   in {
     home.packages = [pkgs.fira-code];
 
-    programs.kitty = let
-      inherit (pkgs.stdenv) isDarwin isLinux;
-    in
+    programs.kitty =
       {
         enable = true;
 
@@ -27,32 +25,22 @@
           "kitty_mod+enter" = "launch --cwd last_reported --type window";
         };
 
-        package =
-          if isLinux
-          then config.lib.nixGL.wrap pkgs.kitty
-          else pkgs.kitty;
+        package = config.lib.nixGL.wrap pkgs.kitty;
 
-        settings = let
-          inherit (lib) optionalAttrs;
-        in
-          {
-            confirm_os_window_close = 0;
-            enable_audio_bell = "no";
-            enabled_layouts = "grid, stack, vertical, horizontal, tall";
-            font_family = "${config.stylix.fonts.sansSerif.name}";
-            font_size = cfg.fontSize;
-            inactive_text_alpha = 0.5;
-            shell = lib.getExe pkgs.nushell;
-            tab_bar_edge = "top";
-            tab_bar_style = "powerline";
-            tab_powerline_style = "slanted";
-            wheel_scroll_multiplier = 1;
-          }
-          // optionalAttrs isDarwin {
-            hide_window_decorations = "yes";
-            macos_quit_when_last_window_closed = "yes";
-          }
-          // optionalAttrs isLinux {kitty_mod = "ctrl+shift";};
+        settings = {
+          confirm_os_window_close = 0;
+          enable_audio_bell = "no";
+          enabled_layouts = "grid, stack, vertical, horizontal, tall";
+          font_family = "${config.stylix.fonts.sansSerif.name}";
+          font_size = cfg.fontSize;
+          inactive_text_alpha = 0.5;
+          kitty_mod = "ctrl+shift";
+          shell = lib.getExe pkgs.nushell;
+          tab_bar_edge = "top";
+          tab_bar_style = "powerline";
+          tab_powerline_style = "slanted";
+          wheel_scroll_multiplier = 1;
+        };
       }
       // lib.optionalAttrs (hostType == "home-manager") {
         themeFile = "Catppuccin-Mocha";

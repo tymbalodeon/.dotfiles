@@ -1,5 +1,4 @@
 {
-  channel,
   config,
   hostType,
   lib,
@@ -70,8 +69,9 @@
       ./nushell
       ./pdf
       ./ripgrep
-      ./src
       ./shell
+      ./src
+      ./taskwarrior
       ./tealdeer
       ./vivid
       ./yazi
@@ -79,17 +79,10 @@
       ./zoxide
     ]
     ++ (
-      if hostType == "darwin"
-      then [./darwin]
-      else if hostType == "home-manager"
+      if hostType == "home-manager"
       then [./home-manager]
       else if hostType == "nixos"
       then [./nixos]
-      else []
-    )
-    ++ (
-      if channel == "unstable"
-      then [./taskwarrior]
       else []
     );
 

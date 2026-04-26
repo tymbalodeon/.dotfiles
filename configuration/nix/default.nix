@@ -1,5 +1,4 @@
 {
-  channel,
   hostType,
   lib,
   pkgs,
@@ -11,6 +10,7 @@
     {
       extraOptions = "warn-dirty = false";
 
+      # TODO: disable in Home Manager since this is handled by `nh`
       gc = {
         automatic = true;
         options = "--delete-older-than 7d";
@@ -21,6 +21,5 @@
         "nix-command"
       ];
     }
-    // optionalAttrs (hostType != "nixos") {package = pkgs.nix;}
-    // optionalAttrs (channel != "25_05") {gc.dates = "weekly";};
+    // optionalAttrs (hostType != "nixos") {package = pkgs.nix;};
 }

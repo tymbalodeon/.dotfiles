@@ -1,6 +1,5 @@
 {
   base16-helix,
-  channel,
   config,
   home-manager,
   hostName,
@@ -18,7 +17,6 @@
       extraSpecialArgs = {
         inherit
           base16-helix
-          channel
           hostName
           hostType
           nix-index-database
@@ -35,7 +33,7 @@
 
   options.home-manager = with lib; {
     homeFile = mkOption {
-      default = ../../hosts/${hostType}/${channel}/${hostName}/home.nix;
+      default = ../../hosts/${hostType}/${hostName}/home.nix;
       type = types.path;
     };
   };

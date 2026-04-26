@@ -1,5 +1,4 @@
 {
-  channel,
   config,
   hostName,
   hostType,
@@ -82,7 +81,7 @@
   };
 
   imports = let
-    hostPath = file: ../hosts/${hostType}/${channel}/${hostName}/${file};
+    hostPath = file: ../hosts/${hostType}/${hostName}/${file};
   in
     [
       ./bluetooth
