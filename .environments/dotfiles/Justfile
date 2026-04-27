@@ -41,11 +41,6 @@ alias configs := configurations
 @switch *args:
     ../.environments/dotfiles/scripts/switch.nu {{ args }}
 
-# Rollback to a previous generation
-[macos]
-@rollback *id:
-    .environments/dotfiles/scripts/rollback.nu {{ id }}
-
 # Open Nix REPL with flake loaded
 @shell *help:
     .environments/dotfiles/scripts/shell.nu {{ help }}

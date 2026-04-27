@@ -116,8 +116,6 @@ export def main [
     }
   } else if (is-home-manager) {
     nh home switch . --configuration $host --impure
-  } else {
-    nh darwin switch . --hostname $host --impure
   }
 
   if (get-built-theme) != $theme {

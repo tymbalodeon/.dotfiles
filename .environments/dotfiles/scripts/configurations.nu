@@ -20,15 +20,11 @@ def get-current-system [] {
   }
   | str downcase
 
-  if ($system not-in [darwin nixos]) {
+  if ($system != nixos) {
     "home-manager"
   } else {
     $system
   }
-}
-
-export def is-darwin [] {
-  (get-current-system) == darwin
 }
 
 export def is-linux [] {
@@ -54,8 +50,8 @@ export def get-all-hosts [] {
 def get-configuration-data [] {
   fd "" configuration/hosts
   | lines
-  | where {($in | path split | length) == 5}
-  | parse "configuration/hosts/{system}/{channel}/{host}/"
+  | where {($in | path split | length) == 4}
+  | parse "configuration/hosts/{system}/{host}/"
 }
 
 export def get-built-host-name [] {
@@ -65,24 +61,6 @@ export def get-built-host-name [] {
 # List configurations
 export def main [] {
   main hosts
-}
-
-# List channels
-export def "main channels" [] {
-  get-configuration-data
-  | get channel
-  | uniq
-  | str replace _ .
-  | sort
-  | to text --no-newline
-}
-
-# List darwin hosts
-export def "main darwin" [] {
-  get-configuration-data
-  | where system == darwin
-  | get host
-  | to text --no-newline
 }
 
 # List home-manager hosts
@@ -102,34 +80,18 @@ export def "main nixos" [] {
 }
 
 def format-host [
-  host: record<channel: string, host: string, system: string>
+  host: record<host: string, system: string>
   --color
 ] {
-  let system_and_channel = $"($host.system) \((
-    $host.channel
-    | str replace _ .
-  )\)"
+  let system = $"($host.system)"
 
-  let system_and_channel = if $color {
-    let system = (get-colorized-configuration-name ($host.system) (get-colors))
-
-    let channel_color = if $host.channel == unstable {
-      "light_cyan"
-    } else {
-      "light_yellow"
-    }
-
-    let channel = $"(ansi $channel_color)\(($host.channel)\)(ansi reset)"
-
-    $"($system) ($channel)"
+  let system = if $color {
+    get-colorized-configuration-name ($host.system) (get-colors)
   } else {
-    $"($host.system) \((
-      $host.channel
-      | str replace _ .
-    )\)"
+    $host.system
   }
 
-  $"($host.host) ($system_and_channel)"
+  $"($host.host) ($system)"
 }
 
 # List current configuration
@@ -141,14 +103,6 @@ export def "main current" [] {
   )
 
   format-host $host
-}
-
-# List current channel
-export def "main current channel" [] {
-  get-configuration-data
-  | where host == (get-built-host-name)
-  | first
-  | get channel
 }
 
 # List current host

@@ -12,7 +12,5 @@ def main [] {
     | from json
     | reject specialisations configurationRevision
     | table --index false
-  } else {
-    sudo /run/current-system/sw/bin/darwin-rebuild --list-generations
   }
 }

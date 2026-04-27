@@ -6,7 +6,7 @@ export def colorize [text: string style: string] {
 
 export def get-colorized-configuration-name [
   configuration_name: string
-  colors: record<darwin: string, home-manager: string, nixos: string>
+  colors: record<home-manager: string, nixos: string>
 ] {
   let color = if $configuration_name == "shared" {
     "light_gray_dimmed"
@@ -25,7 +25,6 @@ export def get-colorized-configuration-name [
 
 export def get-colors [] {
   {
-    darwin: green_reverse
     home-manager: red_reverse
     nixos: blue_reverse
   }
