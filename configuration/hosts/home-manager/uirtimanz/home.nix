@@ -5,8 +5,8 @@
   ];
 
   imports = [
-    ../../../../home-manager/nushell
-    ../../../../home-manager/users/work.nix
+    ../../../home-manager/nushell
+    ../../../home-manager/users/work.nix
   ];
 
   nushell.extraScripts = [{source = ./wireguard.nu;}];

@@ -31,7 +31,6 @@
           confirm_os_window_close = 0;
           enable_audio_bell = "no";
           enabled_layouts = "grid, stack, vertical, horizontal, tall";
-          font_family = "${config.stylix.fonts.sansSerif.name}";
           font_size = cfg.fontSize;
           inactive_text_alpha = 0.5;
           kitty_mod = "ctrl+shift";
@@ -44,6 +43,9 @@
       }
       // lib.optionalAttrs (hostType == "home-manager") {
         themeFile = "Catppuccin-Mocha";
+      }
+      // lib.optionalAttrs (hostType != "home-manager") {
+        font_family = "${config.stylix.fonts.sansSerif.name}";
       };
   };
 

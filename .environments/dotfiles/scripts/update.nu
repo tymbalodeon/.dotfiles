@@ -6,33 +6,33 @@ use configurations.nu is-nixos
 
 def shared-inputs [] {
   [
-    base16-helix
+    home-manager
+    nixgl
+    nix-index-database
+    nixpkgs
     src
+    zk-graph
   ]
 }
 
 def home-manager-inputs [] {
   shared-inputs
   | append [
-    home-manager-unstable
-    nixgl
-    nixpkgs-unstable
-    stylix-unstable
+    stylix
   ]
 }
 
 def nixos-inputs [] {
   shared-inputs
   | append [
-    home-manager-unstable
+    base16-helix
     musnix
-    nixpkgs-unstable
+    nixpkgs
     solaar
-    stylix-unstable
+    stylix
     wayland-pipewire-idle-inhibit
   ]
 }
-
 
 # Update dependencies
 export def main [
@@ -49,4 +49,9 @@ export def main [
   }
 
   nix flake update ...$inputs
+}
+
+# Update all dependencies
+def "main all" [] {
+  nix flake update
 }

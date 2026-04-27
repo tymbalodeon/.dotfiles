@@ -43,10 +43,17 @@
       networkmanager.enable = true;
     };
 
-    nix.settings.trusted-users = [
-      "root"
-      cfg.username
-    ];
+    nix = {
+      gc = {
+        automatic = true;
+        options = "--delete-older-than 7d";
+      };
+
+      settings.trusted-users = [
+        "root"
+        cfg.username
+      ];
+    };
 
     nixpkgs.config.allowUnfree = true;
     programs.nix-ld.enable = true;

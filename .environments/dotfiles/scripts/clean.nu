@@ -8,9 +8,11 @@ export def main [
 ] {
   if (is-nixos) {
     nix-env --delete-generations $keep_since
+
+    # TODO: should this run on home-manager, too?
+    sudo nix-collect-garbage --delete-older-than $keep_since
   }
 
-  sudo nix-collect-garbage --delete-older-than $keep_since
   nix-collect-garbage --delete-older-than $keep_since
 }
 
