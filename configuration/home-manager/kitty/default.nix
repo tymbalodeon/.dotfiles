@@ -27,25 +27,29 @@
 
         package = config.lib.nixGL.wrap pkgs.kitty;
 
-        settings = {
-          confirm_os_window_close = 0;
-          enable_audio_bell = "no";
-          enabled_layouts = "grid, stack, vertical, horizontal, tall";
-          font_size = cfg.fontSize;
-          inactive_text_alpha = 0.5;
-          kitty_mod = "ctrl+shift";
-          shell = lib.getExe pkgs.nushell;
-          tab_bar_edge = "top";
-          tab_bar_style = "powerline";
-          tab_powerline_style = "slanted";
-          wheel_scroll_multiplier = 1;
-        };
+        settings =
+          {
+            confirm_os_window_close = 0;
+            enable_audio_bell = "no";
+            enabled_layouts = "grid, stack, vertical, horizontal, tall";
+            font_size = cfg.fontSize;
+            inactive_text_alpha = 0.5;
+            kitty_mod = "ctrl+shift";
+            shell = lib.getExe pkgs.nushell;
+            tab_bar_edge = "top";
+            tab_bar_style = "powerline";
+            tab_powerline_style = "slanted";
+            wheel_scroll_multiplier = 1;
+          }
+          // lib.optionalAttrs (hostType == "home-manager") {
+            font_family = "JetBrainsMono Nerd Font Mono";
+          }
+          // lib.optionalAttrs (hostType != "home-manager") {
+            font_family = "${config.stylix.fonts.sansSerif.name}";
+          };
       }
       // lib.optionalAttrs (hostType == "home-manager") {
         themeFile = "Catppuccin-Mocha";
-      }
-      // lib.optionalAttrs (hostType != "home-manager") {
-        font_family = "${config.stylix.fonts.sansSerif.name}";
       };
   };
 
