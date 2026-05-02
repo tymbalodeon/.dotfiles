@@ -1,8 +1,8 @@
 {
   imports = [
-    ../../../../home-manager
-    ../../../../home-manager/kitty
-    ../../../../home-manager/wallpaper
+    ../../../home-manager
+    ../../../home-manager/kitty
+    ../../../home-manager/wallpaper
   ];
 
   kitty.fontSize = 9.0;
