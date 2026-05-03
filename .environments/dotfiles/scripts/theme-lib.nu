@@ -132,7 +132,7 @@ export def theme-preview [
     $theme
   }
 
-  if $random {
+  if $random or $theme == "" {
     while ($theme | is-empty) {
       $theme = (get-theme $dark $light $random $theme)
     }
