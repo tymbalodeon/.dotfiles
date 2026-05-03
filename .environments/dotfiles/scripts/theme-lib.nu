@@ -72,13 +72,9 @@ def get-variant [dark?: bool light?: bool] {
 def get-random-theme [variant?: string] {
   let themes = (get-themes $variant)
 
-  let theme = (
-    $themes
-    | get (random int 0..($themes | enumerate | get index | last))
-    | get name
-  )
-
-  $"base16-(format-theme-name $theme)"
+  $themes
+  | get (random int 0..($themes | enumerate | get index | last))
+  | get id
 }
 
 # TODO: allow displaying name and selecting id
@@ -136,15 +132,15 @@ export def theme-preview [
     $theme
   }
 
-  while ($theme | is-empty) {
-    $theme = (get-theme $dark $light $random $theme)
-  }
-
-  if ($theme | is-empty) {
+  if $random {
+    while ($theme | is-empty) {
+      $theme = (get-theme $dark $light $random $theme)
+    }
+  } else if ($theme | is-empty) {
     return
   }
 
-  tinty info $"base16-($theme)"
+  tinty info $theme
 }
 
 export def get-stylix-theme-name [theme: string] {
