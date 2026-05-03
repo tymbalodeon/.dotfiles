@@ -74,7 +74,8 @@ export def main [
         |item|
 
         ($item | is-not-empty) and ($item != false)
-      } | any {into bool}) {
+      } | any {into bool}
+  ) {
     null
   } else {
     let found_theme = (get-theme $dark_theme $light_theme $random_theme $theme)

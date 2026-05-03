@@ -78,7 +78,7 @@ def get-random-theme [variant?: string] {
     | get name
   )
 
-  format-theme-name $theme
+  $"base16-(format-theme-name $theme)"
 }
 
 # TODO: allow displaying name and selecting id
@@ -130,7 +130,15 @@ export def theme-preview [
   random: bool
   theme?: string
 ] {
-  let theme = (get-theme $dark $light $random $theme)
+  mut theme = if ($theme | is-empty) {
+    ""
+  } else {
+    $theme
+  }
+
+  while ($theme | is-empty) {
+    $theme = (get-theme $dark $light $random $theme)
+  }
 
   if ($theme | is-empty) {
     return
