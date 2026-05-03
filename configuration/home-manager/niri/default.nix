@@ -167,8 +167,8 @@ in {
             # TODO: handle all of this with the brightness nushell script
             if cfg.laptop
             then ''
-              Shift+XF86MonBrightnessDown { spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%-"; }
-              Shift+XF86MonBrightnessUp { spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%+"; }
+              Ctrl+XF86MonBrightnessDown { spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%-"; }
+              Ctrl+XF86MonBrightnessUp { spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%+"; }
               Super+XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "brightnessctl set 1%";}
               Super+XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "brightnessctl set 100%"; }
               XF86MonBrightnessDown { spawn-sh "brightnessctl set 1%-"; }
