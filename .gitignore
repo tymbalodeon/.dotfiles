@@ -1,6 +1,12 @@
 *.qcow2
+
+# default
+.devenv*
+devenv.local.*
 .direnv
 .env
 .envrc
 .helix/config.toml
+
+# nix
 result

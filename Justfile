@@ -69,17 +69,12 @@ alias todos := todo
 @theme *args:
     .environments/default/scripts/theme.nu {{ args }}
 
-# Create a new release
-@release *args:
-    .environments/git/scripts/release.nu  {{ args }}
-
-[private]
-@dot *args:
-    just dotfiles {{ args }}
-
-[private]
-@hs *args:
-    just haskell {{ args }}
+mod dotfiles ".environments/dotfiles/Justfile"
+mod git ".environments/git/Justfile"
+mod just ".environments/just/Justfile"
+mod markdown ".environments/markdown/Justfile"
+mod nix ".environments/nix/Justfile"
+mod yaml ".environments/yaml/Justfile"
 
 [private]
 @md *args:
@@ -89,19 +84,13 @@ alias todos := todo
 @yml *args:
     just yaml {{ args }}
 
-mod dotfiles ".environments/dotfiles/Justfile"
-mod git ".environments/git/Justfile"
-mod haskell ".environments/haskell/Justfile"
-mod just ".environments/just/Justfile"
-mod markdown ".environments/markdown/Justfile"
-mod nix ".environments/nix/Justfile"
-mod yaml ".environments/yaml/Justfile"
-
+alias leaks := git::leaks
+alias clean := nix::clean
+alias shell := nix::shell
 alias configs := dotfiles::configurations
 alias configurations := dotfiles::configurations
 alias generations := dotfiles::generations
 alias inputs := dotfiles::inputs
-alias leaks := git::leaks
 alias optimise := dotfiles::optimise
 alias prune := dotfiles::prune
 alias switch := dotfiles::switch

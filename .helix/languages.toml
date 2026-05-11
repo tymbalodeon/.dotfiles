@@ -1,61 +1,61 @@
 [[language]]
-name = "css"
 auto-format = true
-
-[language.formatter]
-command = "prettierd"
-args = [".css"]
-
-[[language]]
-name = "haskell"
-auto-format = true
-
-[[language]]
-name = "html"
-auto-format = true
-
-[language.formatter]
-command = "prettierd"
-args = [".html"]
-
-[[language]]
 name = "just"
-auto-format = true
 
 [language.formatter]
-command = "just"
 args = ["--justfile", "/dev/stdin", "--dump"]
+command = "just"
 
 [[language]]
-name = "markdown"
 auto-format = true
+name = "markdown"
 
 [language.formatter]
-command = "prettierd"
 args = [".md"]
+command = "prettierd"
 
 [[language]]
-name = "nix"
 auto-format = true
+name = "nix"
 
 [language.formatter]
 command = "alejandra"
 
 [[language]]
-name = "scss"
 auto-format = true
+name = "toml"
 
 [language.formatter]
-command = "prettierd"
-args = [".scss"]
+args = ["format", "-"]
+command = "taplo"
 
 [[language]]
-name = "toml"
 auto-format = true
+name = "css"
 
 [language.formatter]
-command = "taplo"
-args = ["format", "-"]
+args = [".css"]
+command = "prettierd"
+
+[[language]]
+auto-format = true
+name = "haskell"
+
+[[language]]
+auto-format = true
+name = "html"
+
+[language.formatter]
+args = [".html"]
+command = "prettierd"
+
+[[language]]
+auto-format = true
+name = "scss"
+
+[language.formatter]
+args = [".scss"]
+command = "prettierd"
 
 [language-server.haskell-language-server.config]
 formattingProvider = "fourmolu"
