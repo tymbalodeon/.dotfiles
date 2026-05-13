@@ -69,12 +69,12 @@ alias todos := todo
 @theme *args:
     .environments/default/scripts/theme.nu {{ args }}
 
-mod dotfiles ".environments/dotfiles/Justfile"
 mod git ".environments/git/Justfile"
 mod just ".environments/just/Justfile"
 mod markdown ".environments/markdown/Justfile"
 mod nix ".environments/nix/Justfile"
 mod yaml ".environments/yaml/Justfile"
+mod dotfiles ".environments/dotfiles/Justfile"
 
 [private]
 @md *args:
@@ -83,11 +83,6 @@ mod yaml ".environments/yaml/Justfile"
 [private]
 @yml *args:
     just yaml {{ args }}
-
-alias leaks := git::leaks
-alias clean := nix::clean
-alias shell := nix::shell
-alias configs := dotfiles::configurations
 alias configurations := dotfiles::configurations
 alias generations := dotfiles::generations
 alias inputs := dotfiles::inputs
@@ -95,3 +90,4 @@ alias optimise := dotfiles::optimise
 alias prune := dotfiles::prune
 alias switch := dotfiles::switch
 alias update := dotfiles::update
+alias leaks := git::leaks
