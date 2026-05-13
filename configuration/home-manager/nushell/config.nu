@@ -1,6 +1,4 @@
-# TODO: add with devenv 2.1
-# devenv hook nu | save --force ~/.cache/devenv/hook.nu
-# source ~/.cache/devenv/hook.nu
+source ~/.cache/devenv/hook.nu
 
 $env.EDITOR = "hx"
 

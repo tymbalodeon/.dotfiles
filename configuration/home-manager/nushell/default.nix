@@ -23,53 +23,62 @@
     cfg = config.nushell;
   in {
     home = {
-      file = builtins.listToAttrs (
-        map
-        (script: let
-          filename =
-            if builtins.hasAttr "source" script && script.source != null
-            then baseNameOf script.source
-            else if builtins.hasAttr "name" script && script.name != null
-            then "${script.name}.nu"
-            else null;
+      file =
+        builtins.listToAttrs (
+          map
+          (script: let
+            filename =
+              if builtins.hasAttr "source" script && script.source != null
+              then baseNameOf script.source
+              else if builtins.hasAttr "name" script && script.name != null
+              then "${script.name}.nu"
+              else null;
 
-          includes =
-            if builtins.hasAttr "includes" script
-            then
-              lib.strings.join "\n" (
-                map (include: "source ${cfg.autoloadDirectory}/${include}.nu")
-                script.includes
-              )
-            else "";
+            includes =
+              if builtins.hasAttr "includes" script
+              then
+                lib.strings.join "\n" (
+                  map (include: "source ${cfg.autoloadDirectory}/${include}.nu")
+                  script.includes
+                )
+              else "";
 
-          originalText =
-            if builtins.hasAttr "source" script && script.source != null
-            then builtins.readFile script.source
-            else script.text;
+            originalText =
+              if builtins.hasAttr "source" script && script.source != null
+              then builtins.readFile script.source
+              else script.text;
 
-          text =
-            if includes != ""
-            then includes + "\n\n" + originalText
-            else originalText;
-        in {
-          name = "${autoload_directory}/${filename}";
-          value = {
-            inherit text;
+            text =
+              if includes != ""
+              then includes + "\n\n" + originalText
+              else originalText;
+          in {
+            name = "${autoload_directory}/${filename}";
+            value = {
+              inherit text;
 
-            force = true;
-          };
-        })
-        ([
-            {
-              includes = ["start-process"];
-              source = ./f.nu;
-            }
+              force = true;
+            };
+          })
+          ([
+              {
+                includes = ["start-process"];
+                source = ./f.nu;
+              }
 
-            {source = ./ssh.nu;}
-            {source = ./start-process.nu;}
-          ]
-          ++ cfg.extraScripts)
-      );
+              {source = ./ssh.nu;}
+              {source = ./start-process.nu;}
+            ]
+            ++ cfg.extraScripts)
+        )
+        // {
+          ".cache/devenv/hook.nu".source =
+            pkgs.runCommand "devenv-hook" {
+              buildInputs = [pkgs.devenv];
+            } ''
+              devenv hook nu > $out
+            '';
+        };
 
       packages = [pkgs.fontconfig];
     };
