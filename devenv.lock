@@ -3,11 +3,11 @@
     "devenv": {
       "locked": {
         "dir": "src/modules",
-        "lastModified": 1778699945,
-        "narHash": "sha256-tX6qCEM+f2ojPBR2tStneoIy1VP0LU7juRV+SQP5iYI=",
+        "lastModified": 1778814374,
+        "narHash": "sha256-gZIaq9to5brzEsnlHE2D0FRN4ixZJEBd2ZV/3WNlt4Q=",
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "d0df700f59459ee4b8c228a01080deb140735c70",
+        "rev": "e44d88a683bf945c72445babd85f1d2e4e933409",
         "type": "github"
       },
       "original": {
@@ -21,11 +21,11 @@
       "flake": false,
       "locked": {
         "dir": "src",
-        "lastModified": 1778700769,
-        "narHash": "sha256-yQONX8yLeigeJ7Ult6yW9Aaaw6biV9muPLlJ/y3YeOA=",
+        "lastModified": 1778847476,
+        "narHash": "sha256-ZnGyCqnUajJNflX5R/w8YObNpjIsgnsPnxiy3EjhGfo=",
         "owner": "tymbalodeon",
         "repo": "environments",
-        "rev": "6425df28469a71df50c7ca5d49feb9bc3b3f0e8e",
+        "rev": "a7e14a4e846de1b94ac991552bac8c966ddc69f0",
         "type": "github"
       },
       "original": {
