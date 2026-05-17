@@ -87,6 +87,7 @@ mod dotfiles ".environments/dotfiles/Justfile"
 [private]
 @dot *args:
     just dotfiles {{ args }}
+
 alias configurations := dotfiles::configurations
 alias generations := dotfiles::generations
 alias inputs := dotfiles::inputs
