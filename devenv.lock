@@ -21,11 +21,11 @@
       "flake": false,
       "locked": {
         "dir": "src",
-        "lastModified": 1779027909,
-        "narHash": "sha256-MUwHVV0GYuRateUX2wvL8CaL7BrmnIzDdz1rVDDfmRU=",
+        "lastModified": 1779030593,
+        "narHash": "sha256-NznzpWwil/vY1De5TXJqoOMRVasqq3HUhYJ7bRcXkNU=",
         "owner": "tymbalodeon",
         "repo": "environments",
-        "rev": "99594ff2bf3c20f5a8e39a08419fb2429e434958",
+        "rev": "ba9dbc31593aef2949922584d9b86abca52d09cc",
         "type": "github"
       },
       "original": {

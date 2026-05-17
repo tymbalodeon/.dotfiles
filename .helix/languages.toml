@@ -1,45 +1,10 @@
 [[language]]
 auto-format = true
-name = "just"
-
-[language.formatter]
-args = ["--justfile", "/dev/stdin", "--dump"]
-command = "just"
-
-[[language]]
-auto-format = true
-name = "markdown"
-
-[language.formatter]
-args = [".md"]
-command = "prettierd"
-
-[[language]]
-auto-format = true
-name = "nix"
-
-[language.formatter]
-command = "alejandra"
-
-[[language]]
-auto-format = true
-name = "toml"
-
-[language.formatter]
-args = ["format", "-"]
-command = "taplo"
-
-[[language]]
-auto-format = true
 name = "css"
 
 [language.formatter]
 args = [".css"]
 command = "prettierd"
-
-[[language]]
-auto-format = true
-name = "haskell"
 
 [[language]]
 auto-format = true
@@ -57,5 +22,26 @@ name = "scss"
 args = [".scss"]
 command = "prettierd"
 
-[language-server.haskell-language-server.config]
-formattingProvider = "fourmolu"
+# just
+[[language]]
+name = "just"
+auto-format = true
+formatter = { command = "just", args = ["--justfile", "/dev/stdin", "--dump"] }
+
+# markdown
+[[language]]
+name = "markdown"
+auto-format = true
+formatter = { command = "prettierd", args = [".md"] }
+
+# nix
+[[language]]
+name = "nix"
+auto-format = true
+formatter = { command = "alejandra" }
+
+# toml
+[[language]]
+name = "toml"
+auto-format = true
+formatter = { command = "taplo", args = ["format", "-"] }
