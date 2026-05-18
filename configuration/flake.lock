@@ -163,31 +163,6 @@
         "type": "github"
       }
     },
-    "environments": {
-      "inputs": {
-        "nixpkgs": [
-          "src",
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "dir": "src",
-        "lastModified": 1777000604,
-        "narHash": "sha256-LWUItcQwP0tgpAZA3AxQ+frDeOqBs4avdJx7/qDi+qE=",
-        "owner": "tymbalodeon",
-        "repo": "environments",
-        "rev": "099cab8cd28e048e01e0d7ec4d6a9c70902f670c",
-        "type": "github"
-      },
-      "original": {
-        "dir": "src",
-        "owner": "tymbalodeon",
-        "ref": "trunk",
-        "repo": "environments",
-        "type": "github"
-      }
-    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -557,22 +532,6 @@
         "type": "github"
       }
     },
-    "nixpkgs_3": {
-      "locked": {
-        "lastModified": 1744536153,
-        "narHash": "sha256-awS2zRgF4uTwrOKwwiJcByDzDOdo3Q1rPZbiHQg/N38=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "18dd725c29603f582cf1900e0d25f9f1063dbf11",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nur": {
       "inputs": {
         "flake-parts": [
@@ -657,24 +616,6 @@
         "zk-graph": "zk-graph"
       }
     },
-    "rust-overlay": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_3"
-      },
-      "locked": {
-        "lastModified": 1777086717,
-        "narHash": "sha256-vEl3cGHRxEFdVNuP9PbrhAWnmU98aPOLGy9/1JXzSuM=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "3be56bd430bfd65d3c468a50626c3a601c7dee03",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
-      }
-    },
     "solaar": {
       "inputs": {
         "nixpkgs": [
@@ -700,7 +641,6 @@
     "src": {
       "inputs": {
         "crate2nix": "crate2nix",
-        "environments": "environments",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -708,11 +648,11 @@
         "systems": "systems_3"
       },
       "locked": {
-        "lastModified": 1779041612,
-        "narHash": "sha256-vGqql4krbVqBWREDgSsV7Or9Yi+E0I1sU1+EqfuBXdg=",
+        "lastModified": 1779065244,
+        "narHash": "sha256-ExXTQZn8F9whyJ8Spmb5BcwcSBwloUf2FgX0Nebgq2Q=",
         "owner": "tymbalodeon",
         "repo": "src",
-        "rev": "3d54209c7469ff6c32042e2807690da40ffb7808",
+        "rev": "f4c4664235244fd008cf0735bb675bd2f3754ce4",
         "type": "github"
       },
       "original": {
