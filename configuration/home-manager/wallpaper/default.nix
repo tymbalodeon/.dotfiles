@@ -33,7 +33,7 @@
             }
 
             def stylix-background [] {
-              "#${config.lib.stylix.colors.base00}"
+              "#${config.lib.stylix.colors.base01}"
             }
 
             def waybar-height [] {
