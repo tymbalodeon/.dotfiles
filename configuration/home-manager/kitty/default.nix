@@ -49,7 +49,7 @@
           };
       }
       // lib.optionalAttrs (hostType == "home-manager") {
-        themeFile = "Catppuccin-Mocha";
+        themeFile = "Catppuccin-Macchiato";
       };
   };
 

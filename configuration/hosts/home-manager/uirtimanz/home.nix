@@ -5,6 +5,7 @@
   ];
 
   imports = [
+    ../../../home-manager/helix
     ../../../home-manager/nushell
     ../../../home-manager/users/work.nix
   ];
