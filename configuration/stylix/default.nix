@@ -29,7 +29,7 @@
 
       theme =
         if themeOverride == ""
-        then "catppuccin-mocha"
+        then "catppuccin-macchiato"
         else themeOverride;
     in
       theme;

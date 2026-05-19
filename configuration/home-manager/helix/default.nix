@@ -133,7 +133,7 @@
     inherit (lib) mkOption types;
   in
     mkOption {
-      default = "catppuccin_mocha";
+      default = "catppuccin_frappe";
       type = types.str;
     };
 }

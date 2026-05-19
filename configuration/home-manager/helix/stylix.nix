@@ -78,7 +78,13 @@
     inherit (lib) mkEnableOption mkOption types;
   in {
     stylix.enable = mkOption {
-      default = true;
+      default =
+        !(
+          lib.strings.hasPrefix
+          "catppuccin"
+          (builtins.getEnv "DOTFILES_STYLIX_THEME")
+        );
+
       type = types.bool;
     };
 
