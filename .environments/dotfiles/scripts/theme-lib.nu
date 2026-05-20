@@ -126,21 +126,25 @@ export def theme-preview [
   random: bool
   theme?: string
 ] {
+  def theme [theme: string] {
+    get-theme $dark $light $random $theme
+  }
+
   mut theme = if ($theme | is-empty) {
     ""
   } else {
-    $theme
+    theme $theme
   }
 
   if $random or $theme == "" {
     while ($theme | is-empty) {
-      $theme = (get-theme $dark $light $random $theme)
+      $theme = (theme $theme)
     }
   } else if ($theme | is-empty) {
     return
   }
 
-  tinty info $theme
+  tinty info $"base16-($theme)"
 }
 
 export def get-stylix-theme-name [theme: string] {
