@@ -144,7 +144,13 @@ export def theme-preview [
     return
   }
 
-  tinty info $"base16-($theme)"
+  let theme = if ($theme | str starts-with base16) {
+    $theme
+  } else {
+    $"base16-($theme)"
+  }
+
+  tinty info $theme
 }
 
 export def get-stylix-theme-name [theme: string] {
