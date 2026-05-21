@@ -59,10 +59,12 @@
       ./git
       ./gpg
       ./helix
+      ./irc
       ./jq
       ./jujutsu
       ./kitty
       ./musescore
+      ./networking
       ./nh
       ../nix
       ./note
