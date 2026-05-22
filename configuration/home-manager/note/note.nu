@@ -235,6 +235,11 @@ def "note remove" [note?: string] {
 
 alias "note rm" = note remove
 
+# Sync notes
+def "note sync" [] {
+  nb sync
+}
+
 export def main [] {}
 
 def "main browse" [] {

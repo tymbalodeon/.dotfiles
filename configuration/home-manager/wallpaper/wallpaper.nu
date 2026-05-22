@@ -169,6 +169,7 @@ def restart-wallpaper [] {
 # Load wallpapers
 def "wallpaper load" [
   path?: string # Local image file or directory to load
+  --background-color: string # The base16-colors name to use as the background color (default: "base01")
   --clear # Clear existing wallpapers before loading new ones
   --force # Re-download even if already present locally
   --keep-default # Don't remove the default wallpaper when loading others
@@ -248,7 +249,16 @@ def "wallpaper load" [
       print $"Padding ($file | path basename)..."
 
       try {
-        wallpaper pad $file $wallpaper_directory
+        if ($background_color | is-empty) {
+          wallpaper pad $file $wallpaper_directory
+        } else {
+          (
+            wallpaper pad
+              --background-color $background_color
+              $file
+              $wallpaper_directory
+          )
+        }
       } catch {
         |error|
 
@@ -299,7 +309,11 @@ def "wallpaper next" [] {
 alias "wallpaper start" = wallpaper next
 
 # Add padding to image to account for status bar
-def "wallpaper pad" [image?: string output_path?: string] {
+def "wallpaper pad" [
+  image?: string # The image to pad
+  output_path?: string # Where to save the padded image (default: $image)
+  --background-color: string # The base16-colors name to use as the background color (default: "base01")
+] {
   let image = if ($image | is-empty) {
     select-local-wallpaper
   } else {
@@ -326,10 +340,16 @@ def "wallpaper pad" [image?: string output_path?: string] {
     $output_path
   }
 
+  let background_color = if ($background_color | is-empty) {
+    "base01"
+  } else {
+    $background_color
+  }
+
   (
     magick
       $image
-      -background (stylix-background)
+      -background (base16-colors | get $background_color)
       -gravity north
       -resize $resolution
       -extent $padded_resolution
