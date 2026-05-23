@@ -103,8 +103,6 @@ def "wallpaper clear" [] {
     $wallpaper_directory
     | path join (default-wallpaper-filename)
   )
-
-  restart-wallpaper
 }
 
 def --wrapped wpaperctl-wrapper [...args: string] {
@@ -392,8 +390,6 @@ def "wallpaper pad" [
       -extent $padded_resolution
       $output_path
   )
-
-  restart-wallpaper
 }
 
 # Add padding to all images in the wallpaper folder
