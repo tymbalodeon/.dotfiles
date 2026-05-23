@@ -1,0 +1,3 @@
+{
+  programs.amfora.enable = true;
+}

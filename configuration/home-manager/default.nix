@@ -56,6 +56,7 @@
       ./fastfetch
       ./fonts
       ./fzf
+      ./gemini
       ./git
       ./gpg
       ./helix
