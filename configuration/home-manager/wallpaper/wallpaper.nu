@@ -342,7 +342,6 @@ def "wallpaper pad" [
   }
 
   if ($image | path dirname | path expand) == ("~/wallpaper" | path expand) {
-    # TODO: ensure rclone is pulled into the default.nix
     let remote_image = (
       rclone lsf --recursive dropbox:wallpaper
       | rg ($image | path basename)
@@ -393,9 +392,15 @@ def "wallpaper pad" [
 }
 
 # Add padding to all images in the wallpaper folder
-def "wallpaper pad all" [] {
+def "wallpaper pad all" [
+  --background-color: string # The base16-colors name to use as the background color (default: "base01")
+] {
   for image in (ls (wallpaper-directory) | get name) {
-    wallpaper pad $image
+    if ($background_color | is-empty) {
+      wallpaper pad $image
+    } else {
+      wallpaper pad --background-color $background_color $image
+    }
   }
 }
 
