@@ -96,6 +96,7 @@ def --env "wallpaper cd" [] {
 # Clear the wallpaper folder
 def "wallpaper clear" [] {
   let wallpaper_directory = (wallpaper-directory)
+
   rm --force --recursive $wallpaper_directory
   mkdir $wallpaper_directory
 
@@ -103,6 +104,8 @@ def "wallpaper clear" [] {
     $wallpaper_directory
     | path join (default-wallpaper-filename)
   )
+
+  restart-wallpaper 
 }
 
 def --wrapped wpaperctl-wrapper [...args: string] {
@@ -249,7 +252,10 @@ def "wallpaper load" [
       | where {is-image}
     )
 
-    for file in $files {
+    $files
+    | par-each {
+      |file|
+
       if not $no_pad {
         print $"Padding ($file | path basename)..."
       }
@@ -288,9 +294,12 @@ def "wallpaper load" [
       | get name
     }
 
-    for file in $files {
+    $files
+    | par-each {
+      |file|
+
       if not ($file | is-image) {
-        continue
+        return
       }
 
       let basename = ($file | path basename)
@@ -314,6 +323,7 @@ def "wallpaper load" [
 }
 
 def "wallpaper load all" [] {
+  # TODO: add padding here
   storage download --force --to (wallpaper-directory) --quiet wallpaper
 }
 

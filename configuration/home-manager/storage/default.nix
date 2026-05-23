@@ -354,9 +354,7 @@
               }
             }
 
-            if $pipe {
-              $files.to
-            } else if not $quiet {
+            if not $quiet {
               for file in $files {
                 print $"Downloading ($file.from)..."
               }
@@ -366,6 +364,10 @@
 
             if $env.LAST_EXIT_CODE != 0 {
               print-error $"could not find remote file \"($remote_path)\""
+            }
+
+            if $pipe {
+              $files.to
             }
           }
 

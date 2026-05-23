@@ -65,8 +65,6 @@
       }
     ];
 
-    programs.parallel.enable = true;
-
     services.wpaperd = {
       enable = true;
 
