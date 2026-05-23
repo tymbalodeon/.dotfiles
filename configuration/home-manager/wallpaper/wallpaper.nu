@@ -55,7 +55,7 @@ def wallpaper [wallpaper?: string] {
     return
   }
 
-  bash -c $"swaybg --image '($wallpaper)' --mode fit &" out+err> /dev/null
+  bash -c $"swaybg --image '($wallpaper)' &" out+err> /dev/null
   pkill -RTMIN+2 waybar
   systemctl --user stop wpaperd
 }
@@ -173,19 +173,25 @@ def "wallpaper load" [
   --clear # Clear existing wallpapers before loading new ones
   --force # Re-download even if already present locally
   --keep-default # Don't remove the default wallpaper when loading others
+  --no-pad # Don't pad the wallpaper after downloading
+  --remote # Treat $path as a remote path
 ] {
   if $clear {
     wallpaper clear
   }
 
-  let files = if ($path | is-empty) {
-    let paths = (select-remote-path --allow-directories dropbox wallpaper)
+  let files = if $remote or ($path | is-empty) {
+    let paths = if ($path | is-empty) {
+      let paths = (select-remote-path --allow-directories dropbox wallpaper)
 
-    let paths = if ($paths | is-empty) {
-      return
+      if ($paths | is-empty) {
+        return
+      } else {
+        $paths
+        | lines
+      }
     } else {
-      $paths
-      | lines
+      [$path]
     }
 
     let temporary_directory = (mktemp --directory)
@@ -246,18 +252,25 @@ def "wallpaper load" [
     )
 
     for file in $files {
-      print $"Padding ($file | path basename)..."
+      if not $no_pad {
+        print $"Padding ($file | path basename)..."
+      }
 
       try {
-        if ($background_color | is-empty) {
-          wallpaper pad $file $wallpaper_directory
+        if $no_pad {
+          cp $file $wallpaper_directory
         } else {
-          (
-            wallpaper pad
-              --background-color $background_color
-              $file
-              $wallpaper_directory
-          )
+          if ($background_color | is-empty) {
+            wallpaper pad --no-download $file $wallpaper_directory
+          } else {
+            (
+              wallpaper pad
+                --background-color $background_color
+                --no-download
+                $file
+                $wallpaper_directory
+            )
+          }
         }
       } catch {
         |error|
@@ -289,7 +302,12 @@ def "wallpaper load" [
       let to = $"(wallpaper-directory)/($basename)"
 
       cp $file $to
-      wallpaper pad $to
+
+      if not $no_pad {
+        print $"Padding ($to)..."
+
+        wallpaper pad --no-download $to
+      }
     }
   }
 
@@ -313,6 +331,7 @@ def "wallpaper pad" [
   image?: string # The image to pad
   output_path?: string # Where to save the padded image (default: $image)
   --background-color: string # The base16-colors name to use as the background color (default: "base01")
+  --no-download # Don't attempt to re-download the image
 ] {
   let image = if ($image | is-empty) {
     select-local-wallpaper
@@ -322,6 +341,24 @@ def "wallpaper pad" [
 
   if ($image | is-empty) {
     return
+  }
+
+  if ($image | path dirname | path expand) == ("~/wallpaper" | path expand) {
+    # TODO: ensure rclone is pulled into the default.nix
+    let remote_image = (
+      rclone lsf --recursive dropbox:wallpaper
+      | rg ($image | path basename)
+      | lines
+      | first
+    )
+
+    (
+      wallpaper load
+        --force
+        --no-pad
+        --remote
+        $"wallpaper/($remote_image)"
+    )
   }
 
   let resolution = (xrandr | rg '\*' | split words | first)
@@ -355,6 +392,8 @@ def "wallpaper pad" [
       -extent $padded_resolution
       $output_path
   )
+
+  restart-wallpaper
 }
 
 # Add padding to all images in the wallpaper folder
