@@ -1,8 +1,10 @@
-{
+let
+  handle = "tymbalodeon";
+in {
   email = "benjamin.j.rosen@gmail.com";
-  githubUsername = "tymbalodeon";
+  githubUsername = handle;
   gitlabUsername = "benjaminrosen";
-  ircNickname = "chthonophon";
+  ircNickname = handle;
   name = "Ben Rosen";
   username = "benrosen";
 }
