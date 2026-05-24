@@ -50,6 +50,7 @@
     [
       ./bat
       ./bottom
+      ./browsh
       ./comma
       ./direnv
       ./eza
