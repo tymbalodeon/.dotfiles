@@ -50,6 +50,7 @@
     [
       ./bat
       ./bottom
+      ./broot
       ./browsh
       ./comma
       ./direnv
@@ -75,6 +76,7 @@
       ./ripgrep
       ./shell
       ./src
+      ./stylix
       ./taskwarrior
       ./tealdeer
       ./vivid
