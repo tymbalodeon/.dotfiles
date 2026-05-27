@@ -8,7 +8,7 @@
     cfg = config.git;
   in {
     home.packages = with pkgs; [
-      gh
+      forgejo-cli
       glab
     ];
 
@@ -67,42 +67,42 @@
         email = cfg.userEmail;
         name = cfg.userName;
       };
-    in
-      {
-        delta = {
-          enable = true;
-          enableGitIntegration = true;
+    in {
+      delta = {
+        enable = true;
+        enableGitIntegration = true;
 
-          options = {
-            diff-so-fancy = true;
-            navigate = true;
-            syntax-theme = "base16";
-          };
-        };
-      }
-      // {
-        git = {
-          inherit enable;
-
-          settings = {
-            inherit
-              alias
-              core
-              default
-              diff
-              github
-              gitlab
-              init
-              merge
-              pull
-              push
-              user
-              ;
-          };
-
-          signing.format = null;
+        options = {
+          diff-so-fancy = true;
+          navigate = true;
+          syntax-theme = "base16";
         };
       };
+
+      gh.enable = true;
+
+      git = {
+        inherit enable;
+
+        settings = {
+          inherit
+            alias
+            core
+            default
+            diff
+            github
+            gitlab
+            init
+            merge
+            pull
+            push
+            user
+            ;
+        };
+
+        signing.format = null;
+      };
+    };
   };
 
   options.git = let
