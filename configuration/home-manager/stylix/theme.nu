@@ -1,12 +1,14 @@
-def main [] {}
+def "theme" [] {
+  help theme
+}
 
 # Preview theme
-def "main preview" [] {
+def "theme preview" [] {
   let theme = try {
     open ~/.local/state/stylix-theme
   }
 
   if ($theme | is-not-empty) {
-    tinty info $theme
+    tinty info $"base16-($theme)"
   }
 }
