@@ -36,7 +36,7 @@ def nixos-inputs [] {
 # Update dependencies
 export def main [
   ...inputs: string # Inputs to update (see `inputs`)
-  --no-nixpkgs # Don't update nixpkgs
+  --nixpkgs # Update nixpkgs as well as other inputs
 ] {
   let inputs = if ($inputs | is-empty) {
     if (is-home-manager) {
@@ -48,7 +48,14 @@ export def main [
     $inputs
   }
 
-  nix flake update ...($inputs | where $it != nixpkgs)
+  let inputs = if $nixpkgs {
+    $inputs
+  } else {
+    $inputs
+    | where $it != nixpkgs
+  }
+
+  nix flake update ...$inputs
 }
 
 # Update all dependencies

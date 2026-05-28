@@ -14,7 +14,7 @@
 
       text =
         ''
-          def base16-colors [] {
+          def "theme colors" [] {
             {
               base00: "${colors.base00}"
               base01: "${colors.base01}"

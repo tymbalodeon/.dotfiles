@@ -393,7 +393,7 @@ def "wallpaper pad" [
   (
     magick
       $image
-      -background (base16-colors | get $background_color)
+      -background (theme colors | get $background_color)
       -gravity north
       -resize $resolution
       -extent $padded_resolution
