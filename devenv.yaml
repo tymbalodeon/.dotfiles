@@ -1,10 +1,10 @@
-inputs:
-  environments:
-    flake: false
-    url: github:tymbalodeon/environments?dir=src
-  project:
-    flake: false
-    url: path:.
 imports:
   - environments
   - environments/git/release
+inputs:
+  environments:
+    flake: false
+    url: git+https://codeberg.org/tymbalodeon/environments.git?dir=src&ref=trunk
+  project:
+    flake: false
+    url: path:.
