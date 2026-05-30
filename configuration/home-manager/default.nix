@@ -23,7 +23,6 @@
         nix-search-cli
         nurl
         ov
-        pipx
         presenterm
         pup
         python313
