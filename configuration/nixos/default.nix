@@ -96,6 +96,7 @@
       ./home-manager
       (hostPath "hardware.nix")
       ./idle
+      ./keyboard
       ./monitors
       ./nautilus
       ./niri
