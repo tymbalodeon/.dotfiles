@@ -35,8 +35,8 @@ in {
   };
 
   imports = [
-    ../brave
     ../bluetooth
+    ../brave
     ../clipboard
     ../dictionary
     ../email
@@ -44,6 +44,7 @@ in {
     ../monitors
     ../niri
     ../reaper
+    ../stylix
     ../swaync
     ../waybar
   ];

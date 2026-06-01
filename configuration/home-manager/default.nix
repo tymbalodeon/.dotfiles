@@ -80,7 +80,6 @@
       ./ripgrep
       ./shell
       ./src
-      ./stylix
       ./taskwarrior
       ./tealdeer
       ./vivid
