@@ -1,5 +1,1 @@
-#!/usr/bin/env nu
-
-def main [] {
-  rm --force --recursive result
-}
+/nix/store/86cddw3yxpzc20mifjcbq314bpk9hjs2-environments-nix-scripts-clean.nu

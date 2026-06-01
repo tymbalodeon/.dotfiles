@@ -1,9 +1,1 @@
-#!/usr/bin/env nu
-
-use ../../default/scripts/paths.nu get-paths
-
-def main [
-  ...paths: string # Files or directories to format
-] {
-  yamlfmt ...(get-paths $paths)
-}
+/nix/store/4z9f7ccm7yvz1vkj04s1277zs0y5jl10-environments-yaml-scripts-format.nu

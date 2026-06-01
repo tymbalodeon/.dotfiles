@@ -1,10 +1,1 @@
-#!/usr/bin/env nu
-
-use ../../default/scripts/paths.nu get-paths
-
-# Lint yaml files
-def main [
-  ...paths: string # Files or directories to format
-] {
-  yamllint ...(get-paths $paths)
-}
+/nix/store/5rg2p25k0lf1d5n07n235nrsardrn4fw-environments-yaml-scripts-lint.nu

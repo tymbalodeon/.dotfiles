@@ -92,7 +92,6 @@ alias configurations := dotfiles::configurations
 alias generations := dotfiles::generations
 alias inputs := dotfiles::inputs
 alias optimise := dotfiles::optimise
-alias prune := dotfiles::prune
 alias switch := dotfiles::switch
 alias update := dotfiles::update
 alias leaks := git::leaks

@@ -1,15 +1,1 @@
-#!/usr/bin/env nu
-
-def "main languages" [] {
-  tokei --output json
-  | from json
-  | columns
-  | where {$in != Total}
-  | str downcase
-  | str join "\n"
-}
-
-# View repository analytics
-def main [] {
-  tokei --hidden --sort lines
-}
+/nix/store/q6yqcb65hli91wbyhcaazvc6dx832c1a-environments-default-scripts-stats.nu

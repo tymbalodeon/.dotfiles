@@ -1,15 +1,1 @@
-#!/usr/bin/env nu
-
-# View project history
-def main [
-  filename?: string
-  --annotate-lines # Annotate $filename lines with commit information
-] {
-  if ($filename | is-empty) {
-      serie
-  } else if $annotate_lines {
-    git blame $filename
-  } else {
-    git log --patch $filename
-  }
-}
+/nix/store/5cllddqkn9r56xygd8mi6wa7fp49l976-environments-default-scripts-history.nu

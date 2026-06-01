@@ -1,6 +1,1 @@
-#!/usr/bin/env nu
-
-# Format justfiles
-def main [] {
-  just --fmt --unstable
-}
+/nix/store/iwa0d607y43zk6q1g1xyhaakd20qibn2-environments-just-scripts-format.nu

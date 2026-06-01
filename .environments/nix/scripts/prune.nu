@@ -1,10 +1,1 @@
-#!/usr/bin/env nu
-
-use ../../default/scripts/paths.nu get-paths
-
-# Lint nix files
-def main [
-  ...paths: string # Files or directories to format
-] {
-  deadnix ...(get-paths $paths)
-}
+/nix/store/0yq2h7mckmhs4b9f6z16qzw7cwhml0pi-environments-nix-scripts-prune.nu

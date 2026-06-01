@@ -1,10 +1,1 @@
-export def main [] {
-  if (which direnv | is-empty) {
-    nix develop
-  } else {
-    "use flake"
-    | save --force .envrc
-
-    direnv allow
-  }
-}
+/nix/store/b6hjniq81hxqqk0799wzbj89pkf18pk7-environments-default-scripts-environment-activate.nu

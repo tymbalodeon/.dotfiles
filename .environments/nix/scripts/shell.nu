@@ -1,6 +1,1 @@
-#!/usr/bin/env nu
-
-# Open an interactive nix shell
-def main [] {
-  nix repl
-}
+/nix/store/w7bkhswmaa4vwjzf7r5df8r4bn13vh24-environments-nix-scripts-shell.nu

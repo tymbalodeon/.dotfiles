@@ -1,10 +1,1 @@
-#!/usr/bin/env nu
-
-use check.nu run-check
-
-# Lint files
-def main [
-  ...paths: string # Files or directories to lint
-] {
-  run-check lint $paths
-}
+/nix/store/nyrlw5iqfg3q70r3ns0br1zjj2hphw1z-environments-default-scripts-lint.nu

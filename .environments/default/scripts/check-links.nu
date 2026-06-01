@@ -1,6 +1,1 @@
-#!/usr/bin/env nu
-
-# Check for broken links
-def main [] {
-  lychee .
-}
+/nix/store/j1x2qjkx1900d888x0dsyfa38nfzgh2k-environments-default-scripts-check-links.nu

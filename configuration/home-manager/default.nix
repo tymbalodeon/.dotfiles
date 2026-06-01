@@ -23,6 +23,7 @@
         just
         mprocs
         nix-search-cli
+        nix-tree
         nurl
         ov
         presenterm

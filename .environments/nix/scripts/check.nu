@@ -1,6 +1,1 @@
-#!/usr/bin/env nu
-
-# Check flake.lock
-def main [] {
-  nix flake check
-}
+/nix/store/g0i292nwzdwxfxrd2n2vdf342w5hbihz-environments-nix-scripts-check.nu

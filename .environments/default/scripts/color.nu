@@ -1,7 +1,1 @@
-export def use-colors [color: string] {
-  $color == "always" or (
-    $color != "never"
-  ) and (
-    is-terminal --stdout
-  )
-}
+/nix/store/s78as6wp4p6l3ca0fibgpdj0m18fd1qj-environments-default-scripts-color.nu

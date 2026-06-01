@@ -1,6 +1,1 @@
-#!/usr/bin/env nu
-
-# Check for leaked secrets
-export def main [] {
-  gitleaks git
-}
+/nix/store/nj1pbda09s7910cppk5rzy7ifgc774s4-environments-git-scripts-leaks.nu

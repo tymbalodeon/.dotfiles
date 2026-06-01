@@ -1,9 +1,1 @@
-set working-directory := "../.."
-
-# View help text
-@help *args:
-    .environments/git/scripts/help.nu {{ args }}
-
-# Check for leaked secrets
-@leaks *args:
-    .environments/git/scripts/leaks.nu {{ args }}
+/nix/store/7ay36q3rvzr2kdyqhbwn9x1gq0h3xf2k-environments-git-Justfile

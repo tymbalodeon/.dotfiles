@@ -1,18 +1,1 @@
-#!/usr/bin/env nu
-
-use check.nu get-files
-
-# Fix end of files
-def main [
-  ...paths: string # Files or directories to fix
-] {
-  for file in (get-files $paths) {
-    open --raw $file
-    | str trim
-    | append "\n"
-    | str join
-    | to text
-    | collect
-    | save --force $file
-  }
-}
+/nix/store/1r8dcaf8d1cwph9s7xmv3z0zan9994j9-environments-default-scripts-check-end-of-files.nu
