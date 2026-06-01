@@ -9,6 +9,8 @@
     gtk.gtk4.theme = null;
 
     home = {
+      inherit (config.user) username;
+
       packages = with pkgs; [
         devenv
         doggo
@@ -37,12 +39,15 @@
       ];
 
       stateVersion = "23.11";
-      inherit (config.user) username;
     };
 
     news.display = "silent";
     nixpkgs.config.allowUnfree = true;
     programs.home-manager.enable = true;
+
+    xdg.configFile."nixpkgs/config.nix".text = ''
+      {allowUnfree = true;}
+    '';
   };
 
   imports =
