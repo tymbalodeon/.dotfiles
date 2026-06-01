@@ -4,7 +4,7 @@ imports:
 inputs:
   environments:
     flake: false
-    url: git+https://codeberg.org/tymbalodeon/environments.git?dir=src&ref=trunk
+    url: git+ssh://git@codeberg.org/tymbalodeon/environments.git?dir=src
   project:
     flake: false
     url: path:.
