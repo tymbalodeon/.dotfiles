@@ -1,5 +1,7 @@
 #!/usr/bin/env nu
 
+export def main [] {}
+
 export def "main mute" [] {
   wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 }
@@ -39,4 +41,7 @@ export def "main raise" [] {
   set-volume "+"
 }
 
-export def main [] {}
+export def "main zero" [] {
+  wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%
+}
+
