@@ -2,6 +2,7 @@
   config,
   hostType,
   lib,
+  npc,
   pkgs,
   ...
 }: {
@@ -24,6 +25,7 @@
         mprocs
         nix-search-cli
         nix-tree
+        npc
         nurl
         ov
         presenterm
@@ -43,7 +45,12 @@
     };
 
     news.display = "silent";
-    nixpkgs.config.allowUnfree = true;
+
+    nixpkgs = {
+      config.allowUnfree = true;
+      overlays = [npc.overlays.default];
+    };
+
     programs.home-manager.enable = true;
 
     xdg.configFile."nixpkgs/config.nix".text = ''

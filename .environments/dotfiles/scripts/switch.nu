@@ -52,10 +52,33 @@ export def main [
     let theme = (get-built-theme)
 
     if ($theme | is-not-empty) {
-      let info = $"(ansi default_bold)info(ansi reset)"
+      let dark_gray = {
+        fg: dark_gray
+        attr: italic
+      }
 
-      print $"($info): Using previously built theme \"($theme)\""
-      print $"($info): Use `--default-theme` to build with the default theme"
+      let dark_gray_bold = {
+        fg: dark_gray
+        attr: "bold italic"
+      }
+
+      let info = $"(
+        ansi --escape $dark_gray_bold
+      )info(ansi reset)(ansi --escape $dark_gray):(ansi reset)"
+
+      let theme = $"(ansi magenta_italic)"($theme)"(ansi reset)"
+
+      print  $"($info) (
+        ansi --escape $dark_gray
+      )Using previously built theme ($theme)(ansi reset)"
+
+      print  $"($info) (
+        ansi --escape $dark_gray
+      )Use (ansi cyan_italic)`--default-theme`(ansi reset) (
+        ansi --escape $dark_gray
+      )to build with the default theme(ansi reset)"
+
+      print ""
     }
 
     $theme

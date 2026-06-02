@@ -27,6 +27,11 @@
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    npc = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:samestep/npc";
+    };
+
     solaar = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:Svenum/Solaar-Flake/main";
@@ -34,7 +39,7 @@
 
     src = {
       inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:tymbalodeon/src";
+      url = "git+ssh://git@codeberg.org/tymbalodeon/src.git";
     };
 
     stylix = {
@@ -60,6 +65,7 @@
     nixgl,
     nix-index-database,
     nixpkgs,
+    npc,
     solaar,
     src,
     stylix,
@@ -99,6 +105,7 @@
               home-manager
               nixgl
               nix-index-database
+              npc
               src
               system
               zk-graph
@@ -128,6 +135,7 @@
               hostType
               musnix
               nix-index-database
+              npc
               solaar
               src
               stylix
