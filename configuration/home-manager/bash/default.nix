@@ -12,7 +12,6 @@
       initExtra = ''
         PS1="\[\e[1m\e[1;36m\w\e[0m\]\n$ "
         PS2="\[\e[1m\e[1;32m>\e[0m\] "
-
       '';
 
       shellAliases = {
