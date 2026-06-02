@@ -128,7 +128,9 @@ in {
       currentSystem =
         if hostType == "home-manager"
         then system
-        else builtins.currentSystem;
+        else if lib.hasAttr "currentSystem" builtins
+        then builtins.currentSystem
+        else "x86_64-linux";
     in {
       enable = true;
       notes = ["${config.home.homeDirectory}/.nb/home"];
