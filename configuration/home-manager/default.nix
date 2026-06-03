@@ -2,13 +2,10 @@
   config,
   hostType,
   lib,
-  npc,
   pkgs,
   ...
 }: {
   config = {
-    gtk.gtk4.theme = null;
-
     home = {
       inherit (config.user) username;
 
@@ -25,7 +22,6 @@
         mprocs
         nix-search-cli
         nix-tree
-        npc
         nurl
         ov
         poop
@@ -46,12 +42,7 @@
     };
 
     news.display = "silent";
-
-    nixpkgs = {
-      config.allowUnfree = true;
-      overlays = [npc.overlays.default];
-    };
-
+    nixpkgs.config.allowUnfree = true;
     programs.home-manager.enable = true;
 
     xdg.configFile."nixpkgs/config.nix".text = ''

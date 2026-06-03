@@ -6,7 +6,6 @@
   hostType,
   lib,
   nix-index-database,
-  npc,
   src,
   zk-graph,
   ...
@@ -21,7 +20,6 @@
           hostName
           hostType
           nix-index-database
-          npc
           src
           zk-graph
           ;
