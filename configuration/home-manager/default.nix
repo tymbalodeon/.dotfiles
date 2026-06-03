@@ -28,6 +28,7 @@
         npc
         nurl
         ov
+        poop
         presenterm
         pup
         python313
