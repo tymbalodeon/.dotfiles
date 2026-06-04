@@ -149,20 +149,31 @@ export def main [
 
   # TODO: update wallpaper fill color to match new theme here!
   # FIXME: this doesn't work!
-  let ls_colors = try { nu -c "vivid generate stylix" }
+  # let ls_colors = try { nu -c "vivid generate stylix" }
 
-  if ($ls_colors | is-not-empty) {
-    $ls_colors
-    | save --force (xdg-state-home | path join ls-colors)
-  }
+  # if ($ls_colors | is-not-empty) {
+  #   $ls_colors
+  #   | save --force (xdg-state-home | path join ls-colors)
+  # }
 
   bat cache --build
+
+  for notebook in (^ls ~/.nb | lines) {
+    try {
+      git -C $"($env.HOME)/.nb/($notebook)" log --max-count 1 out+err> /dev/null
+    } catch {
+      git -C $"($env.HOME)/.nb/($notebook)" pull origin trunk
+      git -C $"($env.HOME)/.nb/($notebook)" branch --set-upstream-to origin/trunk trunk
+
+      try { systemctl --user restart emanote }
+    }
+  }
 
   if $clean {
     clean --keep-since 3d
   }
 
-  if not (git status --short | is-empty) {
+  if not (git status --short out> /dev/null | is-empty) {
     git status
   }
 }

@@ -29,6 +29,9 @@ in {
         ''
           remotes=(${lib.concatStringsSep " " cfg.remotes})
           nbHome="$HOME/.nb"
+
+          mkdir --parents $nbHome
+
           notebooks=$(ls $nbHome)
           index=0
 
@@ -56,6 +59,9 @@ in {
 
               ${git} init
               ${git} remote add origin $remote
+
+              # TODO: add an option to specify the branch if it's not "trunk"
+              ${git} branch -m trunk
             fi
 
             index+=1
