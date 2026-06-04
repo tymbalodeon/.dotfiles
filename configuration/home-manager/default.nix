@@ -131,8 +131,7 @@
         default =
           if builtins.hasAttr "nbRemotes" user
           then user.nbRemotes
-          else ["git@github.com:${user.githubUsername}/notes.git"];
-
+          else ["git@codeberg.org:${user.githubUsername}/notes.git"];
         type = listOf str;
       };
 
