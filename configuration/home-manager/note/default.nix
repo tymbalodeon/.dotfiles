@@ -81,7 +81,6 @@ in {
         ripgrep
         socat
         tig
-        w3m
       ];
     };
 
@@ -160,6 +159,7 @@ in {
     ../helix
     ../helix/markdown
     ../nushell
+    ../w3m
   ];
 
   options.nb.remotes = let
