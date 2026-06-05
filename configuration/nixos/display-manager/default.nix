@@ -13,7 +13,7 @@
       (catppuccin-sddm.override
         {
           accent = "lavender";
-          background = ../../home-manager/wallpaper/default-wallpaper.jpeg;
+          background = ../../home-manager/wallpaper/default-wallpaper.jpg;
           clockEnabled = false;
           flavor = "mocha";
           font = config.stylix.fonts.sansSerif.name;

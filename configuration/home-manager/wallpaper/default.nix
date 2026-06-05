@@ -12,7 +12,7 @@
         mkdir --parents ~/wallpaper
       '';
 
-      file."wallpaper/default-wallpaper.jpeg".source = ./default-wallpaper.jpeg;
+      file."wallpaper/default-wallpaper.jpg".source = ./default-wallpaper.jpg;
 
       packages = with pkgs; [
         file
@@ -33,7 +33,7 @@
         text =
           ''
             def default-wallpaper [] {
-              "${./default-wallpaper.jpeg}"
+              "${./default-wallpaper.jpg}"
             }
 
             def waybar-height [] {

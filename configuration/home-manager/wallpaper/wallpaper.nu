@@ -3,7 +3,7 @@ def wallpaper-directory [] {
 }
 
 def default-wallpaper-filename [] {
-  "default-wallpaper.jpeg"
+  "default-wallpaper.jpg"
 }
 
 def select-local-wallpaper [] {
