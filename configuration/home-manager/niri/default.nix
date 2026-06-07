@@ -140,7 +140,6 @@ in {
             Mod+WheelScrollRight { focus-column-left; }
             Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
             Mod+W { toggle-column-tabbed-display; }
-            Mod+Z hotkey-overlay-title="Open notes in browser" { spawn-sh "nu ${../note/note.nu} browse"; }
             Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" { screenshot-screen; }
             Super+Alt+2 hotkey-overlay-title="Screenshot the current window" { screenshot-window; }
             Super+Alt+3 hotkey-overlay-title="Screenshot" { screenshot; }

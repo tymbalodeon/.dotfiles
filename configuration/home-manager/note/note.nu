@@ -68,25 +68,6 @@ def --wrapped note [...args: string] {
 
 alias n = note
 
-def notes-url [] {
-  "http://localhost:7000"
-}
-
-def "note browse" [] {
-  note browse start-server
-  start-process xdg-open (notes-url)
-}
-
-alias "note br" = note browse
-
-def "note browse start-server" [] {
-  systemctl --user start emanote
-}
-
-def "note browse stop-server" [] {
-  systemctl --user stop emanote
-}
-
 def get-note-title [title: list<string>] {
   $title
   | str join " "
@@ -240,9 +221,3 @@ def "note sync" [] {
   nb sync
 }
 
-export def main [] {}
-
-def "main browse" [] {
-  note browse start-server
-  xdg-open (notes-url)
-}

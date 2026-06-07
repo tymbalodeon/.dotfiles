@@ -1,19 +1,10 @@
 {
   config,
-  hostType,
   lib,
   pkgs,
-  system,
   zk-graph,
   ...
 }: let
-  emanote = import (
-    fetchTarball {
-      sha256 = "sha256:0i3jvs8picncc87n20w99y44al58f4wi7qrd6hsd10b864214qh4";
-      url = "https://github.com/srid/emanote/archive/master.tar.gz";
-    }
-  );
-
   journalDirectory = "journal";
 in {
   config = let
@@ -129,19 +120,6 @@ in {
       };
     };
 
-    services.emanote = let
-      currentSystem =
-        if hostType == "home-manager"
-        then system
-        else if lib.hasAttr "currentSystem" builtins
-        then builtins.currentSystem
-        else "x86_64-linux";
-    in {
-      enable = true;
-      notes = ["${config.home.homeDirectory}/.nb/home"];
-      package = emanote.packages.${currentSystem}.default;
-    };
-
     xdg.configFile.".zk/templates/journal.md".text = ''
       ---
       tags: [journal]
@@ -153,7 +131,6 @@ in {
   imports = [
     ../bash
     ../bat
-    emanote.homeManagerModule
     ../fzf
     ../git
     ../helix
