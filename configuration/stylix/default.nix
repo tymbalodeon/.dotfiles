@@ -18,6 +18,11 @@
         name = "IBM Plex Sans";
         package = pkgs.ibm-plex;
       };
+
+      serif = {
+        name = "TeX Gyre Termes";
+        package = pkgs.tex-gyre.termes;
+      };
     };
 
     polarity = "dark";
