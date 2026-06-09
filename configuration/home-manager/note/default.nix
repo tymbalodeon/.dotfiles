@@ -119,13 +119,6 @@ in {
         tool.fzf-preview = "bat --plain --color always {-1}";
       };
     };
-
-    xdg.configFile.".zk/templates/journal.md".text = ''
-      ---
-      tags: [journal]
-      ---
-
-      # {{format-date now \"long\"}}'';
   };
 
   imports = [
