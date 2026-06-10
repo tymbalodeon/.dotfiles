@@ -51,7 +51,7 @@ def sync-notes [] {
   try {
     jj status --repository $current_notebook_path err> /dev/null
 
-    job spawn {
+    job spawn out> /dev/null {
       cd $current_notebook_path
 
       # TODO: check if current commit has description, then run the following
