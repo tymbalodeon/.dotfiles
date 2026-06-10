@@ -23,6 +23,8 @@
       };
     };
 
+    kitty.shellIntegration.mode = "no-cursor no-rc";
+
     readline = {
       enable = true;
 

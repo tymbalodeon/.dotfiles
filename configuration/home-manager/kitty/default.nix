@@ -47,8 +47,6 @@
           // lib.optionalAttrs (hostType != "home-manager") {
             font_family = "${config.stylix.fonts.sansSerif.name}";
           };
-
-        shellIntegration.mode = "no-cursor no-rc";
       }
       // lib.optionalAttrs (hostType == "home-manager") {
         themeFile = "Catppuccin-Macchiato";
