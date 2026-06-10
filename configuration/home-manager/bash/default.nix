@@ -22,5 +22,15 @@
         ssh = ". '${./ssh.sh}'";
       };
     };
+
+    readline = {
+      enable = true;
+
+      variables = {
+        show-mode-in-prompt = true;
+        vi-cmd-mode-string = ''\1\e[2 q\2'';
+        vi-ins-mode-string = ''\1\e[6 q\2'';
+      };
+    };
   };
 }
