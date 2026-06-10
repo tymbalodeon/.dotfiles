@@ -72,9 +72,10 @@
             ++ cfg.extraScripts)
         )
         // {
-          ".cache/devenv/hook.nu".source =
-            pkgs.runCommand "devenv-hook" {
-              buildInputs = [pkgs.devenv];
+          # TODO: move to devenv module?
+          ".cache/devenv/hook.nu".source = with pkgs;
+            runCommand "devenv-hook" {
+              buildInputs = [devenv];
             } ''
               devenv hook nu > $out
             '';
