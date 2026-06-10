@@ -45,12 +45,32 @@ def get-current-notebook-path [] {
   }
 }
 
-def sync-zk-directory [] {
-  if (
-    git -C (get-current-notebook-path) status --short
-    | is-not-empty
-  ) {
-    job spawn { nb sync } out+err> /dev/null
+def sync-notes [] {
+  let current_notebook_path = (get-current-notebook-path)
+
+  try {
+    jj status --repository $current_notebook_path err> /dev/null
+
+    job spawn {
+      cd $current_notebook_path
+
+      # TODO: check if current commit has description, then run the following
+      # only if there isn't one yet
+      jj describe --message "chore: sync"
+
+      jj git fetch
+      jj new @ trunk
+      jj describe --message "chore: sync"
+      jj bookmark set trunk
+      jj git push
+    }
+  } catch {
+    if (
+      git -C $current_notebook_path status --short
+      | is-not-empty
+    ) {
+      job spawn { nb sync } out+err> /dev/null
+    }
   }
 }
 
@@ -104,7 +124,7 @@ def "note edit" [...search_terms: string] {
     }
   }
 
-  sync-zk-directory
+  sync-notes
 }
 
 def "note graph" [] {
@@ -138,7 +158,7 @@ def "note journal" [] {
 
   mkdir $journal
   zk new $journal --no-input --working-dir $working_dir
-  sync-zk-directory
+  sync-notes
 }
 
 # Interactively select a journal entry to edit
@@ -185,7 +205,7 @@ def "note new" [...title: string] {
     }
   }
 
-  sync-zk-directory
+  sync-notes
 }
 
 # Remove notes
@@ -211,13 +231,13 @@ def "note remove" [note?: string] {
     }
   }
 
-  sync-zk-directory
+  sync-notes
 }
 
 alias "note rm" = note remove
 
 # Sync notes
 def "note sync" [] {
-  nb sync
+  sync-notes
 }
 
