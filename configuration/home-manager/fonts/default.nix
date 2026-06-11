@@ -12,6 +12,7 @@
     font-manager
     fontpreview
     gentium
+    gentium-book
     goudy-bookletter-1911
     gyre-fonts
     ibm-plex

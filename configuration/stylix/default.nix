@@ -20,8 +20,8 @@
       };
 
       serif = {
-        name = "TeX Gyre Termes";
-        package = tex-gyre.termes;
+        name = "Gentium Book";
+        package = gentium-book;
       };
     };
 
