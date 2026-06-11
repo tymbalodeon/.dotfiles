@@ -15,8 +15,8 @@
       };
 
       sansSerif = {
-        name = "Adwaita Sans";
-        package = adwaita-fonts;
+        name = "IBM Plex Sans";
+        package = ibm-plex;
       };
 
       serif = {
