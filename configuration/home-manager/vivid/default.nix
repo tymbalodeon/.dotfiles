@@ -3,11 +3,13 @@
   lib,
   ...
 }: {
-  programs = {
+  programs = let
+    homeManagerTheme = "catppuccin-mocha";
+  in {
     nushell.extraConfig = let
       theme =
         if hostType == "home-manager"
-        then "catppuccin-mocha"
+        then homeManagerTheme
         else "stylix";
     in ''
       # FIXME: only necessary because stylix theme is not found when launching a
@@ -42,7 +44,7 @@
         enable = true;
       }
       // lib.optionalAttrs (hostType == "home-manager") {
-        activeTheme = "catppuccin-mocha";
+        activeTheme = homeManagerTheme;
       };
   };
 }

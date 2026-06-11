@@ -34,7 +34,7 @@
 
       theme =
         if themeOverride == ""
-        then "catppuccin-macchiato"
+        then "caroline"
         else themeOverride;
     in
       theme;
