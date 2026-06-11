@@ -76,6 +76,7 @@
       ../nix
       ./note
       ./nushell
+      ./passwords
       ./pdf
       ./ripgrep
       ./shell
