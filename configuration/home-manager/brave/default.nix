@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  programs.chromium = {
+  programs.brave = {
     enable = true;
 
     extensions = [
@@ -16,8 +16,6 @@
       {id = "pjjgklgkfeoeiebjogplpnibpfnffkng";}
       {id = "ponfpcnoihfmfllpaingbgckeeldkhle";}
     ];
-
-    package = pkgs.brave;
   };
 
   xdg = {

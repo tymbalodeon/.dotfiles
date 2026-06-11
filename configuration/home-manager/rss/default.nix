@@ -3,7 +3,7 @@
   nushell.extraScripts = [{source = ./rss.nu;}];
 
   programs = {
-    chromium.extensions = [{id = "kfghpdldaipanmkhfpdcjglncmilendn";}];
+    brave.extensions = [{id = "kfghpdldaipanmkhfpdcjglncmilendn";}];
 
     newsboat = {
       autoFetchArticles.enable = true;
