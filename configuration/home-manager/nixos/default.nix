@@ -39,8 +39,8 @@ in {
     ../brave
     ../clipboard
     ../dictionary
-    ../email
     ../linux
+    ../mail
     ../monitors
     ../niri
     ../reaper

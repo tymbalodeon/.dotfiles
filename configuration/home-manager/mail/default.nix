@@ -1,6 +1,6 @@
 {
   imports = [../nushell];
-  nushell.extraScripts = [{source = ./email.nu;}];
+  nushell.extraScripts = [{source = ./mail.nu;}];
 
   programs.neomutt = {
     enable = true;
