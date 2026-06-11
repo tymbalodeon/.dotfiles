@@ -54,15 +54,17 @@ def sync-notes [] {
     job spawn out> /dev/null {
       cd $current_notebook_path
 
-      # TODO: check if current commit has description, then run the following
-      # only if there isn't one yet
-      jj describe --message "chore: sync"
-
       jj git fetch
+
+      if (jj log --no-graph --revisions @ --template "description" | is-empty) {
+        jj describe --message "chore: sync"
+      }
+
       jj new @ trunk
       jj describe --message "chore: sync"
       jj bookmark set trunk
       jj git push
+      jj new
     }
   } catch {
     if (
