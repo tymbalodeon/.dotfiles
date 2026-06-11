@@ -1,5 +1,24 @@
 {pkgs, ...}: {
-  home.packages = [pkgs.brave];
+  programs.chromium = {
+    enable = true;
+
+    extensions = [
+      {id = "bkkbcggnhapdmkeljlodobbkopceiche";}
+      {id = "cjpalhdlnbpafiamejdnhcphjbkeiagm";}
+      {id = "eimadpbcbfnmbkopoojfekhnkhdbieeh";}
+      {id = "gfbliohnnapiefjpjlpjnehglfpaknnc";}
+      {id = "ghmbeldphafepmbegfdlkpapadhbakde";}
+      {id = "gighmmpiobklfepjocnamgkkbiglidom";}
+      {id = "hlepfoohegkhhmjieoechaddaejaokhf";}
+      {id = "idfhjammokilkemckgdbjckkbgmbacne";}
+      {id = "jpdngflnlekafjhdlcnijphhcmeibdoa";}
+      {id = "ndpmhjnlfkgfalaieeneneenijondgag";}
+      {id = "pjjgklgkfeoeiebjogplpnibpfnffkng";}
+      {id = "ponfpcnoihfmfllpaingbgckeeldkhle";}
+    ];
+
+    package = pkgs.brave;
+  };
 
   xdg = {
     desktopEntries = {
