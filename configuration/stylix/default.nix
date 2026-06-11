@@ -15,8 +15,8 @@
       };
 
       sansSerif = {
-        name = "Lato";
-        package = lato;
+        name = "Adwaita Sans";
+        package = adwaita-fonts;
       };
 
       serif = {
