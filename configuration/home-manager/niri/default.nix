@@ -213,10 +213,13 @@ in {
                 }
 
                 repeat-delay 200
-                repeat-rate 50
+                repeat-rate 75
             }
 
             touchpad {
+              click-method "clickfinger"
+              dwt
+              dwtp
               tap
             }
         }
