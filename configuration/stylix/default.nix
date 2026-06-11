@@ -15,8 +15,8 @@
       };
 
       sansSerif = {
-        name = "IBM Plex Sans";
-        package = pkgs.ibm-plex;
+        name = "Lato";
+        package = lato;
       };
 
       serif = {
