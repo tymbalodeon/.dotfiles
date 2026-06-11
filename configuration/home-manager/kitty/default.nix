@@ -42,7 +42,7 @@
             wheel_scroll_multiplier = 1;
           }
           // lib.optionalAttrs (hostType == "home-manager") {
-            font_family = "JetBrainsMono Nerd Font Mono";
+            font_family = "Iosevka";
           }
           // lib.optionalAttrs (hostType != "home-manager") {
             font_family = "${config.stylix.fonts.sansSerif.name}";

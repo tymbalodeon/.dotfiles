@@ -8,6 +8,7 @@
       gyre-fonts
       ibm-plex
       inconsolata
+      iosevka
       liberation_ttf
       nerd-fonts.jetbrains-mono
       noto-fonts

@@ -4,14 +4,14 @@
   pkgs,
   ...
 }: {
-  config.stylix = {
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/${config.stylix.theme}.yaml";
+  config.stylix = with pkgs; {
+    base16Scheme = "${base16-schemes}/share/themes/${config.stylix.theme}.yaml";
     enable = true;
 
     fonts = {
       monospace = {
-        name = "JetBrainsMono Nerd Font Mono";
-        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "Iosevka";
+        package = iosevka;
       };
 
       sansSerif = {
@@ -21,7 +21,7 @@
 
       serif = {
         name = "TeX Gyre Termes";
-        package = pkgs.tex-gyre.termes;
+        package = tex-gyre.termes;
       };
     };
 
