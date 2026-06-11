@@ -9,6 +9,7 @@
     fanwood
     fira
     font-awesome
+    font-manager
     fontpreview
     gentium
     goudy-bookletter-1911
@@ -29,5 +30,5 @@
   ];
 
   imports = [../nushell];
-  nushell.extraScripts = [{source = ./fonts.nu;}];
+  nushell.extraScripts = [{source = ./font.nu;}];
 }
