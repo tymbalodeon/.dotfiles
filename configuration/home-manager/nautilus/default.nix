@@ -7,7 +7,7 @@
 
   services.udiskie = {
     enable = true;
-    settings.program_options.file_manager = "${lib.getBin pkgs.nautilus}";
+    settings.program_options.file_manager = "${lib.getExe pkgs.nautilus}";
   };
 
   xdg = {
