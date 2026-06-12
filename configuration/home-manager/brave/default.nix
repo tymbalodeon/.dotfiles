@@ -3,8 +3,18 @@
   pkgs,
   ...
 }: let
+  adBlockID = "gighmmpiobklfepjocnamgkkbiglidom";
   darkReaderID = "eimadpbcbfnmbkopoojfekhnkhdbieeh";
+  enhancerForYouTubeID = "ponfpcnoihfmfllpaingbgckeeldkhle";
+  popUpBlockerID = "bkkbcggnhapdmkeljlodobbkopceiche";
   protonPassID = "ghmbeldphafepmbegfdlkpapadhbakde";
+  refinedGitHubID = "hlepfoohegkhhmjieoechaddaejaokhf";
+  subscriptionFeedFilterForYouTubeID = "jpdngflnlekafjhdlcnijphhcmeibdoa";
+  surfingKeysID = "gfbliohnnapiefjpjlpjnehglfpaknnc";
+  uBlockOriginID = "cjpalhdlnbpafiamejdnhcphjbkeiagm";
+  unDistractedID = "pjjgklgkfeoeiebjogplpnibpfnffkng";
+  youTubeAntiTranslateID = "ndpmhjnlfkgfalaieeneneenijondgag";
+  youTubeBlackAndWhiteFilterID = "idfhjammokilkemckgdbjckkbgmbacne";
 in {
   # TODO: see brave://settings/system/shortcuts and brave.accelerators
   home.file.".config/BraveSoftware/Brave-Browser/Default/Preferences" = {
@@ -68,7 +78,9 @@ in {
         pinned_extensions = [
           darkReaderID
           protonPassID
-          "idfhjammokilkemckgdbjckkbgmbacne"
+          surfingKeysID
+          unDistractedID
+          youTubeBlackAndWhiteFilterID
         ];
       };
 
@@ -104,18 +116,18 @@ in {
     enable = true;
 
     extensions = [
-      {id = "bkkbcggnhapdmkeljlodobbkopceiche";}
-      {id = "cjpalhdlnbpafiamejdnhcphjbkeiagm";}
+      {id = adBlockID;}
       {id = darkReaderID;}
-      {id = "gfbliohnnapiefjpjlpjnehglfpaknnc";}
+      {id = enhancerForYouTubeID;}
+      {id = popUpBlockerID;}
       {id = protonPassID;}
-      {id = "gighmmpiobklfepjocnamgkkbiglidom";}
-      {id = "hlepfoohegkhhmjieoechaddaejaokhf";}
-      {id = "idfhjammokilkemckgdbjckkbgmbacne";}
-      {id = "jpdngflnlekafjhdlcnijphhcmeibdoa";}
-      {id = "ndpmhjnlfkgfalaieeneneenijondgag";}
-      {id = "pjjgklgkfeoeiebjogplpnibpfnffkng";}
-      {id = "ponfpcnoihfmfllpaingbgckeeldkhle";}
+      {id = refinedGitHubID;}
+      {id = subscriptionFeedFilterForYouTubeID;}
+      {id = surfingKeysID;}
+      {id = uBlockOriginID;}
+      {id = unDistractedID;}
+      {id = youTubeAntiTranslateID;}
+      {id = youTubeBlackAndWhiteFilterID;}
     ];
   };
 
