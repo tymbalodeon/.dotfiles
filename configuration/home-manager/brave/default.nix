@@ -18,7 +18,9 @@
 in {
   home.activation.brave = let
     # TODO: see brave://settings/system/shortcuts and brave.accelerators
-    preferences = {
+    preferences = let
+      startpageGUID = "485bf7d3-0215-45af-87dc-538868000510";
+    in {
       bookmark_bar = {
         show_on_all_tabs = false;
         show_tab_groups = true;
@@ -35,7 +37,7 @@ in {
         always_show_bookmark_bar_on_ntp = false;
 
         autocomplete_enabled = true;
-        default_private_search_provider_guid = "485bf7d3-0215-45af-87dc-538868000510";
+        default_private_search_provider_guid = startpageGUID;
         enable_window_closing_confirm = false;
         has_seen_welcome_page = true;
         location_bar_is_wide = true;
@@ -48,6 +50,20 @@ in {
       };
 
       browser.show_home_button = false;
+      default_search_provider.guid = startpageGUID;
+
+      default_search_provider_data.template_url_data = {
+        favicon_url = "https://cdn.startpage.com/sp/cdn/favicons/favicon-32x32-gradient.png";
+        id = "7";
+        input_encodings = ["UTF-8"];
+        is_active = 1;
+        keyword = ":sp";
+        short_name = "Startpage";
+        suggestions_url = "https://www.startpage.com/cgi-bin/csuggest?query={searchTerms}&limit=10&format=json";
+        suggestions_url_post_params = "";
+        synced_guid = startpageGUID;
+        url = "https://www.startpage.com/do/search?q={searchTerms}&segment=startpage.brave";
+      };
 
       extensions = {
         commands = {
