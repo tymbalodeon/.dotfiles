@@ -39,6 +39,8 @@ in {
         enable_window_closing_confirm = false;
         has_seen_welcome_page = true;
         location_bar_is_wide = true;
+        new_tab_page.shows_options = 2;
+        rewards.show_brave_rewards_button_in_location_bar = false;
         show_side_panel_button = false;
         top_site_suggestions_enabled = false;
         wallet.show_wallet_icon_on_toolbar = false;
