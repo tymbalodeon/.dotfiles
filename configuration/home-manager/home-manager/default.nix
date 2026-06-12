@@ -16,7 +16,7 @@
     ../linux
   ];
 
-  kitty.fontSize = 11.0;
+  kitty.fontSize = 12.0;
   nixpkgs.config.allowUnfree = true;
 
   targets.genericLinux = {
