@@ -7,6 +7,6 @@
     ../../../home-manager/music-player
   ];
 
-  kitty.fontSize = 12.0;
+  kitty.fontSize = 10.0;
   music-player.musicDirectory = "/run/media/benrosen/G-DRIVE Thunderbolt 3/Music";
 }

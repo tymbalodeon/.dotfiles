@@ -1,12 +1,13 @@
 {
-  config,
+  # config,
   pkgs,
   ...
 }: {
-  home.file.".config/BraveSoftware/Brave-Browser/Default/Preferences" = {
-    force = true;
-    source = config.lib.file.mkOutOfStoreSymlink ./Preferences.json;
-  };
+  # TODO: complete this
+  # home.file.".config/BraveSoftware/Brave-Browser/Default/Preferences" = {
+  #   force = true;
+  #   source = config.lib.file.mkOutOfStoreSymlink ./Preferences.json;
+  # };
 
   programs.brave = {
     enable = true;
