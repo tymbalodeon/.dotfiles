@@ -55,7 +55,7 @@
 
   options.kitty.fontSize = with lib;
     mkOption {
-      default = 10.0;
+      default = 9.0;
       type = types.float;
     };
 }
