@@ -92,6 +92,7 @@
   in
     [
       ./bluetooth
+      ./brave
       ./display-manager
       ./home-manager
       (hostPath "hardware.nix")

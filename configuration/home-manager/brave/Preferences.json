@@ -1,0 +1,13 @@
+{
+  "webkit": {
+    "webprefs": {
+      "fonts": {
+        "fixed": { "Zyyy": "Iosevka" },
+        "math": { "Zyyy": "DejaVu Math TeX Gyre" },
+        "sansserif": { "Zyyy": "Liberation Sans" },
+        "serif": { "Zyyy": "Gentium Book" },
+        "standard": { "Zyyy": "Sans" }
+      }
+    }
+  }
+}
