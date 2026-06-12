@@ -6,6 +6,7 @@
   darkReaderID = "eimadpbcbfnmbkopoojfekhnkhdbieeh";
   protonPassID = "ghmbeldphafepmbegfdlkpapadhbakde";
 in {
+  # TODO: see brave://settings/system/shortcuts and brave.accelerators
   home.file.".config/BraveSoftware/Brave-Browser/Default/Preferences" = {
     force = true;
     source = config.lib.file.mkOutOfStoreSymlink builtins.toJSON {
@@ -23,48 +24,78 @@ in {
           default_private_search_provider_guid = startPageGUID;
         };
 
-        extensions = {
-          commands = {
-            "linux:Alt+A" = {
-              command_name = "addSite";
-              extension = darkReaderID;
-              global = false;
-            };
-
-            "linux:Alt+Shift+D" = {
-              command_name = "toggle";
-              extension = darkReaderID;
-              global = false;
-            };
-          };
-
-          pinned_extensions = [
-            darkReaderID
-            protonPassID
-            "idfhjammokilkemckgdbjckkbgmbacne"
-          ];
-        };
-
-        toolbar = {
-          pinned_actions = [
-            "kActionShowChromeLabs"
-            "kActionShowPasswordsBubbleOrPage"
-            "kActionCopyUrl"
-            "kActionSendTabToSelf"
-          ];
-        };
+        toolbar.pinned_actions = [
+          "kActionShowChromeLabs"
+          "kActionShowPasswordsBubbleOrPage"
+          "kActionCopyUrl"
+          "kActionSendTabToSelf"
+        ];
       };
 
-      webkit = {
-        webprefs = {
-          fonts = {
-            fixed = {Zyyy = "Iosevka";};
-            math = {Zyyy = "DejaVu Math TeX Gyre";};
-            sansserif = {Zyyy = "Liberation Sans";};
-            serif = {Zyyy = "Gentium Book";};
-            standard = {Zyyy = "Sans";};
+      brave = {
+        ai_chat = {
+          "autocomplete_provider_enabled" = false;
+          "context_menu_enabled" = false;
+          "show_toolbar_button" = false;
+          "tab_organization_enabled" = false;
+        };
+
+        autocomplete_enabled = true;
+        enable_window_closing_confirm = false;
+        has_seen_welcome_page = true;
+        location_bar_is_wide = true;
+        show_side_panel_button = false;
+        top_site_suggestions_enabled = false;
+        wallet.show_wallet_icon_on_toolbar = false;
+        web_view_rounded_corners = false;
+      };
+
+      extensions = {
+        commands = {
+          "linux:Alt+A" = {
+            command_name = "addSite";
+            extension = darkReaderID;
+            global = false;
+          };
+
+          "linux:Alt+Shift+D" = {
+            command_name = "toggle";
+            extension = darkReaderID;
+            global = false;
           };
         };
+
+        pinned_extensions = [
+          darkReaderID
+          protonPassID
+          "idfhjammokilkemckgdbjckkbgmbacne"
+        ];
+      };
+
+      sync = {
+        apps = true;
+        autofill = true;
+        bookmarks = true;
+        extensions = true;
+        keep_everything_synced = true;
+        passwords = true;
+        payments = true;
+        preferences = true;
+        reading_list = true;
+        saved_tab_groups = true;
+        tabs = true;
+        themes = false;
+        typed_urls = true;
+      };
+
+      tab_groups.deletion.skip_dialog_on_close_tab = true;
+
+      webkit.webprefs.fonts = {
+        fixed = {Zyyy = "Iosevka";};
+        math = {Zyyy = "DejaVu Math TeX Gyre";};
+        sansserif = {Zyyy = "Liberation Sans";};
+        serif = {Zyyy = "Gentium Book";};
+        standard = {Zyyy = "Sans";};
       };
     };
   };
