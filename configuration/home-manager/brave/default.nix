@@ -16,7 +16,6 @@
   youTubeBlackAndWhiteFilterID = "idfhjammokilkemckgdbjckkbgmbacne";
 in {
   home.activation.brave = let
-    # TODO: see brave://settings/system/shortcuts and brave.accelerators
     preferences = let
       startpageGUID = "485bf7d3-0215-45af-87dc-538868000510";
     in {
@@ -26,6 +25,22 @@ in {
       };
 
       brave = {
+        accelerators = {
+          "33000" = [
+            "BrowserBack"
+            "Alt+ArrowLeft"
+            "AltGr+ArrowLeft"
+            "Control+BracketLeft"
+          ];
+
+          "33001" = [
+            "BrowserForward"
+            "Alt+ArrowRight"
+            "AltGr+ArrowRight"
+            "Control+BracketRight"
+          ];
+        };
+
         ai_chat = {
           "autocomplete_provider_enabled" = false;
           "context_menu_enabled" = false;
@@ -48,6 +63,8 @@ in {
         web_view_rounded_corners = false;
       };
 
+      # TODO: pull in from secrets
+      # brave_sync_v2.seed = "";
       browser.show_home_button = false;
       default_search_provider.guid = startpageGUID;
 
@@ -96,7 +113,12 @@ in {
         apps = true;
         autofill = true;
         bookmarks = true;
+
+        # TODO: pull in from secrets
+        # brave_sync_v2.seed = "";
+        # encryption_bootstrap_token_per_account."=" = "";
         extensions = true;
+        has_setup_completed = true;
         keep_everything_synced = true;
         passwords = true;
         payments = true;
@@ -104,7 +126,7 @@ in {
         reading_list = true;
         saved_tab_groups = true;
         tabs = true;
-        themes = false;
+        themes = true;
         typed_urls = true;
       };
 
