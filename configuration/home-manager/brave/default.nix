@@ -6,7 +6,6 @@
   adBlockID = "gighmmpiobklfepjocnamgkkbiglidom";
   darkReaderID = "eimadpbcbfnmbkopoojfekhnkhdbieeh";
   enhancerForYouTubeID = "ponfpcnoihfmfllpaingbgckeeldkhle";
-  popUpBlockerID = "bkkbcggnhapdmkeljlodobbkopceiche";
   protonPassID = "ghmbeldphafepmbegfdlkpapadhbakde";
   refinedGitHubID = "hlepfoohegkhhmjieoechaddaejaokhf";
   subscriptionFeedFilterForYouTubeID = "jpdngflnlekafjhdlcnijphhcmeibdoa";
@@ -81,6 +80,7 @@ in {
         };
 
         pinned_extensions = [
+          adBlockID
           darkReaderID
           protonPassID
           surfingKeysID
@@ -139,7 +139,6 @@ in {
       {id = adBlockID;}
       {id = darkReaderID;}
       {id = enhancerForYouTubeID;}
-      {id = popUpBlockerID;}
       {id = protonPassID;}
       {id = refinedGitHubID;}
       {id = subscriptionFeedFilterForYouTubeID;}
