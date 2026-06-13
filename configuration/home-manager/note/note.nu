@@ -46,16 +46,15 @@ def get-current-notebook-path [] {
 }
 
 def sync-notes [] {
-  let current_notebook_path = (get-current-notebook-path)
+  job spawn {
+    cd (get-current-notebook-path)
+    git fetch origin trunk out> /dev/null
 
-  try {
-    jj status --repository $current_notebook_path err> /dev/null
+    if (git status --short | is-empty) {
+      return
+    }
 
-    job spawn out> /dev/null {
-      cd $current_notebook_path
-
-      jj git fetch
-
+    try {
       if (jj log --no-graph --revisions @ --template "description" | is-empty) {
         jj describe --message "chore: sync"
       }
@@ -63,17 +62,13 @@ def sync-notes [] {
       jj new @ trunk
       jj describe --message "chore: sync"
       jj bookmark set trunk
-      jj git push
       jj new
+      jj git push
+    } catch {
+      # TODO: handle case of detached head
+      nb sync
     }
-  } catch {
-    if (
-      git -C $current_notebook_path status --short
-      | is-not-empty
-    ) {
-      job spawn { nb sync } out+err> /dev/null
-    }
-  }
+  } out> /dev/null
 }
 
 def --wrapped note [...args: string] {
