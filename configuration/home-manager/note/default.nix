@@ -119,6 +119,10 @@ in {
         tool.fzf-preview = "bat --plain --color always {-1}";
       };
     };
+
+    xdg.configFile."zk/templates/journal.md".text = ''
+      # {{format-date now "%Y %B %d (%A)"}}
+    '';
   };
 
   imports = [

@@ -24,7 +24,8 @@ def --wrapped zk [...args: string] {
     note cd
   }
 
-  SHELL=$"(^which bash)" ^zk ...$args
+  # SHELL=$"(^which bash)"
+  ^zk ...$args
 }
 
 def get-current-notebook-path [] {
