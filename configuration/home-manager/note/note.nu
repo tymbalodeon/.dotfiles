@@ -94,7 +94,6 @@ def get-note [title: list<string>] {
   (
     note list
       --format "{{path}}"
-      --limit 1
       --match $"title: (get-note-title $title)"
       --no-pager
       err> /dev/null
