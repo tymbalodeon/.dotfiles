@@ -108,7 +108,7 @@ in {
         group.journal = {
           note = {
             filename = "{{format-date now}}";
-            tempalte = "journal.md";
+            template = "journal.md";
           };
 
           paths = [journalDirectory];
