@@ -99,6 +99,11 @@ in {
         pinned_extensions = [
           adBlockID
           darkReaderID
+
+          # FIXME: create an option that would allow pulling this in from any
+          # arbitrary module (in this case, the RSS module)
+          "kfghpdldaipanmkhfpdcjglncmilendn"
+
           protonPassID
           surfingKeysID
           unDistractedID
