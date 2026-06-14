@@ -34,11 +34,6 @@
                 "markup.heading.6" = "base0E";
                 "markup.heading.marker" = "";
 
-                "ui.cursor.primary" = {
-                  bg = "base0E";
-                  fg = "base01";
-                };
-
                 "ui.bufferline" = {
                   bg = "base00";
                   fg = "base04";
@@ -55,7 +50,24 @@
                 };
 
                 "ui.bufferline.background" = {bg = "base00";};
+
+                "ui.cursor" = {
+                  fg = "base0A";
+                  modifiers = ["reversed"];
+                };
+
+                "ui.cursor.match" = {
+                  fg = "base0E";
+                  modifiers = ["reversed"];
+                };
+
                 "ui.gutter.selected" = {bg = "base01";};
+
+                "ui.linenr" = {
+                  bg = "base00";
+                  fg = "base02";
+                };
+
                 "ui.virtual.indent-guide" = "base01";
                 "ui.virtual.whitespace" = "base01";
               };

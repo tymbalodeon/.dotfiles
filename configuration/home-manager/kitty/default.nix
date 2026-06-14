@@ -19,6 +19,13 @@
           font_features FiraCodeRoman-SemiBold +zero +onum +cv30 +ss09 +cv25 +cv26 +cv32 +ss07
         '';
 
+        font = {
+          name = config.stylix.fonts.monospace.name;
+
+          # TODO: figure out why lib.mkForce is necessary
+          size = lib.mkForce cfg.fontSize;
+        };
+
         keybindings = {
           "ctrl+shift+h" = "launch --stdin-source=@screen_scrollback hx";
           "ctrl+o" = "open_url_with_hints";
@@ -32,7 +39,6 @@
             confirm_os_window_close = 0;
             enable_audio_bell = "no";
             enabled_layouts = "grid, stack, vertical, horizontal, tall";
-            font_size = cfg.fontSize;
             inactive_text_alpha = 0.5;
             kitty_mod = "ctrl+shift";
             shell = lib.getExe pkgs.nushell;
@@ -43,9 +49,6 @@
           }
           // lib.optionalAttrs (hostType == "home-manager") {
             font_family = "Iosevka";
-          }
-          // lib.optionalAttrs (hostType != "home-manager") {
-            font_family = "${config.stylix.fonts.sansSerif.name}";
           };
       }
       // lib.optionalAttrs (hostType == "home-manager") {
