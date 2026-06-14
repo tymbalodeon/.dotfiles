@@ -61,6 +61,11 @@
                   modifiers = ["reversed"];
                 };
 
+                "ui.cursorline.secondary" = {
+                  bg = "base01";
+                  fg = "base05";
+                };
+
                 "ui.gutter.selected" = {bg = "base01";};
 
                 "ui.linenr" = {

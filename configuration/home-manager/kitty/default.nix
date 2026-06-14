@@ -40,6 +40,10 @@
             enable_audio_bell = "no";
             enabled_layouts = "grid, stack, vertical, horizontal, tall";
             inactive_text_alpha = 0.5;
+
+            # TODO: is there a way to pull this value programmatically?
+            italic_font = "Iosevka Italic";
+
             kitty_mod = "ctrl+shift";
             shell = lib.getExe pkgs.nushell;
             tab_bar_edge = "top";
@@ -48,6 +52,7 @@
             wheel_scroll_multiplier = 1;
           }
           // lib.optionalAttrs (hostType == "home-manager") {
+            # TODO: is there a way to pull this value programmatically?
             font_family = "Iosevka";
           };
       }
