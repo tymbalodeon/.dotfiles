@@ -16,6 +16,7 @@
         dust
         fd
         glow
+        harper
         hexyl
         hyperfine
         just
