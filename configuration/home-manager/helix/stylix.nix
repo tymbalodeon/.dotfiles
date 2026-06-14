@@ -49,7 +49,7 @@
                   };
                 };
 
-                "ui.bufferline.background" = {bg = "base00";};
+                "ui.bufferline.background".bg = "base00";
 
                 "ui.cursor" = {
                   fg = "base0A";
@@ -61,16 +61,18 @@
                   modifiers = ["reversed"];
                 };
 
-                "ui.cursorline.secondary" = {
+                "ui.cursorline" = {
                   bg = "base01";
                   fg = "base05";
                 };
 
-                "ui.gutter.selected" = {bg = "base01";};
+                "ui.gutter.selected".bg = "base01";
+                "ui.linenr".fg = "base02";
 
-                "ui.linenr" = {
-                  bg = "base00";
-                  fg = "base02";
+                "ui.linenr.selected" = {
+                  fg = "base06";
+                  bg = "base01";
+                  modifiers = ["bold"];
                 };
 
                 "ui.virtual.indent-guide" = "base01";
