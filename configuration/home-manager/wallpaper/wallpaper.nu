@@ -13,19 +13,21 @@ def select-local-wallpaper [] {
     ls --short-names $wallpaper_directory
     | get name
     | to text
-    | fzf --preview $"
-        file={}
-        file=\"($wallpaper_directory)/$file\"
+    | fzf
+        --preview $"
+          file={}
+          file=\"($wallpaper_directory)/$file\"
 
-        if [[ $\(file --brief --mime-type \"$file\"\) == image/* ]]; then
-          kitten icat \\
-            --clear \\
-            --place ${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}@0x0 \\
-            --stdin no \\
-            --transfer-mode memory \\
-            \"$file\"
-        fi
-      "
+          if [[ $\(file --brief --mime-type \"$file\"\) == image/* ]]; then
+            kitten icat \\
+              --clear \\
+              --place ${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}@0x0 \\
+              --stdin no \\
+              --transfer-mode memory \\
+              \"$file\"
+          fi
+        "
+        --with-shell "bash -c"
     | lines
   )
 
