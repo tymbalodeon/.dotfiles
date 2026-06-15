@@ -99,6 +99,7 @@
       ./idle
       ./keyboard
       ./monitors
+      ./musnix
       ./nautilus
       ./niri
       ../nix

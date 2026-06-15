@@ -1,8 +1,4 @@
 {
-  imports = [
-    ../../../nixos/musnix
-    ../../../nixos/keyboard
-  ];
-
+  imports = [../../../nixos/keyboard];
   keyboard.enable = true;
 }

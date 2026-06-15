@@ -10,11 +10,7 @@
   in {
     musnix = {
       enable = true;
-
-      kernel = {
-        packages = cfg.kernelPackages;
-        realtime = true;
-      };
+      kernel.packages = cfg.kernelPackages;
     };
   };
 
