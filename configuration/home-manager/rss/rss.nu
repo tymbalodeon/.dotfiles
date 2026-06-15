@@ -1,6 +1,8 @@
 # View and manage RSS feeds
 def rss [] {
   newsboat
+
+  job spawn { newsboat --cleanup } out> /dev/null
 }
 
 # Edit the urls files
