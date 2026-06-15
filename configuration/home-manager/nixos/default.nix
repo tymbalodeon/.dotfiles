@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  config,
+  pkgs,
+  ...
+}: let
   cursorTheme = "Bibata-Modern-Classic";
 in {
   gtk = {
@@ -7,6 +11,7 @@ in {
     cursorTheme = {
       name = cursorTheme;
       package = pkgs.bibata-cursors;
+      size = config.cursor.size;
     };
 
     gtk3.extraConfig."gtk-cursor-theme-name" = cursorTheme;
@@ -38,6 +43,7 @@ in {
     ../bluetooth
     ../brave
     ../clipboard
+    ../cursor
     ../dictionary
     ../linux
     ../mail
