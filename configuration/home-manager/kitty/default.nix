@@ -20,7 +20,12 @@
         '';
 
         font = {
-          name = config.stylix.fonts.monospace.name;
+          # TODO: pull this value from a single file that can be read here as
+          # well as by the stylix file
+          name =
+            if hostType == "home-manager"
+            then "Iosevka"
+            else config.stylix.fonts.monospace.name;
 
           # TODO: figure out why lib.mkForce is necessary
           size = lib.mkForce cfg.fontSize;
