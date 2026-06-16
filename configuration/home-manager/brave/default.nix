@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -15,200 +16,208 @@
   youTubeAntiTranslateID = "ndpmhjnlfkgfalaieeneneenijondgag";
   youTubeBlackAndWhiteFilterID = "idfhjammokilkemckgdbjckkbgmbacne";
 in {
-  home.activation.brave = let
-    preferences = let
-      startpageGUID = "485bf7d3-0215-45af-87dc-538868000510";
-    in {
-      bookmark_bar = {
-        show_on_all_tabs = false;
-        show_tab_groups = true;
-      };
-
-      brave = {
-        accelerators = {
-          "33000" = [
-            "BrowserBack"
-            "Alt+ArrowLeft"
-            "AltGr+ArrowLeft"
-            "Control+BracketLeft"
-          ];
-
-          "33001" = [
-            "BrowserForward"
-            "Alt+ArrowRight"
-            "AltGr+ArrowRight"
-            "Control+BracketRight"
-          ];
+  config = let
+    cfg = config.brave;
+  in {
+    home.activation.brave = let
+      preferences = let
+        startpageGUID = "485bf7d3-0215-45af-87dc-538868000510";
+      in {
+        bookmark_bar = {
+          show_on_all_tabs = false;
+          show_tab_groups = true;
         };
 
-        ai_chat = {
-          "autocomplete_provider_enabled" = false;
-          "context_menu_enabled" = false;
-          "show_toolbar_button" = false;
-          "tab_organization_enabled" = false;
-        };
+        brave = {
+          accelerators = {
+            "33000" = [
+              "BrowserBack"
+              "Alt+ArrowLeft"
+              "AltGr+ArrowLeft"
+              "Control+BracketLeft"
+            ];
 
-        always_show_bookmark_bar_on_ntp = false;
-
-        autocomplete_enabled = true;
-        default_private_search_provider_guid = startpageGUID;
-        enable_window_closing_confirm = false;
-        has_seen_welcome_page = true;
-        location_bar_is_wide = true;
-        new_tab_page.shows_options = 2;
-        rewards.show_brave_rewards_button_in_location_bar = false;
-        show_side_panel_button = false;
-        top_site_suggestions_enabled = false;
-        wallet.show_wallet_icon_on_toolbar = false;
-        web_view_rounded_corners = false;
-      };
-
-      # TODO: pull in from secrets
-      # brave_sync_v2.seed = "";
-      browser.show_home_button = false;
-      default_search_provider.guid = startpageGUID;
-
-      default_search_provider_data.template_url_data = {
-        favicon_url = "https://cdn.startpage.com/sp/cdn/favicons/favicon-32x32-gradient.png";
-        id = "7";
-        input_encodings = ["UTF-8"];
-        is_active = 1;
-        keyword = ":sp";
-        short_name = "Startpage";
-        suggestions_url = "https://www.startpage.com/cgi-bin/csuggest?query={searchTerms}&limit=10&format=json";
-        suggestions_url_post_params = "";
-        synced_guid = startpageGUID;
-        url = "https://www.startpage.com/do/search?q={searchTerms}&segment=startpage.brave";
-      };
-
-      extensions = {
-        commands = {
-          "linux:Alt+A" = {
-            command_name = "addSite";
-            extension = darkReaderID;
-            global = false;
+            "33001" = [
+              "BrowserForward"
+              "Alt+ArrowRight"
+              "AltGr+ArrowRight"
+              "Control+BracketRight"
+            ];
           };
 
-          "linux:Alt+Shift+D" = {
-            command_name = "toggle";
-            extension = darkReaderID;
-            global = false;
+          ai_chat = {
+            "autocomplete_provider_enabled" = false;
+            "context_menu_enabled" = false;
+            "show_toolbar_button" = false;
+            "tab_organization_enabled" = false;
           };
+
+          always_show_bookmark_bar_on_ntp = false;
+
+          autocomplete_enabled = true;
+          default_private_search_provider_guid = startpageGUID;
+          enable_window_closing_confirm = false;
+          has_seen_welcome_page = true;
+          location_bar_is_wide = true;
+          new_tab_page.shows_options = 2;
+          rewards.show_brave_rewards_button_in_location_bar = false;
+          show_side_panel_button = false;
+          top_site_suggestions_enabled = false;
+          wallet.show_wallet_icon_on_toolbar = false;
+          web_view_rounded_corners = false;
         };
-
-        pinned_extensions = [
-          adBlockID
-          darkReaderID
-
-          # FIXME: create an option that would allow pulling this in from any
-          # arbitrary module (in this case, the RSS module)
-          "kfghpdldaipanmkhfpdcjglncmilendn"
-
-          protonPassID
-          surfingKeysID
-          unDistractedID
-          youTubeBlackAndWhiteFilterID
-        ];
-      };
-
-      search.suggest_enabled = false;
-      session.restore_on_startup = 5;
-
-      sync = {
-        apps = true;
-        autofill = true;
-        bookmarks = true;
 
         # TODO: pull in from secrets
         # brave_sync_v2.seed = "";
-        # encryption_bootstrap_token_per_account."=" = "";
-        extensions = true;
-        has_setup_completed = true;
-        keep_everything_synced = true;
-        passwords = true;
-        payments = true;
-        preferences = true;
-        reading_list = true;
-        saved_tab_groups = true;
-        tabs = true;
-        themes = true;
-        typed_urls = true;
-      };
+        browser.show_home_button = false;
+        default_search_provider.guid = startpageGUID;
 
-      tab_groups.deletion.skip_dialog_on_close_tab = true;
+        default_search_provider_data.template_url_data = {
+          favicon_url = "https://cdn.startpage.com/sp/cdn/favicons/favicon-32x32-gradient.png";
+          id = "7";
+          input_encodings = ["UTF-8"];
+          is_active = 1;
+          keyword = ":sp";
+          short_name = "Startpage";
+          suggestions_url = "https://www.startpage.com/cgi-bin/csuggest?query={searchTerms}&limit=10&format=json";
+          suggestions_url_post_params = "";
+          synced_guid = startpageGUID;
+          url = "https://www.startpage.com/do/search?q={searchTerms}&segment=startpage.brave";
+        };
 
-      toolbar.pinned_actions = [
-        "kActionShowChromeLabs"
-        "kActionShowPasswordsBubbleOrPage"
-        "kActionCopyUrl"
-        "kActionSendTabToSelf"
-      ];
+        extensions = {
+          commands = {
+            "linux:Alt+A" = {
+              command_name = "addSite";
+              extension = darkReaderID;
+              global = false;
+            };
 
-      webkit.webprefs.fonts = {
-        fixed = {Zyyy = "Iosevka";};
-        math = {Zyyy = "DejaVu Math TeX Gyre";};
-        sansserif = {Zyyy = "Liberation Sans";};
-        serif = {Zyyy = "Gentium Book";};
-        standard = {Zyyy = "Sans";};
-      };
-    };
-  in
-    lib.hm.dag.entryAfter ["writeBoundary"] ''
-      echo '${builtins.toJSON preferences}' \
-      | ${lib.getExe pkgs.jq} --compact-output . \
-      > ~/.config/BraveSoftware/Brave-Browser/Default/Preferences
-    '';
+            "linux:Alt+Shift+D" = {
+              command_name = "toggle";
+              extension = darkReaderID;
+              global = false;
+            };
+          };
 
-  programs.brave = {
-    enable = true;
+          pinned_extensions =
+            [
+              adBlockID
+              darkReaderID
+              protonPassID
+              surfingKeysID
+              unDistractedID
+              youTubeBlackAndWhiteFilterID
+            ]
+            ++ cfg.extraExtensionIDs;
+        };
 
-    extensions = [
-      {id = adBlockID;}
-      {id = darkReaderID;}
-      {id = enhancerForYouTubeID;}
-      {id = protonPassID;}
-      {id = refinedGitHubID;}
-      {id = subscriptionFeedFilterForYouTubeID;}
-      {id = surfingKeysID;}
-      {id = uBlockOriginID;}
-      {id = unDistractedID;}
-      {id = youTubeAntiTranslateID;}
-      {id = youTubeBlackAndWhiteFilterID;}
-    ];
-  };
+        search.suggest_enabled = false;
+        session.restore_on_startup = 5;
 
-  xdg = {
-    desktopEntries = {
-      brave-browser-incognito = {
-        categories = [
-          "Network"
-          "WebBrowser"
+        sync = {
+          apps = true;
+          autofill = true;
+          bookmarks = true;
+
+          # TODO: pull in from secrets
+          # encryption_bootstrap_token_per_account."" = "";
+          extensions = true;
+          has_setup_completed = true;
+          keep_everything_synced = true;
+          passwords = true;
+          payments = true;
+          preferences = true;
+          reading_list = true;
+          saved_tab_groups = true;
+          tabs = true;
+          themes = true;
+          typed_urls = true;
+        };
+
+        tab_groups.deletion.skip_dialog_on_close_tab = true;
+
+        toolbar.pinned_actions = [
+          "kActionShowChromeLabs"
+          "kActionShowPasswordsBubbleOrPage"
+          "kActionCopyUrl"
+          "kActionSendTabToSelf"
         ];
 
-        exec = "${pkgs.brave}/bin/brave --incognito %U";
-        genericName = "Web Browser";
-        icon = "brave-browser";
-        name = "Brave (Incognito)";
-
-        mimeType = [
-          "text/html"
-          "text/xml"
-        ];
-
-        terminal = false;
+        webkit.webprefs.fonts = {
+          fixed = {Zyyy = "Iosevka";};
+          math = {Zyyy = "DejaVu Math TeX Gyre";};
+          sansserif = {Zyyy = "Liberation Sans";};
+          serif = {Zyyy = "Gentium Book";};
+          standard = {Zyyy = "Sans";};
+        };
       };
-    };
+    in
+      lib.hm.dag.entryAfter ["writeBoundary"] ''
+        echo '${builtins.toJSON preferences}' \
+        | ${lib.getExe pkgs.jq} --compact-output . \
+        > ~/.config/BraveSoftware/Brave-Browser/Default/Preferences
+      '';
 
-    mimeApps = {
+    programs.brave = {
       enable = true;
 
-      defaultApplications = {
-        "text/html" = "brave-browser.desktop";
-        "x-scheme-handler/about" = "brave-browser.desktop";
-        "x-scheme-handler/http" = "brave-browser.desktop";
-        "x-scheme-handler/https" = "brave-browser.desktop";
-        "x-scheme-handler/unknown" = "brave-browser.desktop";
+      extensions =
+        [
+          {id = adBlockID;}
+          {id = darkReaderID;}
+          {id = enhancerForYouTubeID;}
+          {id = protonPassID;}
+          {id = refinedGitHubID;}
+          {id = subscriptionFeedFilterForYouTubeID;}
+          {id = surfingKeysID;}
+          {id = uBlockOriginID;}
+          {id = unDistractedID;}
+          {id = youTubeAntiTranslateID;}
+          {id = youTubeBlackAndWhiteFilterID;}
+        ]
+        ++ (map (id: {inherit id;}) cfg.extraExtensionIDs);
+    };
+
+    xdg = {
+      desktopEntries = {
+        brave-browser-incognito = {
+          categories = [
+            "Network"
+            "WebBrowser"
+          ];
+
+          exec = "${pkgs.brave}/bin/brave --incognito %U";
+          genericName = "Web Browser";
+          icon = "brave-browser";
+          name = "Brave (Incognito)";
+
+          mimeType = [
+            "text/html"
+            "text/xml"
+          ];
+
+          terminal = false;
+        };
+      };
+
+      mimeApps = {
+        enable = true;
+
+        defaultApplications = {
+          "text/html" = "brave-browser.desktop";
+          "x-scheme-handler/about" = "brave-browser.desktop";
+          "x-scheme-handler/http" = "brave-browser.desktop";
+          "x-scheme-handler/https" = "brave-browser.desktop";
+          "x-scheme-handler/unknown" = "brave-browser.desktop";
+        };
       };
     };
   };
+
+  options.brave.extraExtensionIDs = with lib;
+    mkOption {
+      default = [];
+      type = with types; listOf str;
+    };
 }
