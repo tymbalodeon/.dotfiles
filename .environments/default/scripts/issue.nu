@@ -1,1 +1,1 @@
-/nix/store/mppbaln639sbp0q9qs46wmxqixhjg73a-environments-default-scripts-issue.nu
+/nix/store/ip9ch4z4cjfjciqmggpm6931amwh7v7g-environments-default-scripts-issue.nu

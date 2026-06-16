@@ -1,1 +1,1 @@
-/nix/store/vjn0dify9pg2al42456apm5ss5ykmywr-environments-git-scripts-help.nu
+/nix/store/a0vrkq8a6qris4gpg27vxd1s0p9r33ha-environments-git-scripts-help.nu

@@ -3,11 +3,11 @@
     "devenv": {
       "locked": {
         "dir": "src/modules",
-        "lastModified": 1781604647,
-        "narHash": "sha256-Z7ThKwkbARrsC2thGn3fiq1C/XqpDMcQRwQSWjqhfwY=",
+        "lastModified": 1781627264,
+        "narHash": "sha256-TPj5d5MUyvuQZjsfDAAoYJ0SB+tNNNBrdCpD8XL0WeU=",
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "80f225f832b0b8d5fe5985df9ef56059b0b6574a",
+        "rev": "0fe5629a2955141c336b95e384e2c793c01214fb",
         "type": "github"
       },
       "original": {
@@ -21,11 +21,11 @@
       "flake": false,
       "locked": {
         "dir": "src",
-        "lastModified": 1781100175,
-        "narHash": "sha256-U0Chpf763qgSsXYbjUV4+vi6AtAKykixu1paWPPQ08c=",
+        "lastModified": 1781639217,
+        "narHash": "sha256-xAWMoHu73kWHwR7a+XEnz/7rxVYtY8f307JYvzbRSD8=",
         "ref": "refs/heads/trunk",
-        "rev": "ad5dbb878b1ea39dfbab95c771a8ec455c8948cc",
-        "revCount": 1692,
+        "rev": "6233c928a3e2b4d68c4ee26e6e26048004e90c71",
+        "revCount": 1698,
         "type": "git",
         "url": "ssh://git@codeberg.org/tymbalodeon/environments.git"
       },
@@ -40,11 +40,11 @@
         "nixpkgs-src": "nixpkgs-src"
       },
       "locked": {
-        "lastModified": 1778507786,
-        "narHash": "sha256-HzSQCKMsMr8r55LwM1JuzIOB+8bzk0FEv6sItKvsfoY=",
+        "lastModified": 1781620901,
+        "narHash": "sha256-UF6scQlG+6lRkZBUpn/3KNavhOo5G8kDWhjVHcno8uc=",
         "owner": "cachix",
         "repo": "devenv-nixpkgs",
-        "rev": "8f24a228a782e24576b155d1e39f0d914b380691",
+        "rev": "2df109b343d3c68efd752e32a444a1d9b9f89afa",
         "type": "github"
       },
       "original": {
@@ -57,11 +57,11 @@
     "nixpkgs-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1778274207,
-        "narHash": "sha256-I4puXmX1iovcCHZlRmztO3vW0mAbbRvq4F8wgIMQ1MM=",
+        "lastModified": 1781454065,
+        "narHash": "sha256-d2xfDjnfRuf/xYGdu9VVRHiav/2w5hDL/5cw2TuVAXw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b3da656039dc7a6240f27b2ef8cc6a3ef3bccae7",
+        "rev": "9eac87a12312b8f60dd52e1c6e1a265f6fc7f5fc",
         "type": "github"
       },
       "original": {

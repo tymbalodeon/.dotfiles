@@ -1,1 +1,1 @@
-/nix/store/4z9f7ccm7yvz1vkj04s1277zs0y5jl10-environments-yaml-scripts-format.nu
+/nix/store/majc8rvwbzkyiaxbvnsaxxcfm8xbir0c-environments-yaml-scripts-format.nu

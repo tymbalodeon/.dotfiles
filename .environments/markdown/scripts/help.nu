@@ -1,1 +1,1 @@
-/nix/store/bs1lmgk2ihlym8bhlczz3gvkj220m686-environments-markdown-scripts-help.nu
+/nix/store/920m58wy32nx2qkcs9vcq64lnvjpbi18-environments-markdown-scripts-help.nu
