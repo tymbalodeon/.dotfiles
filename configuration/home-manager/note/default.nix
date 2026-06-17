@@ -121,6 +121,11 @@ in {
     };
 
     xdg.configFile."zk/templates/journal.md".text = ''
+      ---
+      tags:
+        - journal
+      ---
+
       # {{format-date now "%Y %B %d (%A)"}}
     '';
   };

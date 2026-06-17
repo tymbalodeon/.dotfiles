@@ -57,7 +57,7 @@ def pull-notes [] {
   }
 
   if (git status --short | complete | get stdout | is-not-empty) {
-    git fetch origin trunk out> /dev/null
+    git fetch origin trunk
   }
 }
 
@@ -88,7 +88,7 @@ def push-notes [] {
   } out> /dev/null
 }
 
-def --wrapped note [...args: string] {
+def note [...args: string] {
   if ($args | any {$in in [--help -h]}) {
     return (help note)
   }
@@ -96,7 +96,11 @@ def --wrapped note [...args: string] {
   if ($args | is-empty) {
     note edit
   } else {
-    zk ...$args
+    try {
+      note edit ($args | str join " ")
+    } catch {
+      zk ...$args
+    }
   }
 }
 
@@ -109,7 +113,7 @@ def get-note-title [title: list<string>] {
 
 def get-note [title: list<string>] {
   (
-    note list
+    zk list
       --format "{{path}}"
       --match $"title: (get-note-title $title)"
       --no-pager
@@ -180,12 +184,14 @@ def "note journal" [] {
 
 # Interactively select a journal entry to edit
 def "note journal edit" [] {
-  ^zk edit --interactive --tag journal
+  zk edit --interactive --sort creatd --tag journal
 }
+
+alias "note journal browse" = note journal edit
 
 # List journal entries
 def "note journal list" [] {
-  note list --tag journal
+  zk list --tag journal
 }
 
 alias "note journal ls" = note journal list
@@ -211,7 +217,7 @@ def "note new" [...title: string] {
   let title = (get-note-title $title)
 
   let existing_note = (
-    note list --formmat "{{path}}" --limit 1 --match $"title:($title)"
+    zk list --formmat "{{path}}" --limit 1 --match $"title:($title)"
   )
 
   if ($existing_note | is-not-empty) {
@@ -230,11 +236,11 @@ def "note new" [...title: string] {
 # Remove notes
 def "note remove" [note?: string] {
   let notes = if ($note | is-not-empty) {
-    note list --format "{{abs-path}}" --no-pager --match $note --quiet
+    zk list --format "{{abs-path}}" --no-pager --match $note --quiet
     | lines
   } else {
     try {
-      note list --format "{{abs-path}}" --interactive --quiet
+      zk list --format "{{abs-path}}" --interactive --quiet
     } catch {
       return
     }
