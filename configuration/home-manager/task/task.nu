@@ -1,5 +1,5 @@
 def --wrapped task [...args: string] {
-  ^task sync
+  ^task sync out> /dev/null
   ^task ...$args
-  ^task sync
+  ^task sync out> /dev/null
 }
