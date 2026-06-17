@@ -45,10 +45,27 @@ def get-current-notebook-path [] {
   }
 }
 
-def sync-notes [] {
-  job spawn {
-    cd (get-current-notebook-path)
+def pull-notes [] {
+  cd (get-current-notebook-path)
+
+  let switch_exit_status = (git switch trunk | complete)
+
+  if $switch_exit_status.exit_code != 0 {
+    print $switch_exit_status.stderr
+
+    return
+  }
+
+  if (git status --short | complete | get stdout | is-not-empty) {
     git fetch origin trunk out> /dev/null
+  }
+}
+
+def push-notes [] {
+  cd (get-current-notebook-path)
+
+  job spawn {
+    try { git switch trunk out+err> /dev/null }
 
     if (git status --short | is-empty) {
       return
@@ -59,7 +76,7 @@ def sync-notes [] {
         jj describe --message "chore: sync"
       }
 
-      jj new @ trunk
+      jj new @ trunk@origin
       jj describe --message "chore: sync"
       jj bookmark set trunk
       jj new
@@ -108,6 +125,8 @@ def --env "note cd" [] {
 
 # Edit notes
 def "note edit" [...search_terms: string] {
+  pull-notes
+
   if ($search_terms | is-empty) {
     zk edit --interactive
   } else {
@@ -120,7 +139,7 @@ def "note edit" [...search_terms: string] {
     }
   }
 
-  sync-notes
+  push-notes
 }
 
 def "note graph" [] {
@@ -149,12 +168,14 @@ def "note graph" [] {
 
 # Create or edit the current day's journal entry
 def "note journal" [] {
+  pull-notes
+
   let working_dir = (get-current-notebook-path)
   let journal = ($working_dir | path join journal)
 
   mkdir $journal
   zk new $journal --no-input --working-dir $working_dir
-  sync-notes
+  push-notes
 }
 
 # Interactively select a journal entry to edit
@@ -185,6 +206,8 @@ def "note links" [...title: string] {
 
 # Add new note
 def "note new" [...title: string] {
+  pull-notes
+
   let title = (get-note-title $title)
 
   let existing_note = (
@@ -201,7 +224,7 @@ def "note new" [...title: string] {
     }
   }
 
-  sync-notes
+  push-notes
 }
 
 # Remove notes
@@ -227,13 +250,12 @@ def "note remove" [note?: string] {
     }
   }
 
-  sync-notes
+  push-notes
 }
 
 alias "note rm" = note remove
 
 # Sync notes
 def "note sync" [] {
-  sync-notes
+  pull-notes
 }
-

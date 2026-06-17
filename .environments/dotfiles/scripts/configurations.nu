@@ -11,6 +11,7 @@ def get-current-system [] {
   # TODO (nixos): use ID instead?
   let system = if ($release_file | path exists) {
     open /etc/os-release
+    | lines
     | parse "{key}={value}"
     | where key == NAME
     | first
