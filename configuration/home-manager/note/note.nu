@@ -185,7 +185,7 @@ def "note journal" [] {
 
 # Interactively select a journal entry to edit
 def "note journal edit" [] {
-  zk edit --interactive --sort creatd --tag journal
+  zk edit --interactive --sort created --tag journal
 }
 
 alias "note journal browse" = note journal edit
