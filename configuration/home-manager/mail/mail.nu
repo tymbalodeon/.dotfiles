@@ -5,3 +5,5 @@ def --wrapped mail [...args: string] {
 def "mail config edit" [] {
   ^$env.EDITOR ($env.XDG_CONFIG_HOME | path join neomutt/neomuttrc)
 }
+
+alias email = mail

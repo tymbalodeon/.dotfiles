@@ -154,6 +154,8 @@
             deactivated = "";
           };
 
+          # TODO: put this in a script in the idle module, so that changing the
+          # program for idling doesn't require editing unrelated module files
           on-click = "pgrep hypridle && systemctl --user stop hypridle || systemctl --user start hypridle";
           timeout = 720;
         };

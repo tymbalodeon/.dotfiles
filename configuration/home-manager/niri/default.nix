@@ -33,6 +33,7 @@ in {
       force = true;
 
       text = let
+        # TODO: hide the call to hyprlock in the lock module somehow?
         binds =
           ''
             Ctrl+XF86AudioMute allow-when-locked=true { spawn-sh "nu ${../music-player/set-volume.nu} zero"; }
@@ -267,8 +268,8 @@ in {
   imports = [
     ../cursor
     ../fuzzel
-    ../hypridle
-    ../hyprlock
+    ../idle
+    ../lock
     ../music-player
     ../nautilus
     ../nushell

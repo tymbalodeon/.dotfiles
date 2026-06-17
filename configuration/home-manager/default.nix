@@ -82,7 +82,7 @@
       ./ripgrep
       ./shell
       ./src
-      ./taskwarrior
+      ./task
       ./tealdeer
       ./vivid
       ./yazi
