@@ -146,6 +146,7 @@ def "note edit" [...search_terms: string] {
   push-notes
 }
 
+# View a graph of notes
 def "note graph" [] {
   let zk_graph_directory = (
     get-current-notebook-path
