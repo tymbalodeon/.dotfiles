@@ -410,11 +410,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781667166,
-        "narHash": "sha256-tZaGywXoV/+dgPWoQVGsZqqbuRZE3NyT/Jv/U36jP2s=",
+        "lastModified": 1781719483,
+        "narHash": "sha256-MC6hWrek1hMewRRRHiAJ8z4sHEodzjizOefS/oHVrsU=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "45e97d1e8815564784e2d8fb0d9a429fc8751ddd",
+        "rev": "ea0bf49c9d2a9c8f5548d116d63a7a1a35d1193d",
         "type": "github"
       },
       "original": {
@@ -624,11 +624,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1780933184,
-        "narHash": "sha256-xuqVsDmJf7fhj9Khn1EKDIfhHZ4C7cA6nWVyN1yGlgk=",
+        "lastModified": 1781721497,
+        "narHash": "sha256-Qt4bx0zxdZBPWrDJV0RB2CwqYKlSzQRIpdSi0i2Nq0I=",
         "owner": "Svenum",
         "repo": "Solaar-Flake",
-        "rev": "55fe232b6762aada1d12e8cf7d5307004048e3c2",
+        "rev": "7229b334cad772a5fef7326e7086ec63a6ba421e",
         "type": "github"
       },
       "original": {
