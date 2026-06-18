@@ -6,6 +6,8 @@
   hostType,
   lib,
   nix-index-database,
+  secrets,
+  sops-nix,
   src,
   zk-graph,
   ...
@@ -20,6 +22,8 @@
           hostName
           hostType
           nix-index-database
+          secrets
+          sops-nix
           src
           zk-graph
           ;

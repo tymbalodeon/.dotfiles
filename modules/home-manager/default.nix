@@ -91,6 +91,7 @@
       ./pdf
       ./ripgrep
       ./rss
+      ./secrets
       ./shell
       ./shell
       ./src

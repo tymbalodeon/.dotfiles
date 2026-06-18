@@ -27,9 +27,19 @@
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    secrets = {
+      flake = false;
+      url = "git+ssh://git@github.com/tymbalodeon/secrets.git?shallow=1";
+    };
+
     solaar = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:Svenum/Solaar-Flake/main";
+    };
+
+    sops-nix = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:Mic92/sops-nix";
     };
 
     src = {
@@ -60,7 +70,9 @@
     nixgl,
     nix-index-database,
     nixpkgs,
+    secrets,
     solaar,
+    sops-nix,
     src,
     stylix,
     wayland-pipewire-idle-inhibit,
@@ -105,7 +117,9 @@
                 base16-helix
                 home-manager
                 musnix
+                secrets
                 solaar
+                sops-nix
                 stylix
                 wayland-pipewire-idle-inhibit
                 ;

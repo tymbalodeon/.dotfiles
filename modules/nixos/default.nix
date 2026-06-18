@@ -110,6 +110,7 @@
       ./logitech
       ./monitor
       ../nix
+      ./secrets
       ./theme
       ./window-manager
     ]
