@@ -14,6 +14,7 @@
 
       text =
         ''
+          # View color values for the currently built theme
           def "theme colors" [] {
             {
               base00: "${colors.base00}"

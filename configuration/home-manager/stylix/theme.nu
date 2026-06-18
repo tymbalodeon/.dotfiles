@@ -1,3 +1,4 @@
+# View the currently built theme
 def "theme" [] {
   help theme
 }
