@@ -276,14 +276,14 @@ def "wallpaper load" [
           cp $file $wallpaper_directory
         } else {
           if ($background_color | is-empty) {
-            wallpaper pad --no-download $file $wallpaper_directory
+            wallpaper pad --no-download --output-path $wallpaper_directory $file
           } else {
             (
               wallpaper pad
                 --background-color $background_color
                 --no-download
+                --output-path $wallpaper_directory
                 $file
-                $wallpaper_directory
             )
           }
         }
@@ -350,7 +350,7 @@ def "wallpaper pad" [
   ...images: string # The image to pad
   --background-color: string # The base16-colors name to use as the background color (default: "base01")
   --no-download # Don't attempt to re-download the image
-  --output_path: string # Where to save the padded image (default: $image)
+  --output-path: string # Where to save the padded image (default: $image)
 ] {
   let images = if ($images | is-empty) {
     select-local-wallpaper --multi
