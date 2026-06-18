@@ -6,35 +6,44 @@ def default-wallpaper-filename [] {
   "default-wallpaper.jpg"
 }
 
-def select-local-wallpaper [] {
+def select-local-wallpaper [--multi] {
   let wallpaper_directory = (wallpaper-directory)
+
+  let args = [
+    --preview $"
+      file={}
+      file=\"($wallpaper_directory)/$file\"
+
+      if [[ $\(file --brief --mime-type \"$file\"\) == image/* ]]; then
+        kitten icat \\
+          --clear \\
+          --place ${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}@0x0 \\
+          --stdin no \\
+          --transfer-mode memory \\
+          \"$file\"
+      fi
+    "
+    --with-shell "bash -c"
+  ]
+
+  let args = if $multi {
+    $args
+    | append "--multi"
+  } else {
+    $args
+  }
 
   let selection = (
     ls --short-names $wallpaper_directory
     | get name
     | to text
-    | fzf
-        --preview $"
-          file={}
-          file=\"($wallpaper_directory)/$file\"
-
-          if [[ $\(file --brief --mime-type \"$file\"\) == image/* ]]; then
-            kitten icat \\
-              --clear \\
-              --place ${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES}@0x0 \\
-              --stdin no \\
-              --transfer-mode memory \\
-              \"$file\"
-          fi
-        "
-        --with-shell "bash -c"
+    | fzf ...$args
     | lines
   )
 
   if ($selection | is-not-empty) {
     $selection
-    | prepend $wallpaper_directory
-    | path join
+    | each {|wallpaper| $"($wallpaper_directory)/($wallpaper)"}
   }
 }
 
@@ -338,69 +347,71 @@ alias "wallpaper start" = wallpaper next
 
 # Add padding to image to account for status bar
 def "wallpaper pad" [
-  image?: string # The image to pad
-  output_path?: string # Where to save the padded image (default: $image)
+  ...images: string # The image to pad
   --background-color: string # The base16-colors name to use as the background color (default: "base01")
   --no-download # Don't attempt to re-download the image
+  --output_path: string # Where to save the padded image (default: $image)
 ] {
-  let image = if ($image | is-empty) {
-    select-local-wallpaper
+  let images = if ($images | is-empty) {
+    select-local-wallpaper --multi
   } else {
-    $image
+    $images
   }
 
-  if ($image | is-empty) {
+  if ($images | is-empty) {
     return
   }
 
-  if ($image | path dirname | path expand) == ("~/wallpaper" | path expand) {
-    let remote_image = (
-      rclone lsf --recursive dropbox:wallpaper
-      | rg ($image | path basename)
-      | lines
-      | first
-    )
+  for image in $images {
+    if ($image | path dirname | path expand) == ("~/wallpaper" | path expand) {
+      let remote_image = (
+        rclone lsf --recursive dropbox:wallpaper
+        | rg ($image | path basename)
+        | lines
+        | first
+      )
+
+      (
+        wallpaper load
+          --force
+          --no-pad
+          --remote
+          $"wallpaper/($remote_image)"
+      )
+    }
+
+    let resolution = (xrandr | rg '\*' | split words | first)
+    let resolution_parts = ($resolution | split row x)
+    let padded_width = ($resolution_parts | first)
+    let padded_height = (($resolution_parts | last | into int) + (waybar-height))
+    let padded_resolution = ([$padded_width $padded_height] | str join x)
+    let image = ($image | path expand)
+
+    let output_path = if ($output_path | is-empty) {
+      $image
+    } else if ($output_path | path type) == dir {
+      $output_path
+      | path join ($image | path basename)
+    } else {
+      $output_path
+    }
+
+    let background_color = if ($background_color | is-empty) {
+      "base01"
+    } else {
+      $background_color
+    }
 
     (
-      wallpaper load
-        --force
-        --no-pad
-        --remote
-        $"wallpaper/($remote_image)"
+      magick
+        $image
+        -background (theme colors | get $background_color)
+        -gravity north
+        -resize $resolution
+        -extent $padded_resolution
+        $output_path
     )
   }
-
-  let resolution = (xrandr | rg '\*' | split words | first)
-  let resolution_parts = ($resolution | split row x)
-  let padded_width = ($resolution_parts | first)
-  let padded_height = (($resolution_parts | last | into int) + (waybar-height))
-  let padded_resolution = ([$padded_width $padded_height] | str join x)
-  let image = ($image | path expand)
-
-  let output_path = if ($output_path | is-empty) {
-    $image
-  } else if ($output_path | path type) == dir {
-    $output_path
-    | path join ($image | path basename)
-  } else {
-    $output_path
-  }
-
-  let background_color = if ($background_color | is-empty) {
-    "base01"
-  } else {
-    $background_color
-  }
-
-  (
-    magick
-      $image
-      -background (theme colors | get $background_color)
-      -gravity north
-      -resize $resolution
-      -extent $padded_resolution
-      $output_path
-  )
 }
 
 # Add padding to all images in the wallpaper folder
