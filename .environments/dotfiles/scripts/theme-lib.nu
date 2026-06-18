@@ -208,7 +208,7 @@ export def get-built-theme [] {
 
 export def set-built-theme [theme?: string] {
   if ($theme | is-not-empty) {
-    $theme
+    format-theme-name $theme
     | save --force (stylix-theme-path)
   }
 }
