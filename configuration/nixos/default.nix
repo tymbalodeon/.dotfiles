@@ -91,23 +91,23 @@
     hostPath = file: ../hosts/${hostType}/${hostName}/${file};
   in
     [
+      ./audio
+      ./bar
       ./bluetooth
-      ./brave
+      ./browser
       ./display-manager
+      ./display-server
+      ./file-manager
+      ./gaming
       ./home-manager
       (hostPath "hardware.nix")
       ./idle
       ./keyboard
-      ./monitors
-      ./musnix
-      ./nautilus
-      ./niri
+      ./logitech
+      ./monitor
       ../nix
-      ./solaar
-      ./steam
-      ./stylix
-      ./waybar
-      ./wayland
+      ./theme
+      ./window-manager
     ]
     ++ (let
       hostConfigurationFile = hostPath "configuration.nix";
