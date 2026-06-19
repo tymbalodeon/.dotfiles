@@ -67,76 +67,106 @@
     zk-graph,
     ...
   }: let
-    getHosts = hostType:
+    commonInputs = {
+      inherit
+        nix-index-database
+        src
+        zk-graph
+        ;
+    };
+
+    getHosts = isNixOS: let
+      hostType =
+        if isNixOS
+        then "nixos"
+        else "home-manager";
+    in
       builtins.attrValues (
         builtins.mapAttrs
         (hostName: _: {inherit hostName hostType;})
         (builtins.readDir ./hosts/${hostType})
       );
 
-    mkHosts = mkHost: hostType:
+    mkConfigurations = {isNixOS}: let
+      args = {
+        hostName,
+        hostType,
+      }: let
+        commonArgs = commonInputs // {inherit hostName hostType;};
+      in
+        if isNixOS
+        then {
+          inherit modules;
+
+          specialArgs =
+            commonArgs
+            // {
+              inherit
+                base16-helix
+                home-manager
+                musnix
+                solaar
+                stylix
+                wayland-pipewire-idle-inhibit
+                ;
+            };
+        }
+        else
+          (
+            let
+              system = "x86_64-linux";
+            in {
+              inherit modules;
+
+              extraSpecialArgs =
+                commonArgs
+                // {
+                  inherit
+                    home-manager
+                    nixgl
+                    system
+                    ;
+                };
+
+              pkgs = nixpkgs.legacyPackages.${system};
+            }
+          );
+
+      configuration =
+        if isNixOS
+        then nixpkgs.lib.nixosSystem
+        else home-manager.lib.homeManagerConfiguration;
+
+      modules =
+        if isNixOS
+        then [./nixos]
+        else [./home-manager];
+    in
+      mkHosts
+      {
+        inherit isNixOS;
+
+        mkHost = {
+          hostType,
+          hostName,
+        }: {
+          ${hostName} = configuration (args {inherit hostName hostType;});
+        };
+      };
+
+    mkHosts = {
+      isNixOS,
+      mkHost,
+    }:
       builtins.foldl' (a: b: a // b) {}
       (map mkHost
         (map ({
           hostName,
           hostType,
         }: {inherit hostName hostType;})
-        (getHosts hostType)));
+        (getHosts isNixOS)));
   in {
-    homeConfigurations =
-      mkHosts
-      ({
-        hostType,
-        hostName,
-      }: let
-        system = "x86_64-linux";
-      in {
-        ${hostName} = home-manager.lib.homeManagerConfiguration {
-          extraSpecialArgs = {
-            inherit
-              hostName
-              hostType
-              home-manager
-              nixgl
-              nix-index-database
-              src
-              system
-              zk-graph
-              ;
-          };
-
-          modules = [./home-manager];
-          pkgs = nixpkgs.legacyPackages.${system};
-        };
-      })
-      "home-manager";
-
-    nixosConfigurations =
-      mkHosts
-      ({
-        hostType,
-        hostName,
-      }: {
-        ${hostName} = nixpkgs.lib.nixosSystem {
-          modules = [./nixos];
-
-          specialArgs = {
-            inherit
-              base16-helix
-              home-manager
-              hostName
-              hostType
-              musnix
-              nix-index-database
-              solaar
-              src
-              stylix
-              wayland-pipewire-idle-inhibit
-              zk-graph
-              ;
-          };
-        };
-      })
-      "nixos";
+    homeConfigurations = mkConfigurations {isNixOS = false;};
+    nixosConfigurations = mkConfigurations {isNixOS = true;};
   };
 }
