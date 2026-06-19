@@ -45,7 +45,7 @@ def get-current-notebook-path [] {
   }
 }
 
-def pull-notes [] {
+def pull-notes [--force] {
   cd (get-current-notebook-path)
 
   let switch_exit_status = (git switch trunk | complete)
@@ -56,8 +56,12 @@ def pull-notes [] {
     return
   }
 
-  if (git status --short | complete | get stdout | is-not-empty) {
-    git fetch origin trunk
+  if $force or (git status --short | complete | get stdout | is-not-empty) {
+    try {
+      jj git fetch --bookmark trunk --remote origin
+    } catch {
+      git fetch origin trunk
+    }
   }
 }
 
@@ -82,8 +86,9 @@ def push-notes [] {
       jj new
       jj git push
     } catch {
-      # TODO: handle case of detached head
-      nb sync
+      git add .
+      git commit --message "chore: sync"
+      git push origin trunk
     }
   } out> /dev/null
 }
@@ -264,5 +269,5 @@ alias "note rm" = note remove
 
 # Sync notes
 def "note sync" [] {
-  pull-notes
+  pull-notes --force
 }
