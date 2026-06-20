@@ -33,7 +33,7 @@
 
   options.home-manager = with lib; {
     homeFile = mkOption {
-      default = ../../hosts/${hostType}/${hostName}/home.nix;
+      default = ../../../hosts/${hostType}/${hostName}/home.nix;
       type = types.path;
     };
   };

@@ -1,7 +1,7 @@
 {
   imports = [
-    ../../../home-manager
-    ../../../home-manager/wallpaper
+    ../../../modules/home-manager
+    ../../../modules/home-manager/wallpaper
   ];
 
   laptop = true;

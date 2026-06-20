@@ -5,9 +5,8 @@ set working-directory := "../.."
     .environments/dotfiles/scripts/help.nu {{ args }}
 
 # Check configuration flake
-[working-directory("./configuration")]
 @check *args:
-    ../.environments/dotfiles/scripts/check.nu {{ args }}
+    ./.environments/dotfiles/scripts/check.nu {{ args }}
 
 # Run `prune` and `optimise`
 @clean *args:
@@ -24,9 +23,8 @@ alias configs := configurations
     .environments/dotfiles/scripts/generations.nu {{ help }}
 
 # List flake inputs
-[working-directory("./configuration")]
 @inputs *help:
-    ../.environments/dotfiles/scripts/inputs.nu {{ help }}
+    ./.environments/dotfiles/scripts/inputs.nu {{ help }}
 
 # Replace identical files in the Nix store by hard links
 @optimise *help:
@@ -37,20 +35,17 @@ alias configs := configurations
     .environments/dotfiles/scripts/prune.nu {{ args }}
 
 # Rebuild and switch to a configuration
-[working-directory("./configuration")]
 @switch *args:
-    ../.environments/dotfiles/scripts/switch.nu {{ args }}
+    ./.environments/dotfiles/scripts/switch.nu {{ args }}
 
 # Open Nix REPL with flake loaded
 @shell *help:
     .environments/dotfiles/scripts/shell.nu {{ help }}
 
 # Preview and switch themes
-[working-directory("./configuration")]
 @theme *help:
-    ../.environments/dotfiles/scripts/theme.nu {{ help }}
+    ./.environments/dotfiles/scripts/theme.nu {{ help }}
 
 # Update dependencies
-[working-directory("./configuration")]
 @update *inputs:
-    ../.environments/dotfiles/scripts/update.nu {{ inputs }}
+    ./.environments/dotfiles/scripts/update.nu {{ inputs }}

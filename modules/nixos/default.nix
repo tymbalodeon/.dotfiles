@@ -88,7 +88,7 @@
   };
 
   imports = let
-    hostPath = file: ../hosts/${hostType}/${hostName}/${file};
+    hostPath = file: ../../hosts/${hostType}/${hostName}/${file};
   in
     [
       ./audio
