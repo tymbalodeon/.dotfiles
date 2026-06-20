@@ -110,6 +110,20 @@ in {
               youTubeBlackAndWhiteFilterID
             ]
             ++ cfg.extraExtensionIDs;
+
+          settings = {
+            ${adBlockID}.incognito = true;
+            ${darkReaderID}.incognito = true;
+            ${enhancerForYouTubeID}.incognito = true;
+            ${protonPassID}.incognito = true;
+            ${refinedGitHubID}.incognito = true;
+            ${subscriptionFeedFilterForYouTubeID}.incognito = true;
+            ${surfingKeysID}.incognito = true;
+            ${uBlockOriginID}.incognito = true;
+            ${unDistractedID}.incognito = true;
+            ${youTubeAntiTranslateID}.incognito = true;
+            ${youTubeBlackAndWhiteFilterID}.incognito = true;
+          };
         };
 
         search.suggest_enabled = false;
