@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   fonts.fontconfig.enable = true;
+
   home.packages = let
     fonts = with pkgs; [
       adwaita-fonts
@@ -35,6 +36,10 @@
   in
     fonts ++ programs;
 
-  imports = [../shell/nushell];
+  imports = [
+    ./anrt-fonts.nix
+    ../shell/nushell
+  ];
+
   nushell.extraScripts = [{source = ./font.nu;}];
 }
