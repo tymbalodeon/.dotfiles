@@ -131,13 +131,13 @@ in {
   };
 
   imports = [
-    ../bash
+    ../shell/bash
     ../bat
     ../fzf
     ../git
     ../helix
     ../helix/markdown
-    ../nushell
+    ../shell/nushell
     ../w3m
   ];
 

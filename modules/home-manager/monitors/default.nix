@@ -1,4 +1,4 @@
 {pkgs, ...}: {
   home.packages = [pkgs.xrandr];
-  imports = [../nushell];
+  imports = [../shell/nushell];
 }

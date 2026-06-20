@@ -1,9 +1,9 @@
 {
-  brave.extraExtensionIDs = ["kfghpdldaipanmkhfpdcjglncmilendn"];
+  browser.extraExtensionIDs = ["kfghpdldaipanmkhfpdcjglncmilendn"];
 
   imports = [
-    ../brave
-    ../nushell
+    ../browser
+    ../shell/nushell
   ];
 
   nushell.extraScripts = [{source = ./rss.nu;}];

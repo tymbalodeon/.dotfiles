@@ -17,9 +17,9 @@
   youTubeBlackAndWhiteFilterID = "idfhjammokilkemckgdbjckkbgmbacne";
 in {
   config = let
-    cfg = config.brave;
+    cfg = config.browser;
   in {
-    home.activation.brave = let
+    home.activation.browser = let
       preferences = let
         startpageGUID = "485bf7d3-0215-45af-87dc-538868000510";
       in {
@@ -229,7 +229,7 @@ in {
     };
   };
 
-  options.brave.extraExtensionIDs = with lib;
+  options.browser.extraExtensionIDs = with lib;
     mkOption {
       default = [];
       type = with types; listOf str;

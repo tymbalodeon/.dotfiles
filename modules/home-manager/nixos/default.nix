@@ -41,7 +41,7 @@ in {
 
   imports = [
     ../bluetooth
-    ../brave
+    ../browser
     ../clipboard
     ../cursor
     ../dictionary

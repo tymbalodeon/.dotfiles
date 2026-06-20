@@ -84,7 +84,7 @@
 
   imports = [
     ../fzf
-    ../nushell
+    ../shell/nushell
   ];
 
   options.music-player = with lib; {

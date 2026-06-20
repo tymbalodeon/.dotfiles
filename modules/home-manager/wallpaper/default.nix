@@ -59,7 +59,7 @@
 
   imports = [
     ../fzf
-    ../nushell
+    ../shell/nushell
     ../storage
     ../yazi
   ];

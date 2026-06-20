@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  imports = [../nushell];
+  imports = [../shell/nushell];
 
   nushell.extraScripts = [
     {

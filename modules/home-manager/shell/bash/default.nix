@@ -1,5 +1,5 @@
 {
-  imports = [../eza];
+  imports = [../../eza];
 
   programs = {
     bash = {
@@ -8,7 +8,6 @@
       historyControl = ["erasedups"];
       historyIgnore = ["cd" "exit" "ls"];
 
-      # TODO: set vi mode cursors
       initExtra = ''
         PS1="\[\e[1m\e[1;36m\w\e[0m\]\n$ "
         PS2="\[\e[1m\e[1;32m>\e[0m\] "

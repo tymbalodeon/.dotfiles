@@ -76,10 +76,10 @@
       ./nh
       ../nix
       ./note
-      ./nushell
       ./passwords
       ./pdf
       ./ripgrep
+      ./shell
       ./shell
       ./src
       ./task

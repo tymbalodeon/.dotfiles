@@ -1,8 +1,8 @@
 {
   imports = [
-    ../bash
+    ./bash
     ../eza
-    ../nushell
+    ./nushell
   ];
 
   programs = let

@@ -1,3 +1,3 @@
 {
-  imports = [../nushell];
+  imports = [../shell/nushell];
 }

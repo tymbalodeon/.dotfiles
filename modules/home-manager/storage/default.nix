@@ -1,7 +1,7 @@
 {
   imports = [
     ../fzf
-    ../nushell
+    ../shell/nushell
   ];
 
   nushell.extraScripts = [

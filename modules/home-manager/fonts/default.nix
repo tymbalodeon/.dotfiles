@@ -30,6 +30,6 @@
     ubuntu-classic
   ];
 
-  imports = [../nushell];
+  imports = [../shell/nushell];
   nushell.extraScripts = [{source = ./font.nu;}];
 }

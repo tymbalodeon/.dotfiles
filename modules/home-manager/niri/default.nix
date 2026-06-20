@@ -272,7 +272,7 @@ in {
     ../lock
     ../music-player
     ../nautilus
-    ../nushell
+    ../shell/nushell
     ../playerctl
     ../polkit
     ../sunsetr
