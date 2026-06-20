@@ -1,7 +1,6 @@
 {stylix, ...}: {
   imports = [
-    stylix.nixosModules.stylix
-
     ../../stylix
+    stylix.nixosModules.stylix
   ];
 }

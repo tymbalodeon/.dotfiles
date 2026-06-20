@@ -18,8 +18,8 @@ in {
     gtk4.extraConfig.Settings = cursorTheme;
 
     iconTheme = {
-      name = "Adwaita";
-      package = pkgs.gnome-themes-extra;
+      name = "Adwaita-dark";
+      package = pkgs.adwaita-icon-theme;
     };
   };
 
