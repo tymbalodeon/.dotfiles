@@ -1,6 +1,5 @@
 {pkgs, ...}: let
   mkFont = {
-    fileGlob,
     name,
     sha256,
     url,
@@ -11,56 +10,142 @@
 
         src = fetchzip {
           inherit sha256;
+
           stripRoot = false;
           url = "https://anrt-nancy.fr/media/pages/fonts/${url}";
         };
 
         installPhase = ''
           mkdir --parents $out/share/fonts/opentype/
-          cp "${fileGlob}" $out/share/fonts/opentype/
+
+          find . \
+            -name "*.otf" \
+            -not -path "./__MACOSX/" \
+            -exec cp "{}" $out/share/fonts/opentype \;
         '';
       };
-
-  baskervville = mkFont {
-    fileGlob = "baskervville-regular/otf/Baskervville-Regular.otf";
-    name = "baskervville";
-    sha256 = "sha256-ppQYjkyZRJctxk1pYHaj71NkaVWyiQTk8WZHxAQyvm8=";
-    url = "baskervville/46f1017574-1678381500/baskervville-regular.zip";
-  };
-
-  baskervville-italic = mkFont {
-    fileGlob = "baskervville-italic/otf/Baskervville-Italic.otf";
-    name = "baskervville-italic";
-    sha256 = "sha256-2MYnAtvVrlLLFDZQ6H5GIJTkZsg+yQOqurNW+kRE/mU=";
-    url = "baskervville/271ffa28c0-1678381500/baskervville-italic.zip";
-  };
-
-  durandus = mkFont {
-    fileGlob = "gotico-antiqua_Durandus-118G/Fust&Schoeffer-Durandus-GoticoAntiqua118G.otf";
-    name = "durandus";
-    sha256 = "sha256-Oquj8QP+VPfViPlQFZasySCwKtfiyztNo6w4lq3tUZk=";
-    url = "gotico-antiqua/0d198ed659-1678381500/gotico-antiqua_durandus-118g.zip";
-  };
-
-  proto-roman = mkFont {
-    fileGlob = "gotico-antiqua_Sweynheim-Pannartz-115R/Sweynheim&Pannartz-ProtoRoman115R.otf";
-    name = "proto-roman";
-    sha256 = "sha256-cNKWtClTeONR45IXjE7R0JxpMCOA5B2uDGX8t3h/8MA=";
-    url = "gotico-antiqua/1eb0e9fc41-1678381560/gotico-antiqua_sweynheim-pannartz-115r.zip";
-  };
-
-  subiaco = mkFont {
-    fileGlob = "gotico-antiqua_Sweynheim-Pannartz-120R/Sweynheim&Pannartz-Subiaco-ProtoRoman120R.otf";
-    name = "subiaco";
-    sha256 = "sha256-0u3jvB7+WqFwBfMrCOPSMNAN5QOxVO9CXUNNZKZm2eM=";
-    url = "gotico-antiqua/c3eb075c42-1678381560/gotico-antiqua_sweynheim-pannartz-120r.zip";
-  };
 in {
-  home.packages = [
-    baskervville
-    baskervville-italic
-    durandus
-    proto-roman
-    subiaco
-  ];
+  home.packages =
+    map (
+      {
+        name,
+        sha256,
+        url,
+      }:
+        mkFont {
+          inherit
+            name
+            sha256
+            url
+            ;
+        }
+    ) [
+      {
+        name = "baskervville";
+        sha256 = "sha256-ppQYjkyZRJctxk1pYHaj71NkaVWyiQTk8WZHxAQyvm8=";
+        url = "baskervville/46f1017574-1678381500/baskervville-regular.zip";
+      }
+
+      {
+        name = "baskervville-italic";
+        sha256 = "sha256-2MYnAtvVrlLLFDZQ6H5GIJTkZsg+yQOqurNW+kRE/mU=";
+        url = "baskervville/271ffa28c0-1678381500/baskervville-italic.zip";
+      }
+
+      {
+        name = "durandus";
+        sha256 = "sha256-Oquj8QP+VPfViPlQFZasySCwKtfiyztNo6w4lq3tUZk=";
+        url = "gotico-antiqua/0d198ed659-1678381500/gotico-antiqua_durandus-118g.zip";
+      }
+
+      {
+        name = "hamlet-cicero";
+        sha256 = "sha256-D0/l1bAFz8hoTeYDXHQdGfBdGaGJw3PjV158NstaXJM=";
+        url = "gotico-antiqua/2135df3c7c-1678381560/gotico-antiqua_hamlet-cicero-12.zip";
+      }
+
+      {
+        name = "hamlet-tertia";
+        sha256 = "sha256-2tlWtgS/DFNXX4//vuDLknwE+ayJJTTLyguezzSknDU=";
+        url = "gotico-antiqua/027c895867-1678381500/gotico-antiqua_hamlet-tertia-18.zip";
+      }
+
+      {
+        name = "jessen-cicero";
+        sha256 = "sha256-EMOe+GsrRuHb/AupQP3VWcrXCmfspWNx80ND1zmM9I4=";
+        url = "gotico-antiqua/1d094e4f1c-1678381560/gotico-antiqua_jessen-cicero-12.zip";
+      }
+
+      {
+        name = "jessen-mittel";
+        sha256 = "sha256-xacMfjQCQoUJIsrfUzKeVt55bWjYz6OZ6w2vAl3o7/A=";
+        url = "gotico-antiqua/0944f51447-1678381560/gotico-antiqua_jessen-mittel-14.zip";
+      }
+
+      {
+        name = "parix-hybrid";
+        sha256 = "sha256-xacMfjQCQoUJIsrfUzKeVt55bWjYz6OZ6w2vAl3o7/A=";
+        url = "gotico-antiqua/23369f227f-1678381500/gotico-antiqua_parix-111r.zip";
+      }
+
+      {
+        name = "ptolemy-great-primer";
+        sha256 = "sha256-8zr8zCti15eYaP8SljaDIWPQC24BBfEK3OmeZw2c91M=";
+        url = "gotico-antiqua/b6041b6798-1678381500/gotico-antiqua_ptolemy.zip";
+      }
+
+      {
+        name = "rot-proto-roman";
+        sha256 = "sha256-M2nF7Gu3APiKGTDl48IQkq2Wx/l18BXFgu3YEHfM2d4=";
+        url = "gotico-antiqua/95c21c313b-1678381500/gotico-antiqua_rot-102r.zip";
+      }
+
+      {
+        name = "rusch-gotico-antiqua";
+        sha256 = "sha256-e9EgCkjM3DsSXpgtJjL99Q/L3kGhJ4QouWj5io0GdD4=";
+        url = "gotico-antiqua/0b9237368a-1678381500/gotico-antiqua_rusch-100g.zip";
+      }
+
+      {
+        name = "rusch-bizarre";
+        sha256 = "sha256-xxSOM9crhXNQgUHC/zCUiMU3D1+2aiDDS1/s+t7VB3c=";
+        url = "gotico-antiqua/8d5addb4f8-1678381500/gotico-antiqua_r-bizarre-103r.zip";
+      }
+
+      {
+        name = "soufflet-vert-hybrid";
+        sha256 = "sha256-S/BLyEoycStpEByF5syUPAy9IeZsQKAiMv6rQR/lBEY=";
+        url = "gotico-antiqua/becd45c481-1678381500/gotico-antiqua_soufflet-vert-106r.zip";
+      }
+
+      {
+        name = "spira-proto-roman";
+        sha256 = "sha256-Porb7AEy2WB9AuCNoeI2skygXuggh8H2xFRbm6jwqho=";
+        url = "gotico-antiqua/10a7f06f11-1678381500/gotico-antiqua_spira-110r.zip";
+      }
+
+      {
+        name = "proto-roman";
+        sha256 = "sha256-cNKWtClTeONR45IXjE7R0JxpMCOA5B2uDGX8t3h/8MA=";
+        url = "gotico-antiqua/1eb0e9fc41-1678381560/gotico-antiqua_sweynheim-pannartz-115r.zip";
+      }
+
+      {
+        name = "subiaco";
+        sha256 = "sha256-0u3jvB7+WqFwBfMrCOPSMNAN5QOxVO9CXUNNZKZm2eM=";
+        url = "gotico-antiqua/c3eb075c42-1678381560/gotico-antiqua_sweynheim-pannartz-120r.zip";
+      }
+
+      {
+        name = "zainer-gotico-antiqua";
+        sha256 = "sha256-MPS5RiftUTRSmWxrCWuCRZX0maCBjy/Y/LSSX4xvlV8=";
+        url = "gotico-antiqua/41176b1583-1678381560/gotico-antiqua_zainer-96g.zip";
+      }
+
+      {
+        name = "zainer-initials";
+        sha256 = "sha256-RQzAx0aYapFILaj4p/yVHKqZk7uQ8XZp9RfOBiDGS5M=";
+        url = "gotico-antiqua/ada76d5805-1678381560/gotico-antiqua_zainer-initials.zip";
+      }
+    ];
 }
