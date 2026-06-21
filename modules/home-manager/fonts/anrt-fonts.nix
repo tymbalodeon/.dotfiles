@@ -42,6 +42,13 @@
     url = "gotico-antiqua/0d198ed659-1678381500/gotico-antiqua_durandus-118g.zip";
   };
 
+  proto-roman = mkFont {
+    fileGlob = "gotico-antiqua_Sweynheim-Pannartz-115R/Sweynheim&Pannartz-ProtoRoman115R.otf";
+    name = "proto-roman";
+    sha256 = "sha256-cNKWtClTeONR45IXjE7R0JxpMCOA5B2uDGX8t3h/8MA=";
+    url = "gotico-antiqua/1eb0e9fc41-1678381560/gotico-antiqua_sweynheim-pannartz-115r.zip";
+  };
+
   subiaco = mkFont {
     fileGlob = "gotico-antiqua_Sweynheim-Pannartz-120R/Sweynheim&Pannartz-Subiaco-ProtoRoman120R.otf";
     name = "subiaco";
@@ -53,6 +60,7 @@ in {
     baskervville
     baskervville-italic
     durandus
+    proto-roman
     subiaco
   ];
 }

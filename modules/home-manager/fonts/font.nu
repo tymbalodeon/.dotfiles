@@ -5,7 +5,7 @@ alias fonts = font
 
 # List fonts
 def "font list" [] {
-  fc-list --format "%{family[0]}\n" :lang=en
+  run-external fc-list : family
   | lines
   | uniq
   | sort
