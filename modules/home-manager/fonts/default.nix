@@ -5,7 +5,7 @@
     anrtFonts =
       map
       (font: pkgs.${font.name})
-      (import ./anrt-fonts/anrt-fonts.nix);
+      (import ../../fonts/anrt-fonts/anrt-fonts.nix);
 
     fonts = with pkgs;
       [
@@ -35,11 +35,6 @@
         ubuntu-classic
       ]
       ++ anrtFonts;
-
-    # kelmscottMono =
-    #   map
-    #   (font: pkgs.${font.name})
-    #   [(import ./kelmscott-mono/kelmscott-mono.nix)];
 
     programs = with pkgs; [
       font-manager

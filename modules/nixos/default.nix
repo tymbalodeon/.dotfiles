@@ -57,7 +57,7 @@
 
     nixpkgs = {
       config.allowUnfree = true;
-      overlays = import ../home-manager/fonts/overlays.nix;
+      overlays = import ../fonts/overlays.nix;
     };
 
     programs.nix-ld.enable = true;
