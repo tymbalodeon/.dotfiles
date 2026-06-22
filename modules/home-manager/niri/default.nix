@@ -205,8 +205,8 @@
 
             xkb {
               options "${
-          builtins.concatStringsSep "," [
-            "caps:escape"
+          builtins.concatStringsSep ", " [
+            "caps:escape, compose:ralt"
             cfg.input.keyboard.xkb.options
           ]
         }"
