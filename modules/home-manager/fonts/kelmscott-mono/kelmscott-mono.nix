@@ -1,5 +1,7 @@
 {
   hash = "";
   name = "kelmscott-mono";
-  url = "https://github.com/seeddisperser/kelmscott-mono/raw/refs/heads/main/KelmscottMono.otf";
+  owner = "seeddisperser";
+  repo = "kelmscott-mono";
+  rev = "c9ccd299c086108dabd732b42e4646b8da58d308";
 }

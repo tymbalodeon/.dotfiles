@@ -34,12 +34,12 @@
         prociono
         ubuntu-classic
       ]
-      ++ anrtFonts ++ kelmscottMono;
+      ++ anrtFonts;
 
-    kelmscottMono =
-      map
-      (font: pkgs.${font.name})
-      (import ./kelmscott-mono/kelmscott-mono.nix);
+    # kelmscottMono =
+    #   map
+    #   (font: pkgs.${font.name})
+    #   [(import ./kelmscott-mono/kelmscott-mono.nix)];
 
     programs = with pkgs; [
       font-manager

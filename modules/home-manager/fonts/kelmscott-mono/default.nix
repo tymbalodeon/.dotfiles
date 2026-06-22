@@ -1,16 +1,28 @@
 _: prev: let
-  kelmscott-mono = import ./kelmscott-mono.nix;
+  inherit
+    (import ./kelmscott-mono.nix)
+    hash
+    name
+    owner
+    repo
+    rev
+    ;
 in
   with prev;
     stdenv.mkDerivation {
-      name = kelmscott-mono.name;
+      inherit name;
 
-      src = fetchurl {
-        inherit hash url;
+      src = pkgs.fetchFromGitHub {
+        inherit
+          hash
+          owner
+          repo
+          rev
+          ;
       };
 
       installPhase = ''
         mkdir --parents $out/share/fonts/opentype/
-        echo $(ls)
+        echo $(ls ${src})
       '';
     }

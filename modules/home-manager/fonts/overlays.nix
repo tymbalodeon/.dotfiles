@@ -1,4 +1,4 @@
 [
   (import ./anrt-fonts)
-  (import ./kelmscott-mono)
+  # (import ./kelmscott-mono)
 ]
