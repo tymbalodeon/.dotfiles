@@ -1,11 +1,13 @@
 # List and preview fonts
-def font [] {}
+def font [] {
+  font list
+}
 
 alias fonts = font
 
 # List fonts
 def "font list" [] {
-  run-external fc-list : family
+  fc-match --all --format "%{family}\n"
   | lines
   | uniq
   | sort

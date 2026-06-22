@@ -3,16 +3,14 @@
   lib,
   pkgs,
   ...
-}: let
-  defaultXkbOptions = "caps:escape";
-in {
+}: {
   config = let
     cfg = config.niri;
   in {
     home = {
-      activation.niri =
-        lib.hm.dag.entryAfter ["writeBoundary"]
-        ''mkdir --parents ~/Pictures/Screenshots'';
+      activation.niri = lib.hm.dag.entryAfter ["writeBoundary"] ''
+        mkdir --parents ~/Pictures/Screenshots
+      '';
 
       packages = with pkgs;
         [
@@ -190,7 +188,7 @@ in {
         '';
       in ''
         binds {
-            ${binds}
+          ${binds}
         }
 
         cursor {
@@ -199,54 +197,55 @@ in {
         }
 
         hotkey-overlay {
-            skip-at-startup
+          skip-at-startup
         }
 
         input {
-            keyboard {
-                xkb {
-                    options "${
+          keyboard {
+
+            xkb {
+              options "${
           builtins.concatStringsSep "," [
-            defaultXkbOptions
+            "caps:escape"
             cfg.input.keyboard.xkb.options
           ]
         }"
-                }
-
-                repeat-delay 200
-                repeat-rate 75
             }
 
-            touchpad {
-              click-method "clickfinger"
-              dwt
-              dwtp
-              tap
-            }
+            repeat-delay 200
+            repeat-rate 75
+          }
+
+          touchpad {
+            click-method "clickfinger"
+            dwt
+            dwtp
+            tap
+          }
         }
 
         layout {
-            always-center-single-column
+          always-center-single-column
 
-            default-column-width {
-              proportion 0.5
-            }
+          default-column-width {
+            proportion 0.5
+          }
 
-            focus-ring {
-                width 1
-            }
+          focus-ring {
+            width 1
+          }
 
-            preset-column-widths {
-                ${proportions}
-            }
+          preset-column-widths {
+            ${proportions}
+          }
 
-            preset-window-heights {
-                ${proportions}
-            }
+          preset-window-heights {
+            ${proportions}
+          }
 
-            tab-indicator {
-                hide-when-single-tab
-            }
+          tab-indicator {
+            hide-when-single-tab
+          }
         }
 
         prefer-no-csd
@@ -286,7 +285,7 @@ in {
   in
     with types; {
       input.keyboard.xkb.options = mkOption {
-        default = defaultXkbOptions;
+        default = "";
         type = str;
       };
 
