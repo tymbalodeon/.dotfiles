@@ -2,32 +2,44 @@
   fonts.fontconfig.enable = true;
 
   home.packages = let
-    fonts = with pkgs; [
-      adwaita-fonts
-      andika
-      cantarell-fonts
-      dejavu_fonts
-      fanwood
-      fira
-      font-awesome
-      gentium
-      gentium-book
-      goudy-bookletter-1911
-      gyre-fonts
-      ibm-plex
-      inconsolata
-      inter
-      iosevka
-      jost
-      lato
-      liberation_ttf
-      nerd-fonts.iosevka-term
-      nerd-fonts.iosevka-term-slab
-      nerd-fonts.jetbrains-mono
-      noto-fonts
-      prociono
-      ubuntu-classic
-    ];
+    anrtFonts =
+      map
+      (font: pkgs.${font.name})
+      (import ./anrt-fonts/anrt-fonts.nix);
+
+    fonts = with pkgs;
+      [
+        adwaita-fonts
+        andika
+        cantarell-fonts
+        dejavu_fonts
+        fanwood
+        fira
+        font-awesome
+        gentium
+        gentium-book
+        goudy-bookletter-1911
+        gyre-fonts
+        ibm-plex
+        inconsolata
+        inter
+        iosevka
+        jost
+        lato
+        liberation_ttf
+        nerd-fonts.iosevka-term
+        nerd-fonts.iosevka-term-slab
+        nerd-fonts.jetbrains-mono
+        noto-fonts
+        prociono
+        ubuntu-classic
+      ]
+      ++ anrtFonts ++ kelmscottMono;
+
+    kelmscottMono =
+      map
+      (font: pkgs.${font.name})
+      (import ./kelmscott-mono/kelmscott-mono.nix);
 
     programs = with pkgs; [
       font-manager
@@ -36,10 +48,6 @@
   in
     fonts ++ programs;
 
-  imports = [
-    ./anrt-fonts.nix
-    ../shell/nushell
-  ];
-
+  imports = [../shell/nushell];
   nushell.extraScripts = [{source = ./font.nu;}];
 }

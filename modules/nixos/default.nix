@@ -55,7 +55,11 @@
       ];
     };
 
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs = {
+      config.allowUnfree = true;
+      overlays = import ../home-manager/fonts/overlays.nix;
+    };
+
     programs.nix-ld.enable = true;
     security.rtkit.enable = true;
 
