@@ -10,12 +10,6 @@
           stdenv.mkDerivation {
             inherit name;
 
-            src = fetchzip {
-              inherit sha256 url;
-
-              stripRoot = false;
-            };
-
             installPhase = ''
               mkdir --parents $out/share/fonts/opentype/
 
@@ -24,6 +18,12 @@
                 -not -path "./__MACOSX/" \
                 -exec cp "{}" $out/share/fonts/opentype \;
             '';
+
+            src = fetchzip {
+              inherit sha256 url;
+
+              stripRoot = false;
+            };
           };
     in
       builtins.listToAttrs (
@@ -45,7 +45,7 @@
             };
           }
         )
-        (import ./anrt-fonts/anrt-fonts.nix)
+        (import ./anrt-fonts.nix)
       )
   )
 ]

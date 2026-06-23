@@ -8,7 +8,7 @@
   config = let
     cfg = config.kitty;
   in {
-    home.packages = [pkgs.fira-code];
+    home.packages = [pkgs.google-fonts];
 
     programs.kitty =
       {

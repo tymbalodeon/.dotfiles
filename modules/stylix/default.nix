@@ -16,7 +16,7 @@
 
       sansSerif = {
         name = "IBM Plex Sans";
-        package = ibm-plex;
+        package = google-fonts;
       };
 
       serif = {

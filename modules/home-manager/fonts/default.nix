@@ -5,22 +5,23 @@
     anrtFonts =
       map
       (font: pkgs.${font.name})
-      (import ../../fonts/anrt-fonts/anrt-fonts.nix);
+      (import ../../fonts/anrt-fonts.nix);
 
     fonts = with pkgs;
       [
         adwaita-fonts
-        andika
+        # andika
         cantarell-fonts
         dejavu_fonts
         fanwood
-        fira
+        # fira
         font-awesome
         gentium
         gentium-book
+        google-fonts
         goudy-bookletter-1911
         gyre-fonts
-        ibm-plex
+        # ibm-plex
         inconsolata
         inter
         iosevka
