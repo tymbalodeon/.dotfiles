@@ -50,6 +50,8 @@ in {
     ../monitors
     ../niri
     ../reaper
+    # TODO: figure out how to include this on linux.nix without pulling in browser
+    ../rss
     ../stylix
     ../swaync
     ../waybar
