@@ -12,6 +12,7 @@
         adwaita-fonts
         cantarell-fonts
         dejavu_fonts
+        drafting-mono
         fanwood
         font-awesome
         gentium

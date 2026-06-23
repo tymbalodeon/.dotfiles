@@ -136,5 +136,13 @@ in
       sha256 = "sha256-fv0bT1hHAAvF0PyIBG0pVf+N1SEhHw7pkTpy0+yAwno=";
       url = "https://github.com/seeddisperser/kelmscott-mono/raw/refs/heads/main/KelmscottMono.otf";
     }
+
+    # FIXME
+    # {
+    #   dontUnpack = false;
+    #   name = "no-tears";
+    #   sha256 = "sha256-M9WHCW5i5HlW1Bkg4Dd7raK4i8KHvO5wKJnezYnN4YQ=";
+    #   url = "https://indestructibletype.com/notears.zip";
+    # }
   ]
   ++ anrtFonts
