@@ -2,26 +2,23 @@
   fonts.fontconfig.enable = true;
 
   home.packages = let
-    anrtFonts =
+    customFonts =
       map
       (font: pkgs.${font.name})
-      (import ../../fonts/anrt-fonts.nix);
+      (import ../../fonts/fonts.nix);
 
     fonts = with pkgs;
       [
         adwaita-fonts
-        # andika
         cantarell-fonts
         dejavu_fonts
         fanwood
-        # fira
         font-awesome
         gentium
         gentium-book
         google-fonts
         goudy-bookletter-1911
         gyre-fonts
-        # ibm-plex
         inconsolata
         inter
         iosevka
@@ -35,7 +32,7 @@
         prociono
         ubuntu-classic
       ]
-      ++ anrtFonts;
+      ++ customFonts;
 
     programs = with pkgs; [
       font-manager
