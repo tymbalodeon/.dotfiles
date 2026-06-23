@@ -229,9 +229,15 @@ in {
     };
   };
 
-  options.browser.extraExtensionIDs = with lib;
-    mkOption {
+  options.browser = let
+    inherit (lib) mkEnableOption mkOption types;
+    inherit (types) listOf str;
+  in {
+    enable = mkEnableOption;
+
+    extraExtensionIDs = mkOption {
       default = [];
-      type = with types; listOf str;
+      type = listOf str;
     };
+  };
 }

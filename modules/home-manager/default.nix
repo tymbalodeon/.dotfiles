@@ -14,6 +14,7 @@
         doggo
         dua
         dust
+        dysk
         fd
         glow
         harper
@@ -76,6 +77,7 @@
       ./jq
       ./jujutsu
       ./kitty
+      ./mpv
       ./musescore
       ./networking
       ./nh
@@ -84,6 +86,7 @@
       ./passwords
       ./pdf
       ./ripgrep
+      ./rss
       ./shell
       ./shell
       ./src

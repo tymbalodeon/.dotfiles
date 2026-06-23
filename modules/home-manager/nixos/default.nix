@@ -5,6 +5,8 @@
 }: let
   cursorTheme = "Bibata-Modern-Classic";
 in {
+  browser.enable = true;
+
   gtk = {
     enable = true;
 
@@ -45,7 +47,6 @@ in {
     ../clipboard
     ../cursor
     ../dictionary
-    ../linux
     ../mail
     ../monitors
     ../niri

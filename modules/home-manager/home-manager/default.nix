@@ -11,11 +11,7 @@
     packages = [pkgs.xclip];
   };
 
-  imports = [
-    ../../../hosts/${hostType}/${hostName}/home.nix
-    ../linux
-  ];
-
+  imports = [../../../hosts/${hostType}/${hostName}/home.nix];
   kitty.fontSize = 12.0;
   nixpkgs.config.allowUnfree = true;
 
