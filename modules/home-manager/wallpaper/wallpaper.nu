@@ -178,6 +178,21 @@ def restart-wallpaper [] {
   systemctl --user restart wpaperd
 }
 
+def get-background-color [color: string] {
+  let theme_colors = (theme colors)
+
+  if $color in ($theme_colors | columns) {
+    $theme_colors
+    | get $color
+  } else if ($color == black) {
+    "#000000"
+  } else if ($color == white) {
+    "#ffffff"
+  } else {
+    $color
+  }
+}
+
 # Load wallpapers
 def "wallpaper load" [
   path?: string # Local image file or directory to load
@@ -405,7 +420,7 @@ def "wallpaper pad" [
     (
       magick
         $image
-        -background (theme colors | get $background_color)
+        -background (get-background-color $background_color)
         -gravity north
         -resize $resolution
         -extent $padded_resolution
