@@ -1,1 +1,1 @@
-/nix/store/jlrd3lb036q2c25g78f409ba3hliq2ky-environments-default-scripts-todo.nu
+/nix/store/m8bq7lajl8j9s76i3bns0vmqr3m8wx00-environments-default-scripts-todo.nu

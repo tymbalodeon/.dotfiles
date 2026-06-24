@@ -49,12 +49,22 @@ def select-local-wallpaper [--multi] {
   if $multi {
     $selection
   } else {
-    $selection
-    | first
+    try {
+      $selection
+      | first
+    }
   }
 }
 
-def --wrapped set-wallpaper [...args: string] {
+def set-wallpaper [--color: string --image: string] {
+  let args = if ($color | is-not-empty) {
+    [--color $color]
+  } else if ($image | is-not-empty) {
+    [--image $"'($image | path expand)'"]
+  } else {
+    return
+  }
+
   bash -c $"swaybg ($args | str join ' ') &" out+err> /dev/null
   pkill -RTMIN+2 waybar
   systemctl --user stop wpaperd
@@ -64,6 +74,7 @@ def --wrapped set-wallpaper [...args: string] {
 def wallpaper [wallpaper?: string] {
   let wallpaper = if ($wallpaper | is-empty) {
     let wallpaper = (select-local-wallpaper)
+
     if ($wallpaper | is-empty) {
       return
     }
@@ -78,7 +89,7 @@ def wallpaper [wallpaper?: string] {
     return
   }
 
-  set-wallpaper --image $"'($wallpaper)'"
+  set-wallpaper --image $wallpaper
 }
 
 alias wp = wallpaper
@@ -138,16 +149,14 @@ def --wrapped wpaperctl-wrapper [...args: string] {
   if (systemctl --user list-units | find wpaperd | is-empty) {
     systemctl --user start wpaperd
     sleep 500ms
-
-    if toggle-pause in $args {
-      wpaperctl toggle-pause
-    }
   }
 
-  wpaperctl ...$args
-  wpaperctl reload-wallpaper
+  if ($args | is-not-empty) {
+    wpaperctl ...$args
+  }
+
   pkill -RTMIN+2 waybar
-  try { pkill swaybg }
+  try { pkill swaybg } catch {|e| print $e}
 }
 
 # List loaded wallpapers
@@ -225,7 +234,7 @@ def get-background-color [color?: string --include-hash] {
 # Load wallpapers
 def "wallpaper load" [
   path?: string # Local image file or directory to load
-  --background-color: string # The base16-colors name to use as the background color (default: "base01")
+  --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
   --clear # Clear existing wallpapers before loading new ones
   --force # Re-download even if already present locally
   --keep-default # Don't remove the default wallpaper when loading others
@@ -387,7 +396,10 @@ def "wallpaper next" [] {
   wpaperctl-wrapper next-wallpaper
 }
 
-alias "wallpaper start" = wallpaper next
+# Start cycling wallpapers
+def "wallpaper start" [] {
+  wpaperctl-wrapper
+}
 
 # Add padding to image to account for status bar
 def "wallpaper pad" [
@@ -406,10 +418,12 @@ def "wallpaper pad" [
     return
   }
 
+  let remote_wallpapers = (rclone lsf --recursive dropbox:wallpaper)
+
   for image in $images {
     if ($image | path dirname | path expand) == ("~/wallpaper" | path expand) {
       let remote_image = (
-        rclone lsf --recursive dropbox:wallpaper
+        $remote_wallpapers
         | rg (
             $image
             | path basename
@@ -429,7 +443,7 @@ def "wallpaper pad" [
       )
     }
 
-    let resolution = (xrandr | rg '\*' | split words | first)
+    let resolution = (xrandr err> /dev/null | rg '\*' | split words | first)
     let resolution_parts = ($resolution | split row x)
     let padded_width = ($resolution_parts | first)
     let padded_height = (($resolution_parts | last | into int) + (waybar-height))
@@ -461,12 +475,12 @@ def "wallpaper pad" [
 def "wallpaper pad all" [
   --background-color: string # The base16-colors name to use as the background color (default: "base01")
 ] {
-  for image in (ls (wallpaper-directory) | get name) {
-    if ($background_color | is-empty) {
-      wallpaper pad $image
-    } else {
-      wallpaper pad --background-color $background_color $image
-    }
+  let images = (ls (wallpaper-directory)).name
+
+  if ($background_color | is-empty) {
+    wallpaper pad ...$images
+  } else {
+    wallpaper pad --background-color $background_color ...$images
   }
 }
 
