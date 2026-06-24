@@ -5,26 +5,37 @@
         dontUnpack,
         name,
         sha256,
+        ttf,
         url,
       }:
         with prev;
           stdenv.mkDerivation {
             inherit dontUnpack name;
 
-            installPhase =
+            installPhase = let
+              outputDirectory =
+                if ttf
+                then "truetype"
+                else "opentype";
+            in
               ''
-                mkdir --parents $out/share/fonts/opentype/
+                mkdir --parents $out/share/fonts/${outputDirectory}/
               ''
               + (
                 if dontUnpack
                 then ''
-                  cp $src $out/share/fonts/opentype
+                  cp $src $out/share/fonts/${outputDirectory}/
                 ''
-                else ''
+                else let
+                  fileType =
+                    if ttf
+                    then "ttf"
+                    else "otf";
+                in ''
                   find . \
-                    -name "*.otf" \
+                    -name "*.${fileType}" \
                     -not -path "./__MACOSX" \
-                    -exec cp "{}" $out/share/fonts/opentype \;
+                    -exec cp "{}" $out/share/fonts/${outputDirectory}/ \;
                 ''
               );
 
@@ -48,9 +59,10 @@
         map
         (
           {
-            dontUnpack,
+            dontUnpack ? false,
             name,
             sha256,
+            ttf ? false,
             url,
           }: {
             inherit name;
@@ -60,6 +72,7 @@
                 dontUnpack
                 name
                 sha256
+                ttf
                 url
                 ;
             };
