@@ -1,5 +1,9 @@
 def wallpaper-directory [] {
-  $"($env.HOME)/wallpaper"
+  let wallpaper_directory = $"($env.HOME)/wallpaper"
+
+  mkdir $wallpaper_directory
+
+  $wallpaper_directory
 }
 
 def default-wallpaper-filename [] {
@@ -137,11 +141,14 @@ def "wallpaper clear" [] {
   rm --force --recursive $wallpaper_directory
   mkdir $wallpaper_directory
 
-  cp (default-wallpaper) (
+  let default_wallpaper_file = (
     $wallpaper_directory
     | path join (default-wallpaper-filename)
   )
 
+  cp (default-wallpaper) $default_wallpaper_file
+  chmod +w $default_wallpaper_file
+  wallpaper pad --no-download $default_wallpaper_file
   restart-wallpaper 
 }
 
@@ -240,6 +247,7 @@ def "wallpaper load" [
   --keep-default # Don't remove the default wallpaper when loading others
   --no-pad # Don't pad the wallpaper after downloading
   --remote # Treat $path as a remote path
+  --store # Add the local wallpaper to remote storage
 ] {
   if $clear {
     wallpaper clear
@@ -368,7 +376,9 @@ def "wallpaper load" [
 
       let basename = ($file | path basename)
 
-      storage upload $file $"wallpaper/($basename)"
+      if $store {
+        storage upload $file $"wallpaper/($basename)"
+      }
 
       let to = $"(wallpaper-directory)/($basename)"
 
@@ -421,7 +431,10 @@ def "wallpaper pad" [
   let remote_wallpapers = (rclone lsf --recursive dropbox:wallpaper)
 
   for image in $images {
-    if ($image | path dirname | path expand) == ("~/wallpaper" | path expand) {
+    if not $no_download and ($image | path dirname | path expand) == (
+      "~/wallpaper"
+      | path expand
+    ) {
       let remote_image = (
         $remote_wallpapers
         | rg (
