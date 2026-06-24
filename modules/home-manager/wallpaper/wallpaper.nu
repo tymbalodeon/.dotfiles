@@ -41,17 +41,29 @@ def select-local-wallpaper [--multi] {
     | lines
   )
 
-  if ($selection | is-not-empty) {
+  let selection = if ($selection | is-not-empty) {
     $selection
     | each {|wallpaper| $"($wallpaper_directory)/($wallpaper)"}
   }
+
+  if $multi {
+    $selection
+  } else {
+    $selection
+    | first
+  }
+}
+
+def --wrapped set-wallpaper [...args: string] {
+  bash -c $"swaybg ($args | str join ' ') &" out+err> /dev/null
+  pkill -RTMIN+2 waybar
+  systemctl --user stop wpaperd
 }
 
 # Set wallpaper to a specific file
 def wallpaper [wallpaper?: string] {
   let wallpaper = if ($wallpaper | is-empty) {
     let wallpaper = (select-local-wallpaper)
-
     if ($wallpaper | is-empty) {
       return
     }
@@ -66,12 +78,15 @@ def wallpaper [wallpaper?: string] {
     return
   }
 
-  bash -c $"swaybg --image '($wallpaper)' &" out+err> /dev/null
-  pkill -RTMIN+2 waybar
-  systemctl --user stop wpaperd
+  set-wallpaper --image $"'($wallpaper)'"
 }
 
 alias wp = wallpaper
+
+# Set wallpaper to a specific file
+def "wallpaper blank" [color: string] {
+  set-wallpaper --color (get-background-color $color)
+}
 
 # Browse local wallpapers
 def "wallpaper browse local" [] {
@@ -178,16 +193,23 @@ def restart-wallpaper [] {
   systemctl --user restart wpaperd
 }
 
-def get-background-color [color: string] {
+def get-background-color [color: string --include-hash] {
   let theme_colors = (theme colors)
 
-  if $color in ($theme_colors | columns) {
+  let color = if $color in ($theme_colors | columns) {
     $theme_colors
     | get $color
   } else if ($color == black) {
     "#000000"
   } else if ($color == white) {
     "#ffffff"
+  } else {
+    $color
+  }
+
+  if not $include_hash {
+    $color
+    | str replace "#" ""
   } else {
     $color
   }
@@ -420,7 +442,7 @@ def "wallpaper pad" [
     (
       magick
         $image
-        -background (get-background-color $background_color)
+        -background (get-background-color --include-hash $background_color)
         -gravity north
         -resize $resolution
         -extent $padded_resolution
