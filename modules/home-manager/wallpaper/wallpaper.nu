@@ -156,7 +156,7 @@ def --wrapped wpaperctl-wrapper [...args: string] {
   }
 
   pkill -RTMIN+2 waybar
-  try { pkill swaybg } catch {|e| print $e}
+  try { pkill swaybg }
 }
 
 # List loaded wallpapers
@@ -443,13 +443,6 @@ def "wallpaper pad" [
       )
     }
 
-    let resolution = (xrandr err> /dev/null | rg '\*' | split words | first)
-    let resolution_parts = ($resolution | split row x)
-    let padded_width = ($resolution_parts | first)
-    let padded_height = (($resolution_parts | last | into int) + (waybar-height))
-    let padded_resolution = ([$padded_width $padded_height] | str join x)
-    let image = ($image | path expand)
-
     let output_path = if ($output_path | is-empty) {
       $image
     } else if ($output_path | path type) == dir {
@@ -459,11 +452,37 @@ def "wallpaper pad" [
       $output_path
     }
 
+    let resolution = (xrandr err> /dev/null | rg '\*' | split words | first)
+    let resolution_parts = ($resolution | split row x)
+    let padded_width = ($resolution_parts | first | into int)
+
+    let padded_height = (
+      ($resolution_parts | last | into int) + (waybar-height)
+      | into int
+    )
+
+    let padded_resolution = ([$padded_width $padded_height] | str join x)
+    let image = ($image | path expand)
+    let image_data = (magick identify -format "%wx%h" $image)
+    let image_data_parts = ($image_data | split row x)
+    let image_width = ($image_data_parts | first | into int)
+    let image_height = ($image_data_parts | last | into int)
+
+    let gravity = if (
+      $image_width / $image_height
+    ) > ($padded_width / $padded_height) {
+      # TODO: is there a way to pad the sides as well, and center from top of
+      # screen to the top of waybar?
+      "center"
+    } else {
+      "north"
+    }
+
     (
       magick
         $image
         -background (get-background-color --include-hash $background_color)
-        -gravity north
+        -gravity $gravity
         -resize $resolution
         -extent $padded_resolution
         $output_path
