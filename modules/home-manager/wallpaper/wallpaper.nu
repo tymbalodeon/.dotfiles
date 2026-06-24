@@ -148,7 +148,6 @@ def --wrapped wpaperctl-wrapper [...args: string] {
   wpaperctl reload-wallpaper
   pkill -RTMIN+2 waybar
   try { pkill swaybg }
-  wallpaper next
 }
 
 # List loaded wallpapers
