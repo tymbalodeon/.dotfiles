@@ -125,5 +125,28 @@ in
       ttf = true;
       url = "https://indestructibletype.com/notears.zip";
     }
+
+    {
+      name = "apl385";
+      sha256 = "sha256-xT5KK7FY7zEcfWVz/nqHIRYWaS9fU2+5BCclt+YgIdw=";
+      ttf = true;
+      url = "https://apl385.com/fonts/apl385.zip";
+    }
+
+    {
+      dontUnpack = true;
+      name = "apl386";
+      sha256 = "sha256-zNVQu8Dh9J9KXtoOItYLAF3gFeBf8Y6kdEgOUInGj9g=";
+      ttf = true;
+      url = "https://abrudz.github.io/APL386/APL386.ttf";
+    }
+
+    {
+      dontUnpack = true;
+      name = "apl387";
+      sha256 = "sha256-KyMJIkBdx7bndXqOhbpVOGkGEcPrn8peLw5q1/hKVzM=";
+      ttf = true;
+      url = "https://dyalog.github.io/APL387/APL387.ttf";
+    }
   ]
   ++ anrtFonts
