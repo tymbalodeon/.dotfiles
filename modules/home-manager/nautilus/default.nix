@@ -3,6 +3,11 @@
   pkgs,
   ...
 }: {
+  dconf = {
+    enable = true;
+    settings."org/gnome/nautilus/preferences".default-folder-viewer = "list-view";
+  };
+
   home.packages = [pkgs.nautilus];
 
   services.udiskie = {
