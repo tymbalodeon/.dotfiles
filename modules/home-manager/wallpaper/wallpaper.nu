@@ -1,5 +1,9 @@
 def wallpaper-directory [] {
-  $"($env.HOME)/wallpaper"
+  let wallpaper_directory = $"($env.HOME)/wallpaper"
+
+  mkdir $wallpaper_directory
+
+  $wallpaper_directory
 }
 
 def default-wallpaper-filename [] {
@@ -49,12 +53,22 @@ def select-local-wallpaper [--multi] {
   if $multi {
     $selection
   } else {
-    $selection
-    | first
+    try {
+      $selection
+      | first
+    }
   }
 }
 
-def --wrapped set-wallpaper [...args: string] {
+def set-wallpaper [--color: string --image: string] {
+  let args = if ($color | is-not-empty) {
+    [--color $color]
+  } else if ($image | is-not-empty) {
+    [--image $"'($image | path expand)'"]
+  } else {
+    return
+  }
+
   bash -c $"swaybg ($args | str join ' ') &" out+err> /dev/null
   pkill -RTMIN+2 waybar
   systemctl --user stop wpaperd
@@ -64,6 +78,7 @@ def --wrapped set-wallpaper [...args: string] {
 def wallpaper [wallpaper?: string] {
   let wallpaper = if ($wallpaper | is-empty) {
     let wallpaper = (select-local-wallpaper)
+
     if ($wallpaper | is-empty) {
       return
     }
@@ -78,7 +93,7 @@ def wallpaper [wallpaper?: string] {
     return
   }
 
-  set-wallpaper --image $"'($wallpaper)'"
+  set-wallpaper --image $wallpaper
 }
 
 alias wp = wallpaper
@@ -126,11 +141,14 @@ def "wallpaper clear" [] {
   rm --force --recursive $wallpaper_directory
   mkdir $wallpaper_directory
 
-  cp (default-wallpaper) (
+  let default_wallpaper_file = (
     $wallpaper_directory
     | path join (default-wallpaper-filename)
   )
 
+  cp (default-wallpaper) $default_wallpaper_file
+  chmod +w $default_wallpaper_file
+  wallpaper pad --no-download $default_wallpaper_file
   restart-wallpaper 
 }
 
@@ -138,14 +156,12 @@ def --wrapped wpaperctl-wrapper [...args: string] {
   if (systemctl --user list-units | find wpaperd | is-empty) {
     systemctl --user start wpaperd
     sleep 500ms
-
-    if toggle-pause in $args {
-      wpaperctl toggle-pause
-    }
   }
 
-  wpaperctl ...$args
-  wpaperctl reload-wallpaper
+  if ($args | is-not-empty) {
+    wpaperctl ...$args
+  }
+
   pkill -RTMIN+2 waybar
   try { pkill swaybg }
 }
@@ -225,12 +241,13 @@ def get-background-color [color?: string --include-hash] {
 # Load wallpapers
 def "wallpaper load" [
   path?: string # Local image file or directory to load
-  --background-color: string # The base16-colors name to use as the background color (default: "base01")
+  --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
   --clear # Clear existing wallpapers before loading new ones
   --force # Re-download even if already present locally
   --keep-default # Don't remove the default wallpaper when loading others
   --no-pad # Don't pad the wallpaper after downloading
   --remote # Treat $path as a remote path
+  --store # Add the local wallpaper to remote storage
 ] {
   if $clear {
     wallpaper clear
@@ -359,7 +376,9 @@ def "wallpaper load" [
 
       let basename = ($file | path basename)
 
-      storage upload $file $"wallpaper/($basename)"
+      if $store {
+        storage upload $file $"wallpaper/($basename)"
+      }
 
       let to = $"(wallpaper-directory)/($basename)"
 
@@ -387,7 +406,10 @@ def "wallpaper next" [] {
   wpaperctl-wrapper next-wallpaper
 }
 
-alias "wallpaper start" = wallpaper next
+# Start cycling wallpapers
+def "wallpaper start" [] {
+  wpaperctl-wrapper
+}
 
 # Add padding to image to account for status bar
 def "wallpaper pad" [
@@ -406,10 +428,15 @@ def "wallpaper pad" [
     return
   }
 
+  let remote_wallpapers = (rclone lsf --recursive dropbox:wallpaper)
+
   for image in $images {
-    if ($image | path dirname | path expand) == ("~/wallpaper" | path expand) {
+    if not $no_download and ($image | path dirname | path expand) == (
+      "~/wallpaper"
+      | path expand
+    ) {
       let remote_image = (
-        rclone lsf --recursive dropbox:wallpaper
+        $remote_wallpapers
         | rg (
             $image
             | path basename
@@ -429,13 +456,6 @@ def "wallpaper pad" [
       )
     }
 
-    let resolution = (xrandr | rg '\*' | split words | first)
-    let resolution_parts = ($resolution | split row x)
-    let padded_width = ($resolution_parts | first)
-    let padded_height = (($resolution_parts | last | into int) + (waybar-height))
-    let padded_resolution = ([$padded_width $padded_height] | str join x)
-    let image = ($image | path expand)
-
     let output_path = if ($output_path | is-empty) {
       $image
     } else if ($output_path | path type) == dir {
@@ -445,11 +465,37 @@ def "wallpaper pad" [
       $output_path
     }
 
+    let resolution = (xrandr err> /dev/null | rg '\*' | split words | first)
+    let resolution_parts = ($resolution | split row x)
+    let padded_width = ($resolution_parts | first | into int)
+
+    let padded_height = (
+      ($resolution_parts | last | into int) + (waybar-height)
+      | into int
+    )
+
+    let padded_resolution = ([$padded_width $padded_height] | str join x)
+    let image = ($image | path expand)
+    let image_data = (magick identify -format "%wx%h" $image)
+    let image_data_parts = ($image_data | split row x)
+    let image_width = ($image_data_parts | first | into int)
+    let image_height = ($image_data_parts | last | into int)
+
+    let gravity = if (
+      $image_width / $image_height
+    ) > ($padded_width / $padded_height) {
+      # TODO: is there a way to pad the sides as well, and center from top of
+      # screen to the top of waybar?
+      "center"
+    } else {
+      "north"
+    }
+
     (
       magick
         $image
         -background (get-background-color --include-hash $background_color)
-        -gravity north
+        -gravity $gravity
         -resize $resolution
         -extent $padded_resolution
         $output_path
@@ -461,12 +507,12 @@ def "wallpaper pad" [
 def "wallpaper pad all" [
   --background-color: string # The base16-colors name to use as the background color (default: "base01")
 ] {
-  for image in (ls (wallpaper-directory) | get name) {
-    if ($background_color | is-empty) {
-      wallpaper pad $image
-    } else {
-      wallpaper pad --background-color $background_color $image
-    }
+  let images = (ls (wallpaper-directory)).name
+
+  if ($background_color | is-empty) {
+    wallpaper pad ...$images
+  } else {
+    wallpaper pad --background-color $background_color ...$images
   }
 }
 

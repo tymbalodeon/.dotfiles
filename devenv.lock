@@ -3,11 +3,11 @@
     "devenv": {
       "locked": {
         "dir": "src/modules",
-        "lastModified": 1782305913,
-        "narHash": "sha256-CW+mSdVBvJ1kuuXPrx05Kmee8YZUhOQ3gI8H8roFDOY=",
+        "lastModified": 1782331842,
+        "narHash": "sha256-7CJ2EqNVPMq0ly39aaP6dGgdO627MqUtM/+Dm+QwNdU=",
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "5f6233e19a31955435e667c20e056ae147498ecc",
+        "rev": "885e1c9d62cfa12232802de77b36aaded1ca609b",
         "type": "github"
       },
       "original": {
@@ -21,11 +21,11 @@
       "flake": false,
       "locked": {
         "dir": "src",
-        "lastModified": 1782259949,
-        "narHash": "sha256-IfFSGcZEquk/UF4KCmy0Q5GzAohhM7FTP6bdXwc2YvQ=",
+        "lastModified": 1782340493,
+        "narHash": "sha256-AB9YEbpNUg/xojeKpxr/bmiZIBG65GIOYoZFVN3cDmg=",
         "ref": "refs/heads/trunk",
-        "rev": "92819c076cb5fe0322a3ddb6373d4a73360faf72",
-        "revCount": 1699,
+        "rev": "9c8b1b6c2e5ca4df993f409368b4b903e13c262f",
+        "revCount": 1701,
         "type": "git",
         "url": "ssh://git@codeberg.org/tymbalodeon/environments.git"
       },
