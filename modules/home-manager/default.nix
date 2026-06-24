@@ -52,9 +52,13 @@
 
     programs.home-manager.enable = true;
 
-    xdg.configFile."nixpkgs/config.nix".text = ''
-      {allowUnfree = true;}
-    '';
+    xdg.configFile."nixpkgs/config.nix" = {
+      force = true;
+
+      text = ''
+        {allowUnfree = true;}
+      '';
+    };
   };
 
   imports =
