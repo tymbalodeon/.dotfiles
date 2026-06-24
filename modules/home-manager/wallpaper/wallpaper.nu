@@ -145,8 +145,10 @@ def --wrapped wpaperctl-wrapper [...args: string] {
   }
 
   wpaperctl ...$args
+  wpaperctl reload-wallpaper
   pkill -RTMIN+2 waybar
   try { pkill swaybg }
+  wallpaper next
 }
 
 # List loaded wallpapers
@@ -377,7 +379,7 @@ def "wallpaper load all" [] {
 
 # Change to next (random) wallpaper
 def "wallpaper next" [] {
-  wpaperctl-wrapper next
+  wpaperctl-wrapper next-wallpaper
 }
 
 alias "wallpaper start" = wallpaper next
@@ -403,7 +405,12 @@ def "wallpaper pad" [
     if ($image | path dirname | path expand) == ("~/wallpaper" | path expand) {
       let remote_image = (
         rclone lsf --recursive dropbox:wallpaper
-        | rg ($image | path basename)
+        | rg (
+            $image
+            | path basename
+            | str replace --all '(' '\('
+            | str replace --all ')' '\)'
+          )
         | lines
         | first
       )
@@ -466,7 +473,7 @@ def "wallpaper pad all" [
 
 # Change to previous wallpaper
 def "wallpaper previous" [] {
-  wpaperctl-wrapper previous
+  wpaperctl-wrapper previous-wallpaper
 }
 
 # Remove wallpaper from the wallpaper directory
@@ -486,7 +493,7 @@ alias "wallpaper rm" = wallpaper remove
 
 # Toggle pausing/resuming automatic cycling of wallpaper
 def "wallpaper toggle-pause" [] {
-  wpaperctl-wrapper toggle-pause
+  wpaperctl-wrapper toggle-pause-wallpaper
 }
 
 # Manage wallpaper
