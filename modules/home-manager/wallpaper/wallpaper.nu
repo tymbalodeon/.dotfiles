@@ -84,7 +84,7 @@ def wallpaper [wallpaper?: string] {
 alias wp = wallpaper
 
 # Set wallpaper to a specific file
-def "wallpaper blank" [color: string] {
+def "wallpaper blank" [color?: string] {
   set-wallpaper --color (get-background-color $color)
 }
 
@@ -194,7 +194,13 @@ def restart-wallpaper [] {
   systemctl --user restart wpaperd
 }
 
-def get-background-color [color: string --include-hash] {
+def get-background-color [color?: string --include-hash] {
+  let color = if ($color | is-empty) {
+    "base01"
+  } else {
+    $color
+  }
+
   let theme_colors = (theme colors)
 
   let color = if $color in ($theme_colors | columns) {
@@ -437,12 +443,6 @@ def "wallpaper pad" [
       | path join ($image | path basename)
     } else {
       $output_path
-    }
-
-    let background_color = if ($background_color | is-empty) {
-      "base01"
-    } else {
-      $background_color
     }
 
     (
