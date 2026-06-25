@@ -6,7 +6,7 @@
   programs = {
     vivid =
       {
-        enableNushellIntegration = false;
+        enableNushellIntegration = true;
         enable = true;
       }
       // lib.optionalAttrs (hostType == "home-manager") {

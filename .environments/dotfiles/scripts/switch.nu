@@ -18,7 +18,7 @@ use xdg-state-home.nu
 # Build and activate the new configuration (and, on NixOS, make it the boot default)
 export def main [
   host?: string # The target host configuration (auto-detected if not specified)
-  --boot-only # (NixOS only) Build the new configuration and make it the boot default, but don't activate it
+  --boot # (NixOS only) Build the new configuration and make it the boot default, but don't activate it
   --choose-theme # Choose the stylix theme interactively
   --clean # Run `clean` after rebuilding
   --dark-theme # Select only dark themes
@@ -133,7 +133,7 @@ export def main [
   git add .
 
   if (is-nixos) {
-    if $boot_only {
+    if $boot {
       nh os boot . --hostname $host --impure
     } else {
       nh os switch . --hostname $host --impure
