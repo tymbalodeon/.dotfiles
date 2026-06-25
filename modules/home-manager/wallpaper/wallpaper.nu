@@ -434,7 +434,7 @@ def "wallpaper load default" [
 
   if $no_pad {
     wallpaper load --no-pad $temporary_file
-  } else if $background_color {
+  } else if ($background_color | is-not-empty) {
     wallpaper load --background-color $background_color $temporary_file
   } else {
     wallpaper load $temporary_file
