@@ -443,6 +443,7 @@
           export def "storage list remote" [
             path?: string # A path relative to <remote>:
             --interactive (-i) # Interactively select the subdirectory whose contents to list
+            --recursive # Recursively list directories
             --remote: string # The name of the remote service
           ] {
             let remote = (get-remote $remote)
@@ -455,7 +456,11 @@
 
             let path = (get-remote-path $remote $path)
 
-            rclone lsf $path
+            if $recursive {
+              rclone lsf --recursive $path
+            } else {
+              rclone lsf $path
+            }
             | lines
             | to text --no-newline
           }

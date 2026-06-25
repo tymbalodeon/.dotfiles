@@ -7,7 +7,12 @@ def wallpaper-directory [] {
 }
 
 def default-wallpaper-filename [] {
-  "default-wallpaper.jpg"
+  "Hildegard von Bingen -- Scivias I-6 - Humanity and Life (1150).jpg"
+}
+
+def default-wallpaper-path [] {
+  wallpaper-directory
+  | path join (default-wallpaper-filename)
 }
 
 def select-local-wallpaper [--multi] {
@@ -141,10 +146,7 @@ def "wallpaper clear" [] {
   rm --force --recursive $wallpaper_directory
   mkdir $wallpaper_directory
 
-  let default_wallpaper_file = (
-    $wallpaper_directory
-    | path join (default-wallpaper-filename)
-  )
+  let default_wallpaper_file = (default-wallpaper-path)
 
   cp (default-wallpaper) $default_wallpaper_file
   chmod +w $default_wallpaper_file
@@ -187,7 +189,7 @@ alias "wallpaper ls" = wallpaper list local
 
 # List remote wallpapers
 def "wallpaper list remote" [] {
-  storage list remote wallpaper
+  storage list remote --recursive  wallpaper
 }
 
 alias "wallpaper list r" = wallpaper list remote
@@ -240,14 +242,14 @@ def get-background-color [color?: string --include-hash] {
 
 # Load wallpapers
 def "wallpaper load" [
-  path?: string # Local image file or directory to load
+  path?: string # Image file or directory to load
   --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
   --clear # Clear existing wallpapers before loading new ones
-  --force # Re-download even if already present locally
+  --force # Re-download remote wallpapers even if already present locally
   --keep-default # Don't remove the default wallpaper when loading others
-  --no-pad # Don't pad the wallpaper after downloading
+  --no-pad # Don't pad the wallpaper after loading
   --remote # Treat $path as a remote path
-  --store # Add the local wallpaper to remote storage
+  --store # Add local wallpaper to remote storage
 ] {
   if $clear {
     wallpaper clear
@@ -392,13 +394,53 @@ def "wallpaper load" [
     }
   }
 
-  rm --force (wallpaper-directory | path join (default-wallpaper-filename))
+  if not $keep_default {
+    rm --force (default-wallpaper-path)
+  }
+
   restart-wallpaper
 }
 
+# Load all wallpapers in the remote wallpaper directory
 def "wallpaper load all" [] {
-  # TODO: add padding here
-  storage download --force --to (wallpaper-directory) --quiet wallpaper
+  wallpaper load --remote wallpaper
+}
+
+# Load the default wallpaper
+def "wallpaper load default" [
+  --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
+  --clear # Clear existing wallpapers before loading new ones
+  --no-pad # Don't pad the wallpaper after loading
+] {
+  let temporary_file = (mktemp)
+
+  cp (default-wallpaper) $temporary_file
+
+  mv $temporary_file (
+    $temporary_file
+    | path dirname
+    | path join (
+      $temporary_file
+      | path split
+      | drop
+      | append (default-wallpaper-filename)
+      | path join
+    )
+  )
+
+  if $clear {
+    wallpaper clear
+  }
+
+  if $no_pad {
+    wallpaper load --no-pad $temporary_file
+  } else if $background_color {
+    wallpaper load --background-color $background_color $temporary_file
+  } else {
+    wallpaper load $temporary_file
+  }
+
+  rm $temporary_file
 }
 
 # Change to next (random) wallpaper
