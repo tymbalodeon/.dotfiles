@@ -5,7 +5,24 @@
 }: {
   dconf = {
     enable = true;
-    settings."org/gnome/nautilus/preferences".default-folder-viewer = "list-view";
+
+    settings = let
+      defaultColumns = ["name" "type" "size" "date_created" "date_modified"];
+    in {
+      "org/gnome/nautilus/icon-view".default-zoom-level = "small";
+
+      "org/gnome/nautilus/list-view" = {
+        default-column-order = defaultColumns;
+        default-visible-columns = defaultColumns;
+        default-zoom-level = "small";
+        use-tree-view = true;
+      };
+
+      "org/gnome/nautilus/preferences" = {
+        default-folder-viewer = "list-view";
+        show-delete-permanently = true;
+      };
+    };
   };
 
   home.packages = [pkgs.nautilus];
