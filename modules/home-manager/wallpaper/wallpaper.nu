@@ -416,7 +416,7 @@ def "wallpaper load default" [
 
   cp (default-wallpaper) $temporary_file
 
-  mv $temporary_file (
+  let new_filename = (
     $temporary_file
     | path dirname
     | path join (
@@ -428,19 +428,21 @@ def "wallpaper load default" [
     )
   )
 
+  mv $temporary_file $new_filename
+
   if $clear {
     wallpaper clear
   }
 
   if $no_pad {
-    wallpaper load --no-pad $temporary_file
+    wallpaper load --keep-default --no-pad $new_filename
   } else if ($background_color | is-not-empty) {
-    wallpaper load --background-color $background_color $temporary_file
+    wallpaper load --keep-default --background-color $background_color $new_filename
   } else {
-    wallpaper load $temporary_file
+    wallpaper load --keep-default $new_filename
   }
 
-  rm $temporary_file
+  rm $new_filename
 }
 
 # Change to next (random) wallpaper
