@@ -545,7 +545,7 @@ def "wallpaper pad" [
         -background (get-background-color --include-hash $background_color)
         -gravity $gravity
         -resize $resolution
-        -extent $"($padded_resolution)+0+18.5"
+        -extent $padded_resolution
         $output_path
     )
   }
