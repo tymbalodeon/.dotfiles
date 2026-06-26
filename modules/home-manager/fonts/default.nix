@@ -10,7 +10,6 @@
     fonts = with pkgs;
       [
         adwaita-fonts
-        cantarell-fonts
         dejavu_fonts
         drafting-mono
         fanwood
