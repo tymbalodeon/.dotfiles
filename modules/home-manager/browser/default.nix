@@ -138,6 +138,9 @@ in {
             # TODO: pull in from secrets
             # encryption_bootstrap_token_per_account."" = "";
             extensions = true;
+
+            # TODO: is this necessary? It doesn't seem to fix the problem of
+            # extensions getting loaded every time
             has_setup_completed = true;
             keep_everything_synced = true;
             passwords = true;
