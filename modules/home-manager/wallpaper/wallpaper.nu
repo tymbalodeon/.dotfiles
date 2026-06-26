@@ -145,13 +145,7 @@ def "wallpaper clear" [] {
 
   rm --force --recursive $wallpaper_directory
   mkdir $wallpaper_directory
-
-  let default_wallpaper_file = (default-wallpaper-path)
-
-  cp (default-wallpaper) $default_wallpaper_file
-  chmod +w $default_wallpaper_file
-  wallpaper pad --no-download $default_wallpaper_file
-  restart-wallpaper 
+  wallpaper load default
 }
 
 def --wrapped wpaperctl-wrapper [...args: string] {
