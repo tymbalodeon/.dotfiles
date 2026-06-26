@@ -525,14 +525,24 @@ def "wallpaper pad" [
     let image_width = ($image_data_parts | first | into int)
     let image_height = ($image_data_parts | last | into int)
 
-    let gravity = if (
-      $image_width / $image_height
-    ) > ($padded_width / $padded_height) {
-      # TODO: is there a way to pad the sides as well, and center from top of
-      # screen to the top of waybar?
+    let is_wide_image = (
+      (
+        $image_width / $image_height
+      ) > (
+        $padded_width / $padded_height
+      )
+    )
+
+    let gravity = if $is_wide_image {
       "center"
     } else {
       "north"
+    }
+
+    let padded_resolution = if $is_wide_image {
+      $"($padded_resolution)+0+((waybar-height) / 2)"
+    } else {
+      $padded_resolution
     }
 
     (
@@ -541,7 +551,7 @@ def "wallpaper pad" [
         -background (get-background-color --include-hash $background_color)
         -gravity $gravity
         -resize $resolution
-        -extent $padded_resolution
+        -extent $"($padded_resolution)+0+18.5"
         $output_path
     )
   }
