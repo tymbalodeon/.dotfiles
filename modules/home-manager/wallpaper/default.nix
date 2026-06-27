@@ -17,7 +17,6 @@
       packages = with pkgs; [
         file
         imagemagick
-        swaybg
       ];
     };
 

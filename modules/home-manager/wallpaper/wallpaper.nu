@@ -65,22 +65,33 @@ def select-local-wallpaper [--multi] {
   }
 }
 
-def set-wallpaper [--color: string --image: string] {
-  let args = if ($color | is-not-empty) {
-    [--color $color]
-  } else if ($image | is-not-empty) {
-    [--image $"'($image | path expand)'"]
-  } else {
+def create-blank-wallpaper [color: string] {
+  let image_file = $"(wallpaper-directory)/($color).jpg"
+
+  if ($image_file | path exists) {
     return
   }
 
-  bash -c $"swaybg ($args | str join ' ') &" out+err> /dev/null
+  magick -size (resolution) $"xc:($color)" $image_file
+
+  $image_file
+}
+
+def set-wallpaper [image: string --timer-on] {
+  wpaperctl set $image
+
+  if $timer_on {
+    wpaperctl resume
+  }
+
   pkill -RTMIN+2 waybar
-  systemctl --user stop wpaperd
 }
 
 # Set wallpaper to a specific file
-def wallpaper [wallpaper?: string] {
+def wallpaper [
+  wallpaper?: string # Path to an image file to use as the wallpaper
+  --timer-on # Keep the timer to switch wallpapers running
+] {
   let wallpaper = if ($wallpaper | is-empty) {
     let wallpaper = (select-local-wallpaper)
 
@@ -98,14 +109,41 @@ def wallpaper [wallpaper?: string] {
     return
   }
 
-  set-wallpaper --image $wallpaper
+  if $timer_on {
+    set-wallpaper $wallpaper --timer-on
+  } else {
+    set-wallpaper $wallpaper
+  }
 }
 
 alias wp = wallpaper
 
-# Set wallpaper to a specific file
-def "wallpaper blank" [color?: string] {
-  set-wallpaper --color (get-background-color $color)
+# Set wallpaper to a blank color
+def "wallpaper blank" [
+  color?: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
+  --rotate-theme-colors # Cycle through theme colors on a timer
+] {
+  if $rotate_theme_colors {
+    for file in (
+      ls (wallpaper-directory)
+      | get name
+      | where {not ($in | path basename | str starts-with "#")}
+    ) {
+      rm $file
+    }
+
+    let colors = (theme colors)
+
+    $colors
+    | columns
+    | each {|column| create-blank-wallpaper ($colors | get $column)}
+
+    wallpaper next
+  } else {
+    set-wallpaper (
+      create-blank-wallpaper (get-background-color $color)
+    )
+  }
 }
 
 # Browse local wallpapers
@@ -140,12 +178,17 @@ def --env "wallpaper cd" [] {
 }
 
 # Clear the wallpaper folder
-def "wallpaper clear" [] {
+def "wallpaper clear" [
+  --no-default # Don't load the default wallpaper ater clearing
+] {
   let wallpaper_directory = (wallpaper-directory)
 
   rm --force --recursive $wallpaper_directory
   mkdir $wallpaper_directory
-  wallpaper load default
+
+  if not $no_default {
+    wallpaper load default
+  }
 }
 
 def --wrapped wpaperctl-wrapper [...args: string] {
@@ -159,7 +202,6 @@ def --wrapped wpaperctl-wrapper [...args: string] {
   }
 
   pkill -RTMIN+2 waybar
-  try { pkill swaybg }
 }
 
 # List loaded wallpapers
@@ -206,7 +248,7 @@ def restart-wallpaper [] {
   systemctl --user restart wpaperd
 }
 
-def get-background-color [color?: string --include-hash] {
+def get-background-color [color?: string] {
   let color = if ($color | is-empty) {
     "base01"
   } else {
@@ -215,7 +257,7 @@ def get-background-color [color?: string --include-hash] {
 
   let theme_colors = (theme colors)
 
-  let color = if $color in ($theme_colors | columns) {
+  if $color in ($theme_colors | columns) {
     $theme_colors
     | get $color
   } else if ($color == black) {
@@ -223,14 +265,11 @@ def get-background-color [color?: string --include-hash] {
   } else if ($color == white) {
     "#ffffff"
   } else {
-    $color
-  }
-
-  if not $include_hash {
-    $color
-    | str replace "#" ""
-  } else {
-    $color
+    if ($color | str starts-with "#") {
+      $color
+    } else {
+      $"#($color)"
+    }
   }
 }
 
@@ -244,7 +283,10 @@ def "wallpaper load" [
   --remote # Treat $path as a remote path
   --store # Add local wallpaper to remote storage
 ] {
-  if $remote or ($path | is-empty) {
+  mut temporary_directory = ""
+  let wallpaper_directory = (wallpaper-directory)
+
+  let files = if $remote or ($path | is-empty) {
     let paths = if ($path | is-empty) {
       let paths = (select-remote-path --allow-directories dropbox wallpaper)
 
@@ -258,12 +300,7 @@ def "wallpaper load" [
       [$path]
     }
 
-    let temporary_directory = (mktemp --directory)
-    let wallpaper_directory = (wallpaper-directory)
-
-    if $clear {
-      wallpaper clear
-    }
+    $temporary_directory = (mktemp --directory)
 
     for path in $paths {
       try {
@@ -309,12 +346,29 @@ def "wallpaper load" [
       }
     }
 
-    let files = (
-      ls $temporary_directory
-      | get name
-      | where {is-image}
-    )
+    ls $temporary_directory
+    | get name
+    | where {is-image}
+  } else {
+    let path = ($path | path expand)
 
+    if ($path | path type) == file {
+      $path
+    } else {
+      ls $path
+      | get name
+    }
+  }
+
+  if $clear {
+    if $keep_default {
+      wallpaper clear
+    } else {
+      wallpaper clear --no-default
+    }
+  }
+
+  if $remote or ($path | is-empty) {
     $files
     | par-each {
       |file|
@@ -345,22 +399,7 @@ def "wallpaper load" [
         print $error.msg
       }
     }
-
-    rm --force --recursive $temporary_directory
   } else {
-    let path = ($path | path expand)
-
-    let files = if ($path | path type) == file {
-      $path
-    } else {
-      ls $path
-      | get name
-    }
-
-    if $clear {
-      wallpaper clear
-    }
-
     $files
     | par-each {
       |file|
@@ -387,8 +426,8 @@ def "wallpaper load" [
     }
   }
 
-  if not $keep_default {
-    rm --force (default-wallpaper-path)
+  if ($temporary_directory | is-not-empty) {
+    rm --force --recursive $temporary_directory
   }
 
   restart-wallpaper
@@ -448,6 +487,13 @@ def "wallpaper start" [] {
   wpaperctl-wrapper
 }
 
+def resolution [] {
+  xrandr err> /dev/null
+  | rg '\*'
+  | split words
+  | first
+}
+
 # Add padding to image to account for status bar
 def "wallpaper pad" [
   ...images: string # The image to pad
@@ -486,7 +532,6 @@ def "wallpaper pad" [
 
       (
         wallpaper load
-          --force
           --no-pad
           --remote
           $"wallpaper/($remote_image)"
@@ -502,7 +547,7 @@ def "wallpaper pad" [
       $output_path
     }
 
-    let resolution = (xrandr err> /dev/null | rg '\*' | split words | first)
+    let resolution = (resolution)
     let resolution_parts = ($resolution | split row x)
     let padded_width = ($resolution_parts | first | into int)
 
@@ -541,7 +586,7 @@ def "wallpaper pad" [
     (
       magick
         $image
-        -background (get-background-color --include-hash $background_color)
+        -background (get-background-color $background_color)
         -gravity $gravity
         -resize $resolution
         -extent $padded_resolution
@@ -563,6 +608,11 @@ def "wallpaper pad all" [
   }
 }
 
+# Pause automatic cycling of wallpaper
+def "wallpaper pause" [] {
+  wpaperctl-wrapper pause-wallpaper
+}
+
 # Change to previous wallpaper
 def "wallpaper previous" [] {
   wpaperctl-wrapper previous-wallpaper
@@ -582,6 +632,11 @@ def "wallpaper remove" [] {
 }
 
 alias "wallpaper rm" = wallpaper remove
+
+# Resum automatic cycling of wallpaper
+def "wallpaper resume" [] {
+  wpaperctl-wrapper resume-wallpaper
+}
 
 # Toggle pausing/resuming automatic cycling of wallpaper
 def "wallpaper toggle-pause" [] {
