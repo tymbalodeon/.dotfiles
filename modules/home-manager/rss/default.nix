@@ -1,7 +1,16 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   newsboatUrlsPath = "newsboat/urls";
 in {
   browser.extraExtensionIDs = ["kfghpdldaipanmkhfpdcjglncmilendn"];
+
+  home.activation.rss = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    cat "${config.sops.secrets.${newsboatUrlsPath}.path}" \
+      > "$XDG_CONFIG_HOME/${newsboatUrlsPath}"
+  '';
 
   imports = [
     ../browser
@@ -44,7 +53,4 @@ in {
   };
 
   sops.secrets.${newsboatUrlsPath} = {};
-
-  xdg.configFile.${newsboatUrlsPath}.source =
-    config.sops.secrets.${newsboatUrlsPath}.path;
 }
