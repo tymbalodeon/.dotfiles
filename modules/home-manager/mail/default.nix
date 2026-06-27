@@ -16,5 +16,5 @@ in {
   sops.secrets.${neomuttrcPath} = {};
 
   xdg.configFile.${neomuttrcPath}.source =
-    config.lib.file.mkOutOfStoreSymlink config.sops.secrets.${neomuttrcPath}.path;
+    config.sops.secrets.${neomuttrcPath}.path;
 }

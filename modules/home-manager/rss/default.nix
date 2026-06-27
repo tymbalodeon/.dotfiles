@@ -46,5 +46,5 @@ in {
   sops.secrets.${newsboatUrlsPath} = {};
 
   xdg.configFile.${newsboatUrlsPath}.source =
-    config.lib.file.mkOutOfStoreSymlink config.sops.secrets.${newsboatUrlsPath}.path;
+    config.sops.secrets.${newsboatUrlsPath}.path;
 }

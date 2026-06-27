@@ -11,5 +11,5 @@ in {
   sops.secrets.${amforaBookmarksPath} = {};
 
   xdg.dataFile.${amforaBookmarksPath}.source =
-    config.lib.file.mkOutOfStoreSymlink config.sops.secrets.${amforaBookmarksPath}.path;
+    config.sops.secrets.${amforaBookmarksPath}.path;
 }
