@@ -1,8 +1,11 @@
-{
+{config, ...}: let
+  newsboatUrlsPath = "newsboat/urls";
+in {
   browser.extraExtensionIDs = ["kfghpdldaipanmkhfpdcjglncmilendn"];
 
   imports = [
     ../browser
+    ../secrets
     ../shell/nushell
   ];
 
@@ -39,4 +42,9 @@
       highlight article "\[[0-9]+\]" color6 default bold
     '';
   };
+
+  sops.secrets.${newsboatUrlsPath} = {};
+
+  xdg.configFile.${newsboatUrlsPath}.source =
+    config.lib.file.mkOutOfStoreSymlink config.sops.secrets.${newsboatUrlsPath}.path;
 }
