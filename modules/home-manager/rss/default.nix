@@ -1,16 +1,64 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   newsboatUrlsPath = "newsboat/urls";
 in {
   browser.extraExtensionIDs = ["kfghpdldaipanmkhfpdcjglncmilendn"];
 
-  home.activation.rss = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    cat "${config.sops.secrets.${newsboatUrlsPath}.path}" \
-      > "$XDG_CONFIG_HOME/${newsboatUrlsPath}"
-  '';
+  home.activation.rss = let
+    script =
+      pkgs.writeScript "activate-rss"
+      # nushell
+      ''
+        let config_path = (
+          "${config.xdg.configHome}"
+          | path join ${newsboatUrlsPath}
+        )
+
+        let remote_config = (open ${config.sops.secrets.${newsboatUrlsPath}.path})
+
+        let config = if ($config_path | path type) != file {
+          rm --force --recursive $config_path
+
+          $remote_config
+        } else {
+          let local_config = (open $config_path)
+
+          if ($local_config == $remote_config) {
+            return
+          }
+
+          let local_parts = ($local_config | split row "\n\n")
+          let remote_parts = ($remote_config | split row "\n\n")
+
+          $remote_parts
+          | first
+          | lines
+          | append ($local_parts | first | lines)
+          | uniq
+          | sort
+          | append ""
+          | append (
+            $remote_parts
+            | last
+            | lines
+            | append ($local_parts | last | lines)
+            | uniq
+            | sort
+          )
+          | to text --no-newline
+        }
+
+        $config
+        | save --force $config_path
+      '';
+  in
+    lib.hm.dag.entryAfter ["writeBoundary"] ''
+      ${lib.getExe pkgs.nushell} "${script}"
+    '';
 
   imports = [
     ../browser
