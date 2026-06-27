@@ -15,6 +15,7 @@ in {
 
   sops.secrets.${neomuttrcPath} = {};
 
+  # FIXME: pull out secrets only and combine with the rest stored here
   xdg.configFile.${neomuttrcPath}.source =
     config.sops.secrets.${neomuttrcPath}.path;
 }
