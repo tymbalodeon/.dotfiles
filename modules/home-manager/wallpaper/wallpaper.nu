@@ -239,17 +239,12 @@ def "wallpaper load" [
   path?: string # Image file or directory to load
   --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
   --clear # Clear existing wallpapers before loading new ones
-  --force # Re-download remote wallpapers even if already present locally
   --keep-default # Don't remove the default wallpaper when loading others
   --no-pad # Don't pad the wallpaper after loading
   --remote # Treat $path as a remote path
   --store # Add local wallpaper to remote storage
 ] {
-  if $clear {
-    wallpaper clear
-  }
-
-  let files = if $remote or ($path | is-empty) {
+  if $remote or ($path | is-empty) {
     let paths = if ($path | is-empty) {
       let paths = (select-remote-path --allow-directories dropbox wallpaper)
 
@@ -266,45 +261,45 @@ def "wallpaper load" [
     let temporary_directory = (mktemp --directory)
     let wallpaper_directory = (wallpaper-directory)
 
+    if $clear {
+      wallpaper clear
+    }
+
     for path in $paths {
       try {
-        if $force {
-          storage download --force --to $temporary_directory $path
-        } else {
-          let parent_directory = ($path | path split | drop | path join)
+        let parent_directory = ($path | path split | drop | path join)
 
-          let is_directory = (
-            rclone lsjson $"dropbox:($parent_directory)"
-            | from json
-            | where Path == ($path | path basename)
-            | first
-            | get IsDir
-          )
+        let is_directory = (
+          rclone lsjson $"dropbox:($parent_directory)"
+          | from json
+          | where Path == ($path | path basename)
+          | first
+          | get IsDir
+        )
 
-          let files = (
-            rclone lsjson $"dropbox:($path)"
-            | from json
-          )
+        let files = (
+          rclone lsjson $"dropbox:($path)"
+          | from json
+        )
 
-          for file in $files {
-            if not (
-              $wallpaper_directory
-              | path join $file.Path
-              | path exists
-            ) {
-              let file_path = if $is_directory {
-                if $file.IsDir {
-                  $path
-                } else {
-                  $path
-                  | path join $file.Path
-                }
+        for file in $files {
+          if not (
+            $wallpaper_directory
+            | path join $file.Path
+            | path exists
+          ) {
+            let file_path = if $is_directory {
+              if $file.IsDir {
+                $path
               } else {
                 $path
+                | path join $file.Path
               }
-
-              storage download --to $temporary_directory $file_path
+            } else {
+              $path
             }
+
+            storage download --to $temporary_directory $file_path
           }
         }
       } catch {
@@ -360,6 +355,10 @@ def "wallpaper load" [
     } else {
       ls $path
       | get name
+    }
+
+    if $clear {
+      wallpaper clear
     }
 
     $files
