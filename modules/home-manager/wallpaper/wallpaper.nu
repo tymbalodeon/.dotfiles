@@ -311,9 +311,6 @@ def --wrapped load-wallpaper [...args: string] {
   let wallpaper_directory = (wallpaper-directory)
 
   let files = if $remote or ($path | is-empty) {
-    print $path
-    print $remote
-    return
     let paths = if ($path | is-empty) {
       let paths = (select-remote-path --allow-directories dropbox wallpaper)
 
