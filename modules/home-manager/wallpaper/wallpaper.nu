@@ -1,5 +1,9 @@
+def wallpaper-directory-path [] {
+  $"($env.HOME)/wallpaper"
+}
+
 def wallpaper-directory [] {
-  let wallpaper_directory = $"($env.HOME)/wallpaper"
+  let wallpaper_directory = (wallpaper-directory-path)
 
   mkdir $wallpaper_directory
 
@@ -177,14 +181,18 @@ def --env "wallpaper cd" [] {
   cd (wallpaper-directory)
 }
 
+def clear-wallpaper-directory [] {
+  let wallpaper_directory = (wallpaper-directory-path)
+
+  rm --force --recursive $wallpaper_directory
+  mkdir $wallpaper_directory
+}
+
 # Clear the wallpaper folder
 def "wallpaper clear" [
   --no-default # Don't load the default wallpaper ater clearing
 ] {
-  let wallpaper_directory = (wallpaper-directory)
-
-  rm --force --recursive $wallpaper_directory
-  mkdir $wallpaper_directory
+  clear-wallpaper-directory 
 
   if not $no_default {
     wallpaper load default
@@ -273,20 +281,39 @@ def get-background-color [color?: string] {
   }
 }
 
-# Load wallpapers
-def "wallpaper load" [
-  path?: string # Image file or directory to load
-  --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
-  --clear # Clear existing wallpapers before loading new ones
-  --keep-default # Don't remove the default wallpaper when loading others
-  --no-pad # Don't pad the wallpaper after loading
-  --remote # Treat $path as a remote path
-  --store # Add local wallpaper to remote storage
-] {
+def --wrapped load-wallpaper [...args: string] {
+  let path = if ($args | is-not-empty) and not (
+    $args
+    | first
+    | str starts-with "--"
+  ) {
+    $args
+    | first
+  }
+
+  let background_color = (
+    $args
+    | to text
+    | split row "--background-color"
+    | last
+    | lines
+    | where {is-not-empty}
+    | first
+  )
+
+  let clear = ("--clear" in $args)
+  let keep_default = ("--keep-default" in $args)
+  let no_pad = ("--no-pad" in $args)
+  let remote = ("--remote" in $args)
+  let store = ("--store" in $args)
+
   mut temporary_directory = ""
   let wallpaper_directory = (wallpaper-directory)
 
   let files = if $remote or ($path | is-empty) {
+    print $path
+    print $remote
+    return
     let paths = if ($path | is-empty) {
       let paths = (select-remote-path --allow-directories dropbox wallpaper)
 
@@ -433,9 +460,69 @@ def "wallpaper load" [
   restart-wallpaper
 }
 
+def add-arg [args: list<any> arg: any flag?: string --named-argument] {
+  if ($flag | is-not-empty) {
+    if ($arg | is-not-empty) and ($arg != false) {
+      if $named_argument {
+        $args        
+        | append [$flag $arg]
+      } else {
+        $args
+        | append $flag
+      }
+    } else {
+      $args
+    }
+  } else {
+    if ($arg | is-not-empty) {
+      $args
+      | append $arg
+    } else {
+      $args
+    }
+  }
+}
+
+# Load wallpapers
+def "wallpaper load" [
+  path?: string # Image file or directory to load
+  --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
+  --clear # Clear existing wallpapers before loading new ones
+  --keep-default # Don't remove the default wallpaper when loading others
+  --no-pad # Don't pad the wallpaper after loading
+  --remote # Treat $path as a remote path
+  --store # Add local wallpaper to remote storage
+] {
+  mut args = []
+
+  $args = (add-arg $args $path)
+  $args = (add-arg $args $background_color "--bakcground-color" --named-argument)
+  $args = (add-arg $args $clear "--clear")
+  $args = (add-arg $args $keep_default "--keep-default")
+  $args = (add-arg $args $no_pad "--no-pad")
+  $args = (add-arg $args $remote "--remote")
+  $args = (add-arg $args $store "--store")
+
+  load-wallpaper ...$args
+}
+
 # Load all wallpapers in the remote wallpaper directory
-def "wallpaper load all" [] {
-  wallpaper load --remote wallpaper
+def "wallpaper load all" [
+  --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
+  --clear # Clear existing wallpapers before loading new ones
+  --keep-default # Don't remove the default wallpaper when loading others
+  --no-pad # Don't pad the wallpaper after loading
+  --store # Add local wallpaper to remote storage
+] {
+  mut args = []
+
+  $args = (add-arg $args $background_color "--bakcground-color" --named-argument)
+  $args = (add-arg $args $clear "--clear")
+  $args = (add-arg $args $keep_default "--keep-default")
+  $args = (add-arg $args $no_pad "--no-pad")
+  $args = (add-arg $args $store "--store")
+
+  load-wallpaper wallpaper --remote ...$args
 }
 
 # Load the default wallpaper
@@ -463,17 +550,16 @@ def "wallpaper load default" [
   mv $temporary_file $new_filename
 
   if $clear {
-    wallpaper clear
+    clear-wallpaper-directory 
   }
 
-  if $no_pad {
-    wallpaper load --keep-default --no-pad $new_filename
-  } else if ($background_color | is-not-empty) {
-    wallpaper load --keep-default --background-color $background_color $new_filename
-  } else {
-    wallpaper load --keep-default $new_filename
-  }
+  mut args = [$new_filename --keep-default]
 
+  $args = (add-arg $args $background_color "--bakcground-color" --named-argument)
+  $args = (add-arg $args $clear "--clear")
+  $args = (add-arg $args $no_pad "--no-pad")
+
+  load-wallpaper ...$args
   rm $new_filename
 }
 
