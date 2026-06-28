@@ -291,7 +291,7 @@ def --wrapped load-wallpaper [...args: string] {
     | first
   }
 
-  let background_color = (
+  let background_color = if "--background-color" in $args {
     $args
     | to text
     | split row "--background-color"
@@ -299,7 +299,7 @@ def --wrapped load-wallpaper [...args: string] {
     | lines
     | where {is-not-empty}
     | first
-  )
+  }
 
   let clear = ("--clear" in $args)
   let keep_default = ("--keep-default" in $args)
@@ -493,7 +493,7 @@ def "wallpaper load" [
   mut args = []
 
   $args = (add-arg $args $path)
-  $args = (add-arg $args $background_color "--bakcground-color" --named-argument)
+  $args = (add-arg $args $background_color "--background-color" --named-argument)
   $args = (add-arg $args $clear "--clear")
   $args = (add-arg $args $keep_default "--keep-default")
   $args = (add-arg $args $no_pad "--no-pad")
@@ -513,7 +513,7 @@ def "wallpaper load all" [
 ] {
   mut args = []
 
-  $args = (add-arg $args $background_color "--bakcground-color" --named-argument)
+  $args = (add-arg $args $background_color "--background-color" --named-argument)
   $args = (add-arg $args $clear "--clear")
   $args = (add-arg $args $keep_default "--keep-default")
   $args = (add-arg $args $no_pad "--no-pad")
@@ -552,7 +552,7 @@ def "wallpaper load default" [
 
   mut args = [$new_filename --keep-default]
 
-  $args = (add-arg $args $background_color "--bakcground-color" --named-argument)
+  $args = (add-arg $args $background_color "--background-color" --named-argument)
   $args = (add-arg $args $clear "--clear")
   $args = (add-arg $args $no_pad "--no-pad")
 
