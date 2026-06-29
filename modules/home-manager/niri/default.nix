@@ -226,6 +226,7 @@
 
         layout {
           always-center-single-column
+          background-color "${config.lib.stylix.colors.withHashtag.base01}"
 
           default-column-width {
             proportion 0.5
