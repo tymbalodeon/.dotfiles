@@ -10,15 +10,6 @@ def wallpaper-directory [] {
   $wallpaper_directory
 }
 
-def default-wallpaper-filename [] {
-  "Hildegard von Bingen -- Scivias I-6 - Humanity and Life (1150).jpg"
-}
-
-def default-wallpaper-path [] {
-  wallpaper-directory
-  | path join (default-wallpaper-filename)
-}
-
 def select-local-wallpaper [--multi] {
   let wallpaper_directory = (wallpaper-directory)
 
@@ -125,8 +116,14 @@ alias wp = wallpaper
 # Set wallpaper to a blank color
 def "wallpaper blank" [
   color?: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
+  --clear # Clear existing wallpapers before loading new ones
   --rotate-theme-colors # Cycle through theme colors on a timer
+  --timer-on # Keep the timer to switch wallpapers running
 ] {
+  if $clear {
+    wallpaper clear
+  }
+
   if $rotate_theme_colors {
     for file in (
       ls (wallpaper-directory)
@@ -144,9 +141,13 @@ def "wallpaper blank" [
 
     wallpaper next
   } else {
-    set-wallpaper (
-      create-blank-wallpaper (get-background-color $color)
-    )
+    let image = (create-blank-wallpaper (get-background-color $color))
+
+    if $timer_on {
+      set-wallpaper --timer-on $image
+    } else {
+      set-wallpaper $image
+    }
   }
 }
 
@@ -181,31 +182,27 @@ def --env "wallpaper cd" [] {
   cd (wallpaper-directory)
 }
 
-def clear-wallpaper-directory [] {
+# Clear the wallpaper folder
+def "wallpaper clear" [] {
   let wallpaper_directory = (wallpaper-directory-path)
 
   rm --force --recursive $wallpaper_directory
   mkdir $wallpaper_directory
-}
-
-# Clear the wallpaper folder
-def "wallpaper clear" [
-  --no-default # Don't load the default wallpaper ater clearing
-] {
-  clear-wallpaper-directory 
-
-  if not $no_default {
-    wallpaper load default
-  }
+  systemctl --user stop wpaperd
 }
 
 def --wrapped wpaperctl-wrapper [...args: string] {
+  mut required_restart = false
+
   if (systemctl --user list-units | find wpaperd | is-empty) {
-    systemctl --user start wpaperd
+    $required_restart = true
+    restart-wallpaper
     sleep 500ms
   }
 
-  if ($args | is-not-empty) {
+  if ($args | is-not-empty) and not (
+    $required_restart and ("next-wallpaper" in $args)
+  ) {
     wpaperctl ...$args
   }
 
@@ -302,7 +299,6 @@ def --wrapped load-wallpaper [...args: string] {
   }
 
   let clear = ("--clear" in $args)
-  let keep_default = ("--keep-default" in $args)
   let no_pad = ("--no-pad" in $args)
   let remote = ("--remote" in $args)
   let store = ("--store" in $args)
@@ -385,11 +381,7 @@ def --wrapped load-wallpaper [...args: string] {
   }
 
   if $clear {
-    if $keep_default {
-      wallpaper clear
-    } else {
-      wallpaper clear --no-default
-    }
+    wallpaper clear
   }
 
   if $remote or ($path | is-empty) {
@@ -485,7 +477,6 @@ def "wallpaper load" [
   path?: string # Image file or directory to load
   --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
   --clear # Clear existing wallpapers before loading new ones
-  --keep-default # Don't remove the default wallpaper when loading others
   --no-pad # Don't pad the wallpaper after loading
   --remote # Treat $path as a remote path
   --store # Add local wallpaper to remote storage
@@ -495,7 +486,6 @@ def "wallpaper load" [
   $args = (add-arg $args $path)
   $args = (add-arg $args $background_color "--background-color" --named-argument)
   $args = (add-arg $args $clear "--clear")
-  $args = (add-arg $args $keep_default "--keep-default")
   $args = (add-arg $args $no_pad "--no-pad")
   $args = (add-arg $args $remote "--remote")
   $args = (add-arg $args $store "--store")
@@ -507,7 +497,6 @@ def "wallpaper load" [
 def "wallpaper load all" [
   --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
   --clear # Clear existing wallpapers before loading new ones
-  --keep-default # Don't remove the default wallpaper when loading others
   --no-pad # Don't pad the wallpaper after loading
   --store # Add local wallpaper to remote storage
 ] {
@@ -515,49 +504,10 @@ def "wallpaper load all" [
 
   $args = (add-arg $args $background_color "--background-color" --named-argument)
   $args = (add-arg $args $clear "--clear")
-  $args = (add-arg $args $keep_default "--keep-default")
   $args = (add-arg $args $no_pad "--no-pad")
   $args = (add-arg $args $store "--store")
 
   load-wallpaper wallpaper --remote ...$args
-}
-
-# Load the default wallpaper
-def "wallpaper load default" [
-  --background-color: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
-  --clear # Clear existing wallpapers before loading new ones
-  --no-pad # Don't pad the wallpaper after loading
-] {
-  let temporary_file = (mktemp)
-
-  cp (default-wallpaper) $temporary_file
-
-  let new_filename = (
-    $temporary_file
-    | path dirname
-    | path join (
-      $temporary_file
-      | path split
-      | drop
-      | append (default-wallpaper-filename)
-      | path join
-    )
-  )
-
-  mv $temporary_file $new_filename
-
-  if $clear {
-    clear-wallpaper-directory 
-  }
-
-  mut args = [$new_filename --keep-default]
-
-  $args = (add-arg $args $background_color "--background-color" --named-argument)
-  $args = (add-arg $args $clear "--clear")
-  $args = (add-arg $args $no_pad "--no-pad")
-
-  load-wallpaper ...$args
-  rm $new_filename
 }
 
 # Change to next (random) wallpaper

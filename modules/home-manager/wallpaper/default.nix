@@ -8,12 +8,6 @@
     cfg = config.wallpaper;
   in {
     home = {
-      activation.wallpaper = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        mkdir --parents ~/wallpaper
-      '';
-
-      file."wallpaper/default-wallpaper.jpg".source = ./default-wallpaper.jpg;
-
       packages = with pkgs; [
         file
         imagemagick
@@ -31,10 +25,6 @@
 
         text =
           ''
-            def default-wallpaper [] {
-              "${./default-wallpaper.jpg}"
-            }
-
             def waybar-height [] {
               ${toString cfg.padSize}
             }
@@ -44,14 +34,18 @@
       }
     ];
 
-    services.wpaperd = {
-      enable = true;
+    services.wpaperd = let
+      wallpaperDirectory = "${config.home.homeDirectory}/wallpaper";
+    in {
+      enable =
+        builtins.pathExists wallpaperDirectory
+        && builtins.readDir wallpaperDirectory == [];
 
       settings.default = {
         duration = "15m";
         exec = ./signal-waybar.sh;
         mode = "fit-border-color";
-        path = "~/wallpaper";
+        path = wallpaperDirectory;
       };
     };
   };
