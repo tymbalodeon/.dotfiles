@@ -39,7 +39,7 @@
     in {
       enable =
         builtins.pathExists wallpaperDirectory
-        && builtins.readDir wallpaperDirectory == [];
+        && builtins.readDir wallpaperDirectory != [];
 
       settings.default = {
         duration = "15m";
