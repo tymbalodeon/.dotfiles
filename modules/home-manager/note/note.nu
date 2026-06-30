@@ -59,6 +59,7 @@ def pull-notes [--force] {
   if $force or (git status --short | complete | get stdout | is-not-empty) {
     try {
       jj git fetch --bookmark trunk --remote origin
+      jj new trunk
     } catch {
       git fetch origin trunk
     }
