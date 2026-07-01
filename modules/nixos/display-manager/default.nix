@@ -6,20 +6,28 @@
 }: {
   config = let
     cfg = config.displayManager;
+
+    sddmTheme = let
+      backgroundColor = "${colors.base00}";
+      colors = config.lib.stylix.colors.withHashtag;
+      fontSize = 12;
+      foregroundColor = "${colors.base05}";
+    in
+      pkgs.where-is-my-sddm-theme.override
+      {
+        themeConfig.General = {
+          backgroundFill = backgroundColor;
+          basicTextColor = foregroundColor;
+          cursorBlinkAnimation = false;
+          passwordCursorColor = foregroundColor;
+          passwordFontSize = fontSize;
+          passwordTextColor = foregroundColor;
+        };
+      };
   in {
     environment.systemPackages = with pkgs; [
       bibata-cursors
-
-      (catppuccin-sddm.override
-        {
-          accent = "lavender";
-          background = ../../home-manager/wallpaper/default-wallpaper.jpg;
-          clockEnabled = false;
-          flavor = "mocha";
-          font = config.stylix.fonts.sansSerif.name;
-          fontSize = "16";
-          loginBackground = true;
-        })
+      sddmTheme
     ];
 
     services.displayManager = let
@@ -30,6 +38,7 @@
 
       sddm = {
         enable = true;
+        extraPackages = [sddmTheme];
 
         settings = {
           AutoLogin.User = config.nixos.username;
@@ -40,8 +49,7 @@
           };
         };
 
-        setupScript = "export XCURSOR_THEME=${cursorTheme}";
-        theme = "catppuccin-mocha-lavender";
+        theme = "where_is_my_sddm_theme";
         wayland.enable = true;
       };
     };
