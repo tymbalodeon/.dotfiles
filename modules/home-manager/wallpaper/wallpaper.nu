@@ -189,6 +189,7 @@ def "wallpaper clear" [] {
   rm --force --recursive $wallpaper_directory
   mkdir $wallpaper_directory
   systemctl --user stop wpaperd
+  pkill -RTMIN+2 waybar
 }
 
 def --wrapped wpaperctl-wrapper [...args: string] {

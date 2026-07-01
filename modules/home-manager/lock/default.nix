@@ -33,8 +33,8 @@
       label = [
         {
           color = foregroundColor;
-          font_size = 24;
-          position = "0, -10%";
+          font_size = 48;
+          position = "0, -22%";
           text = "$TIME12";
           valign = "top";
         }
@@ -42,7 +42,7 @@
         {
           color = foregroundColor;
           font_size = 16;
-          position = "0, -15%";
+          position = "0, -30%";
           text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
           valign = "top";
         }
