@@ -36,6 +36,8 @@
     in {
       inherit (cfg) defaultSession;
 
+      autoLogin.user = config.nixos.username;
+
       sddm = {
         enable = true;
         extraPackages = [sddmTheme];
