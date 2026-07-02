@@ -143,7 +143,19 @@ def "note edit" [...search_terms: string] {
     let note = (get-note $search_terms)
 
     if ($note | is-empty) {
-      zk edit --match ...$search_terms --interactive
+      let queries = (
+        $search_terms
+        | each {[--match $in]}
+        | flatten
+      )
+
+      let matches = (zk list ...$queries err> /dev/null)
+
+      if ($matches | is-empty) {
+        note new ...$search_terms
+      } else {
+        zk edit --match ...$queries --interactive
+      }
     } else {
       zk edit $note
     }
@@ -224,14 +236,18 @@ def "note new" [...title: string] {
   let title = (get-note-title $title)
 
   let existing_note = (
-    zk list --formmat "{{path}}" --limit 1 --match $"title:($title)"
+    zk list
+      --format "{{path}}"
+      --limit 1
+      --match $"title:($title)"
+      err> /dev/null
   )
 
   if ($existing_note | is-not-empty) {
     note edit $existing_note
   } else {
     if ($title | is-not-empty) {
-      zk new --title (get-note-title $title)
+      zk new --title $title
     } else {
       zk new
     }

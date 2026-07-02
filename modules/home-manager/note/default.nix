@@ -116,21 +116,39 @@ in {
 
         lsp.diagnostics.wiki-title = "hint";
         notebook.dir = "~/.nb/home";
+        note.template = "default.md";
         tool.fzf-preview = "bat --plain --color always {-1}";
       };
     };
 
-    xdg.configFile."zk/templates/journal.md" = {
-      force = true;
+    xdg.configFile = let
+      templatesDirectory = "zk/templates";
+    in {
+      "${templatesDirectory}/default.md" = {
+        force = true;
 
-      text = ''
-        ---
-        tags:
-          - journal
-        ---
+        text = ''
+          ---
+          tags:
+            - inbox
+          ---
 
-        # {{format-date now "%Y %B %d (%A)"}}
-      '';
+          # {{title}}
+        '';
+      };
+
+      "${templatesDirectory}/journal.md" = {
+        force = true;
+
+        text = ''
+          ---
+          tags:
+            - journal
+          ---
+
+          # {{format-date now "%Y %B %d (%A)"}}
+        '';
+      };
     };
   };
 
