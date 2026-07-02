@@ -149,12 +149,12 @@ def "note edit" [...search_terms: string] {
         | flatten
       )
 
-      let matches = (zk list ...$queries err> /dev/null)
-
-      if ($matches | is-empty) {
-        note new ...$search_terms
-      } else {
-        zk edit --match ...$queries --interactive
+      if ((zk list ...$queries err> /dev/null) | is-not-empty) {
+        (
+          zk edit
+            --interactive
+            --match ...(zk list ...$queries err> /dev/null) 
+        )
       }
     } else {
       zk edit $note
