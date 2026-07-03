@@ -16,7 +16,7 @@ def merge-lines [
 
   let commented_out_queries = (
     $commented_out_lines
-    | each {str replace --regex "^#" ""}
+    | each {str replace --regex "^# ?" ""}
   )
 
   $queries
