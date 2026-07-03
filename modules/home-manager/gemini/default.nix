@@ -1,16 +1,39 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }: let
   amforaBookmarksPath = "amfora/bookmarks.xml";
 in {
-  home.packages = [pkgs.lagrange];
+  home = {
+    activation.gemini = let
+      script =
+        pkgs.writeScript "activate-gemini"
+        # nushell
+        (
+          ''
+            def bookmarks-path [] {
+              "${config.xdg.dataHome}"
+              | path join ${amforaBookmarksPath}
+            }
+
+            def remote-bookmarks [] {
+              open --raw ${config.sops.secrets.${amforaBookmarksPath}.path}
+              | from xml --allow-dtd
+            }
+          ''
+          + builtins.readFile ./home-activation.nu
+        );
+    in
+      lib.hm.dag.entryAfter ["writeBoundary"] ''
+        ${lib.getExe pkgs.nushell} "${script}"
+      '';
+
+    packages = [pkgs.lagrange];
+  };
+
   imports = [../secrets];
   programs.amfora.enable = true;
   sops.secrets.${amforaBookmarksPath} = {};
-
-  # FIXME: make writeable and merge local and remote
-  xdg.dataFile.${amforaBookmarksPath}.source =
-    config.sops.secrets.${amforaBookmarksPath}.path;
 }

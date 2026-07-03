@@ -22,6 +22,7 @@ def merge-lines [
   $queries
   | where {$in not-in $commented_out_queries}
   | append $commented_out_lines
+  | uniq
   | sort
 }
 
@@ -29,7 +30,7 @@ def main [] {
   let config_path = (config-path)
   let remote_config = (remote-config)
 
-  let config = if (config-path | path type) != file {
+  let config = if ($config_path | path type) != file {
     rm --force --recursive $config_path
 
     $remote_config
