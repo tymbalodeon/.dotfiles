@@ -45,7 +45,7 @@ def get-current-notebook-path [] {
   }
 }
 
-def pull-notes [--force] {
+def pull-notes [--force --no-new] {
   cd (get-current-notebook-path)
 
   let switch_exit_status = (git switch trunk | complete)
@@ -59,7 +59,10 @@ def pull-notes [--force] {
   if $force or (git status --short | complete | get stdout | is-not-empty) {
     try {
       jj git fetch --bookmark trunk --remote origin
-      jj new trunk
+
+      if not $no_new {
+        jj new trunk
+      }
     } catch {
       git fetch origin trunk
     }
@@ -285,6 +288,11 @@ def "note remove" [note?: string] {
 alias "note rm" = note remove
 
 # Sync notes
-def "note sync" [] {
-  pull-notes --force
+def "note sync" [--push] {
+  if $push {
+    pull-notes --force --no-new
+    push-notes
+  } else {
+    pull-notes --force
+  }
 }
