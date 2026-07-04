@@ -1,8 +1,8 @@
 {hostType, ...}: {
-  programs = let
-    homeManagerTheme = "catppuccin-mocha";
-  in {
+  programs = {
     nushell.extraConfig = let
+      homeManagerTheme = "catppuccin-mocha";
+
       theme =
         if hostType == "home-manager"
         then homeManagerTheme
@@ -32,5 +32,10 @@
           }
         }
       '';
+
+    vivid = {
+      enableNushellIntegration = true;
+      enable = true;
+    };
   };
 }
