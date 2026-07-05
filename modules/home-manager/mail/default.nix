@@ -6,6 +6,7 @@
 }: let
   email = config.user.email;
 in {
+  # FIXME
   accounts.email = {
     accounts.${email} = {
       address = "${email}";
