@@ -19,8 +19,12 @@ in {
             }
 
             def remote-bookmarks [] {
-              open --raw ${config.sops.secrets.${amforaBookmarksPath}.path}
-              | from xml --allow-dtd
+              try {
+                open --raw ${config.sops.secrets.${amforaBookmarksPath}.path}
+                | from xml --allow-dtd
+              } catch {
+                {}
+              }
             }
           ''
           + builtins.readFile ./home-activation.nu

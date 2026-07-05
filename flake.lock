@@ -621,10 +621,10 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1782525183,
-        "narHash": "sha256-7j+KRc2qJvc3fouSFUreaXp91EawU66/m8rpzRCcQmU=",
+        "lastModified": 1783188416,
+        "narHash": "sha256-w8vD2H/R6B302AZSlEPmtfawIH7caQr1hNMi5EzOpUw=",
         "ref": "refs/heads/trunk",
-        "rev": "f968b66232c5fa3e7e7740322d4bbcff15b79013",
+        "rev": "caf6eebacd645891b8aeb5443ba5635c222f220f",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/tymbalodeon/secrets.git"
@@ -664,11 +664,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782165805,
-        "narHash": "sha256-478kKQBvK6SYTOdN2h9jhKJv94nbXRbFMfuL1WshErg=",
+        "lastModified": 1783174389,
+        "narHash": "sha256-aCWC8ngycU7OdJrU2+Je3qf+1a2ykuBvpPhZT/9tXMc=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "56b24064fdcaedca53553b1a6d607fd23b613a24",
+        "rev": "f1406619a3884cd5c47992a70b8b35c9c0fcb4c9",
         "type": "github"
       },
       "original": {

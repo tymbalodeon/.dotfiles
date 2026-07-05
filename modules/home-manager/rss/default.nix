@@ -20,7 +20,11 @@ in {
           }
 
           def remote-config [] {
-            open ${config.sops.secrets.${newsboatUrlsPath}.path}
+            try {
+              open ${config.sops.secrets.${newsboatUrlsPath}.path}
+            } catch {
+              ""
+            }
           }
         ''
         + builtins.readFile ./home-activation.nu

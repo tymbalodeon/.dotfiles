@@ -151,13 +151,13 @@
             Super+Alt+S hotkey-overlay-title="Put the computer to sleep" { spawn-sh "niri msg action power-off-monitors; systemctl suspend"; }
             Super+Alt+V hotkey-overlay-title="Switch to random background image" { spawn-sh "nu ${../wallpaper/wallpaper.nu} previous"; }
             Super+Alt+W hotkey-overlay-title="Restart waybar" { spawn "systemctl" "--user" "restart" "waybar"; }
-            XF86AudioLowerVolume allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ${../music-player/set-volume.nu} lower"; }
+            XF86AudioLowerVolume allow-when-locked=true cooldown-ms=150 { spawn-sh "nu ${../music-player/set-volume.nu} lower"; }
             XF86AudioMicMute allow-when-locked=true repeat=false { spawn-sh "nu ${../music-player/set-volume.nu} toogle-mute mic"; }
             XF86AudioMute allow-when-locked=true repeat=false { spawn-sh "nu ${../music-player/set-volume.nu} toggle-mute"; }
             XF86AudioNext allow-when-locked=true repeat=false { spawn-sh "playerctl next || rmpc next"; }
             XF86AudioPlay allow-when-locked=true repeat=false { spawn-sh "playerctl play-pause || rmpc togglepause"; }
             XF86AudioPrev allow-when-locked=true repeat=false { spawn-sh "playerctl previous || rmpc prev"; }
-            XF86AudioRaiseVolume allow-when-locked=true cooldown-ms=500 {spawn-sh "nu ${../music-player/set-volume.nu} raise"; }
+            XF86AudioRaiseVolume allow-when-locked=true cooldown-ms=150 {spawn-sh "nu ${../music-player/set-volume.nu} raise"; }
             XF86AudioStop allow-when-locked=true repeat=false { spawn "playerctl" "stop"; }
             XF86LaunchA repeat=false { toggle-overview; }
           ''
@@ -168,16 +168,16 @@
             then ''
               Ctrl+XF86MonBrightnessDown { spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%-"; }
               Ctrl+XF86MonBrightnessUp { spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%+"; }
-              Super+XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "brightnessctl set 1%";}
-              Super+XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "brightnessctl set 100%"; }
+              Super+XF86MonBrightnessDown allow-when-locked=true cooldown-ms=150 hotkey-overlay-title=null { spawn-sh "brightnessctl set 1%";}
+              Super+XF86MonBrightnessUp allow-when-locked=true cooldown-ms=150 hotkey-overlay-title=null { spawn-sh "brightnessctl set 100%"; }
               XF86MonBrightnessDown { spawn-sh "brightnessctl set 1%-"; }
               XF86MonBrightnessUp { spawn-sh "brightnessctl set 1%+"; }
             ''
             else ''
-              Super+XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "nu ${../monitors/brightness.nu} set min";}
-              Super+XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 hotkey-overlay-title=null { spawn-sh "nu ${../monitors/brightness.nu} set max"; }
-              XF86MonBrightnessDown allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ${../monitors/brightness.nu} decrease";}
-              XF86MonBrightnessUp allow-when-locked=true cooldown-ms=500 { spawn-sh "nu ${../monitors/brightness.nu} increase"; }
+              Super+XF86MonBrightnessDown allow-when-locked=true cooldown-ms=150 hotkey-overlay-title=null { spawn-sh "nu ${../monitors/brightness.nu} set min";}
+              Super+XF86MonBrightnessUp allow-when-locked=true cooldown-ms=150 hotkey-overlay-title=null { spawn-sh "nu ${../monitors/brightness.nu} set max"; }
+              XF86MonBrightnessDown allow-when-locked=true cooldown-ms=150 { spawn-sh "nu ${../monitors/brightness.nu} decrease";}
+              XF86MonBrightnessUp allow-when-locked=true cooldown-ms=150 { spawn-sh "nu ${../monitors/brightness.nu} increase"; }
             ''
           );
         proportions = ''
