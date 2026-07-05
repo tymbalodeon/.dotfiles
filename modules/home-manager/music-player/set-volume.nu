@@ -2,21 +2,23 @@
 
 export def main [] {}
 
-export def "main mute" [] {
+export def "main toggle-mute" [] {
   wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 }
 
-export def "main mute mic" [] {
+export def "main toggle-mute mic" [] {
   wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 }
 
+def current-volume [] {
+  wpctl get-volume @DEFAULT_AUDIO_SINK@
+  | split row " "
+  | last
+}
+
 def set-volume [direction: string] {
-  if (
-    wpctl get-volume @DEFAULT_AUDIO_SINK@
-    | split row " "
-    | last
-  ) == "[MUTED]" {
-    main mute
+  if (current-volume) == "[MUTED]" {
+    main toggle-mute
   }
 
   wpctl set-volume @DEFAULT_AUDIO_SINK@ $"1%($direction)"
@@ -28,12 +30,7 @@ export def "main lower" [] {
 
 export def "main raise" [] {
   try {
-    if (
-      wpctl get-volume @DEFAULT_AUDIO_SINK@
-      | split row " "
-      | last
-      | into float
-    ) == 1.00 {
+    if (current-volume | into float ) >= 1.0 {
       return
     }
   }
