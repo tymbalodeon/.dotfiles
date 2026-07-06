@@ -50,7 +50,7 @@ in {
           color tilde color15 default
           color tree color15 default
 
-          # set folder = "imaps://imap.gmail.com:993"
+          set folder = "imaps://imap.gmail.com:993"
           set imap_user = "${email}"
           set index_format = "%4C %zs %{%Y %b %d} %-20.20L %s"
           set postponed = "+[Gmail]/Drafts"
