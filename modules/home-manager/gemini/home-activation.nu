@@ -4,6 +4,7 @@ def main [] {
 
   let bookmarks = if ($bookmarks_path | path type) != file {
     rm --force --recursive $bookmarks_path
+    mkdir ($bookmarks_path | path dirname)
 
     $remote_bookmarks
   } else {
