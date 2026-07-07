@@ -6,5 +6,5 @@ def --wrapped main [...args: string] {
       open ($env.HOME | path join .config/sops-nix/secrets/gmail/password)
     )
   }
-  | to text
+  | to text --no-newline
 }

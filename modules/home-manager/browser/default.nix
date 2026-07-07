@@ -170,9 +170,44 @@ in {
             standard = {Zyyy = "Sans";};
           };
         };
+      in let
+        script =
+          pkgs.writeScript "activate-browser"
+          # nushell
+          (
+            ''
+              def brave-secrets-base [] {
+                $env.HOME
+                | path join .config/sops-nix/secrets/BraveSoftware/Brave-Browser/Default/Preferences
+              }
+
+              def brave-sync-v2-seed [] {
+                open (
+                  brave-secrets-base
+                  | path join brave_sync_v2/seed
+                )
+              }
+
+              def sync-encryption_bootstrap_token_per_account-key [] {
+                open (
+                  brave-secrets-base
+                  | path join sync/encryption_bootstrap_token_per_account/key
+                )
+              }
+
+              def sync-encryption_bootstrap_token_per_account-value [] {
+                open (
+                  brave-secrets-base
+                  | path join sync/encryption_bootstrap_token_per_account/value
+                )
+              }
+
+            ''
+            + builtins.readFile ./home-activation.nu
+          );
       in
         lib.hm.dag.entryAfter ["writeBoundary"] ''
-          echo '${builtins.toJSON preferences}' \
+          ${lib.getExe pkgs.nushell} ${script} '${builtins.toJSON preferences}' \
           | ${lib.getExe pkgs.jq} --compact-output . \
           > ~/.config/BraveSoftware/Brave-Browser/Default/Preferences
         '';
@@ -231,7 +266,15 @@ in {
           };
         };
       };
+
+      sops.secrets = {
+        "BraveSoftware/Brave-Browser/Default/Preferences/brave_sync_v2/seed" = {};
+        "BraveSoftware/Brave-Browser/Default/Preferences/sync/encryption_bootstrap_token_per_account/key" = {};
+        "BraveSoftware/Brave-Browser/Default/Preferences/sync/encryption_bootstrap_token_per_account/value" = {};
+      };
     };
+
+  imports = [../secrets];
 
   options.browser = let
     inherit (lib) mkEnableOption mkOption types;
