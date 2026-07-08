@@ -153,14 +153,14 @@ in {
   };
 
   imports = [
-    ../shell/bash
     ../bat
+    ../browser/w3m
+    ../editor
+    ../editor/markdown
     ../fzf
     ../git
-    ../helix
-    ../helix/markdown
+    ../shell/bash
     ../shell/nushell
-    ../w3m
   ];
 
   options.nb.remotes = let

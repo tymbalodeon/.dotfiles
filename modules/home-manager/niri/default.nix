@@ -266,19 +266,19 @@
   };
 
   imports = [
+    ../application-launcher
+    ../bar
     ../cursor
-    ../fuzzel
+    ../file-manager/nautilus
     ../idle
     ../lock
     ../music-player
-    ../nautilus
-    ../shell/nushell
+    ../notifications
     ../playerctl
     ../polkit
+    ../shell/nushell
     ../sunsetr
-    ../swaync
     ../wallpaper
-    ../waybar
   ];
 
   options.niri = let

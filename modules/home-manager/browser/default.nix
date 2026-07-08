@@ -274,7 +274,11 @@ in {
       };
     };
 
-  imports = [../secrets];
+  imports = [
+    ./browsh
+    ../secrets
+    ./w3m
+  ];
 
   options.browser = let
     inherit (lib) mkEnableOption mkOption types;

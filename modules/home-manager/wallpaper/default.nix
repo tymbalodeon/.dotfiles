@@ -51,10 +51,10 @@
   };
 
   imports = [
+    ../file-manager/yazi
     ../fzf
     ../shell/nushell
     ../storage
-    ../yazi
   ];
 
   options.wallpaper.padSize = let

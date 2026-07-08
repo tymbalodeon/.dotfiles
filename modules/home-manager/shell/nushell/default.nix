@@ -139,9 +139,9 @@
   };
 
   imports = [
+    ../../file-manager/yazi
     ../../fzf
     ../../jujutsu
-    ../../yazi
   ];
 
   options.nushell = let

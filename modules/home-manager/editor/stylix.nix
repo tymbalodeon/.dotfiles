@@ -89,7 +89,7 @@
       cfg.stylix.enable && cfg.useDefaultStylixTheme;
   };
 
-  imports = [../../stylix];
+  imports = [../../theme];
 
   options.helix = let
     inherit (lib) mkEnableOption mkOption types;

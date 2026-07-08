@@ -66,21 +66,20 @@
       ./bat
       ./bottom
       ./broot
-      ./browsh
       ./comma
       ./direnv
+      ./editor
       ./eza
       ./fastfetch
+      ./file-manager
       ./fonts
       ./fzf
       ./gemini
       ./git
       ./gpg
-      ./helix
       ./irc
       ./jq
       ./jujutsu
-      ./kitty
       ./mpv
       ./musescore
       ./networking
@@ -97,8 +96,8 @@
       ./src
       ./task
       ./tealdeer
+      ./terminal
       ./vivid
-      ./yazi
       ./zellij
       ./zoxide
     ]
