@@ -28,14 +28,24 @@ export def "main lower" [] {
   set-volume "-"
 }
 
-export def "main raise" [] {
+def is-over-maximum [] {
   try {
-    if (current-volume | into float ) >= 1.0 {
-      return
-    }
+    (current-volume | into float ) >= 1.0
+  } catch {
+    false
+  }
+}
+
+export def "main raise" [] {
+  if (is-over-maximum) {
+    return
   }
 
   set-volume "+"
+
+  if (is-over-maximum) {
+    wpctl set-volume @DEFAULT_AUDIO_SINK@ $"1.0"
+  }
 }
 
 export def "main zero" [] {

@@ -68,8 +68,6 @@ in {
             web_view_rounded_corners = false;
           };
 
-          # TODO: pull in from secrets
-          # brave_sync_v2.seed = "";
           browser.show_home_button = false;
           default_search_provider.guid = startpageGUID;
 
@@ -134,14 +132,7 @@ in {
             apps = true;
             autofill = true;
             bookmarks = true;
-
-            # TODO: pull in from secrets
-            # encryption_bootstrap_token_per_account."" = "";
             extensions = true;
-
-            # TODO: is this necessary? It doesn't seem to fix the problem of
-            # extensions getting loaded every time
-            # has_setup_completed = true;
             keep_everything_synced = true;
             passwords = true;
             payments = true;
