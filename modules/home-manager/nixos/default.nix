@@ -56,6 +56,7 @@ in {
     # TODO: figure out how to include this on linux.nix without pulling in browser
     ../rss
     ../theme
+    ../vpn
   ];
 
   stylix.targets.waybar.font = "sansSerif";

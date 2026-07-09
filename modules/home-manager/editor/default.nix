@@ -7,7 +7,7 @@
   config = let
     cfg = config.helix;
   in {
-    home.sessionVariables = {EDITOR = "hx";};
+    home.sessionVariables.EDITOR = "hx";
 
     programs.helix = {
       defaultEditor = true;

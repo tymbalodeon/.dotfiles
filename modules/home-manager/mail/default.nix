@@ -56,5 +56,6 @@
     };
   };
 
+  services.protonmail-bridge.enable = true;
   sops.secrets."gmail/password" = {};
 }
