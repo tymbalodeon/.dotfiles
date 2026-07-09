@@ -267,6 +267,7 @@ in {
 
   imports = [
     ./browsh
+    ./chawan
     ../secrets
     ./w3m
   ];

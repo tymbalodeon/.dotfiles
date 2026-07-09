@@ -5,7 +5,5 @@
   ];
 
   programs.keepassxc.enable = true;
-
-  # FIXME
-  # services.proton-pass-agent.enable = true;
+  services.proton-pass-agent.enable = true;
 }

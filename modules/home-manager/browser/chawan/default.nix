@@ -1,0 +1,3 @@
+{
+  programs.chawan.enable = true;
+}
