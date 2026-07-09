@@ -172,25 +172,25 @@ in {
                 | path join .config/sops-nix/secrets/BraveSoftware/Brave-Browser/Default/Preferences
               }
 
+              def open-secret [path: string] {
+                try {
+                  open (
+                    brave-secrets-base
+                    | path join $path
+                  )
+                }
+              }
+
               def brave-sync-v2-seed [] {
-                open (
-                  brave-secrets-base
-                  | path join brave_sync_v2/seed
-                )
+                open-secret brave_sync_v2/seed
               }
 
               def sync-encryption_bootstrap_token_per_account-key [] {
-                open (
-                  brave-secrets-base
-                  | path join sync/encryption_bootstrap_token_per_account/key
-                )
+                open-secret sync/encryption_bootstrap_token_per_account/key
               }
 
               def sync-encryption_bootstrap_token_per_account-value [] {
-                open (
-                  brave-secrets-base
-                  | path join sync/encryption_bootstrap_token_per_account/value
-                )
+                open-secret sync/encryption_bootstrap_token_per_account/value
               }
 
             ''

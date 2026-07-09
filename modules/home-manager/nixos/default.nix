@@ -33,9 +33,10 @@ in {
     ];
 
     pointerCursor = {
+      enable = true;
       gtk.enable = true;
-      package = pkgs.bibata-cursors;
       name = cursorTheme;
+      package = pkgs.bibata-cursors;
       size = 16;
       x11.enable = true;
     };
