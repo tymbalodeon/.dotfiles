@@ -43,6 +43,7 @@ in {
   };
 
   imports = [
+    ../audio
     ../bar
     ../bluetooth
     ../browser
@@ -52,7 +53,6 @@ in {
     ../mail
     ../monitors
     ../notifications
-    ../reaper
     # TODO: figure out how to include this on linux.nix without pulling in browser
     ../rss
     ../theme

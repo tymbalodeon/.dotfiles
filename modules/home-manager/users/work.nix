@@ -14,9 +14,8 @@
   };
 
   imports = [
-    ../git
-    ../jujutsu
     ../note
+    ../version-control
   ];
 
   options.work.user = let

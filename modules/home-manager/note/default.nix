@@ -158,9 +158,8 @@ in {
     ../editor
     ../editor/markdown
     ../fzf
-    ../git
-    ../shell/bash
-    ../shell/nushell
+    ../shell
+    ../version-control
   ];
 
   options.nb.remotes = let

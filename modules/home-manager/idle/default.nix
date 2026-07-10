@@ -7,19 +7,19 @@
 
       listener = [
         {
-          on-timeout = "$(${../music-player/is-playing.nu}) || nu ${../monitors/brightness.nu} dim";
-          on-resume = "$(${../music-player/is-playing.nu}) || nu ${../monitors/brightness.nu} restore";
+          on-timeout = "$(${../audio/music-player/is-playing.nu}) || nu ${../monitors/brightness.nu} dim";
+          on-resume = "$(${../audio/music-player/is-playing.nu}) || nu ${../monitors/brightness.nu} restore";
           timeout = 290;
         }
 
         {
-          on-resume = "$(${../music-player/is-playing.nu}) || niri msg action power-on-monitors";
-          on-timeout = "$(${../music-player/is-playing.nu}) || niri msg action power-off-monitors";
+          on-resume = "$(${../audio/music-player/is-playing.nu}) || niri msg action power-on-monitors";
+          on-timeout = "$(${../audio/music-player/is-playing.nu}) || niri msg action power-off-monitors";
           timeout = 300;
         }
 
         {
-          on-timeout = "$(${../music-player/is-playing.nu}) || systemctl suspend";
+          on-timeout = "$(${../audio/music-player/is-playing.nu}) || systemctl suspend";
           timeout = 600;
         }
       ];

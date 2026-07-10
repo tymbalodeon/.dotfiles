@@ -65,8 +65,6 @@
     [
       ./bat
       ./bottom
-      ./comma
-      ./direnv
       ./editor
       ./eza
       ./fastfetch
@@ -74,16 +72,14 @@
       ./fonts
       ./fzf
       ./gemini
-      ./git
       ./gpg
       ./irc
       ./jq
-      ./jujutsu
-      ./mpv
+      ./media
       ./musescore
       ./networking
-      ./nh
       ../nix
+      ./nix
       ./note
       ./passwords
       ./pdf
@@ -96,6 +92,7 @@
       ./task
       ./tealdeer
       ./terminal
+      ./version-control
       ./vivid
       ./zellij
       ./zoxide

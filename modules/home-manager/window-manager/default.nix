@@ -37,7 +37,7 @@
                 allow-when-locked=true \
                 repeat=false \
               {
-                spawn-sh "nu ${../music-player/set-volume.nu} zero";
+                spawn-sh "nu ${../audio/set-volume.nu} zero";
               }
 
               Mod+1 { focus-workspace 1; }
@@ -236,15 +236,15 @@
               }
 
               XF86AudioLowerVolume allow-when-locked=true ${cooldown} {
-                spawn-sh "nu ${../music-player/set-volume.nu} lower";
+                spawn-sh "nu ${../audio/set-volume.nu} lower";
               }
 
               XF86AudioMicMute allow-when-locked=true repeat=false {
-                spawn-sh "nu ${../music-player/set-volume.nu} toogle-mute mic";
+                spawn-sh "nu ${../audio/set-volume.nu} toogle-mute mic";
               }
 
               XF86AudioMute allow-when-locked=true repeat=false {
-                spawn-sh "nu ${../music-player/set-volume.nu} toggle-mute";
+                spawn-sh "nu ${../audio/set-volume.nu} toggle-mute";
               }
 
               XF86AudioNext allow-when-locked=true repeat=false {
@@ -260,7 +260,7 @@
               }
 
               XF86AudioRaiseVolume allow-when-locked=true ${cooldown} {
-                spawn-sh "nu ${../music-player/set-volume.nu} raise";
+                spawn-sh "nu ${../audio/set-volume.nu} raise";
               }
 
               XF86AudioStop allow-when-locked=true repeat=false {
@@ -412,6 +412,7 @@
       };
 
       portal = {
+        config.common.default = "*";
         enable = true;
 
         extraPortals = with pkgs; [
@@ -424,14 +425,14 @@
 
   imports = [
     ../application-launcher
+    ../audio
     ../bar
     ../cursor
     ../file-manager/nautilus
     ../idle
     ../lock
-    ../music-player
+    ../media
     ../notifications
-    ../playerctl
     ../polkit
     ../shell/nushell
     ../sunsetr

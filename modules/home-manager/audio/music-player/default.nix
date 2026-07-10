@@ -83,8 +83,8 @@
   };
 
   imports = [
-    ../fzf
-    ../shell/nushell
+    ../../fzf
+    ../../shell/nushell
   ];
 
   options.music-player = with lib; {
