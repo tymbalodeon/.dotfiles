@@ -65,7 +65,6 @@
     [
       ./bat
       ./bottom
-      ./broot
       ./comma
       ./direnv
       ./editor

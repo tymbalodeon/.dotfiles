@@ -1,6 +1,7 @@
 {hostType, ...}: {
   imports =
     [
+      ./broot
       ./yazi
     ]
     ++ (
