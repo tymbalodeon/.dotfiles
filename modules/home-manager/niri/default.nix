@@ -323,7 +323,7 @@
             ''
           );
 
-        cooldown = "cooldown-ms=150";
+        cooldown = "cooldown-ms=50";
 
         proportions = ''
           proportion 1.0
