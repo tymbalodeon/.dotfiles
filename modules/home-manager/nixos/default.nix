@@ -51,13 +51,13 @@ in {
     ../dictionary
     ../mail
     ../monitors
-    ../niri
     ../notifications
     ../reaper
     # TODO: figure out how to include this on linux.nix without pulling in browser
     ../rss
     ../theme
     ../vpn
+    ../window-manager
   ];
 
   stylix.targets.waybar.font = "sansSerif";

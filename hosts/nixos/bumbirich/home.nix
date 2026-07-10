@@ -1,8 +1,8 @@
 {
   imports = [
     ../../../modules/home-manager
-    ../../../modules/home-manager/niri
     ../../../modules/home-manager/wallpaper
+    ../../../modules/home-manager/window-manager
   ];
 
   laptop = true;
