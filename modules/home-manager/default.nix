@@ -76,7 +76,8 @@
       ./irc
       ./jq
       ./media
-      ./musescore
+      # FIXME
+      # ./musescore
       ./networking
       ../nix
       ./nix
