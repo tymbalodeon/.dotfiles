@@ -48,7 +48,12 @@ in {
     packages = [pkgs.senpai];
   };
 
-  imports = [../secrets];
+  nushell.extraScripts = [{source = ./irc.nu;}];
+
+  imports = [
+    ../shell/nushell
+    ../secrets
+  ];
 
   sops.secrets = {
     ${ipAddressPath} = {};

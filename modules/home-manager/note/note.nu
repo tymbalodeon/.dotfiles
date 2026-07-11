@@ -97,6 +97,7 @@ def push-notes [] {
   } out> /dev/null
 }
 
+# Write and manage notes
 def note [...args: string] {
   if ($args | any {$in in [--help -h]}) {
     return (help note)
