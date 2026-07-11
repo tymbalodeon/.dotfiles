@@ -38,7 +38,7 @@ let
 
     {
       name = "jessen-mittel";
-      sha256 = "sha256-xacMfjQCQoUJIsrfUzKeVt55bWjYz6OZ6w2vAl3o7/A=";
+      sha256 = "sha256-YfJzxZOxAOpQ2Nw04w9WTWdubdyoTxwUL0p5MpLUlsQ=";
       url = "${anrtFontsBaseUrl}/gotico-antiqua/0944f51447-1678381560/gotico-antiqua_jessen-mittel-14.zip";
     }
 
