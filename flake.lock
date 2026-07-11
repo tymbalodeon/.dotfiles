@@ -88,8 +88,14 @@
     },
     "cachix": {
       "inputs": {
-        "devenv": ["src", "crate2nix"],
-        "flake-compat": ["src", "crate2nix"],
+        "devenv": [
+          "src",
+          "crate2nix"
+        ],
+        "flake-compat": [
+          "src",
+          "crate2nix"
+        ],
         "git-hooks": "git-hooks",
         "nixpkgs": "nixpkgs_2"
       },
@@ -115,7 +121,10 @@
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "nix-test-runner": "nix-test-runner",
-        "nixpkgs": ["src", "nixpkgs"],
+        "nixpkgs": [
+          "src",
+          "nixpkgs"
+        ],
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
@@ -134,7 +143,11 @@
     },
     "devshell": {
       "inputs": {
-        "nixpkgs": ["src", "crate2nix", "nixpkgs"]
+        "nixpkgs": [
+          "src",
+          "crate2nix",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1768818222,
@@ -182,7 +195,11 @@
     },
     "flake-parts": {
       "inputs": {
-        "nixpkgs-lib": ["src", "crate2nix", "nixpkgs"]
+        "nixpkgs-lib": [
+          "src",
+          "crate2nix",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1768135262,
@@ -200,7 +217,10 @@
     },
     "flake-parts_2": {
       "inputs": {
-        "nixpkgs-lib": ["stylix", "nixpkgs"]
+        "nixpkgs-lib": [
+          "stylix",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1778716662,
@@ -218,7 +238,10 @@
     },
     "flake-parts_3": {
       "inputs": {
-        "nixpkgs-lib": ["wayland-pipewire-idle-inhibit", "nixpkgs"]
+        "nixpkgs-lib": [
+          "wayland-pipewire-idle-inhibit",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1772408722,
@@ -288,9 +311,19 @@
     },
     "git-hooks": {
       "inputs": {
-        "flake-compat": ["src", "crate2nix", "cachix", "flake-compat"],
+        "flake-compat": [
+          "src",
+          "crate2nix",
+          "cachix",
+          "flake-compat"
+        ],
         "gitignore": "gitignore",
-        "nixpkgs": ["src", "crate2nix", "cachix", "nixpkgs"]
+        "nixpkgs": [
+          "src",
+          "crate2nix",
+          "cachix",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1765404074,
@@ -308,7 +341,13 @@
     },
     "gitignore": {
       "inputs": {
-        "nixpkgs": ["src", "crate2nix", "cachix", "git-hooks", "nixpkgs"]
+        "nixpkgs": [
+          "src",
+          "crate2nix",
+          "cachix",
+          "git-hooks",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1709087332,
@@ -326,7 +365,12 @@
     },
     "gitignore_2": {
       "inputs": {
-        "nixpkgs": ["src", "crate2nix", "pre-commit-hooks", "nixpkgs"]
+        "nixpkgs": [
+          "src",
+          "crate2nix",
+          "pre-commit-hooks",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1709087332,
@@ -361,14 +405,16 @@
     },
     "home-manager": {
       "inputs": {
-        "nixpkgs": ["nixpkgs"]
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
-        "lastModified": 1783711151,
-        "narHash": "sha256-232L3Nku2nLch/TQHsJEIhiZJKr+VTehnVUs1NZ0SNc=",
+        "lastModified": 1783744526,
+        "narHash": "sha256-yYVxW+uIbCx0Nt870fbErQbz+b2+3Gwpppe+JbIU+Co=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "f938277527aa084929261879d50d9832b9eab6d3",
+        "rev": "2afec152df4e284d264f8489d16004c264aebf4c",
         "type": "github"
       },
       "original": {
@@ -379,7 +425,9 @@
     },
     "musnix": {
       "inputs": {
-        "nixpkgs": ["nixpkgs"]
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1777848538,
@@ -397,7 +445,9 @@
     },
     "nix-index-database": {
       "inputs": {
-        "nixpkgs": ["nixpkgs"]
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1783414108,
@@ -432,7 +482,9 @@
     "nixgl": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": ["nixpkgs"]
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1762090880,
@@ -482,8 +534,14 @@
     },
     "nur": {
       "inputs": {
-        "flake-parts": ["stylix", "flake-parts"],
-        "nixpkgs": ["stylix", "nixpkgs"]
+        "flake-parts": [
+          "stylix",
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "stylix",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1780281641,
@@ -517,9 +575,17 @@
     },
     "pre-commit-hooks": {
       "inputs": {
-        "flake-compat": ["src", "crate2nix", "flake-compat"],
+        "flake-compat": [
+          "src",
+          "crate2nix",
+          "flake-compat"
+        ],
         "gitignore": "gitignore_2",
-        "nixpkgs": ["src", "crate2nix", "nixpkgs"]
+        "nixpkgs": [
+          "src",
+          "crate2nix",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1769069492,
@@ -555,10 +621,10 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1783734102,
-        "narHash": "sha256-w8vD2H/R6B302AZSlEPmtfawIH7caQr1hNMi5EzOpUw=",
+        "lastModified": 1783770077,
+        "narHash": "sha256-vbY15nEIupTT2aktEmtVVNSinSgsXva+bmWxY5vK4Ms=",
         "ref": "refs/heads/trunk",
-        "rev": "77e80df14eacf02776210993eaf93e3f4eb89f6b",
+        "rev": "f23f81438f65b3eaa4730ea48ae04014700be59e",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/tymbalodeon/secrets.git"
@@ -571,7 +637,9 @@
     },
     "solaar": {
       "inputs": {
-        "nixpkgs": ["nixpkgs"],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "utils": "utils"
       },
       "locked": {
@@ -591,7 +659,9 @@
     },
     "sops-nix": {
       "inputs": {
-        "nixpkgs": ["nixpkgs"]
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1783174389,
@@ -610,7 +680,9 @@
     "src": {
       "inputs": {
         "crate2nix": "crate2nix",
-        "nixpkgs": ["nixpkgs"],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "nutest": "nutest",
         "systems": "systems_3"
       },
@@ -637,7 +709,9 @@
         "firefox-gnome-theme": "firefox-gnome-theme",
         "flake-parts": "flake-parts_2",
         "gnome-shell": "gnome-shell",
-        "nixpkgs": ["nixpkgs"],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "nur": "nur",
         "systems": "systems_4",
         "tinted-kitty": "tinted-kitty",
@@ -800,7 +874,10 @@
     },
     "treefmt-nix": {
       "inputs": {
-        "nixpkgs": ["wayland-pipewire-idle-inhibit", "nixpkgs"]
+        "nixpkgs": [
+          "wayland-pipewire-idle-inhibit",
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1773297127,
@@ -838,7 +915,9 @@
     "wayland-pipewire-idle-inhibit": {
       "inputs": {
         "flake-parts": "flake-parts_3",
-        "nixpkgs": ["nixpkgs"],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "systems": "systems_5",
         "treefmt-nix": "treefmt-nix"
       },

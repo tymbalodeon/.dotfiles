@@ -10,6 +10,7 @@ def shared-inputs [] {
     nixgl
     nix-index-database
     nixpkgs
+    secrets
     src
     zk-graph
   ]
