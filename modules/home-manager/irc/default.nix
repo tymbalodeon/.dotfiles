@@ -4,7 +4,6 @@
   pkgs,
   ...
 }: let
-  ipAddressPath = "irc/ip-address";
   nicknamePath = "irc/nickname";
   psaswordPath = "irc/password";
 in {
@@ -18,12 +17,6 @@ in {
             def senpai-config-path [] {
               "${config.xdg.configHome}"
               | path join senpai/senpai.scfg
-            }
-
-            def ip-address [] {
-              try {
-                open ${config.sops.secrets.${ipAddressPath}.path}
-              }
             }
 
             def nickname [] {
@@ -56,7 +49,6 @@ in {
   ];
 
   sops.secrets = {
-    ${ipAddressPath} = {};
     ${nicknamePath} = {};
     ${psaswordPath} = {};
   };

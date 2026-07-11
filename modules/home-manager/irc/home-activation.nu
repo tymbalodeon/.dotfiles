@@ -1,13 +1,12 @@
 def main [] {
-  let ip_address = (ip-address)
   let nickname = (nickname)
   let password = (password)
 
-  if ([$ip_address $nickname $password] | any {is-empty}) {
+  if ([$nickname $password] | any {is-empty}) {
     return
   }
 
-  $"address \"ircs+insecure://(ip-address)\"
+  $"address \"ircs+insecure://mazma\"
 nickname \"(nickname)\"
 password \"(password)\"
 "
