@@ -52,6 +52,8 @@ in {
       bind j everywhere down
       bind k everywhere up
 
+      cleanup-on-quit yes
+
       color article            default default
       color background         default default
       color end-of-text-marker color8  default
