@@ -198,7 +198,7 @@ in {
           );
       in
         lib.hm.dag.entryAfter ["writeBoundary"] ''
-          ${lib.getExe pkgs.nushell} ${script} '${builtins.toJSON preferences}' \
+          run ${lib.getExe pkgs.nushell} ${script} '${builtins.toJSON preferences}' \
           | ${lib.getExe pkgs.jq} --compact-output . \
           > ~/.config/BraveSoftware/Brave-Browser/Default/Preferences
         '';

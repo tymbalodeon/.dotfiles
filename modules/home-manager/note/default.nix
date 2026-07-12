@@ -11,52 +11,27 @@ in {
     cfg = config.nb;
   in {
     home = {
-      # TODO: handle $VERBOSE and $DRY_RUN
-      # TODO: is it possible to git pull the remote notes here?
       activation.nb = let
-        git = lib.getExe pkgs.git;
+        script =
+          pkgs.writeScript "activate-note"
+          (
+            # nushell
+            ''
+              def --wrapped git [...args: string] {
+                ${lib.getExe pkgs.git} ...$args
+              }
+
+              def remotes [] {
+                '${builtins.toJSON cfg.remotes}'
+                | from json
+              }
+
+            ''
+            + builtins.readFile ./home-activation.nu
+          );
       in
-        lib.hm.dag.entryAfter ["writeBoundary"]
-        ''
-          remotes=(${lib.concatStringsSep " " cfg.remotes})
-          nbHome="$HOME/.nb"
-
-          mkdir --parents $nbHome
-
-          notebooks=$(ls $nbHome)
-          index=0
-
-          for remote in "''${remotes[@]}"; do
-            if [[ "$index" = 0 ]]; then
-              name=home
-            else
-              url=''${remote/git@/}
-              url=''${url/.com/}
-
-              read domain user name < <(
-                echo $url |
-                ${lib.getExe pkgs.gawk} --field-separator [/:] '{print $1, $(NF-1), $NF}'
-              )
-
-              name=''${name/.git/}
-              name=''${domain}-''${user}-''${name}
-            fi
-
-            if [[ ! " ''${notebooks[*]} " =~ [[:space:]]$name[[:space:]] ]]; then
-              directory="$nbHome/$name"
-
-              mkdir --parents $directory
-              cd $directory
-
-              ${git} init
-              ${git} remote add origin $remote
-
-              # TODO: add an option to specify the branch if it's not "trunk"
-              ${git} branch -m trunk
-            fi
-
-            index+=1
-          done
+        lib.hm.dag.entryAfter ["writeBoundary"] ''
+          run ${lib.getExe pkgs.nushell} "${script}"
         '';
 
       file = {

@@ -31,7 +31,7 @@ in {
         );
     in
       lib.hm.dag.entryAfter ["writeBoundary"] ''
-        ${lib.getExe pkgs.nushell} "${script}"
+        run ${lib.getExe pkgs.nushell} "${script}"
       '';
 
     packages = [pkgs.lagrange];

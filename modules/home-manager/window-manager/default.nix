@@ -9,7 +9,7 @@
   in {
     home = {
       activation.niri = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        mkdir --parents ~/Pictures/Screenshots
+        run mkdir --parents ~/Pictures/Screenshots
       '';
 
       packages = with pkgs;
