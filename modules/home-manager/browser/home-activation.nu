@@ -1,9 +1,26 @@
-def main [json: string] {
-  $json
+def preferences-file [] {
+  $env.HOME
+  | path join .config/BraveSoftware/Brave-Browser/Default/Preferences
+}
+
+def main [preferences: string] {
+  let existing_preferences = if (preferences-file | path type) == file {
+    open (preferences-file)
+    | from json
+  } else {
+    {}
+  }
+
+  $preferences
   | from json
   | insert brave_sync_v2.seed (brave-sync-v2-seed)
   | insert sync.encryption_bootstrap_token_per_account {
-    sync-encryption_bootstrap_token_per_account-key: sync-encryption_bootstrap_token_per_account-value
-  }
+      sync-encryption_bootstrap_token_per_account-key: (
+        sync-encryption_bootstrap_token_per_account-value
+      )
+    }
+  | merge deep $existing_preferences
   | to json
+  | jq --compact-output .
+  | save --force (preferences-file)
 }

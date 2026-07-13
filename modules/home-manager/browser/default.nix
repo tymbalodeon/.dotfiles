@@ -193,14 +193,17 @@ in {
                 open-secret sync/encryption_bootstrap_token_per_account/value
               }
 
+              def --wrapped jq [...args: string] {
+                ${lib.getExe pkgs.jq} ...$args
+              }
+
             ''
             + builtins.readFile ./home-activation.nu
           );
       in
         lib.hm.dag.entryAfter ["writeBoundary"] ''
-          run ${lib.getExe pkgs.nushell} ${script} '${builtins.toJSON preferences}' \
-          | ${lib.getExe pkgs.jq} --compact-output . \
-          > ~/.config/BraveSoftware/Brave-Browser/Default/Preferences
+          run ${lib.getExe pkgs.nushell} ${script} \
+            '${builtins.toJSON preferences}'
         '';
 
       programs.brave = {
