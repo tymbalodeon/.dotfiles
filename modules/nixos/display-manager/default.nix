@@ -10,7 +10,7 @@
     sddmTheme = let
       backgroundColor = "${colors.base00}";
       colors = config.lib.stylix.colors.withHashtag;
-      fontSize = 12;
+      fontSize = 24;
       foregroundColor = "${colors.base05}";
     in
       pkgs.where-is-my-sddm-theme.override
@@ -19,6 +19,7 @@
           backgroundFill = backgroundColor;
           basicTextColor = foregroundColor;
           cursorBlinkAnimation = false;
+          hideCursor = true;
           passwordCursorColor = foregroundColor;
           passwordFontSize = fontSize;
           passwordTextColor = foregroundColor;
