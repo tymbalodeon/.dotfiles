@@ -6,6 +6,8 @@ def main [] {
     return
   }
 
+  mkdir (senpai-config-path | path dirname)
+
   $"address \"ircs+insecure://mazma\"
 nickname \"(nickname)\"
 password \"(password)\"
