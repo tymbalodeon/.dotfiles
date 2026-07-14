@@ -15,6 +15,11 @@
       url = "github:musnix/musnix";
     };
 
+    niri = {
+      inputs.nixpkgs.follows = "nixpkgs";
+      url = "git+https://codeberg.org/BANanaD3V/niri-nix";
+    };
+
     nixgl = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:nix-community/nixGL";
@@ -67,6 +72,7 @@
     base16-helix,
     home-manager,
     musnix,
+    niri,
     nixgl,
     nix-index-database,
     nixpkgs,
@@ -81,6 +87,7 @@
   }: let
     commonInputs = {
       inherit
+        niri
         nix-index-database
         src
         zk-graph

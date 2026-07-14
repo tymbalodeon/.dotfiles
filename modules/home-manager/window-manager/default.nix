@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  niri,
   pkgs,
   ...
 }: {
@@ -25,401 +26,483 @@
         );
     };
 
-    xdg = {
-      configFile."niri/config.kdl" = {
-        force = true;
+    wayland.windowManager.niri = {
+      enable = true;
 
-        text = let
-          # TODO: hide the call to hyprlock in the lock module somehow?
-          binds =
-            ''
-              Ctrl+XF86AudioMute \
-                allow-when-locked=true \
-                repeat=false \
-              {
-                spawn-sh "nu ${../audio/set-volume.nu} zero";
-              }
+      settings = {
+        binds = let
+          cooldown-ms = 50;
+        in
+          {
+            "Ctrl+XF86AudioMute" = {
+              _props = {
+                allow-when-locked = true;
+                repeat = false;
+              };
 
-              Mod+1 { focus-workspace 1; }
-              Mod+2 { focus-workspace 2; }
-              Mod+3 { focus-workspace 3; }
-              Mod+4 { focus-workspace 4; }
-              Mod+5 { focus-workspace 5; }
-              Mod+6 { focus-workspace 6; }
-              Mod+7 { focus-workspace 7; }
-              Mod+8 { focus-workspace 8; }
-              Mod+9 { focus-workspace 9; }
-              Mod+BracketLeft { consume-or-expel-window-left; }
-              Mod+BracketRight { consume-or-expel-window-right; }
-              Mod+C { center-column; }
-              Mod+Comma { consume-window-into-column; }
-              Mod+Ctrl+1 { move-column-to-workspace 1; }
-              Mod+Ctrl+2 { move-column-to-workspace 2; }
-              Mod+Ctrl+3 { move-column-to-workspace 3; }
-              Mod+Ctrl+4 { move-column-to-workspace 4; }
-              Mod+Ctrl+5 { move-column-to-workspace 5; }
-              Mod+Ctrl+6 { move-column-to-workspace 6; }
-              Mod+Ctrl+7 { move-column-to-workspace 7; }
-              Mod+Ctrl+8 { move-column-to-workspace 8; }
-              Mod+Ctrl+9 { move-column-to-workspace 9; }
-              Mod+Ctrl+C { center-visible-columns; }
+              spawn-sh = "nu ${../audio/set-volume.nu} zero";
+            };
 
-              Mod+Ctrl+D hotkey-overlay-title="Define selected word (offline)" {
-                spawn-sh "${../dictionary/define.sh}";
-              }
+            "Mod+1".focus-workspace = 1;
+            "Mod+2".focus-workspace = 2;
+            "Mod+3".focus-workspace = 3;
+            "Mod+4".focus-workspace = 4;
+            "Mod+5".focus-workspace = 5;
+            "Mod+6".focus-workspace = 6;
+            "Mod+7".focus-workspace = 7;
+            "Mod+8".focus-workspace = 8;
+            "Mod+9".focus-workspace = 9;
+            "Mod+BracketLeft".consume-or-expel-window-left = {};
+            "Mod+BracketRight".consume-or-expel-window-right = {};
+            "Mod+C".center-column = {};
+            "Mod+Comma".consume-window-into-column = {};
+            "Mod+Ctrl+1".move-column-to-workspace = 1;
+            "Mod+Ctrl+2".move-column-to-workspace = 2;
+            "Mod+Ctrl+3".move-column-to-workspace = 3;
+            "Mod+Ctrl+4".move-column-to-workspace = 4;
+            "Mod+Ctrl+5".move-column-to-workspace = 5;
+            "Mod+Ctrl+6".move-column-to-workspace = 6;
+            "Mod+Ctrl+7".move-column-to-workspace = 7;
+            "Mod+Ctrl+8".move-column-to-workspace = 8;
+            "Mod+Ctrl+9".move-column-to-workspace = 9;
+            "Mod+Ctrl+C".center-visible-columns = {};
 
-              Mod+Ctrl+Down { move-window-down; }
-              Mod+Ctrl+End { move-column-to-last; }
-              Mod+Ctrl+F { expand-column-to-available-width; }
-              Mod+Ctrl+H { move-column-left; }
-              Mod+Ctrl+Home { move-column-to-first; }
-              Mod+Ctrl+J { move-window-down; }
-              Mod+Ctrl+K { move-window-up; }
-              Mod+Ctrl+Left { move-column-left; }
-              Mod+Ctrl+L { move-column-right; }
-              Mod+Ctrl+N { move-column-to-workspace-down; }
-              Mod+Ctrl+P { move-column-to-workspace-up; }
-              Mod+Ctrl+Right { move-column-right; }
-              Mod+Ctrl+R { reset-window-height; }
-              Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
-              Mod+Ctrl+Shift+WheelScrollUp { move-column-left; }
-              Mod+Ctrl+Up { move-window-up; }
+            "Mod+Ctrl+D" = {
+              _props.hotkey-overlay-title = "Define selected word (offline)";
+              spawn-sh = "${../dictionary/define.sh}";
+            };
 
-              Mod+Ctrl+WheelScrollDown ${cooldown} {
-                move-column-to-workspace-down;
-              }
+            "Mod+Ctrl+Down".move-window-down = {};
+            "Mod+Ctrl+End".move-column-to-last = {};
+            "Mod+Ctrl+F".expand-column-to-available-width = {};
+            "Mod+Ctrl+H".move-column-left = {};
+            "Mod+Ctrl+Home".move-column-to-first = {};
+            "Mod+Ctrl+J".move-window-down = {};
+            "Mod+Ctrl+K".move-window-up = {};
+            "Mod+Ctrl+Left".move-column-left = {};
+            "Mod+Ctrl+L".move-column-right = {};
+            "Mod+Ctrl+N".move-column-to-workspace-down = {};
+            "Mod+Ctrl+P".move-column-to-workspace-up = {};
+            "Mod+Ctrl+Right".move-column-right = {};
+            "Mod+Ctrl+R".reset-window-height = {};
+            "Mod+Ctrl+Shift+WheelScrollDown".move-column-right = {};
+            "Mod+Ctrl+Shift+WheelScrollUp".move-column-left = {};
+            "Mod+Ctrl+Up".move-window-up = {};
 
-              Mod+Ctrl+WheelScrollLeft { move-column-right; }
-              Mod+Ctrl+WheelScrollRight { move-column-left; }
-              Mod+Ctrl+WheelScrollUp ${cooldown} { move-column-to-workspace-up; }
+            "Mod+Ctrl+WheelScrollDown" = {
+              _props = {inherit cooldown-ms;};
+              move-column-to-workspace-down = {};
+            };
 
-              Mod+D hotkey-overlay-title="Define selected word (online)" {
-                spawn-sh "nu ${../dictionary/define.nu}";
-              }
+            "Mod+Ctrl+WheelScrollLeft".move-column-right = {};
+            "Mod+Ctrl+WheelScrollRight".move-column-left = {};
 
-              Mod+Down { focus-window-down; }
-              Mod+End { focus-column-last; }
-              Mod+Equal { set-column-width "+10%"; }
+            "Mod+Ctrl+WheelScrollUp" = {
+              _props = {inherit cooldown-ms;};
+              move-column-to-workspace-up = {};
+            };
 
-              Mod+F \
-                hotkey-overlay-title="Make the window fullscreen (with status bar)" \
-              { maximize-window-to-edges; }
+            "Mod+D" = {
+              _props.hotkey-overlay-title = "Define selected word (online)";
+              spawn-sh = "nu ${../dictionary/define.nu}";
+            };
 
-              Mod+H { focus-column-left; }
-              Mod+Home { focus-column-first; }
-              Mod+J { focus-window-down; }
-              Mod+K { focus-window-up; }
-              Mod+Left { focus-column-left; }
-              Mod+L { focus-column-right; }
+            "Mod+Down".focus-window-down = {};
+            "Mod+End".focus-column-last = {};
+            "Mod+Equal".set-column-width = "+10%";
 
-              Mod+M hotkey-overlay-title="Open music player" {
-                spawn-sh "kitty --hold rmpc";
-              }
+            "Mod+F" = {
+              _props.hotkey-overlay-title = "Make the window fullscreen (with status bar)";
+              maximize-window-to-edges = {};
+            };
 
-              Mod+Minus { set-column-width "-10%"; }
-              Mod+N { focus-workspace-down; }
-              Mod+O repeat=false { toggle-overview; }
-              Mod+Page_Up { focus-workspace-up; }
-              Mod+Period { expel-window-from-column; }
-              Mod+P { focus-workspace-up; }
-              Mod+Q repeat=false { close-window; }
-              Mod+Right { focus-column-right; }
-              Mod+R { switch-preset-column-width; }
+            "Mod+H".focus-column-left = {};
+            "Mod+Home".focus-column-first = {};
+            "Mod+J".focus-window-down = {};
+            "Mod+K".focus-window-up = {};
+            "Mod+Left".focus-column-left = {};
+            "Mod+L".focus-column-right = {};
 
-              Mod+Shift+Ctrl+D \
-                hotkey-overlay-title="Define selected (primary clipboard) word (offline)" \
-                { spawn-sh "${../dictionary/define.sh} --primary"; }
+            "Mod+M" = {
+              _props.hotkey-overlay-title = "Open music player";
+              spawn-sh = "kitty --hold rmpc";
+            };
 
-              Mod+Shift+Ctrl+Down { move-column-to-monitor-down; }
+            "Mod+Minus".set-column-width = "-10%";
+            "Mod+N".focus-workspace-down = {};
 
-              Mod+Shift+Ctrl+F \
-                hotkey-overlay-title="Make the window fullscreen (no status bar)" \
-                { fullscreen-window; }
+            "Mod+O" = {
+              _props.repeat = false;
+              toggle-overview = {};
+            };
 
-              Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
-              Mod+Shift+Ctrl+J { move-column-to-monitor-down; }
-              Mod+Shift+Ctrl+K { move-column-to-monitor-up; }
-              Mod+Shift+Ctrl+Left { move-column-to-monitor-left; }
-              Mod+Shift+Ctrl+L { move-column-to-monitor-right; }
-              Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
-              Mod+Shift+Ctrl+Up { move-column-to-monitor-up; }
+            "Mod+Page_Up"."focus-workspace-up" = {};
+            "Mod+Period"."expel-window-from-column" = {};
+            "Mod+P"."focus-workspace-up" = {};
 
-              Mod+Shift+D \
-                hotkey-overlay-title="Define selected (primary clipboard) word (online)" \
-                { spawn-sh "nu ${../dictionary/define.nu} --primary"; }
+            "Mod+Q" = {
+              _props.repeat = false;
+              close-window = {};
+            };
 
-              Mod+Shift+Down { focus-monitor-down; }
-              Mod+Shift+Equal { set-window-height "+10%"; }
-              Mod+Shift+F { maximize-column; }
-              Mod+Shift+H { focus-monitor-left; }
-              Mod+Shift+J { focus-monitor-down; }
-              Mod+Shift+K { focus-monitor-up; }
-              Mod+Shift+Left { focus-monitor-left; }
-              Mod+Shift+L { focus-monitor-right; }
-              Mod+Shift+Minus { set-window-height "-10%"; }
+            "Mod+Right".focus-column-right = {};
+            "Mod+R".switch-preset-column-width = {};
 
-              Mod+Shift+N hotkey-overlay-title="Open notifications panel" {
-                spawn "swaync-client" "--toggle-panel" "--skip-wait";
-              }
+            "Mod+Shift+Ctrl+D" = {
+              _props.hotkey-overlay-title = "Define selected (primary clipboard) word (offline)";
+              spawn-sh = "${../dictionary/define.sh} --primary";
+            };
 
-              Mod+Shift+Right { focus-monitor-right; }
-              Mod+Shift+R { switch-preset-window-height; }
+            "Mod+Shift+Ctrl+Down".move-column-to-monitor-down = {};
 
-              Mod+Shift+S \
-                hotkey-overlay-title="Search selected (primary clipboard) text online" \
-                { spawn-sh "nu ${../search/search.nu} --primary"; }
+            "Mod+Shift+Ctrl+F" = {
+              _props.hotkey-overlay-title = "Make the window fullscreen (no status bar)";
+              fullscreen-window = {};
+            };
 
-              Mod+Shift+Slash { show-hotkey-overlay; }
-              Mod+Shift+Up { focus-monitor-up; }
-              Mod+Shift+V { switch-focus-between-floating-and-tiling; }
-              Mod+Shift+WheelScrollDown { focus-column-right; }
-              Mod+Shift+WheelScrollUp { focus-column-left; }
+            "Mod+Shift+Ctrl+H".move-column-to-monitor-left = {};
+            "Mod+Shift+Ctrl+J".move-column-to-monitor-down = {};
+            "Mod+Shift+Ctrl+K".move-column-to-monitor-up = {};
+            "Mod+Shift+Ctrl+Left".move-column-to-monitor-left = {};
+            "Mod+Shift+Ctrl+L".move-column-to-monitor-right = {};
+            "Mod+Shift+Ctrl+Right".move-column-to-monitor-right = {};
+            "Mod+Shift+Ctrl+Up".move-column-to-monitor-up = {};
 
-              Mod+S hotkey-overlay-title="Search selected text online" {
-                spawn-sh "nu ${../search/search.nu}";
-              }
+            "Mod+Shift+D" = {
+              _props.hotkey-overlay-title = "Define selected (primary clipboard) word (online)";
+              spawn-sh = "nu ${../dictionary/define.nu} --primary";
+            };
 
-              Mod+Space hotkey-overlay-title="Run an Application" {
-                spawn "fuzzel";
-              }
+            "Mod+Shift+Down".focus-monitor-down = {};
+            "Mod+Shift+Equal".set-window-height = "+10%";
+            "Mod+Shift+F".maximize-column = {};
+            "Mod+Shift+H".focus-monitor-left = {};
+            "Mod+Shift+J".focus-monitor-down = {};
+            "Mod+Shift+K".focus-monitor-up = {};
+            "Mod+Shift+Left".focus-monitor-left = {};
+            "Mod+Shift+L".focus-monitor-right = {};
+            "Mod+Shift+Minus".set-window-height = "-10%";
 
-              Mod+U { focus-workspace-down; }
-              Mod+Up { focus-window-up; }
-              Mod+V { toggle-window-floating; }
-              Mod+WheelScrollDown ${cooldown} { focus-workspace-down; }
-              Mod+WheelScrollLeft { focus-column-right; }
-              Mod+WheelScrollRight { focus-column-left; }
-              Mod+WheelScrollUp ${cooldown} { focus-workspace-up; }
-              Mod+W { toggle-column-tabbed-display; }
+            "Mod+Shift+N" = {
+              _props.hotkey-overlay-title = "Open notifications panel";
+              spawn = ["swaync-client" "--toggle-panel" "--skip-wait"];
+            };
 
-              Super+Alt+1 hotkey-overlay-title="Screenshot the entire screen" {
-                screenshot-screen;
-              }
+            "Mod+Shift+Right".focus-monitor-right = {};
+            "Mod+Shift+R".switch-preset-window-height = {};
 
-              Super+Alt+2 hotkey-overlay-title="Screenshot the current window" {
-                screenshot-window;
-              }
+            "Mod+Shift+S" = {
+              _props.hotkey-overlay-title = "Search selected (primary clipboard) text online";
+              spawn-sh = "nu ${../search/search.nu} --primary";
+            };
 
-              Super+Alt+3 hotkey-overlay-title="Screenshot" { screenshot; }
+            "Mod+Shift+Slash".show-hotkey-overlay = {};
+            "Mod+Shift+Up".focus-monitor-up = {};
+            "Mod+Shift+V".switch-focus-between-floating-and-tiling = {};
+            "Mod+Shift+WheelScrollDown".focus-column-right = {};
+            "Mod+Shift+WheelScrollUp".focus-column-left = {};
 
-              Super+Alt+B hotkey-overlay-title="Switch to random background image" \
-                { spawn-sh "nu ${../wallpaper/wallpaper.nu} next"; }
+            "Mod+S" = {
+              _props.hotkey-overlay-title = "Search selected text online";
+              spawn-sh = "nu ${../search/search.nu}";
+            };
 
-              Super+Alt+Delete hotkey-overlay-title="Exit niri" { quit; }
+            "Mod+Space" = {
+              _props.hotkey-overlay-title = "Run an Application";
+              spawn = "fuzzel";
+            };
 
-              Super+Alt+L hotkey-overlay-title="Lock the Screen" {
-                spawn "hyprlock";
-              }
+            "Mod+U".focus-workspace-down = {};
+            "Mod+Up".focus-window-up = {};
+            "Mod+V".toggle-window-floating = {};
 
-              Super+Alt+M hotkey-overlay-title="Power off monitors" {
-                power-off-monitors;
-              }
+            "Mod+WheelScrollDown" = {
+              _props = {inherit cooldown-ms;};
+              focus-workspace-down = {};
+            };
 
-              Super+Alt+N hotkey-overlay-title="Toggle blue light filter" {
-                spawn-sh "nu ${../sunsetr/sunsetr.nu} toggle";
-              }
+            "Mod+WheelScrollLeft".focus-column-right = {};
+            "Mod+WheelScrollRight".focus-column-left = {};
 
-              Super+Alt+Shift+B \
-                hotkey-overlay-title="Toggle automatic background image switching" \
-                { spawn-sh "nu ${../wallpaper/wallpaper.nu} toggle-pause"; }
+            "Mod+WheelScrollUp" = {
+              _props = {inherit cooldown-ms;};
+              focus-workspace-up = {};
+            };
 
-              Super+Alt+S hotkey-overlay-title="Put the computer to sleep" {
-                spawn-sh "niri msg action power-off-monitors; systemctl suspend";
-              }
+            "Mod+W".toggle-column-tabbed-display = {};
 
-              Super+Alt+V \
-                hotkey-overlay-title="Switch to random background image" \
-                { spawn-sh "nu ${../wallpaper/wallpaper.nu} previous"; }
+            "Super+Alt+1" = {
+              _props.hotkey-overlay-title = "Screenshot the entire screen";
+              screenshot-screen = {};
+            };
 
-              Super+Alt+W hotkey-overlay-title="Restart waybar" {
-                spawn "systemctl" "--user" "restart" "waybar";
-              }
+            "Super+Alt+2" = {
+              _props.hotkey-overlay-title = "Screenshot the current window";
+              screenshot-window = {};
+            };
 
-              XF86AudioLowerVolume allow-when-locked=true ${cooldown} {
-                spawn-sh "nu ${../audio/set-volume.nu} lower";
-              }
+            "Super+Alt+3" = {
+              _props.hotkey-overlay-title = "Screenshot";
+              screenshot = {};
+            };
 
-              XF86AudioMicMute allow-when-locked=true repeat=false {
-                spawn-sh "nu ${../audio/set-volume.nu} toogle-mute mic";
-              }
+            "Super+Alt+B" = {
+              _props.hotkey-overlay-title = "Switch to random background image";
+              spawn-sh = "nu ${../wallpaper/wallpaper.nu} next";
+            };
 
-              XF86AudioMute allow-when-locked=true repeat=false {
-                spawn-sh "nu ${../audio/set-volume.nu} toggle-mute";
-              }
+            "Super+Alt+Delete" = {
+              _props.hotkey-overlay-title = "Exit niri";
+              quit = {};
+            };
 
-              XF86AudioNext allow-when-locked=true repeat=false {
-                spawn-sh "playerctl next || rmpc next";
-              }
+            "Super+Alt+L" = {
+              _props.hotkey-overlay-title = "Lock the Screen";
+              spawn = "hyprlock";
+            };
 
-              XF86AudioPlay allow-when-locked=true repeat=false {
-                spawn-sh "playerctl play-pause || rmpc togglepause";
-              }
+            "Super+Alt+M" = {
+              _props.hotkey-overlay-title = "Power off monitors";
+              power-off-monitors = {};
+            };
 
-              XF86AudioPrev allow-when-locked=true repeat=false {
-                spawn-sh "playerctl previous || rmpc prev";
-              }
+            "Super+Alt+N" = {
+              _props.hotkey-overlay-title = "Toggle blue light filter";
+              spawn-sh = "nu ${../sunsetr/sunsetr.nu} toggle";
+            };
 
-              XF86AudioRaiseVolume allow-when-locked=true ${cooldown} {
-                spawn-sh "nu ${../audio/set-volume.nu} raise";
-              }
+            "Super+Alt+Shift+B" = {
+              _props.hotkey-overlay-title = "Toggle automatic background image switching";
+              spawn-sh = "nu ${../wallpaper/wallpaper.nu} toggle-pause";
+            };
 
-              XF86AudioStop allow-when-locked=true repeat=false {
-                spawn "playerctl" "stop";
-              }
+            "Super+Alt+S" = {
+              _props.hotkey-overlay-title = "Put the computer to sleep";
+              spawn-sh = "niri msg action power-off-monitors; systemctl suspend";
+            };
 
-              XF86LaunchA repeat=false { toggle-overview; }
-            ''
-            + (
-              # TODO: fix spacing
-              # TODO: handle all of this with the brightness nushell script
-              if cfg.laptop
-              then ''
-                Ctrl+XF86MonBrightnessDown {
-                  spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%-";
-                }
+            "Super+Alt+V" = {
+              _props.hotkey-overlay-title = "Switch to random background image";
+              spawn-sh = "nu ${../wallpaper/wallpaper.nu} previous";
+            };
 
-                Ctrl+XF86MonBrightnessUp {
-                  spawn-sh "brightnessctl --device tpacpi::kbd_backlight set 1%+";
-                }
+            "Super+Alt+W" = {
+              _props.hotkey-overlay-title = "Restart waybar";
+              spawn = ["systemctl" "--user" "restart" "waybar"];
+            };
 
-                Super+XF86MonBrightnessDown \
-                  allow-when-locked=true \
-                  ${cooldown} \
-                  hotkey-overlay-title=null \
-                  { spawn-sh "brightnessctl set 1%";}
+            XF86AudioLowerVolume = {
+              _props = {
+                inherit cooldown-ms;
 
-                Super+XF86MonBrightnessUp \
-                  allow-when-locked=true \
-                  ${cooldown} \
-                  hotkey-overlay-title=null \
-                  { spawn-sh "brightnessctl set 100%"; }
+                allow-when-locked = true;
+              };
 
-                XF86MonBrightnessDown { spawn-sh "brightnessctl set 1%-"; }
-                XF86MonBrightnessUp { spawn-sh "brightnessctl set 1%+"; }
-              ''
-              else ''
-                Super+XF86MonBrightnessDown \
-                  allow-when-locked=true \
-                  ${cooldown} \
-                  hotkey-overlay-title=null \
-                  { spawn-sh "nu ${../monitors/brightness.nu} set min";}
+              spawn-sh = "nu ${../audio/set-volume.nu} lower";
+            };
 
-                Super+XF86MonBrightnessUp \
-                  allow-when-locked=true \
-                  ${cooldown} \
-                  hotkey-overlay-title=null \
-                  { spawn-sh "nu ${../monitors/brightness.nu} set max"; }
+            XF86AudioMicMute = {
+              _props = {
+                allow-when-locked = true;
+                repeat = false;
+              };
 
-                XF86MonBrightnessDown \
-                  allow-when-locked=true \
-                  ${cooldown} \
-                  { spawn-sh "nu ${../monitors/brightness.nu} decrease";}
+              spawn-sh = "nu ${../audio/set-volume.nu} toogle-mute mic";
+            };
 
-                XF86MonBrightnessUp \
-                  allow-when-locked=true \
-                  ${cooldown} \
-                  { spawn-sh "nu ${../monitors/brightness.nu} increase"; }
-              ''
-            );
+            XF86AudioMute = {
+              _props = {
+                allow-when-locked = true;
+                repeat = false;
+              };
 
-          cooldown = "cooldown-ms=50";
+              spawn-sh = "nu ${../audio/set-volume.nu} toggle-mute";
+            };
 
-          proportions = ''
-            proportion 1.0
-            proportion 0.66667
-            proportion 0.5
-            proportion 0.33333
-          '';
-        in ''
-          binds {
-            ${binds}
+            XF86AudioNext = {
+              _props = {
+                allow-when-locked = true;
+                repeat = false;
+              };
+
+              spawn-sh = "playerctl next || rmpc next";
+            };
+
+            XF86AudioPlay = {
+              _props = {
+                allow-when-locked = true;
+                repeat = false;
+              };
+
+              spawn-sh = "playerctl play-pause || rmpc togglepause";
+            };
+
+            XF86AudioPrev = {
+              _props = {
+                allow-when-locked = true;
+                repeat = false;
+              };
+
+              spawn-sh = "playerctl previous || rmpc prev";
+            };
+
+            XF86AudioRaiseVolume = {
+              _props = {
+                inherit cooldown-ms;
+
+                allow-when-locked = true;
+              };
+
+              spawn-sh = "nu ${../audio/set-volume.nu} raise";
+            };
+
+            XF86AudioStop = {
+              _props = {
+                allow-when-locked = true;
+                repeat = false;
+              };
+
+              spawn = ["playerctl" "stop"];
+            };
+
+            XF86LaunchA = {
+              _props.repeat = false;
+              toggle-overview = {};
+            };
           }
+          // (
+            if cfg.laptop
+            then {
+              "Ctrl+XF86MonBrightnessDown".spawn-sh = "brightnessctl --device tpacpi::kbd_backlight set 1%-";
+              "Ctrl+XF86MonBrightnessUp".spawn-sh = "brightnessctl --device tpacpi::kbd_backlight set 1%+";
 
-          cursor {
-            hide-after-inactive-ms 1000
-            xcursor-size ${toString config.cursor.size}
-          }
+              "Super+XF86MonBrightnessDown" = {
+                _props = {
+                  inherit cooldown-ms;
 
-          hotkey-overlay {
-            skip-at-startup
-          }
+                  allow-when-locked = true;
+                  hotkey-overlay-title = null;
+                };
 
-          input {
-            keyboard {
+                spawn-sh = "brightnessctl set 1%";
+              };
 
-              xkb {
-                options "${
-            builtins.concatStringsSep ", " [
+              "Super+XF86MonBrightnessUp" = {
+                _props = {
+                  inherit cooldown-ms;
+
+                  allow-when-locked = true;
+                  hotkey-overlay-title = null;
+                };
+
+                spawn-sh = "brightnessctl set 100%";
+              };
+
+              XF86MonBrightnessDown.spawn-sh = "brightnessctl set 1%-";
+              XF86MonBrightnessUp .spawn-sh = "brightnessctl set 1%+";
+            }
+            else {
+              "Super+XF86MonBrightnessDown" = {
+                _props = {
+                  inherit cooldown-ms;
+
+                  allow-when-locked = true;
+                  hotkey-overlay-title = null;
+                };
+
+                spawn-sh = "nu ${../monitors/brightness.nu} set min";
+              };
+
+              "Super+XF86MonBrightnessUp" = {
+                _args = ["hotkey-overlay-title"];
+
+                _props = {
+                  inherit cooldown-ms;
+
+                  allow-when-locked = true;
+                };
+
+                spawn-sh = "nu ${../monitors/brightness.nu} set max";
+              };
+
+              XF86MonBrightnessDown = {
+                _props = {
+                  inherit cooldown-ms;
+
+                  allow-when-locked = true;
+                };
+
+                spawn-sh = "nu ${../monitors/brightness.nu} decrease";
+              };
+
+              XF86MonBrightnessUp = {
+                _props = {
+                  inherit cooldown-ms;
+
+                  allow-when-locked = true;
+                };
+
+                spawn-sh = "nu ${../monitors/brightness.nu} increase";
+              };
+            }
+          );
+
+        cursor = {
+          hide-after-inactive-ms = 1000;
+          xcursor-size = config.cursor.size;
+        };
+
+        hotkey-overlay.skip-at-startup = {};
+
+        input = {
+          keyboard = {
+            xkb.options = builtins.concatStringsSep ", " [
               "caps:escape, compose:ralt"
               cfg.input.keyboard.xkb.options
-            ]
-          }"
-              }
+            ];
 
-              repeat-delay 200
-              repeat-rate 75
-            }
+            repeat-delay = 200;
+            repeat-rate = 75;
+          };
 
-            touchpad {
-              click-method "clickfinger"
-              dwt
-              dwtp
-              tap
-            }
-          }
+          touchpad = {
+            click-method = "clickfinger";
+            dwt = {};
+            dwtp = {};
+            tap = {};
+          };
+        };
 
-          layout {
-            always-center-single-column
-            background-color "${config.lib.stylix.colors.withHashtag.base01}"
+        layout = let
+          proportions = [
+            {proportion = 1.0;}
+            {proportion = 0.66667;}
+            {proportion = 0.5;}
+            {proportion = 0.33333;}
+          ];
+        in {
+          always-center-single-column = {};
+          background-color = config.lib.stylix.colors.withHashtag.base01;
+          default-column-width.proportion = 0.5;
+          focus-ring.width = 1;
+          preset-column-widths._children = proportions;
+          preset-window-heights._children = proportions;
+          tab-indicator.hide-when-single-tab = {};
+        };
 
-            default-column-width {
-              proportion 0.5
-            }
+        prefer-no-csd = {};
+        screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
 
-            focus-ring {
-              width 1
-            }
+        # // TODO: remove on laptop?
+        spawn-at-startup = "sunsetr";
 
-            preset-column-widths {
-              ${proportions}
-            }
-
-            preset-window-heights {
-              ${proportions}
-            }
-
-            tab-indicator {
-              hide-when-single-tab
-            }
-          }
-
-          prefer-no-csd
-
-          screenshot-path \
-            "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
-
-          spawn-at-startup "sunsetr"
-          spawn-at-startup "systemctl" "--user" "enable" "wpaperd"
-
-          window-rule {
-            focus-ring {
-              active-color "#${config.lib.stylix.colors.base06}"
-            }
-
-            open-maximized-to-edges true
-          }
-        '';
+        window-rule = {
+          focus-ring.active-color = "#${config.lib.stylix.colors.base06}";
+          open-maximized-to-edges = true;
+        };
       };
 
-      portal = {
-        config.common.default = "*";
-        enable = true;
-
-        extraPortals = with pkgs; [
-          xdg-desktop-portal-gnome
-          xdg-desktop-portal-gtk
-        ];
-      };
+      validation.enable = false;
     };
   };
 
@@ -432,6 +515,8 @@
     ../idle
     ../lock
     ../media
+    niri.homeModules.default
+    niri.homeModules.stylix
     ../notifications
     ../polkit
     ../shell/nushell

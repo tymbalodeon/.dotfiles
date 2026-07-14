@@ -5,6 +5,7 @@
   hostName,
   hostType,
   lib,
+  niri,
   nix-index-database,
   secrets,
   sops-nix,
@@ -21,6 +22,7 @@
           base16-helix
           hostName
           hostType
+          niri
           nix-index-database
           secrets
           sops-nix
