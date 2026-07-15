@@ -501,8 +501,6 @@
           open-maximized-to-edges = true;
         };
       };
-
-      validation.enable = false;
     };
   };
 
