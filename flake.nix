@@ -87,7 +87,6 @@
   }: let
     commonInputs = {
       inherit
-        niri
         nix-index-database
         src
         zk-graph
@@ -124,6 +123,7 @@
                 base16-helix
                 home-manager
                 musnix
+                niri
                 secrets
                 solaar
                 sops-nix
