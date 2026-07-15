@@ -414,12 +414,11 @@
               };
 
               "Super+XF86MonBrightnessUp" = {
-                _args = ["hotkey-overlay-title"];
-
                 _props = {
                   inherit cooldown-ms;
 
                   allow-when-locked = true;
+                  hotkey-overlay-title = null;
                 };
 
                 spawn-sh = "nu ${../monitors/brightness.nu} set max";
