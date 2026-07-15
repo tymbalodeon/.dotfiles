@@ -3,7 +3,6 @@
 
   programs = {
     bash = {
-      bashrcExtra = "set -o vi";
       enable = true;
       historyControl = ["erasedups"];
       historyIgnore = ["cd" "exit" "ls"];
