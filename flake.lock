@@ -452,11 +452,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1783966637,
-        "narHash": "sha256-hOP+6qnU9fUNj81Pf//PZ31rT5DPilMKitijMtBi12c=",
+        "lastModified": 1784155826,
+        "narHash": "sha256-UVSn05UV5tlyYAgocTA83ujbKreFrivRG/KGtQAErds=",
         "ref": "refs/heads/main",
-        "rev": "889b49712d22394e0d21402d0d4d502d40c309b0",
-        "revCount": 141,
+        "rev": "f8c23c6d66d1a3ef8b5f7625d10eac84ce9af2ea",
+        "revCount": 142,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       },
