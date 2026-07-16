@@ -12,7 +12,6 @@
       themeConfig = {
         BackgroundColor = colors.base00;
         DateFormat = "dddd MMMM d yyyy";
-
         DateTextColor = colors.base05;
         DimBackground = 1.0;
         DimBackgroundColor = colors.base00;

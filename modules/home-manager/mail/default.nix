@@ -1,4 +1,68 @@
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  accounts = builtins.toJSON (
+    map (
+      account: let
+        username = getUsername account.value.address;
+      in {
+        inherit username;
+
+        password-path = config.sops.secrets."gmail/${username}/password".path;
+        real-name = account.value.realName;
+      }
+    )
+    gmailAccounts
+  );
+
+  getUsername = address:
+    lib.lists.elemAt
+    (lib.strings.splitString "@" address)
+    0;
+
+  gmailAccounts = (
+    builtins.filter
+    (account: account.value.flavor == "gmail.com")
+    (lib.attrsToList config.accounts.email.accounts)
+  );
+in {
+  # FIXME
+  accounts.email = {
+    accounts = let
+      user = import ../../users;
+    in {
+      ${user.email} = {
+        address = user.email;
+        flavor = "gmail.com";
+        primary = true;
+        realName = user.name;
+      };
+    };
+
+    maildirBasePath = "Mail";
+  };
+
+  home.activation.mail = let
+    script =
+      pkgs.writeScript "activate-mail"
+      #nushell
+      (
+        ''
+          def gmail-accounts [] {
+            '${accounts}'
+            | from json
+          }
+        ''
+        + builtins.readFile ./home-activation.nu
+      );
+  in
+    lib.hm.dag.entryAfter ["writeBoundary"] ''
+      run ${lib.getExe pkgs.nushell} "${script}"
+    '';
+
   imports = [
     ../secrets
     ../shell/nushell
@@ -7,10 +71,12 @@
   nushell.extraScripts = [{source = ./mail.nu;}];
 
   programs = {
-    neomutt = {
+    aerc = {
       enable = true;
+      extraConfig.general.unsafe-accounts-conf = true;
+    };
 
-      # FIXME
+    neomutt = {
       extraConfig = ''
         color attachment color5 default
         color body color2 default [\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+
@@ -56,7 +122,13 @@
     };
   };
 
-  # FIXME
-  # services.protonmail-bridge.enable = true;
-  sops.secrets."gmail/password" = {};
+  services.protonmail-bridge.enable = true;
+
+  sops.secrets =
+    builtins.foldl' (a: b: a // b) {}
+    (
+      map
+      (account: {"gmail/${getUsername account.value.address}/password" = {};})
+      gmailAccounts
+    );
 }
