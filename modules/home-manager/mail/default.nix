@@ -29,7 +29,6 @@
     (lib.attrsToList config.accounts.email.accounts)
   );
 in {
-  # FIXME
   accounts.email = {
     accounts = let
       user = import ../../users;
@@ -63,12 +62,7 @@ in {
       run ${lib.getExe pkgs.nushell} "${script}"
     '';
 
-  imports = [
-    ../secrets
-    ../shell/nushell
-  ];
-
-  nushell.extraScripts = [{source = ./mail.nu;}];
+  imports = [../secrets];
 
   programs = {
     aerc = {
