@@ -29,7 +29,9 @@
     wayland.windowManager.niri = {
       enable = true;
 
-      settings = {
+      settings = let
+        colors = config.lib.stylix.colors.withHashtag;
+      in {
         binds = let
           cooldown-ms = 50;
         in
@@ -448,7 +450,7 @@
 
         cursor = {
           hide-after-inactive-ms = 1000;
-          xcursor-size = config.cursor.size;
+          xcursor-size = config.stylix.cursor.size;
         };
 
         hotkey-overlay.skip-at-startup = {};
@@ -481,7 +483,8 @@
           ];
         in {
           always-center-single-column = {};
-          background-color = config.lib.stylix.colors.withHashtag.base01;
+          background-color = colors.base01;
+          border.off = {};
           default-column-width.proportion = 0.5;
           focus-ring.width = 1;
           preset-column-widths._children = proportions;
@@ -496,7 +499,7 @@
         spawn-at-startup = "sunsetr";
 
         window-rule = {
-          focus-ring.active-color = "#${config.lib.stylix.colors.base06}";
+          focus-ring.active-color = colors.base06;
           open-maximized-to-edges = true;
         };
       };
@@ -507,7 +510,6 @@
     ../application-launcher
     ../audio
     ../bar
-    ../cursor
     ../file-manager/nautilus
     ../idle
     ../lock

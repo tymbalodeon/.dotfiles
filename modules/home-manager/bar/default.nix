@@ -271,12 +271,10 @@
         };
       };
 
-      style = lib.mkAfter ''
-        * {
-          font-family: ${config.stylix.fonts.sansSerif.name}, "Font Awesome 7 Free";
-          font-size: 13px;
-        }
-      '';
+      style = let
+        font = config.stylix.fonts.sansSerif.name;
+      in
+        lib.mkAfter ''* { font-family: ${font}, "Font Awesome 7 Free"; } '';
 
       systemd.enable = true;
     };

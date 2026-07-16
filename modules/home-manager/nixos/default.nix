@@ -3,21 +3,15 @@
   pkgs,
   ...
 }: let
-  cursorTheme = "Bibata-Modern-Classic";
+  inherit (config.stylix) cursor;
 in {
   browser.enable = true;
 
   gtk = {
     enable = true;
-
-    cursorTheme = {
-      name = cursorTheme;
-      package = pkgs.bibata-cursors;
-      size = config.cursor.size;
-    };
-
-    gtk3.extraConfig."gtk-cursor-theme-name" = cursorTheme;
-    gtk4.extraConfig.Settings = cursorTheme;
+    cursorTheme = cursor;
+    gtk3.extraConfig."gtk-cursor-theme-name" = cursor.name;
+    gtk4.extraConfig.Settings = cursor.name;
 
     iconTheme = {
       name = "Adwaita-dark";
@@ -35,9 +29,6 @@ in {
     pointerCursor = {
       enable = true;
       gtk.enable = true;
-      name = cursorTheme;
-      package = pkgs.bibata-cursors;
-      size = 16;
       x11.enable = true;
     };
   };
@@ -48,7 +39,6 @@ in {
     ../bluetooth
     ../browser
     ../clipboard
-    ../cursor
     ../dictionary
     ../mail
     ../monitors

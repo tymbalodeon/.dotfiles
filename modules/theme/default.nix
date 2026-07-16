@@ -6,6 +6,13 @@
 }: {
   config.stylix = with pkgs; {
     base16Scheme = "${base16-schemes}/share/themes/${config.stylix.theme}.yaml";
+
+    cursor = {
+      name = "Bibata-Modern-Classic";
+      package = pkgs.bibata-cursors;
+      size = 16;
+    };
+
     enable = true;
 
     fonts = {
@@ -23,6 +30,8 @@
         name = "Gentium Book";
         package = gentium-book;
       };
+
+      sizes.applications = 9;
     };
 
     polarity = "dark";

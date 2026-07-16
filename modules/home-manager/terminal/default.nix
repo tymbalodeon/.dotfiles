@@ -5,9 +5,7 @@
   pkgs,
   ...
 }: {
-  config = let
-    cfg = config.kitty;
-  in {
+  config = {
     home.packages = [pkgs.google-fonts];
 
     programs.kitty =
@@ -26,9 +24,6 @@
             if hostType == "home-manager"
             then "Iosevka"
             else config.stylix.fonts.monospace.name;
-
-          # TODO: figure out why lib.mkForce is necessary
-          size = lib.mkForce cfg.fontSize;
         };
 
         keybindings = {
@@ -65,10 +60,4 @@
         themeFile = "Catppuccin-Macchiato";
       };
   };
-
-  options.kitty.fontSize = with lib;
-    mkOption {
-      default = 9.0;
-      type = types.float;
-    };
 }

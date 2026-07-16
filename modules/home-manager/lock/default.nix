@@ -30,10 +30,12 @@
           }
         ];
 
-        label = [
+        label = let
+          baseFontSize = config.stylix.fonts.sizes.desktop;
+        in [
           {
             color = foregroundColor;
-            font_size = 48;
+            font_size = baseFontSize * 3;
             position = config.lock.timePosition;
             text = "$TIME12";
             valign = "top";
@@ -41,7 +43,7 @@
 
           {
             color = foregroundColor;
-            font_size = 16;
+            font_size = baseFontSize;
             position = config.lock.datePosition;
             text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
             valign = "top";

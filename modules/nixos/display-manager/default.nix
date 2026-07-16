@@ -20,10 +20,7 @@
         DropdownSelectedBackgroundColor = colors.base01;
         DropdownTextColor = colors.base05;
         Font = config.stylix.fonts.sansSerif.name;
-
-        # FIXME: make an option and change on different hosts
-        FontSize = 16;
-
+        FontSize = config.stylix.fonts.sizes.desktop;
         FormBackgroundColor = colors.base00;
         HaveFormBackground = true;
         HeaderTextColor = colors.base05;
@@ -62,7 +59,7 @@
     ];
 
     services.displayManager = let
-      cursorTheme = "Bibata-Modern-Classic";
+      inherit (config.stylix) cursor;
     in {
       inherit (cfg) defaultSession;
 
@@ -74,10 +71,8 @@
           AutoLogin.User = config.nixos.username;
 
           Theme = {
-            # FIXME: pull from config.stylix.cursor.size
-            CursorSize = 24;
-
-            CursorTheme = cursorTheme;
+            CursorSize = cursor.size;
+            CursorTheme = cursor.name;
           };
         };
 
