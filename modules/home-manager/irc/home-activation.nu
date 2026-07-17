@@ -6,11 +6,11 @@ def main [] {
     return
   }
 
-  mkdir (senpai-config-path | path dirname)
+  mkdir (config-path | path dirname)
 
   $"address \"ircs+insecure://mazma\"
 nickname \"(nickname)\"
 password \"(password)\"
 "
-  | save --force (senpai-config-path)
+  | save --force config-path
 }

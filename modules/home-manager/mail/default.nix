@@ -64,56 +64,9 @@ in {
 
   imports = [../secrets];
 
-  programs = {
-    aerc = {
-      enable = true;
-      extraConfig.general.unsafe-accounts-conf = true;
-    };
-
-    neomutt = {
-      extraConfig = ''
-        color attachment color5 default
-        color body color2 default [\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+
-        color body color2 default (https?|ftp)://[\-\.,/%~_:?&=\#a-zA-Z0-9]+
-        color body color4 default (^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)
-        color body color4 default (^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$)
-        color body color4 default (^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)
-        color error color1 default
-        color hdrdefault color13 default
-        color header color13 default "^From:"
-        color header color13 default "^Subject:"
-        color index_author color4 default ".*"
-        color index color13 default ~T
-        color index color1 default ~D
-        color index color1 default ~F
-        color index color2 default ~N
-        color index_date color5 default ".*"
-        color index_flags color3 default ".*"
-        color index_subject color6 default ".*"
-        color indicator default color8
-        color normal default default
-        color quoted1 color7 default
-        color quoted2 color8 default
-        color quoted3 color0 default
-        color quoted4 color0 default
-        color quoted5 color0 default
-        color quoted color15 default
-        color search color4 default
-        color sidebar_flagged color1 default
-        color sidebar_new color10 default
-        color signature color8 default
-        color status color15 default
-        color tilde color15 default
-        color tree color15 default
-
-        set account_command = "${./account-command.nu}"
-        set virtual_spoolfile
-      '';
-
-      sidebar.enable = true;
-      sort = "reverse-date";
-      vimKeys = true;
-    };
+  programs.aerc = {
+    enable = true;
+    extraConfig.general.unsafe-accounts-conf = true;
   };
 
   services.protonmail-bridge.enable = true;

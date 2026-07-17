@@ -168,29 +168,8 @@ in {
           (
             ''
               def brave-secrets-base [] {
-                $env.HOME
-                | path join .config/sops-nix/secrets/BraveSoftware/Brave-Browser/Default/Preferences
-              }
-
-              def open-secret [path: string] {
-                try {
-                  open (
-                    brave-secrets-base
-                    | path join $path
-                  )
-                }
-              }
-
-              def brave-sync-v2-seed [] {
-                open-secret brave_sync_v2/seed
-              }
-
-              def sync-encryption_bootstrap_token_per_account-key [] {
-                open-secret sync/encryption_bootstrap_token_per_account/key
-              }
-
-              def sync-encryption_bootstrap_token_per_account-value [] {
-                open-secret sync/encryption_bootstrap_token_per_account/value
+                "${config.xdg.configHome}"
+                | path join sops-nix/secrets/BraveSoftware/Brave-Browser/Default/Preferences
               }
 
               def --wrapped jq [...args: string] {

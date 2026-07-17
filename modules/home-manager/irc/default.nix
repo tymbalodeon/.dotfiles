@@ -5,7 +5,7 @@
   ...
 }: let
   nicknamePath = "irc/nickname";
-  psaswordPath = "irc/password";
+  passwordPath = "irc/password";
 in {
   home = {
     activation.irc = let
@@ -14,7 +14,7 @@ in {
         # nushell
         (
           ''
-            def senpai-config-path [] {
+            def config-path [] {
               "${config.xdg.configHome}"
               | path join senpai/senpai.scfg
             }
@@ -27,7 +27,7 @@ in {
 
             def password [] {
               try {
-                open ${config.sops.secrets.${psaswordPath}.path}
+                open ${config.sops.secrets.${passwordPath}.path}
               }
             }
           ''
@@ -50,6 +50,6 @@ in {
 
   sops.secrets = {
     ${nicknamePath} = {};
-    ${psaswordPath} = {};
+    ${passwordPath} = {};
   };
 }
