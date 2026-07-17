@@ -19,6 +19,8 @@
     gmailAccounts
   );
 
+  folderMapPath = "${config.xdg.configHome}/aerc/folders";
+
   getUsername = address:
     lib.lists.elemAt
     (lib.strings.splitString "@" address)
@@ -45,23 +47,39 @@ in {
     maildirBasePath = "Mail";
   };
 
-  home.activation.mail = let
-    script =
-      pkgs.writeScript "activate-mail"
-      #nushell
-      (
-        ''
-          def gmail-accounts [] {
-            '${accounts}'
-            | from json
-          }
-        ''
-        + builtins.readFile ./home-activation.nu
-      );
-  in
-    lib.hm.dag.entryAfter ["writeBoundary"] ''
-      run ${lib.getExe pkgs.nushell} "${script}"
+  home = {
+    activation.mail = let
+      script =
+        pkgs.writeScript "activate-mail"
+        #nushell
+        (
+          ''
+            def gmail-accounts [] {
+              '${accounts}'
+              | from json
+            }
+
+            def folder-map-path [] {
+              ${folderMapPath}
+            }
+          ''
+          + builtins.readFile ./home-activation.nu
+        );
+    in
+      lib.hm.dag.entryAfter ["writeBoundary"] ''
+        run ${lib.getExe pkgs.nushell} "${script}"
+      '';
+
+    file."${folderMapPath}".text = ''
+      All Mail = [Gmail]/All Mail
+      Drafts   = [Gmail]/Drafts
+      Inbox    = INBOX
+      Sent     = [Gmail]/Sent Mail
+      Spam     = [Gmail]/Spam
+      Starred  = [Gmail]/Starred
+      Trash    = [Gmail]/Bin
     '';
+  };
 
   imports = [
     ../secrets
@@ -79,10 +97,7 @@ in {
     enable = true;
 
     extraConfig = {
-      filters = {
-        "text/plain" = "fold --width 80 | colorize";
-      };
-
+      filters."text/plain" = "fold --width 80 | colorize";
       general.unsafe-accounts-conf = true;
     };
   };

@@ -17,6 +17,7 @@ carddav-source-cred-cmd = echo ($password)
 carddav-source = https://($address_escaped)@www.googleapis.com/carddav/v1/principals/($address)/lists/default
 copy-to = Sent
 default = INBOX
+folder-map = (folder-map-path)
 folders-sort = INBOX
 from = ($account.real-name) <($address)>
 outgoing = smtps+plain://($address_escaped):($password_escaped)@smtp.gmail.com:465
