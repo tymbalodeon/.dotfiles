@@ -77,7 +77,14 @@ in {
 
   programs.aerc = {
     enable = true;
-    extraConfig.general.unsafe-accounts-conf = true;
+
+    extraConfig = {
+      filters = {
+        "text/plain" = "fold --width 80 | colorize";
+      };
+
+      general.unsafe-accounts-conf = true;
+    };
   };
 
   services.protonmail-bridge.enable = true;
