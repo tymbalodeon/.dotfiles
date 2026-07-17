@@ -116,38 +116,38 @@
     };
 
     user = let
-      user = import ../users;
+      defaultUser = import ../users;
     in {
       email = mkOption {
-        default = user.email;
+        default = builtins.elemAt defaultUser.email.addresses 0;
         type = str;
       };
 
       githubUsername = mkOption {
-        default = user.githubUsername;
+        default = defaultUser.githubUsername;
         type = str;
       };
 
       gitlabUsername = mkOption {
-        default = user.gitlabUsername;
+        default = defaultUser.gitlabUsername;
         type = str;
       };
 
       name = mkOption {
-        default = user.name;
+        default = defaultUser.name;
         type = str;
       };
 
       nbRemotes = mkOption {
         default =
-          if builtins.hasAttr "nbRemotes" user
-          then user.nbRemotes
-          else ["git@codeberg.org:${user.githubUsername}/notes.git"];
+          if builtins.hasAttr "nbRemotes" defaultUser
+          then defaultUser.nbRemotes
+          else ["git@codeberg.org:${defaultUser.githubUsername}/notes.git"];
         type = listOf str;
       };
 
       username = mkOption {
-        default = user.username;
+        default = defaultUser.username;
         type = str;
       };
     };

@@ -125,15 +125,15 @@
     inherit (lib) mkOption types;
 
     inherit (types) str;
-    user = import ../users;
+    defaultUser = import ../users;
   in {
     name = mkOption {
-      default = user.name;
+      default = defaultUser.name;
       type = str;
     };
 
     username = mkOption {
-      default = user.username;
+      default = defaultUser.username;
       type = str;
     };
   };

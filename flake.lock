@@ -452,11 +452,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1784155826,
-        "narHash": "sha256-UVSn05UV5tlyYAgocTA83ujbKreFrivRG/KGtQAErds=",
+        "lastModified": 1784320426,
+        "narHash": "sha256-LEwF60zKoIAHmM12ryTQ17+/e73+fs2IHyxcj9J3gu4=",
         "ref": "refs/heads/main",
-        "rev": "f8c23c6d66d1a3ef8b5f7625d10eac84ce9af2ea",
-        "revCount": 142,
+        "rev": "e931c61ea715fec54e2343e850b4811cc6296fbb",
+        "revCount": 143,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       },
@@ -660,10 +660,10 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1784251989,
-        "narHash": "sha256-CQq3Di2MxxoVZwPX9q1Kl+SWWfQJkjeL6dd7sDhbkw8=",
+        "lastModified": 1784337663,
+        "narHash": "sha256-/tPD4alp3UZakPp27rskDHxfAAq/Mfa3BmK5b7M9i4U=",
         "ref": "refs/heads/trunk",
-        "rev": "0977f5bee20c169cd190504be0e10069074810a3",
+        "rev": "c1da9ca80b026aa141aa57ee693911548901ca1f",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/tymbalodeon/secrets.git"

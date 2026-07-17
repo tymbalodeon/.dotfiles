@@ -1,5 +1,5 @@
 {
-  email = "benrosen@upenn.edu";
+  email.addresses = ["benrosen@upenn.edu"];
   githubUsername = "benjaminrosen";
   gitlabUsername = "benrosen";
 

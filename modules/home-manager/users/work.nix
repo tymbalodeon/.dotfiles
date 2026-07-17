@@ -23,15 +23,15 @@
     inherit (types) listOf str;
 
     getUserValue = attr: (
-      if builtins.hasAttr attr user
-      then user.${attr}
+      if builtins.hasAttr attr defaultUser
+      then defaultUser.${attr}
       else config.user.${attr}
     );
 
-    user = import ../../users/work.nix;
+    defaultUser = import ../../users/work.nix;
   in {
     email = mkOption {
-      default = getUserValue "email";
+      default = builtins.elemAt defaultUser.email.addresses 0;
       type = str;
     };
 

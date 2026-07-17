@@ -4,45 +4,64 @@
   pkgs,
   ...
 }: let
-  accounts = builtins.toJSON (
-    map (
-      account: let
-        address = account.value.address;
-        username = getUsername account.value.address;
-      in {
-        inherit username;
+  addresses = defaultUser.email.addresses;
+  defaultUser = import ../../users;
 
-        password-path = config.sops.secrets."mail/${address}/password".path;
-        real-name = account.value.realName;
-      }
-    )
-    gmailAccounts
-  );
+  filterAddresses = host:
+    builtins.filter
+    (address: lib.strings.hasSuffix host address)
+    addresses;
 
-  folderMapPath = "${config.xdg.configHome}/aerc/folders";
+  getConfigs = addresses:
+    builtins.toJSON (
+      map (
+        address: let
+          username = getUsername address;
+        in {
+          inherit address username;
+
+          password-path = getPasswordPath address;
+        }
+      )
+      addresses
+    );
+
+  getPasswordPath = address: config.sops.secrets."mail/${address}/password".path;
 
   getUsername = address:
     lib.lists.elemAt
     (lib.strings.splitString "@" address)
     0;
 
-  gmailAccounts = (
-    builtins.filter
-    (account: account.value.flavor == "gmail.com")
-    (lib.attrsToList config.accounts.email.accounts)
-  );
+  gmailAddresses = filterAddresses "gmail.com";
+  gmailConfigs = getConfigs gmailAddresses;
+  gmailFolderMapPath = "${config.xdg.configHome}/aerc/gmail-folders";
+  protonAddresses = filterAddresses "pm.me";
+  protonConfigs = getConfigs protonAddresses;
 in {
   accounts.email = {
     accounts = let
-      user = import ../../users;
-    in {
-      ${user.email} = {
-        address = user.email;
-        flavor = "gmail.com";
-        primary = true;
-        realName = user.name;
-      };
-    };
+      defaultUser = import ../../users;
+    in
+      builtins.listToAttrs (
+        lib.imap0
+        (index: address: {
+          name = address;
+
+          value = {
+            inherit address;
+
+            flavor =
+              if lib.strings.hasSuffix "gmail.com" address
+              then "gmail.com"
+              else "plain";
+
+            primary = index == 0;
+            realName = defaultUser.name;
+          };
+        })
+        defaultUser.email.addresses
+      );
 
     maildirBasePath = "Mail";
   };
@@ -54,13 +73,22 @@ in {
         #nushell
         (
           ''
+            def real-name [] {
+              "${defaultUser.name}"
+            }
+
             def gmail-accounts [] {
-              '${accounts}'
+              '${gmailConfigs}'
+              | from json
+            }
+
+            def protonmail-accounts [] {
+              '${protonConfigs}'
               | from json
             }
 
             def folder-map-path [] {
-              "${folderMapPath}"
+              "${gmailFolderMapPath}"
             }
           ''
           + builtins.readFile ./home-activation.nu
@@ -71,11 +99,10 @@ in {
         run ${lib.getExe pkgs.nushell} "${script}"
       '';
 
-    file."${folderMapPath}" = {
+    file."${gmailFolderMapPath}" = {
       force = true;
 
       text = ''
-        Inbox= INBOX
         All Mail = [Gmail]/All Mail
         Drafts = [Gmail]/Drafts
         Sent = [Gmail]/Sent Mail
@@ -84,6 +111,10 @@ in {
         Trash = [Gmail]/Trash
       '';
     };
+
+    packages = with pkgs; [
+      protonmail-bridge-gui
+    ];
   };
 
   imports = [
@@ -113,7 +144,7 @@ in {
     builtins.foldl' (a: b: a // b) {}
     (
       map
-      (account: {"mail/${account.value.address}/password" = {};})
-      gmailAccounts
+      (address: {"mail/${address}/password" = {};})
+      (gmailAddresses ++ protonAddresses)
     );
 }
