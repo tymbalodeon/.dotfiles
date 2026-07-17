@@ -7,11 +7,12 @@
   accounts = builtins.toJSON (
     map (
       account: let
+        address = account.value.address;
         username = getUsername account.value.address;
       in {
         inherit username;
 
-        password-path = config.sops.secrets."gmail/${username}/password".path;
+        password-path = config.sops.secrets."mail/${address}/password".path;
         real-name = account.value.realName;
       }
     )
@@ -85,7 +86,7 @@ in {
     builtins.foldl' (a: b: a // b) {}
     (
       map
-      (account: {"gmail/${getUsername account.value.address}/password" = {};})
+      (account: {"mail/${account.value.address}/password" = {};})
       gmailAccounts
     );
 }

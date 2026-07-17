@@ -660,10 +660,10 @@
     "secrets": {
       "flake": false,
       "locked": {
-        "lastModified": 1784226435,
-        "narHash": "sha256-zXkKE/Ld9+PXV0RTNYltIHek7mwrW+aV/SZ0UPh26y4=",
+        "lastModified": 1784251989,
+        "narHash": "sha256-CQq3Di2MxxoVZwPX9q1Kl+SWWfQJkjeL6dd7sDhbkw8=",
         "ref": "refs/heads/trunk",
-        "rev": "b931462083cb8a3f0e85cbbc8703e4b38284462f",
+        "rev": "0977f5bee20c169cd190504be0e10069074810a3",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/tymbalodeon/secrets.git"
