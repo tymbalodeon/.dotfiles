@@ -20,7 +20,6 @@
                 | drop nth 0..1
                 | path join
                 | str trim
-                | prepend $env.HOME
             )'` > $out"
           }"
         );
@@ -28,6 +27,8 @@
         builtins.listToAttrs (
           map
           (script: let
+            basePath = "${config.home.homeDirectory}/${autoloadDirectory}";
+
             filename =
               if builtins.hasAttr "source" script && script.source != null
               then baseNameOf script.source
@@ -39,7 +40,7 @@
               if builtins.hasAttr "includes" script
               then
                 lib.strings.join "\n" (
-                  map (include: "source ${autoloadDirectory}/${include}.nu")
+                  map (include: "source ${basePath}/${include}.nu")
                   script.includes
                 )
               else "";
@@ -54,7 +55,7 @@
               then includes + "\n\n" + originalText
               else originalText;
           in {
-            name = "${autoloadDirectory}/${filename}";
+            name = "${basePath}/${filename}";
 
             value = {
               inherit text;
