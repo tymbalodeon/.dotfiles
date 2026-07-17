@@ -1,6 +1,6 @@
 def main [] {
   let config_path = ($env.HOME | path join .config/aerc/accounts.conf)
-  let local_config = (open $config_path)
+  let local_config = try { open $config_path }
 
   gmail-accounts
   | each {
