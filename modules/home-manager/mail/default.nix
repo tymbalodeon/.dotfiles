@@ -60,7 +60,7 @@ in {
             }
 
             def folder-map-path [] {
-              ${folderMapPath}
+              "${folderMapPath}"
             }
           ''
           + builtins.readFile ./home-activation.nu
@@ -70,15 +70,19 @@ in {
         run ${lib.getExe pkgs.nushell} "${script}"
       '';
 
-    file."${folderMapPath}".text = ''
-      All Mail = [Gmail]/All Mail
-      Drafts   = [Gmail]/Drafts
-      Inbox    = INBOX
-      Sent     = [Gmail]/Sent Mail
-      Spam     = [Gmail]/Spam
-      Starred  = [Gmail]/Starred
-      Trash    = [Gmail]/Bin
-    '';
+    file."${folderMapPath}" = {
+      force = true;
+
+      text = ''
+        Inbox= INBOX
+        All Mail = [Gmail]/All Mail
+        Drafts = [Gmail]/Drafts
+        Sent = [Gmail]/Sent Mail
+        Spam = [Gmail]/Spam
+        Starred = [Gmail]/Starred
+        Trash = [Gmail]/Trash
+      '';
+    };
   };
 
   imports = [

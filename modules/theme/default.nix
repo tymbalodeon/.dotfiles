@@ -31,7 +31,12 @@
         package = gentium-book;
       };
 
-      sizes.applications = 9;
+      sizes = let
+        size = 9;
+      in {
+        applications = size;
+        desktop = size;
+      };
     };
 
     polarity = "dark";

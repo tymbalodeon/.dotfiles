@@ -84,7 +84,9 @@
             '';
         };
 
-      packages = [pkgs.fontconfig];
+      packages = with pkgs; [
+        fontconfig
+      ];
     };
 
     programs.nushell = {
