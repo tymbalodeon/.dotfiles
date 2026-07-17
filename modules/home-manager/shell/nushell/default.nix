@@ -5,25 +5,26 @@
   ...
 }: {
   config = let
-    autoload_directory = lib.removeSuffix "\n" (
-      lib.readFile "${
-        pkgs.runCommand "nushell-user-autoload-dirs"
-        {buildInputs = [pkgs.nushell];}
-        "echo `nu --commands 'print (
+    cfg = config.nushell;
+  in {
+    home = {
+      file = let
+        autoloadDirectory = lib.removeSuffix "\n" (
+          lib.readFile "${
+            pkgs.runCommand "nushell-user-autoload-dirs"
+            {buildInputs = [pkgs.nushell];}
+            "echo `nu --commands 'print (
                 $nu.user-autoload-dirs
                 | first
                 | path split
                 | drop nth 0..1
                 | path join
                 | str trim
+                | prepend $env.HOME
             )'` > $out"
-      }"
-    );
-
-    cfg = config.nushell;
-  in {
-    home = {
-      file =
+          }"
+        );
+      in
         builtins.listToAttrs (
           map
           (script: let
@@ -38,7 +39,7 @@
               if builtins.hasAttr "includes" script
               then
                 lib.strings.join "\n" (
-                  map (include: "source ${cfg.autoloadDirectory}/${include}.nu")
+                  map (include: "source ${autoloadDirectory}/${include}.nu")
                   script.includes
                 )
               else "";
@@ -53,7 +54,8 @@
               then includes + "\n\n" + originalText
               else originalText;
           in {
-            name = "${autoload_directory}/${filename}";
+            name = "${autoloadDirectory}/${filename}";
+
             value = {
               inherit text;
 
@@ -83,9 +85,6 @@
 
       packages = [pkgs.fontconfig];
     };
-
-    nushell.autoloadDirectory =
-      lib.mkForce "${config.home.homeDirectory}/${autoload_directory}";
 
     programs.nushell = {
       configFile.source = ./config.nu;
@@ -148,10 +147,6 @@
     inherit (lib) mkOption types;
   in
     with types; {
-      autoloadDirectory = mkOption {
-        type = str;
-      };
-
       extraScripts = mkOption {
         type = listOf (submodule {
           options = {
