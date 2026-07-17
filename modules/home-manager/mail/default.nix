@@ -62,7 +62,17 @@ in {
       run ${lib.getExe pkgs.nushell} "${script}"
     '';
 
-  imports = [../secrets];
+  imports = [
+    ../secrets
+    ../shell/nushell
+  ];
+
+  nushell.extraAliases = let
+    mailProgram = "aerc";
+  in {
+    email = mailProgram;
+    mail = mailProgram;
+  };
 
   programs.aerc = {
     enable = true;

@@ -128,12 +128,14 @@
         show_banner = false;
       };
 
-      shellAliases = {
-        l = "ls --long";
-        la = "ls --long --all";
-        lsa = "ls --all";
-        ssh = "nu '${./ssh.nu}'";
-      };
+      shellAliases =
+        {
+          l = "ls --long";
+          la = "ls --long --all";
+          lsa = "ls --all";
+          ssh = "nu '${./ssh.nu}'";
+        }
+        // cfg.extraAliases;
     };
   };
 
@@ -147,26 +149,32 @@
     inherit (lib) mkOption types;
   in
     with types; {
+      extraAliases = mkOption {
+        type = attrsOf str;
+      };
+
       extraScripts = mkOption {
-        type = listOf (submodule {
-          options = {
-            includes = mkOption {
-              type = listOf str;
-            };
+        type = listOf (
+          submodule {
+            options = {
+              includes = mkOption {
+                type = listOf str;
+              };
 
-            name = mkOption {
-              type = str;
-            };
+              name = mkOption {
+                type = str;
+              };
 
-            source = mkOption {
-              type = nullOr path;
-            };
+              source = mkOption {
+                type = nullOr path;
+              };
 
-            text = mkOption {
-              type = nullOr str;
+              text = mkOption {
+                type = nullOr str;
+              };
             };
-          };
-        });
+          }
+        );
       };
     };
 }
