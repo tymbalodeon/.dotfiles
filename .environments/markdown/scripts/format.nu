@@ -1,1 +1,1 @@
-/nix/store/p9y84ydnlm9fxas9rqyrj2jpq59zj0fz-environments-markdown-scripts-format.nu
+/nix/store/w0mwgp96lkqqp3fpc78vaw37r9p7iawx-environments-markdown-scripts-format.nu

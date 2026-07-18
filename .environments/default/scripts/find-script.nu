@@ -1,1 +1,1 @@
-/nix/store/6i032qgkwx0bcdxwfdvkhs86y8r9v5pb-environments-default-scripts-find-script.nu
+/nix/store/ik1rjx0qlfcsb9yhflskc8l1hbqgsxnj-environments-default-scripts-find-script.nu

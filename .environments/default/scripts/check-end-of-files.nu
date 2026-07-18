@@ -1,1 +1,1 @@
-/nix/store/60l9mgh54jx0nj3vwcqcymc105xqdlbj-environments-default-scripts-check-end-of-files.nu
+/nix/store/rh711pdr3ygw30bi9l9qixhvh46ahn65-environments-default-scripts-check-end-of-files.nu

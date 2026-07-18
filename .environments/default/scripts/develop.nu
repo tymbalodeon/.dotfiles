@@ -1,1 +1,1 @@
-/nix/store/0g84i6lmzzddig64gnm96ivdbikn17i2-environments-default-scripts-develop.nu
+/nix/store/316g11ac5zcj4rw4g633r6wpwx1cn7qk-environments-default-scripts-develop.nu

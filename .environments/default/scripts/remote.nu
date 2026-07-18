@@ -1,1 +1,1 @@
-/nix/store/shdb3skf6880jshc8iksqz5wl0i701dv-environments-default-scripts-remote.nu
+/nix/store/4w33k3na35xbb5g5c1wk8fjz3qg729is-environments-default-scripts-remote.nu

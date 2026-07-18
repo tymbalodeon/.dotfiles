@@ -1,1 +1,1 @@
-/nix/store/k4fnvb76h7xqmigzm187f2sw0c6j1nw5-environments-default-scripts-environment-revision.nu
+/nix/store/9cas4c5vpy0n7wc7c0frhgmpbh9zs6q9-environments-default-scripts-environment-revision.nu

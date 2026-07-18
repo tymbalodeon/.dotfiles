@@ -1,1 +1,1 @@
-/nix/store/0vqf9phy2zxxgjzaisij0d07dzrka9cp-environments-default-scripts-recipe.nu
+/nix/store/hy63z2jf0wss8khlw1lz1wp4dac9hakn-environments-default-scripts-recipe.nu

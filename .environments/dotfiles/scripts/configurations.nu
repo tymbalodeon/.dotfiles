@@ -19,7 +19,7 @@ def get-current-system [] {
   } else {
     (uname).kernel-name
   }
-  | str downcase
+  | str lowercase
 
   if ($system != nixos) {
     "home-manager"

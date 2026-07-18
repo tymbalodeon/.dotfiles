@@ -5,6 +5,8 @@ inputs:
   environments:
     flake: false
     url: git+ssh://git@codeberg.org/tymbalodeon/environments.git?dir=src
+  nixpkgs:
+    url: github:NixOS/nixpkgs/nixpkgs-unstable
   project:
     flake: false
     url: path:.

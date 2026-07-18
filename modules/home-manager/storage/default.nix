@@ -553,7 +553,7 @@
 
             let prompt = $"Are you sure you want to clear all downloaded($remote)files? "
 
-            (input $prompt | str downcase) in [y yes]
+            (input $prompt | str lowercase) in [y yes]
           }
 
           # Remove local files
@@ -675,7 +675,7 @@
 
             if $force or (
               input $"Are you sure you want to remove ($path)? [y/N]: "
-              | str downcase
+              | str lowercase
             ) in [y yes] {
               rclone $command $remote_path
             }

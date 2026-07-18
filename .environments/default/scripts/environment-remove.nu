@@ -1,1 +1,1 @@
-/nix/store/vcwmcfhjg1s50x3hhvfd2zp7y6j9ibi9-environments-default-scripts-environment-remove.nu
+/nix/store/rbiy1j77ah62kc5vaz62m007sgfmzi89-environments-default-scripts-environment-remove.nu

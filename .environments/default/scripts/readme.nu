@@ -1,1 +1,1 @@
-/nix/store/3arnyjmdafjhs1c1ah1yn4hjbyg94zqj-environments-default-scripts-readme.nu
+/nix/store/3dvh15gqj62nqmzwkp0b8c231pnccc0n-environments-default-scripts-readme.nu

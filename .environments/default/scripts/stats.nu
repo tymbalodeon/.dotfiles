@@ -1,1 +1,1 @@
-/nix/store/mg94kc9wcf72jlr85ld30f5ggayhg9rx-environments-default-scripts-stats.nu
+/nix/store/h5f1r1advk821yzx4619ky1mbfsijjxs-environments-default-scripts-stats.nu
