@@ -48,6 +48,7 @@ folders-sort = INBOX,Drafts,Sent,Trash,Spam,Archive"
           let configuration_lines = (
             $common_settings
             | append [
+              $"aliases = (real-name) <*@gmail.com>,(real-name) <*@pm.me>,(real-name) <*@proton.me>"
               $"from = (real-name) <($account.address)>"
               $"outgoing = smtp+insecure://($address_escaped):($password)@127.0.0.1:1025"
               $"source = imap+insecure://($address_escaped):($password)@127.0.0.1:1143"

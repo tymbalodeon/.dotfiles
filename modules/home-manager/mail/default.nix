@@ -26,7 +26,8 @@
       addresses
     );
 
-  getPasswordPath = address: config.sops.secrets."mail/${address}/password".path;
+  getPasswordPath = address:
+    config.sops.secrets."mail/${address}/password".path;
 
   getUsername = address:
     lib.lists.elemAt
