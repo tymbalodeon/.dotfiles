@@ -12,5 +12,5 @@ def main [] {
 nickname \"(nickname)\"
 password \"(password)\"
 "
-  | save --force config-path
+  | save --force (config-path)
 }

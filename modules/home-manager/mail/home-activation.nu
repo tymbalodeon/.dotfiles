@@ -63,6 +63,20 @@ folders-sort = INBOX,Drafts,Sent,Trash,Spam,Archive"
     }
   )
 
+  if ($proton_accounts | is-not-empty) {
+    let config_base = ($env.HOME | path join .config/protonmail/bridge-v3)
+
+    if ($config_base | path type) != dir {
+      rm --force $config_base
+      mkdir $config_base
+    }
+
+    try {
+      open (protonmail-bridge-vault-file)
+      | save --force ($config_base | path join vault.enc)
+    }
+  }
+
   $gmail_accounts
   | append $proton_accounts
   | to text --no-newline

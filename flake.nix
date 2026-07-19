@@ -34,7 +34,7 @@
 
     secrets = {
       flake = false;
-      url = "git+ssh://git@github.com/tymbalodeon/secrets.git?shallow=1";
+      url = "git+ssh://git@github.com/tymbalodeon/secrets.git?dir=secrets&shallow=1";
     };
 
     solaar = {

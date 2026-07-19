@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  secrets,
   ...
 }: let
   addresses = defaultUser.email.addresses;
@@ -91,6 +92,10 @@ in {
             def folder-map-path [] {
               "${gmailFolderMapPath}"
             }
+
+            def protonmail-bridge-vault-file [] {
+              "${config.sops.secrets.".config/protonmail/bridge-v3/vault.enc".path}"
+            }
           ''
           + builtins.readFile ./home-activation.nu
         );
@@ -139,13 +144,17 @@ in {
     };
   };
 
-  services.protonmail-bridge.enable = true;
-
   sops.secrets =
     builtins.foldl' (a: b: a // b) {}
     (
       map
       (address: {"mail/${address}/password" = {};})
       (gmailAddresses ++ protonAddresses)
-    );
+    )
+    // {
+      ".config/protonmail/bridge-v3/vault.enc" = {
+        format = "binary";
+        sopsFile = "${secrets}/.config/protonmail/bridge-v3/vault.enc";
+      };
+    };
 }

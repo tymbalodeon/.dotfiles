@@ -50,7 +50,7 @@ def available-themes [] {
 }
 
 def format-theme-name [theme: string] {
-  let theme = ($theme | str downcase | str replace base16- "")
+  let theme = ($theme | str lowercase | str replace base16- "")
 
   try {
     available-themes
@@ -174,8 +174,8 @@ export def get-env-values [] {
     let random_theme = (get-env-value $values DOTFILES_RANDOM_THEME)
 
     {
-      dark_theme: (($variant | str downcase) == dark)
-      light_theme: (($variant | str downcase) == light)
+      dark_theme: (($variant | str lowercase) == dark)
+      light_theme: (($variant | str lowercase) == light)
 
       random_theme: (
         if ($random_theme | is-empty) {
