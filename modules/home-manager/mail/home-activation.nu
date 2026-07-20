@@ -1,3 +1,9 @@
+def escape [address: string] {
+  $address  
+  | str replace "@" "%40"
+  | str replace --all " " "%20"
+}
+
 def main [] {
   let common_settings = "cache-headers = true
 check-mail = 1m
@@ -12,8 +18,8 @@ folders-sort = INBOX,Drafts,Sent,Trash,Spam,Archive,All Mail"
 
         try {
           let password = open ($account.password-path)
-          let password_escaped = ($password | str replace --all " " %20)
-          let address_escaped = $"($account.username)%40gmail.com"
+          let password_escaped = (escape $password)
+          let address_escaped = (escape $account.address)
 
           let configuration_lines = (
             $common_settings
@@ -38,45 +44,33 @@ folders-sort = INBOX,Drafts,Sent,Trash,Spam,Archive,All Mail"
   )
 
   let proton_accounts = (
-    protonmail-accounts
+    protonmail-addresses
     | each {
-        |account|
+        |address|
 
         try {
-          let password = open ($account.password-path)
-          let address_escaped = $"($account.username)%40pm.me"
+          let address_escaped = (escape $address)
+          let cred_cmd = $"(nushell-path) (cred-cmd) (hostname)"
 
           let configuration_lines = (
             $common_settings
             | append [
               $"aliases = (real-name) <*@gmail.com>,(real-name) <*@pm.me>,(real-name) <*@proton.me>"
-              $"from = (real-name) <($account.address)>"
-              $"outgoing = smtp+insecure://($address_escaped):($password)@127.0.0.1:1025"
-              $"source = imap+insecure://($address_escaped):($password)@127.0.0.1:1143"
+              $"from = (real-name) <($address)>"
+              $"outgoing = smtp+insecure://($address_escaped)@127.0.0.1:1025"
+              $"outgoing-cred-cmd = ($cred_cmd)"
+              $"source = imap+insecure://($address_escaped)@127.0.0.1:1143"
+              $"source-cred-cmd = ($cred_cmd)"
             ]
             | sort
           )
 
-          $"[($account.address)]"
+          $"[($address)]"
           | append $configuration_lines
           | to text
         }
     }
   )
-
-  if ($proton_accounts | is-not-empty) {
-    let config_base = ($env.HOME | path join .config/protonmail/bridge-v3)
-
-    if ($config_base | path type) != dir {
-      rm --force $config_base
-      mkdir $config_base
-    }
-
-    try {
-      open (protonmail-bridge-vault-file)
-      | save --force ($config_base | path join vault.enc)
-    }
-  }
 
   $gmail_accounts
   | append $proton_accounts

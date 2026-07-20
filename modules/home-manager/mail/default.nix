@@ -8,29 +8,26 @@
   addresses = defaultUser.email.addresses;
   defaultUser = import ../../users;
 
-  filterAddresses = host:
+  filterAddresses = provider:
     builtins.filter
-    (address: lib.strings.hasSuffix host address)
+    (address: lib.strings.hasSuffix provider address)
     addresses;
 
   getConfigs = addresses:
     builtins.toJSON (
       map (
-        address: let
-          username = getUsername address;
-        in {
-          inherit address username;
+        address: {
+          inherit address;
 
           password-path = getPasswordPath address;
+          username = getUsername address;
         }
       )
       addresses
     );
 
   getPasswordPath = address:
-    if (lib.strings.hasSuffix "gmail.com" address)
-    then config.sops.secrets."mail/${address}/password".path
-    else config.sops.secrets."mail/${address}/${hostName}/password".path;
+    config.sops.secrets."mail/${address}/password".path;
 
   getUsername = address:
     lib.lists.elemAt
@@ -40,8 +37,7 @@
   gmailAddresses = filterAddresses "gmail.com";
   gmailConfigs = getConfigs gmailAddresses;
   gmailFolderMapPath = "${config.xdg.configHome}/aerc/gmail-folders";
-  protonAddresses = filterAddresses "pm.me";
-  protonConfigs = getConfigs protonAddresses;
+  protonAddresses = builtins.toJSON (filterAddresses "pm.me");
 in {
   accounts.email = {
     accounts = let
@@ -86,20 +82,31 @@ in {
               | from json
             }
 
-            def protonmail-accounts [] {
-              '${protonConfigs}'
+            def protonmail-addresses [] {
+              '${protonAddresses}'
               | from json
             }
 
             def folder-map-path [] {
               "${gmailFolderMapPath}"
             }
+
+            def nushell-path [] {
+              "${lib.getExe pkgs.nushell}"
+            }
+
+            def cred-cmd [] {
+              "${./get-password.nu}"
+            }
+
+            def hostname [] {
+              "${hostName}"
+            }
           ''
           + builtins.readFile ./home-activation.nu
         );
     in
       lib.hm.dag.entryAfter ["writeBoundary"] ''
-
         run ${lib.getExe pkgs.nushell} "${script}"
       '';
 
@@ -142,21 +149,13 @@ in {
     };
   };
 
-  # FIXME
-  # services.protonmail-bridge.enable = true;
+  services.protonmail-bridge.enable = true;
 
-  # TODO: use helper function
   sops.secrets =
     builtins.foldl' (a: b: a // b) {}
     (
       map
       (address: {"mail/${address}/password" = {};})
       gmailAddresses
-    )
-    // builtins.foldl' (a: b: a // b) {}
-    (
-      map
-      (address: {"mail/${address}/${hostName}/password" = {};})
-      protonAddresses
     );
 }
