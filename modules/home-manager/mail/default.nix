@@ -1,8 +1,8 @@
 {
   config,
+  hostName,
   lib,
   pkgs,
-  secrets,
   ...
 }: let
   addresses = defaultUser.email.addresses;
@@ -28,7 +28,9 @@
     );
 
   getPasswordPath = address:
-    config.sops.secrets."mail/${address}/password".path;
+    if (lib.strings.hasSuffix "gmail.com" address)
+    then config.sops.secrets."mail/${address}/password".path
+    else config.sops.secrets."mail/${address}/${hostName}/password".path;
 
   getUsername = address:
     lib.lists.elemAt
@@ -92,10 +94,6 @@ in {
             def folder-map-path [] {
               "${gmailFolderMapPath}"
             }
-
-            def protonmail-bridge-vault-file [] {
-              "${config.sops.secrets.".config/protonmail/bridge-v3/vault.enc".path}"
-            }
           ''
           + builtins.readFile ./home-activation.nu
         );
@@ -144,17 +142,18 @@ in {
     };
   };
 
+  # TODO: use helper function
   sops.secrets =
     builtins.foldl' (a: b: a // b) {}
     (
       map
       (address: {"mail/${address}/password" = {};})
-      (gmailAddresses ++ protonAddresses)
+      gmailAddresses
     )
-    // {
-      ".config/protonmail/bridge-v3/vault.enc" = {
-        format = "binary";
-        sopsFile = "${secrets}/.config/protonmail/bridge-v3/vault.enc";
-      };
-    };
+    // builtins.foldl' (a: b: a // b) {}
+    (
+      map
+      (address: {"mail/${address}/${hostName}/password" = {};})
+      protonAddresses
+    );
 }
