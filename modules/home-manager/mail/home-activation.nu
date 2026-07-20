@@ -1,8 +1,9 @@
 def main [] {
   let common_settings = "cache-headers = true
+check-mail = 1m
 copy-to = Sent
-folders = INBOX,Drafts,Sent,Trash,Spam,Archive
-folders-sort = INBOX,Drafts,Sent,Trash,Spam,Archive"
+folders = INBOX,Drafts,Sent,Trash,Spam,Archive,All Mail
+folders-sort = INBOX,Drafts,Sent,Trash,Spam,Archive,All Mail"
 
   let gmail_accounts = (
     gmail-accounts
