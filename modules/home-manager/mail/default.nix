@@ -142,6 +142,9 @@ in {
     };
   };
 
+  # FIXME
+  # services.protonmail-bridge.enable = true;
+
   # TODO: use helper function
   sops.secrets =
     builtins.foldl' (a: b: a // b) {}

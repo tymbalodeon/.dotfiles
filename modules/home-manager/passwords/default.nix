@@ -1,9 +1,15 @@
 {pkgs, ...}: {
-  home.packages = with pkgs; [
-    proton-pass
-    proton-pass-cli
-  ];
+  home = {
+    packages = with pkgs; [
+      proton-pass
+      proton-pass-cli
+    ];
 
-  # FIXME
-  # services.proton-pass-agent.enable = true;
+    sessionVariables.PROTON_PASS_LINUX_KEYRING = "dbus";
+  };
+
+  services = {
+    gnome-keyring.enable = true;
+    proton-pass-agent.enable = true;
+  };
 }
