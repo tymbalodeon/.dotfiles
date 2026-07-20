@@ -89,7 +89,6 @@ in {
           paths = [journalDirectory];
         };
 
-        lsp.diagnostics.wiki-title = "hint";
         notebook.dir = "~/.nb/home";
         note.template = "default.md";
         tool.fzf-preview = "bat --plain --color always {-1}";
