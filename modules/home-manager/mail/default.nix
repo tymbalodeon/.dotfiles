@@ -5,39 +5,7 @@
   pkgs,
   ...
 }: let
-  addresses = defaultUser.email.addresses;
-  defaultUser = import ../../users;
-
-  filterAddresses = provider:
-    builtins.filter
-    (address: lib.strings.hasSuffix provider address)
-    addresses;
-
-  getConfigs = addresses:
-    builtins.toJSON (
-      map (
-        address: {
-          inherit address;
-
-          password-path = getPasswordPath address;
-          username = getUsername address;
-        }
-      )
-      addresses
-    );
-
-  getPasswordPath = address:
-    config.sops.secrets."mail/${address}/password".path;
-
-  getUsername = address:
-    lib.lists.elemAt
-    (lib.strings.splitString "@" address)
-    0;
-
-  gmailAddresses = filterAddresses "gmail.com";
-  gmailConfigs = getConfigs gmailAddresses;
   gmailFolderMapPath = "${config.xdg.configHome}/aerc/gmail-folders";
-  protonAddresses = builtins.toJSON (filterAddresses "pm.me");
 in {
   accounts.email = {
     accounts = let
@@ -50,6 +18,49 @@ in {
 
           value = {
             inherit address;
+
+            aerc = {
+              enable = true;
+
+              extraAccounts = let
+                addressEscaped = lib.replaceString "@" "%40" address;
+                folders = "INBOX,Drafts,Sent,Trash,Spam,Archive";
+                realName = defaultUser.name;
+              in
+                {
+                  cache-headers = true;
+                  check-mail = "1m";
+                  copy-to = "Sent";
+                  folders = folders;
+                  folders-sort = folders;
+                  from = "${realName} <${address}>";
+                }
+                // (
+                  if (lib.strings.hasSuffix "gmail.com" address)
+                  then let
+                    getPassword = "${lib.getExe pkgs.nushell} ${./get-password.nu} ${address}";
+                  in {
+                    folder-map = gmailFolderMapPath;
+                    outgoing-cred-cmd = getPassword;
+                    outgoing = "smtps+plain://${addressEscaped}@smtp.gmail.com:465";
+                    source-cred-cmd = getPassword;
+                    source = "imaps://${addressEscaped}@imap.gmail.com:993";
+                  }
+                  else if (lib.strings.hasSuffix "pm.me" address)
+                  then let
+                    getPassword = "${lib.getExe pkgs.nushell} ${./get-password.nu} ${address} ${hostName}";
+                  in {
+                    aliases = "${realName} <*@gmail.com>,${realName} <*@pm.me>,${realName} <*@proton.me>";
+                    outgoing-cred-cmd = getPassword;
+                    outgoing = "smtp+insecure://${addressEscaped}@127.0.0.1:1025";
+                    source-cred-cmd = getPassword;
+                    source = "imap+insecure://${addressEscaped}@127.0.0.1:1143";
+                  }
+                  else {}
+                );
+            };
+
+            enable = true;
 
             flavor =
               if lib.strings.hasSuffix "gmail.com" address
@@ -67,49 +78,6 @@ in {
   };
 
   home = {
-    activation.mail = let
-      script =
-        pkgs.writeScript "activate-mail"
-        #nushell
-        (
-          ''
-            def real-name [] {
-              "${defaultUser.name}"
-            }
-
-            def gmail-accounts [] {
-              '${gmailConfigs}'
-              | from json
-            }
-
-            def protonmail-addresses [] {
-              '${protonAddresses}'
-              | from json
-            }
-
-            def folder-map-path [] {
-              "${gmailFolderMapPath}"
-            }
-
-            def nushell-path [] {
-              "${lib.getExe pkgs.nushell}"
-            }
-
-            def cred-cmd [] {
-              "${./get-password.nu}"
-            }
-
-            def hostname [] {
-              "${hostName}"
-            }
-          ''
-          + builtins.readFile ./home-activation.nu
-        );
-    in
-      lib.hm.dag.entryAfter ["writeBoundary"] ''
-        run ${lib.getExe pkgs.nushell} "${script}"
-      '';
-
     file."${gmailFolderMapPath}" = {
       force = true;
 
@@ -128,10 +96,7 @@ in {
     ];
   };
 
-  imports = [
-    ../secrets
-    ../shell/nushell
-  ];
+  imports = [../shell/nushell];
 
   nushell.extraAliases = let
     mailProgram = "aerc";
@@ -150,12 +115,4 @@ in {
   };
 
   services.protonmail-bridge.enable = true;
-
-  sops.secrets =
-    builtins.foldl' (a: b: a // b) {}
-    (
-      map
-      (address: {"mail/${address}/password" = {};})
-      gmailAddresses
-    );
 }
