@@ -119,7 +119,8 @@
       defaultUser = import ../users;
     in {
       email = mkOption {
-        default = builtins.elemAt defaultUser.email.addresses 0;
+        # FIXME
+        default = "benjamin.j.rosen@gmail.com";
         type = str;
       };
 
@@ -143,6 +144,7 @@
           if builtins.hasAttr "nbRemotes" defaultUser
           then defaultUser.nbRemotes
           else ["git@codeberg.org:${defaultUser.githubUsername}/notes.git"];
+
         type = listOf str;
       };
 

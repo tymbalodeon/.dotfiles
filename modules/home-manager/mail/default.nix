@@ -9,23 +9,24 @@
 in {
   accounts.email = {
     accounts = let
-      defaultUser = import ../../users;
+      emailAccounts =
+        (import ./accounts.nix {
+          inherit config gmailFolderMapPath hostName lib pkgs;
+        }).accounts;
     in
       builtins.listToAttrs (
         lib.imap0
-        (index: address: {
-          name = address;
+        (index: account: {
+          name = account.address;
 
-          value = {
-            inherit address;
+          value = rec {
+            inherit (account) address realName;
 
             aerc = {
               enable = true;
 
               extraAccounts = let
-                addressEscaped = lib.replaceString "@" "%40" address;
                 folders = "INBOX,Drafts,Sent,Trash,Spam,Archive";
-                realName = defaultUser.name;
               in
                 {
                   cache-headers = true;
@@ -35,29 +36,7 @@ in {
                   folders-sort = folders;
                   from = "${realName} <${address}>";
                 }
-                // (
-                  if (lib.strings.hasSuffix "gmail.com" address)
-                  then let
-                    getPassword = "${lib.getExe pkgs.nushell} ${./get-password.nu} ${address}";
-                  in {
-                    folder-map = gmailFolderMapPath;
-                    outgoing-cred-cmd = getPassword;
-                    outgoing = "smtps+plain://${addressEscaped}@smtp.gmail.com:465";
-                    source-cred-cmd = getPassword;
-                    source = "imaps://${addressEscaped}@imap.gmail.com:993";
-                  }
-                  else if (lib.strings.hasSuffix "pm.me" address)
-                  then let
-                    getPassword = "${lib.getExe pkgs.nushell} ${./get-password.nu} ${address} ${hostName}";
-                  in {
-                    aliases = "${realName} <*@gmail.com>,${realName} <*@pm.me>,${realName} <*@proton.me>";
-                    outgoing-cred-cmd = getPassword;
-                    outgoing = "smtp+insecure://${addressEscaped}@127.0.0.1:1025";
-                    source-cred-cmd = getPassword;
-                    source = "imap+insecure://${addressEscaped}@127.0.0.1:1143";
-                  }
-                  else {}
-                );
+                // account.aerc.extraAccounts;
             };
 
             enable = true;
@@ -68,10 +47,9 @@ in {
               else "plain";
 
             primary = index == 0;
-            realName = defaultUser.name;
           };
         })
-        defaultUser.email.addresses
+        emailAccounts
       );
 
     maildirBasePath = "Mail";
