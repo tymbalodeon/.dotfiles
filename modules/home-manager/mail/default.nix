@@ -5,49 +5,73 @@
   pkgs,
   ...
 }: let
-  gmailFolderMapPath = "${config.xdg.configHome}/aerc/gmail-folders";
+  aercConfigBase = "${config.xdg.configHome}/aerc";
+  gmailFolderMapPath = "${aercConfigBase}/gmail-folders";
 in {
   accounts.email = {
     accounts = let
       emailAccounts =
         (import ./accounts.nix {
-          inherit config gmailFolderMapPath hostName lib pkgs;
+          inherit
+            config
+            gmailFolderMapPath
+            hostName
+            lib
+            pkgs
+            ;
         }).accounts;
     in
       builtins.listToAttrs (
         lib.imap0
-        (index: account: {
+        (index: account: let
+          address = account.address;
+        in {
           name = account.address;
 
-          value = rec {
-            inherit (account) address realName;
+          value =
+            lib.recursiveUpdate
+            {
+              aerc = {
+                enable = true;
 
-            aerc = {
+                extraAccounts = let
+                  folders = "Inbox,Drafts,Sent,Trash,Spam,Archive";
+                in
+                  {
+                    cache-headers = true;
+                    check-mail = "1m";
+                    check-mail-timeout = "2m";
+                    copy-to = "Sent";
+                    folders = folders;
+                    folders-sort = folders;
+                    from = "${account.realName} <${address}>";
+                    multi-file-strategy = "act-all";
+                    query-map = "~/.config/aerc/map.conf";
+                    source = "notmuch://~/Mail/";
+                  }
+                  // account.aerc.extraAccounts;
+              };
+
               enable = true;
 
-              extraAccounts = let
-                folders = "INBOX,Drafts,Sent,Trash,Spam,Archive";
-              in
-                {
-                  cache-headers = true;
-                  check-mail = "1m";
-                  copy-to = "Sent";
-                  folders = folders;
-                  folders-sort = folders;
-                  from = "${realName} <${address}>";
-                }
-                // account.aerc.extraAccounts;
-            };
+              flavor =
+                if lib.strings.hasSuffix "gmail.com" address
+                then "gmail.com"
+                else "plain";
 
-            enable = true;
+              mbsync = {
+                create = "both";
+                enable = true;
+                expunge = "both";
+                remove = "both";
+              };
 
-            flavor =
-              if lib.strings.hasSuffix "gmail.com" address
-              then "gmail.com"
-              else "plain";
-
-            primary = index == 0;
-          };
+              msmtp.enable = true;
+              notmuch.enable = true;
+              primary = index == 0;
+              userName = address;
+            }
+            account;
         })
         emailAccounts
       );
@@ -56,17 +80,30 @@ in {
   };
 
   home = {
-    file."${gmailFolderMapPath}" = {
-      force = true;
+    file = {
+      "${gmailFolderMapPath}" = {
+        force = true;
 
-      text = ''
-        All Mail = [Gmail]/All Mail
-        Drafts = [Gmail]/Drafts
-        Sent = [Gmail]/Sent Mail
-        Spam = [Gmail]/Spam
-        Starred = [Gmail]/Starred
-        Trash = [Gmail]/Trash
-      '';
+        text = ''
+          Drafts = [Gmail]/Drafts
+          Sent = [Gmail]/Sent Mail
+          Spam = [Gmail]/Spam
+          Trash = [Gmail]/Trash
+        '';
+      };
+
+      "${aercConfigBase}/map.conf" = {
+        force = true;
+
+        text = ''
+          Archive=tag:archive
+          Drafts=tag:draft
+          Inbox=tag:inbox
+          Sent=tag:sent
+          Spam=tag:spam
+          Trash=tag:trash
+        '';
+      };
     };
 
     packages = with pkgs; [
@@ -83,16 +120,26 @@ in {
     mail = mailProgram;
   };
 
-  programs.aerc = {
-    enable = true;
+  programs = {
+    aerc = {
+      enable = true;
 
-    extraConfig = {
-      filters = {
-        "text/html" = "! w3m -I UTF-8 -T text/html";
-        "text/plain" = "fold --width 80 | colorize";
+      extraConfig = {
+        filters = {
+          "text/html" = "! w3m -I UTF-8 -T text/html";
+          "text/plain" = "fold --width 80 | colorize";
+        };
+
+        general.unsafe-accounts-conf = true;
       };
+    };
 
-      general.unsafe-accounts-conf = true;
+    mbsync.enable = true;
+    msmtp.enable = true;
+
+    notmuch = {
+      enable = true;
+      hooks.preNew = "mbsync --all";
     };
   };
 
