@@ -23,6 +23,11 @@ def edit [item: string] {
   ^$env.EDITOR (get-path $item)
 }
 
+# Edit records
+def "pens edit" [] {
+  help pens edit
+}
+
 # Edit ink records
 def "pens edit inks" [] {
   edit inks
