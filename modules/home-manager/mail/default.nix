@@ -109,7 +109,11 @@ in {
     enable = true;
 
     extraConfig = {
-      filters."text/plain" = "fold --width 80 | colorize";
+      filters = {
+        "text/html" = "! w3m -I UTF-8 -T text/html";
+        "text/plain" = "fold --width 80 | colorize";
+      };
+
       general.unsafe-accounts-conf = true;
     };
   };
