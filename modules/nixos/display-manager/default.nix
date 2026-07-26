@@ -19,7 +19,7 @@
         DropdownSelectedBackgroundColor = colors.base01;
         DropdownTextColor = colors.base05;
         Font = config.stylix.fonts.sansSerif.name;
-        FontSize = config.stylix.fonts.sizes.desktop;
+        FontSize = config.stylix.fonts.sizes.desktop + 4;
         FormBackgroundColor = colors.base00;
         HaveFormBackground = true;
         HeaderTextColor = colors.base05;
