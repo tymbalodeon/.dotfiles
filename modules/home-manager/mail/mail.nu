@@ -20,8 +20,8 @@ def "mail sync" [account?: string] {
   }
 
   if ($account | is-empty) {
-    notmuch new
+    notmuch new --no-hooks
   } else {
-    notmuch new $account
+    notmuch new --no-hooks $account
   }
 }
