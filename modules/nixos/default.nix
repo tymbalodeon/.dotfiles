@@ -98,7 +98,6 @@
       ./audio
       ./bar
       ./bluetooth
-      ./browser
       ./display-manager
       ./display-server
       ./file-manager
@@ -112,6 +111,7 @@
       ../nix
       ./secrets
       ./theme
+      ./web
       ./window-manager
     ]
     ++ (let

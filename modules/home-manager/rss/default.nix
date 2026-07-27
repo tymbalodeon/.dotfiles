@@ -35,9 +35,9 @@ in {
     '';
 
   imports = [
-    ../browser
     ../secrets
     ../shell/nushell
+    ../web
   ];
 
   nushell.extraScripts = [{source = ./rss.nu;}];

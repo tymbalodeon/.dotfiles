@@ -37,16 +37,16 @@ in {
     ../audio
     ../bar
     ../bluetooth
-    ../browser
     ../clipboard
     ../dictionary
     ../mail
     ../monitors
     ../notifications
-    # TODO: figure out how to include this on linux.nix without pulling in browser
     ../rss
     ../theme
+    # TODO: figure out how to include this on linux.nix without pulling in browser
     ../vpn
+    ../web
     ../window-manager
   ];
 

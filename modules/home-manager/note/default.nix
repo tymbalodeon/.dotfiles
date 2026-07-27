@@ -128,12 +128,12 @@ in {
 
   imports = [
     ../bat
-    ../browser/w3m
     ../editor
     ../editor/markdown
     ../fzf
     ../shell
     ../version-control
+    ../web/w3m
   ];
 
   options.nb.remotes = let

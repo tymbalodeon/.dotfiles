@@ -37,7 +37,16 @@ in {
     packages = [pkgs.lagrange];
   };
 
-  imports = [../secrets];
+  imports = [
+    ../secrets
+    ../shell/nushell
+  ];
+
+  nushell.extraAliases = {
+    gem = "amfora";
+    gemini = "amfora";
+  };
+
   programs.amfora.enable = true;
   sops.secrets.${amforaBookmarksPath} = {};
 }
