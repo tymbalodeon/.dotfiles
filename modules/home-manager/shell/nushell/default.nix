@@ -64,6 +64,8 @@
             };
           })
           ([
+              {source = ./user-config.nu;}
+
               {
                 includes = ["start-process"];
                 source = ./f.nu;

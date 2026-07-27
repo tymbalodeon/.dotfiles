@@ -246,7 +246,12 @@ in {
         "BraveSoftware/Brave-Browser/Default/Preferences/sync/encryption_bootstrap_token_per_account/value" = {};
       };
 
-      nushell.extraScripts = [{source = ./web.nu;}];
+      nushell.extraScripts = [
+        {
+          includes = ["user-config"];
+          source = ./web.nu;
+        }
+      ];
     };
 
   imports = [

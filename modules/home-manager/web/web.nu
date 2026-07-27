@@ -1,6 +1,5 @@
 def config-file [] {
-  $env.HOME
-  | ".config/dotfiles/web.toml"
+  get-config-file web
 }
 
 # Show the default browser
@@ -31,12 +30,10 @@ def "web default set" [browser: string] {
     }
   }
 
-  let config_file = (config-file)
-
-  mkdir ($config_file | path dirname)
+  create-config-dir
 
   {default-browser: $browser}
-  | save --force ($config_file)
+  | save --force (config-file)
 }
 
 # Browse the web

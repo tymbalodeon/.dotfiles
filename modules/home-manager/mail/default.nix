@@ -116,7 +116,12 @@ in {
 
   imports = [../shell/nushell];
 
-  nushell.extraScripts = [{source = ./mail.nu;}];
+  nushell.extraScripts = [
+    {
+      includes = ["user-config"];
+      source = ./mail.nu;
+    }
+  ];
 
   programs = {
     aerc = {
