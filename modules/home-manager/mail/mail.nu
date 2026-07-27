@@ -19,5 +19,9 @@ def "mail sync" [account?: string] {
     }
   }
 
-  notmuch new $account
+  if ($account | is-empty) {
+    notmuch new
+  } else {
+    notmuch new $account
+  }
 }
