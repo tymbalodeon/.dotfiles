@@ -30,7 +30,7 @@ def "web default set" [browser: string] {
     }
   }
 
-  create-config-dir
+  create-config-directory
 
   {default-browser: $browser}
   | save --force (config-file)

@@ -6,23 +6,23 @@ def default-accounts [] {
   try {
     open (config-file)
     | get accounts
+  } catch {
+    []
   }
 }
 
 def get-accounts [accounts: list<string>] {
   if ($accounts | is-empty) {
-    (default-accounts)
+    default-accounts
   } else {
     $accounts
   }
 }
 
 def get-accounts-with-flag [accounts: list<string>] {
-  try {
-    get-accounts $accounts
-    | each {prepend "--account"}
-    | flatten
-  }
+  get-accounts $accounts
+  | each {prepend "--account"}
+  | flatten
 }
 
 # View and manage email
@@ -45,14 +45,50 @@ def "mail all" [] {
 
 # Show default accounts
 def "mail default-accounts" [] {
-  try {
-    default-accounts
-    | sort
-    | to text --no-newline
-  }
+  default-accounts
+  | sort
+  | to text --no-newline
 }
 
-# TODO: add a command to add/edit default accounts, etc.
+# Clear default accounts
+def "mail default-accounts clear" [] {
+  rm --force --recursive (config-file)
+}
+
+# Add default accounts
+def "mail default-accounts add" [
+  ...accounts: string # Accounts to add to the default accounts
+  --clear # Clear any existing default accounts
+] {
+  let accounts = if $clear {
+    $accounts
+  } else {
+    default-accounts
+    | append $accounts
+    | uniq
+    | sort
+  }
+
+  create-config-directory
+
+  {accounts: $accounts}
+  | save --force (config-file)
+}
+
+# Remove default accounts
+def "mail default-accounts remove" [...accounts: string] {
+  let default_accounts = (default-accounts)
+
+  if ($default_accounts | is-empty) {
+    return
+  }
+
+  create-config-directory
+
+  $default_accounts
+  | where {$in not-in $accounts}
+  | save --force (config-file)
+}
 
 # Sync email
 def "mail sync" [

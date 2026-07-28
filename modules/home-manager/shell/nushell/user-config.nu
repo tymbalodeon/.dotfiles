@@ -14,12 +14,12 @@ def get-config-file [script: string] {
   | path join $"($script).toml"
 }
 
-def create-config-dir [] {
-  let config_dir = (user-config config-directory)
+def create-config-directory [] {
+  let config_directory = (config-directory)
 
-  mkdir $config_dir
+  mkdir $config_directory
 
-  $config_dir
+  $config_directory
 }
 
 
