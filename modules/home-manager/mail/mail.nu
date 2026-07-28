@@ -9,21 +9,24 @@ def default-accounts [] {
   }
 }
 
-# View and manage email
-def mail [...accounts: string] {
+def get-accounts [accounts: list<string>] {
   let accounts = if ($accounts | is-empty) {
     (default-accounts)
   } else {
     $accounts
   }
 
-  let accounts = (
-    $accounts
-    | each {prepend "--account"}
-    | flatten
-  )
+}
 
-  aerc ...$accounts
+def get-accounts-with-flag [accounts: list<string>] {
+  get-accounts $accounts
+  | each {prepend "--account"}
+  | flatten
+}
+
+# View and manage email
+def mail [...accounts: string] {
+  aerc ...(get-accounts-with-flag $accounts)
 }
 
 alias email = mail
@@ -45,18 +48,20 @@ def "mail default-accounts" [] {
 # TODO: add a command to add/edit default accounts, etc.
 
 # Sync email
-def "mail sync" [account?: string] {
-  try {
-    if ($account | is-empty) {
-      mbsync --all
-    } else {
+def "mail sync" [...accounts: string] {
+  let accounts = (get-accounts $accounts)
+
+  for account in $accounts {
+    try {
       mbsync $account
     }
-  }
 
-  if ($account | is-empty) {
-    notmuch new --no-hooks
-  } else {
     notmuch new --no-hooks $account
   }
+}
+
+# Sync all email accounts
+def "mail sync all" [] {
+  try { mbsync --all }
+  notmuch new --no-hooks
 }
