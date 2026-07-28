@@ -47,12 +47,19 @@ def "mail default-accounts" [] {
 # TODO: add a command to add/edit default accounts, etc.
 
 # Sync email
-def "mail sync" [...accounts: string] {
+def "mail sync" [
+  ...accounts: string # Accounts to sync
+  --verbose # Display what is happening
+] {
   let accounts = (get-accounts $accounts)
 
   for account in $accounts {
     try {
-      mbsync $account
+      if $verbose {
+        mbsync --verbose $account
+      } else {
+        mbsync $account
+      }
     }
 
     notmuch new --no-hooks $account
