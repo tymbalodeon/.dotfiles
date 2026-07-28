@@ -49,7 +49,6 @@ def "mail default-accounts" [] {
 # Sync email
 def "mail sync" [...accounts: string] {
   let accounts = (get-accounts $accounts)
-  print $accounts
 
   for account in $accounts {
     try {
