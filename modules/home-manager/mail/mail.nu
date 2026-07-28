@@ -18,14 +18,22 @@ def get-accounts [accounts: list<string>] {
 }
 
 def get-accounts-with-flag [accounts: list<string>] {
-  get-accounts $accounts
-  | each {prepend "--account"}
-  | flatten
+  try {
+    get-accounts $accounts
+    | each {prepend "--account"}
+    | flatten
+  }
 }
 
 # View and manage email
 def mail [...accounts: string] {
-  aerc ...(get-accounts-with-flag $accounts)
+  let accounts = (get-accounts-with-flag $accounts)
+
+  if ($accounts | is-empty) {
+    aerc
+  } else {
+    aerc ...$accounts
+  }
 }
 
 alias email = mail
