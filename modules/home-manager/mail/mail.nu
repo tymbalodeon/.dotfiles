@@ -10,12 +10,11 @@ def default-accounts [] {
 }
 
 def get-accounts [accounts: list<string>] {
-  let accounts = if ($accounts | is-empty) {
+  if ($accounts | is-empty) {
     (default-accounts)
   } else {
     $accounts
   }
-
 }
 
 def get-accounts-with-flag [accounts: list<string>] {
@@ -50,6 +49,7 @@ def "mail default-accounts" [] {
 # Sync email
 def "mail sync" [...accounts: string] {
   let accounts = (get-accounts $accounts)
+  print $accounts
 
   for account in $accounts {
     try {
