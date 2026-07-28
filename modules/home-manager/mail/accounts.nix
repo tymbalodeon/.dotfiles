@@ -67,12 +67,7 @@ in {
         addressEscaped = escapeAddress address;
       in {
         aliases = "${realName} <*@gmail.com>,${realName} <*@pm.me>,${realName} <*@proton.me>";
-
-        # FIXME: mbsync with protonmail always fails, but still gets the mail
-        # For now, using || so that running aerc doesn't fail, but this should
-        # be corrected!
-        check-mail-cmd = "mbsync ${address} || notmuch new --no-hooks ${address}";
-
+        check-mail-cmd = "mbsync ${address} && notmuch new --no-hooks ${address}";
         outgoing-cred-cmd = passwordCommand;
         outgoing = "smtp+plain://${addressEscaped}@${host}:${toString smtp_port}";
         query-map = "~/.config/aerc/map.conf";
