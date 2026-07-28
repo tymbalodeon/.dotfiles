@@ -53,16 +53,28 @@ def "mail sync" [
 ] {
   let accounts = (get-accounts $accounts)
 
-  for account in $accounts {
+  if ($accounts | is-empty) {
     try {
       if $verbose {
-        mbsync --verbose $account
+        mbsync --verbose
       } else {
-        mbsync $account
+        mbsync
       }
     }
 
-    notmuch new --no-hooks $account
+    notmuch new --no-hooks
+  } else {
+    for account in $accounts {
+      try {
+        if $verbose {
+          mbsync --verbose $account
+        } else {
+          mbsync $account
+        }
+      }
+
+      notmuch new --no-hooks $account
+    }
   }
 }
 
