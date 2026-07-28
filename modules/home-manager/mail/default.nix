@@ -39,7 +39,7 @@ in {
                 in
                   {
                     cache-headers = true;
-                    check-mail = "1m";
+                    check-mail = "10m";
                     check-mail-timeout = "2m";
                     copy-to = "Sent";
                     default = "tag:inbox";
