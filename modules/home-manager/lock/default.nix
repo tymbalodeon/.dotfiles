@@ -1,11 +1,14 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   cfg = config.lock;
 in {
   config = {
+    home.packages = with pkgs; [open-sans];
+
     programs.hyprlock = {
       enable = true;
 
@@ -26,18 +29,18 @@ in {
             outer_color = foregroundColor;
             outline_thickness = 2;
             placeholder_text = "";
-            rounding = 24;
+            rounding = 20;
             size = "288, 36";
           }
         ];
 
         label = let
           color = foregroundColor;
-          font_family = config.stylix.fonts.serif.name;
         in [
           {
-            inherit color font_family;
+            inherit color;
 
+            font_family = "Open Sans ExtraBold";
             font_size = cfg.timeFontSize;
             position = cfg.timePosition;
             text = "$TIME12";
@@ -45,8 +48,9 @@ in {
           }
 
           {
-            inherit color font_family;
+            inherit color;
 
+            font_family = "Open Sans";
             font_size = cfg.dateFontSize;
             position = cfg.datePosition;
             text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
@@ -61,22 +65,22 @@ in {
     inherit (lib) mkOption types;
   in {
     dateFontSize = mkOption {
-      default = config.stylix.fonts.sizes.desktop + 16;
+      default = 24;
       type = types.int;
     };
 
     datePosition = mkOption {
-      default = "0, -32%";
+      default = "0, -810";
       type = types.str;
     };
 
     timeFontSize = mkOption {
-      default = config.stylix.fonts.sizes.desktop + 84;
+      default = 120;
       type = types.int;
     };
 
     timePosition = mkOption {
-      default = "0, -18%";
+      default = "0, -540";
       type = types.str;
     };
   };
