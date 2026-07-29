@@ -2,7 +2,9 @@
   config,
   lib,
   ...
-}: {
+}: let
+  cfg = config.lock;
+in {
   config = {
     programs.hyprlock = {
       enable = true;
@@ -20,31 +22,33 @@
             fade_on_empty = false;
             fail_color = color colors.base09;
             font_color = foregroundColor;
-            font_family = config.stylix.fonts.sansSerif.name;
             inner_color = color colors.base01;
             outer_color = foregroundColor;
             outline_thickness = 2;
             placeholder_text = "";
-            rounding = 1;
-            size = "288, 48";
+            rounding = 24;
+            size = "288, 36";
           }
         ];
 
         label = let
-          baseFontSize = config.stylix.fonts.sizes.desktop;
+          color = foregroundColor;
+          font_family = config.stylix.fonts.serif.name;
         in [
           {
-            color = foregroundColor;
-            font_size = baseFontSize * 3;
-            position = config.lock.timePosition;
+            inherit color font_family;
+
+            font_size = cfg.timeFontSize;
+            position = cfg.timePosition;
             text = "$TIME12";
             valign = "top";
           }
 
           {
-            color = foregroundColor;
-            font_size = baseFontSize;
-            position = config.lock.datePosition;
+            inherit color font_family;
+
+            font_size = cfg.dateFontSize;
+            position = cfg.datePosition;
             text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
             valign = "top";
           }
@@ -53,15 +57,27 @@
     };
   };
 
-  options.lock = {
-    datePosition = lib.mkOption {
-      default = "0, -30%";
-      type = lib.types.str;
+  options.lock = let
+    inherit (lib) mkOption types;
+  in {
+    dateFontSize = mkOption {
+      default = config.stylix.fonts.sizes.desktop + 16;
+      type = types.int;
     };
 
-    timePosition = lib.mkOption {
-      default = "0, -22%";
-      type = lib.types.str;
+    datePosition = mkOption {
+      default = "0, -32%";
+      type = types.str;
+    };
+
+    timeFontSize = mkOption {
+      default = config.stylix.fonts.sizes.desktop + 84;
+      type = types.int;
+    };
+
+    timePosition = mkOption {
+      default = "0, -18%";
+      type = types.str;
     };
   };
 }
