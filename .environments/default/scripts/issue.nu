@@ -1,1 +1,1 @@
-/nix/store/hnyszgx8v9wrvl9kgc8wjx3c3z9brf76-environments-default-scripts-issue.nu
+/nix/store/yx7q28m8n8ffzys30vh2fnlx12rd0ivn-environments-default-scripts-issue.nu

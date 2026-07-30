@@ -1,12 +1,8 @@
 {pkgs, ...}: {
-  home = {
-    packages = with pkgs; [
-      proton-pass
-      proton-pass-cli
-    ];
-
-    sessionVariables.PROTON_PASS_LINUX_KEYRING = "dbus";
-  };
+  home.packages = with pkgs; [
+    proton-pass
+    proton-pass-cli
+  ];
 
   services = {
     gnome-keyring.enable = true;

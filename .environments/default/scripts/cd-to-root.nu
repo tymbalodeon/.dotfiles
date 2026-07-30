@@ -1,1 +1,1 @@
-/nix/store/69y0cyfr4miw51mxak257ky0ag2labjm-environments-default-scripts-cd-to-root.nu
+/nix/store/nxiv016x35d8byrbxxg0hamb5hin3kr8-environments-default-scripts-cd-to-root.nu

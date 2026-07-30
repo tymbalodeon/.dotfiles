@@ -1,1 +1,1 @@
-/nix/store/fzph97x98i1yg3v6zqvm9rqm207rzah9-environments-default-scripts-color.nu
+/nix/store/3i6rqd7qi24gyy72lgwli2z07llw758c-environments-default-scripts-color.nu

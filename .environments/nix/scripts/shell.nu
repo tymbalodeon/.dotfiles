@@ -1,1 +1,1 @@
-/nix/store/zgcgn40w6wcyblgvg2xzvm6g5m4plg87-environments-nix-scripts-shell.nu
+/nix/store/psqrx2i6m0cwj72ksq2mhavwmxgh71bn-environments-nix-scripts-shell.nu
