@@ -109,6 +109,7 @@
       ./logitech
       ./monitor
       ../nix
+      ./passwords
       ./secrets
       ./theme
       ./web
