@@ -48,7 +48,7 @@ in {
                     from = "${account.realName} <${address}>";
                     multi-file-strategy = "act-all";
                     query-map = "~/.config/aerc/map.conf";
-                    source = "notmuch://~/Mail/";
+                    source = "notmuch://";
                   }
                   // account.aerc.extraAccounts;
               };
