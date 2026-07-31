@@ -76,7 +76,11 @@
         };
 
         theme = "sddm-astronaut-theme";
-        wayland.enable = true;
+
+        wayland = {
+          compositor = "kwin";
+          enable = true;
+        };
       };
     };
   };
