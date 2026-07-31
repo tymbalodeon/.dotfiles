@@ -29,8 +29,8 @@ in {
             outer_color = foregroundColor;
             outline_thickness = 2;
             placeholder_text = "";
-            rounding = 20;
-            size = "288, 36";
+            rounding = 25;
+            size = "540, 48";
           }
         ];
 
@@ -50,7 +50,7 @@ in {
           {
             inherit color;
 
-            font_family = "Open Sans";
+            font_family = "Open Sans Bold";
             font_size = cfg.dateFontSize;
             position = cfg.datePosition;
             text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
@@ -61,26 +61,27 @@ in {
     };
   };
 
+  # TODO: can these be determined programmatically?
   options.lock = let
     inherit (lib) mkOption types;
   in {
     dateFontSize = mkOption {
-      default = 24;
+      default = 36;
       type = types.int;
     };
 
     datePosition = mkOption {
-      default = "0, -810";
+      default = "0, -630";
       type = types.str;
     };
 
     timeFontSize = mkOption {
-      default = 120;
+      default = 144;
       type = types.int;
     };
 
     timePosition = mkOption {
-      default = "0, -540";
+      default = "0, -360";
       type = types.str;
     };
   };
