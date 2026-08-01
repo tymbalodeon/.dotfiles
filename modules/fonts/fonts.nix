@@ -110,6 +110,107 @@ let
   ];
 
   anrtFontsBaseUrl = "https://anrt-nancy.fr/media/pages/fonts";
+  hersheyFontsBaseUrl = "https://github.com/yangcht/Hershey_font_TTF/tree/main/ttf";
+
+  hersheyFonts = let
+    baseAttrs = name: {
+      inherit name;
+
+      dontUnpack = true;
+      ttf = true;
+      url = "${hersheyFontsBaseUrl}/${name}.ttf";
+    };
+  in [
+    (
+      baseAttrs "AVHersheyComplexHeavyItalic"
+      // {sha256 = "sha256-Jkiv4Sf9YCVEmB4HE2qOlBuPb3njmcm3XYlqLS5z69I=";}
+    )
+
+    (
+      baseAttrs "AVHersheyComplexHeavy"
+      // {sha256 = "sha256-79zXvPuSqFjyyMy8rWCtTBnDIXt6tXJB7NiH0TWb4a4=";}
+    )
+
+    (
+      baseAttrs "AVHersheyComplexLightItalic"
+      // {sha256 = "sha256-jb7MXTbnDAAOW13UIxWvPC6vOi9IwdQbm2UYwNm7VLs=";}
+    )
+
+    (
+      baseAttrs "AVHersheyComplexLight"
+      // {sha256 = "sha256-AAODQpQ12qQmlpej959IWYl57UyfmxmkzawsZroqR6Q=";}
+    )
+
+    (
+      baseAttrs "AVHersheyComplexMediumItalic"
+      // {sha256 = "sha256-ARd7jN5DQDWbvLfUJ7nEVPyKHcfREkzWXkbR9LOBwvA=";}
+    )
+
+    (
+      baseAttrs "AVHersheyComplexMedium"
+      // {sha256 = "sha256-aMt2gLSYskyFHopoujI5RVuEkYEUAcSByRybtsev0Co=";}
+    )
+
+    (
+      baseAttrs "AVHersheyDuplexHeavyItalic"
+      // {sha256 = "sha256-PtDMZ++4swHG4+NuiXQDyHd8tkyFbm0fb5SiKt5dDq0=";}
+    )
+
+    (
+      baseAttrs "AVHersheyDuplexHeavy"
+      // {sha256 = "sha256-YyXonfi+emNxg43socG1TwzelBOkD/Bc4bxp0U/JYgg=";}
+    )
+
+    (
+      baseAttrs "AVHersheyDuplexLightItalic"
+      // {sha256 = "sha256-K9r7khx+cLPQM3yvXwvVZkZ+hRvdY6zW8u2XnSiFN+M=";}
+    )
+
+    (
+      baseAttrs "AVHersheyDuplexLight"
+      // {sha256 = "sha256-fLFRO19+f4KKkPI3FzctfhXIRrZEcXDlERYWS9SoG1s=";}
+    )
+
+    (
+      baseAttrs "AVHersheyDuplexMediumItalic"
+      // {sha256 = "sha256-nF3AviJPF/cBLrpmjpraSb0cxyQaf1mZmOTzbzYKlzA=";}
+    )
+
+    (
+      baseAttrs "AVHersheyDuplexMedium"
+      // {sha256 = "sha256-Ghby/33zE6p475fMtZsQR8K+sU94ju8T2T5m2dQ6Wz0=";}
+    )
+
+    (
+      baseAttrs "AVHersheySimplexHeavyItalic"
+      // {sha256 = "sha256-JbzEBiDq0uEB61ZsPAuhVWc9IwNovFUYphwgzkase4Q=";}
+    )
+
+    (
+      baseAttrs "AVHersheySimplexHeavy"
+      // {sha256 = "sha256-2CdKaRR0H5E9VkQT3Wsco6DR865K1ugBmVk0HDdm7cE=";}
+    )
+
+    (
+      baseAttrs "AVHersheySimplexLightItalic"
+      // {sha256 = "sha256-Og82BycMgCKLl/TjpbV3I5RjX4OX5G3qbsPeh/Ge0Nc=";}
+    )
+
+    (
+      baseAttrs "AVHersheySimplexLight"
+      // {sha256 = "sha256-VIKCGBpQvFLt9tqN+hcskDpbRW71p5BYGK9sa++VMMU=";}
+    )
+
+    (
+      baseAttrs "AVHersheySimplexMediumItalic"
+      // {sha256 = "sha256-+vIpb3DTrl/TjtCnhTHzDSDzYyrVQfaBvL6Ng4N7QZk=";}
+    )
+
+    (
+      baseAttrs "AVHersheySimplexMedium"
+      // {sha256 = "sha256-dVh8HDPghslV9bTDMnLbVsJwl+PwMm5gkFXwfgck9ks=";}
+    )
+  ];
 in
   [
     {
@@ -149,4 +250,4 @@ in
       url = "https://dyalog.github.io/APL387/APL387.ttf";
     }
   ]
-  ++ anrtFonts
+  ++ anrtFonts ++ hersheyFonts
