@@ -110,6 +110,177 @@ let
   ];
 
   anrtFontsBaseUrl = "https://anrt-nancy.fr/media/pages/fonts";
+
+  hersheyFonts = let
+    baseAttrs = {
+      dontUnpack = true;
+      ttf = true;
+    };
+  in [
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyComplexHeavyItalic";
+        sha256 = "sha256-VBJfqjC0QCKEKYsHSfhC23pDOgx7ESKiAve3hbIaCkY=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyComplexHeavyItalic.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyComplexHeavy";
+        sha256 = "sha256-AaMvjVZePkM04B8Gk9Ajo7yqBhhkugv/mKY0/+0DmoE=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyComplexHeavy.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyComplexLightItalic";
+        sha256 = "sha256-T+1jb2qyx6MJXPge5Pe731jYLCaqWJg4qpK9ztinSNU=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyComplexLightItalic.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyComplexLight";
+        sha256 = "sha256-v/IWxLLaWQA1yl5TeysKWQRAUa1RH02zDX5Hc8CPqLM=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyComplexLight.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyComplexMediumItalic";
+        sha256 = "sha256-5pFjXwWK4ZdltD71FWQDrusde1moDbYIUHGG9p8u1pw=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyComplexMediumItalic.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyComplexMedium";
+        sha256 = "sha256-gSlgv6k8n0rr2QooBqXlErfF2CiCHSuYpRZjRphPEzk=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyComplexMedium.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyDuplexHeavyItalic";
+        sha256 = "sha256-YMtG3wV+CKTMLpIzD6vZIM/fo9RLLEqNGRKWb6eztFY=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyDuplexHeavyItalic.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyDuplexHeavy";
+        sha256 = "sha256-8Fwi4DxoKlE9kpn4h1ufqMj089o4FYFRJOd7IiwTjTk=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyDuplexHeavy.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyDuplexLightItalic";
+        sha256 = "sha256-eMF829l6PZuXJLBViPTBe0aTP26EK1vAmqW5NWfdFZU=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyDuplexLightItalic.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyDuplexLight";
+        sha256 = "sha256-S9tijbkOeMU4LFoDiCB20sUu11p565Jz7n3TPi0kARs=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyDuplexLight.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyDuplexMediumItalic";
+        sha256 = "sha256-bmBxRsRR1x04bTitk/XtC3WQAYyysXHqSY/gp+RT9v4=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyDuplexMediumItalic.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheyDuplexMedium";
+        sha256 = "sha256-2pZkdZAuOawpp1ywpcsKAE1oQH1u3UKrIcTNhWLnaLI=";
+        url = "${hersheyFontsBaseUrl}/AVHersheyDuplexMedium.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheySimplexHeavyItalic";
+        sha256 = "sha256-YfPqAbWGNTrQiU/+jrwbucMCTUzVtMsLzCsVywajkMA=";
+        url = "${hersheyFontsBaseUrl}/AVHersheySimplexHeavyItalic.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheySimplexHeavy";
+        sha256 = "sha256-hQ8JDo0djMfluj7LJ2XZ+g+Blf5bLkuI5b2D+gXneTA=";
+        url = "${hersheyFontsBaseUrl}/AVHersheySimplexHeavy.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheySimplexLightItalic";
+        sha256 = "sha256-0n27pPbhRoY33M1pum8nrP4Zr9rgOYB3WuOPpFaWO8I=";
+        url = "${hersheyFontsBaseUrl}/AVHersheySimplexLightItalic.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheySimplexLight";
+        sha256 = "sha256-42N3Wbo5JNte9HXe2SaZouYlHK+o627HV8eu9fLI1YA=";
+        url = "${hersheyFontsBaseUrl}/AVHersheySimplexLight.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheySimplexMediumItalic";
+        sha256 = "sha256-ByJHYJOd7UHLm7ylSipwj+TLeWGuSzXdOKZCnJP4TU8=";
+        url = "${hersheyFontsBaseUrl}/AVHersheySimplexMediumItalic.ttf";
+      }
+    )
+
+    (
+      baseAttrs
+      // {
+        name = "AVHersheySimplexMedium";
+        sha256 = "";
+        url = "${hersheyFontsBaseUrl}/AVHersheySimplexMedium.ttf";
+      }
+    )
+  ];
+
+  hersheyFontsBaseUrl = "https://github.com/yangcht/Hershey_font_TTF/raw/refs/heads/main/ttf";
 in
   [
     {
@@ -149,4 +320,4 @@ in
       url = "https://dyalog.github.io/APL387/APL387.ttf";
     }
   ]
-  ++ anrtFonts
+  ++ anrtFonts ++ hersheyFonts
