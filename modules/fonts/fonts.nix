@@ -274,7 +274,7 @@ let
       baseAttrs
       // {
         name = "AVHersheySimplexMedium";
-        sha256 = "";
+        sha256 = "sha256-lq+W2gi3kcuRQGrBit+AR+uUk98MDJuayqrERQjry88=";
         url = "${hersheyFontsBaseUrl}/AVHersheySimplexMedium.ttf";
       }
     )
