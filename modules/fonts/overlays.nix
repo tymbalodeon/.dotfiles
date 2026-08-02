@@ -22,12 +22,14 @@
                 mkdir --parents $out/share/fonts/${outputDirectory}/
               ''
               + (
+                # TODO: get this programmatically based off the extension?
                 if dontUnpack
                 then ''
                   cp $src $out/share/fonts/${outputDirectory}/
                 ''
                 else let
                   fileType =
+                    # TODO: get this programmatically from the extension?
                     if ttf
                     then "ttf"
                     else "otf";
