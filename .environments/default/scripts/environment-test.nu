@@ -1,1 +1,1 @@
-/nix/store/h9z5y1p43pbgd680p90sw2x6q01180v0-environments-default-scripts-environment-test.nu
+/nix/store/x7c736lwr5zy44dcmlqkvwy5q47mlf57-environments-default-scripts-environment-test.nu

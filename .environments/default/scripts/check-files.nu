@@ -1,1 +1,1 @@
-/nix/store/18ck6m3agaz0makqcbrn4b2k3964ir4k-environments-default-scripts-check-files.nu
+/nix/store/5xicg629dsr5gsn81g0yhvkg2rnm3i67-environments-default-scripts-check-files.nu

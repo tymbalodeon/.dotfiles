@@ -1,1 +1,1 @@
-/nix/store/kfgkckid034srv6szv1h4w1njwzzpxij-environments-git-scripts-help.nu
+/nix/store/bj6fv48g93kqg3sr6ip9p13rkck691rg-environments-git-scripts-help.nu

@@ -1,1 +1,1 @@
-/nix/store/1lrcp9xqp1zlwidhzgws1i8i4ywf1ycq-environments-default-scripts-check-trailing-whitespace.nu
+/nix/store/r5s60c13d11in14nqs653f60i3g9ljq6-environments-default-scripts-check-trailing-whitespace.nu

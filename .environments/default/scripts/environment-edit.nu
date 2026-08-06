@@ -1,1 +1,1 @@
-/nix/store/fdr74byzzsqbz10cfjcfyr3i5n732n13-environments-default-scripts-environment-edit.nu
+/nix/store/lf6v9bgb35gmdcbaknwzsyf1sb8m216l-environments-default-scripts-environment-edit.nu

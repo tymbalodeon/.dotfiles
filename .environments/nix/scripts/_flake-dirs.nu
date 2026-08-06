@@ -1,1 +1,1 @@
-/nix/store/81vlr8fzg3kb3cv4x9wlmw2dj9siclw4-environments-nix-scripts-_flake-dirs.nu
+/nix/store/7akjrpcnas68163ynh9dlmdcq2fn6zqg-environments-nix-scripts-_flake-dirs.nu

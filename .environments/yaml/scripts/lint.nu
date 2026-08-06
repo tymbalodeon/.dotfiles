@@ -1,1 +1,1 @@
-/nix/store/3jjxqm858if25p48353qiy9445p726fb-environments-yaml-scripts-lint.nu
+/nix/store/2kmj7vlg56v16l7fqpa77226db49iqsn-environments-yaml-scripts-lint.nu

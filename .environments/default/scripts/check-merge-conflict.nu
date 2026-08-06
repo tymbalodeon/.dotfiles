@@ -1,1 +1,1 @@
-/nix/store/qyqhdyzv4n93m0sbk8x32r50f28n278q-environments-default-scripts-check-merge-conflict.nu
+/nix/store/a3bc0icd24l2k1z6i93qi32l06v8il4y-environments-default-scripts-check-merge-conflict.nu

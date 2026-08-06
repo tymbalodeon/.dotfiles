@@ -1,1 +1,1 @@
-/nix/store/xw88s498rvkrd5z25hfv85hfbd2askiz-environments-nix-scripts-help.nu
+/nix/store/gnpd7dpigwwq27f6hqb0ifzb7ac7anhs-environments-nix-scripts-help.nu
