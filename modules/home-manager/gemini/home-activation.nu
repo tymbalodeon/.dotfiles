@@ -8,26 +8,37 @@ def main [] {
 
     $remote_bookmarks
   } else {
-    let local_bookmarks = (open --raw $bookmarks_path | from xml --allow-dtd)
+    let local_bookmarks = try {
+      open --raw $bookmarks_path
+      | from xml --allow-dtd
+    }
 
     if ($local_bookmarks == $remote_bookmarks) {
       return
     }
 
-    let bookmarks = (
+    let bookmarks = if ($local_bookmarks | is-empty) {
+      $remote_bookmarks
+    } else {
       $local_bookmarks
       | merge deep $remote_bookmarks
-    )
+    }
 
-    $bookmarks
-    | update content (
-      $bookmarks.content
-      | update attributes.href {$in | str replace --regex "^gemini://" ""}
-      | uniq
-    )
+    try {
+      $bookmarks
+      | update content (
+        $bookmarks.content
+        | update attributes.href {$in | str replace --regex "^gemini://" ""}
+        | uniq
+      )
+    }
   }
 
-  $bookmarks
-  | to xml --indent 4
-  | save --force $bookmarks_path
+  if ($bookmarks | is-not-empty) {
+    $bookmarks
+    | to xml --indent 4
+    | save --force $bookmarks_path
+  } else {
+    touch $bookmarks_path
+  }
 }

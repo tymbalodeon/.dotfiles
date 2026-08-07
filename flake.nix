@@ -88,6 +88,8 @@
     commonInputs = {
       inherit
         nix-index-database
+        secrets
+        sops-nix
         src
         zk-graph
         ;
@@ -126,7 +128,6 @@
                 niri
                 secrets
                 solaar
-                sops-nix
                 stylix
                 wayland-pipewire-idle-inhibit
                 ;
