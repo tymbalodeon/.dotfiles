@@ -120,6 +120,15 @@ export def main [
     $env.DOTFILES_STYLIX_THEME = (get-stylix-theme-name $theme)
   }
 
+  $env.DOTFILES_SCREEN_HEIGHT = (
+    xrandr err> /dev/null
+    | rg '\*'
+    | split words
+    | first
+    | split row x
+    | last
+  )
+
   if $update {
     update
   }

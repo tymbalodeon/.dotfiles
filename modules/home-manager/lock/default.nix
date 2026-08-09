@@ -42,7 +42,7 @@ in {
 
             font_family = "Open Sans ExtraBold";
             font_size = cfg.timeFontSize;
-            position = cfg.timePosition;
+            position = "0, -${toString cfg.timePosition}";
             text = "$TIME12";
             valign = "top";
           }
@@ -52,7 +52,7 @@ in {
 
             font_family = "Open Sans Bold";
             font_size = cfg.dateFontSize;
-            position = cfg.datePosition;
+            position = "0, -${toString cfg.datePosition}";
             text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
             valign = "top";
           }
@@ -64,6 +64,7 @@ in {
   # TODO: can these be determined programmatically?
   options.lock = let
     inherit (lib) mkOption types;
+    screenHeight = lib.toIntBase10 (builtins.getEnv "DOTFILES_SCREEN_HEIGHT");
   in {
     dateFontSize = mkOption {
       default = 36;
@@ -71,8 +72,8 @@ in {
     };
 
     datePosition = mkOption {
-      default = "0, -630";
-      type = types.str;
+      default = screenHeight / 3;
+      type = types.int;
     };
 
     timeFontSize = mkOption {
@@ -81,8 +82,8 @@ in {
     };
 
     timePosition = mkOption {
-      default = "0, -360";
-      type = types.str;
+      default = screenHeight / 8;
+      type = types.int;
     };
   };
 }
