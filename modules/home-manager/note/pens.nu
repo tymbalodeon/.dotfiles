@@ -21,6 +21,8 @@ def open-csv [name: string interactive = false] {
 
 def edit [item: string] {
   ^$env.EDITOR (get-path $item)
+
+  push-notes
 }
 
 # Edit records
@@ -185,6 +187,8 @@ def update-currently-inked-file [pen_id: int ink_id?: int] {
   | append {"pen id": $pen_id "ink id": $ink_id }
   | collect
   | save --force $currently_inked_file
+
+  push-notes
 }
 
 # Update the current ink record for a pen

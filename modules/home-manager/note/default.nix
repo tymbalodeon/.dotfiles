@@ -65,7 +65,10 @@ in {
           '';
       }
 
-      {source = ./pens.nu;}
+      {
+        includes = ["note"];
+        source = ./pens.nu;
+      }
     ];
 
     programs.zk = {
