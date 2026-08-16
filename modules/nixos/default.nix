@@ -110,6 +110,7 @@
       ./monitor
       ../nix
       ./passwords
+      ./printing
       ./secrets
       ./theme
       ./web
