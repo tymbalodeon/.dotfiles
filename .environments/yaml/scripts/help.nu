@@ -1,1 +1,1 @@
-/nix/store/jsl3l8zccc3lbmfilzy5mjcwmc6s313v-environments-yaml-scripts-help.nu
+/nix/store/n4jbybyiy5c8krwclj29x34glj0zr7qf-environments-yaml-scripts-help.nu

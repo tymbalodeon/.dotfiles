@@ -1,1 +1,1 @@
-/nix/store/zhqjdrpnqy6862nyhvw23gcm449wgr1a-environments-git-scripts-leaks.nu
+/nix/store/4dinw1xj9nsabrkl4bps82b8xkkxqbng-environments-git-scripts-leaks.nu

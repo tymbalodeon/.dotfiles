@@ -1,1 +1,1 @@
-/nix/store/mzvp1myz7kn25wv4sh7nzyk76bsr9q46-environments-nix-scripts-shell.nu
+/nix/store/418dla4rvaw6587r0xawm2fm0h44wj8n-environments-nix-scripts-shell.nu

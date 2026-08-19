@@ -1,1 +1,1 @@
-/nix/store/y526avp5hh56bnbmr6nsiic4r6389npc-environments-default-scripts-environment-activate.nu
+/nix/store/n1bjpg363s036k5z3cfcgynvslzf7lqr-environments-default-scripts-environment-activate.nu

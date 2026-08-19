@@ -37,11 +37,6 @@
       url = "git+ssh://git@github.com/tymbalodeon/secrets.git?dir=secrets&shallow=1";
     };
 
-    solaar = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:Svenum/Solaar-Flake/main";
-    };
-
     sops-nix = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:Mic92/sops-nix";
@@ -77,7 +72,6 @@
     nix-index-database,
     nixpkgs,
     secrets,
-    solaar,
     sops-nix,
     src,
     stylix,
@@ -127,7 +121,6 @@
                 musnix
                 niri
                 secrets
-                solaar
                 stylix
                 wayland-pipewire-idle-inhibit
                 ;

@@ -106,7 +106,6 @@
       (hostPath "hardware.nix")
       ./idle
       ./keyboard
-      ./logitech
       ./monitor
       ../nix
       ./passwords

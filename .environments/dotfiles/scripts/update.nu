@@ -29,7 +29,6 @@ def nixos-inputs [] {
     base16-helix
     musnix
     niri
-    solaar
     stylix
     wayland-pipewire-idle-inhibit
   ]
