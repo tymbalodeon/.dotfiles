@@ -1,4 +1,4 @@
-use xdg-state-home.nu 
+use xdg-state-home.nu
 
 def "tinty list" [] {
   try {

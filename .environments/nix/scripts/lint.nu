@@ -1,1 +1,0 @@
-/nix/store/rizvzc308hwpnv78x805ldpvgmrr891s-environments-nix-scripts-lint.nu

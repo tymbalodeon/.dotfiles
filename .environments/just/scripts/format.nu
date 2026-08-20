@@ -1,1 +1,0 @@
-/nix/store/4881ivy24x0qndaqv1siznnzrv9a0lrg-environments-just-scripts-format.nu

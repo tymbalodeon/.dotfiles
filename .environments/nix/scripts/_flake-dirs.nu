@@ -1,1 +1,0 @@
-/nix/store/72nq5lxmr0ixvza8l4pxp8sk62rsplkp-environments-nix-scripts-_flake-dirs.nu

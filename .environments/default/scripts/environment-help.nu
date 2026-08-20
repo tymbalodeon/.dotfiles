@@ -1,1 +1,0 @@
-/nix/store/vbpk6ia2wkpan21bz94ccj9kh5yc40hj-environments-default-scripts-environment-help.nu

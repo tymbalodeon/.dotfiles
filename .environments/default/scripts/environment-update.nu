@@ -1,1 +1,0 @@
-/nix/store/42d31bjx734hs0nqcz4xjih0ifa4qp91-environments-default-scripts-environment-update.nu

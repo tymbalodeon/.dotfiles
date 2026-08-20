@@ -1,1 +1,0 @@
-/nix/store/4dinw1xj9nsabrkl4bps82b8xkkxqbng-environments-git-scripts-leaks.nu

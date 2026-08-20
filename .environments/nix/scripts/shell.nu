@@ -1,1 +1,0 @@
-/nix/store/418dla4rvaw6587r0xawm2fm0h44wj8n-environments-nix-scripts-shell.nu

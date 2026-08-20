@@ -1,1 +1,0 @@
-/nix/store/4idz3hmlvd5y0dfrhszyn02i8gj9n2gv-environments-default-scripts-environment-remove.nu

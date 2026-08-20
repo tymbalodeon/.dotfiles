@@ -1,1 +1,0 @@
-/nix/store/a2r8rh5i28a6i3wd2xif0m08bv17whjv-environments-default-scripts-environment-revision.nu

@@ -1,1 +1,0 @@
-/nix/store/bb2cbnbwn0rmmqbl60lkb9xyjjkv9rqj-environments-nix-scripts-clean.nu

@@ -6,4 +6,3 @@ export def main [] {
     | path join .local/state
   }
 }
-

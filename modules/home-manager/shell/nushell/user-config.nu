@@ -21,5 +21,3 @@ def create-config-directory [] {
 
   $config_directory
 }
-
-

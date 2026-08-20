@@ -1,1 +1,0 @@
-/nix/store/l8whh6b4130nlr33v1cj6gnc3v1v5bnm-environments-default-scripts-lint.nu

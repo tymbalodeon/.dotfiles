@@ -1,1 +1,0 @@
-/nix/store/k4mf356188z63lik8cs5bfql6gj4n9yz-environments-default-scripts-recipe.nu

@@ -1,1 +1,0 @@
-/nix/store/dkiqj9l1m8f8glija92grgklf2a8fqgd-environments-nix-scripts-format.nu

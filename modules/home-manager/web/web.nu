@@ -39,7 +39,7 @@ def "web default set" [browser: string] {
 # Browse the web
 def --wrapped web [...args: string] {
   # TODO: allow passing `--browser` to select a different browser than the default
-  
+
   run-external (web default) ...$args
 }
 

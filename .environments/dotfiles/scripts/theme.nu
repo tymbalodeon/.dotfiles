@@ -12,7 +12,7 @@ def main [] {
 }
 
 def "main clear" [] {
-  rm --force (stylix-theme-path)  
+  rm --force (stylix-theme-path)
 }
 
 def "main list" [] {

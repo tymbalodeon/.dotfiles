@@ -1,1 +1,0 @@
-/nix/store/sp0phcgjbr6d7ggdshnvg1j84ss3i1sa-environments-default-scripts-check.nu

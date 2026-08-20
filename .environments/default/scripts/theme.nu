@@ -1,1 +1,0 @@
-/nix/store/wxfa0q763b3hjfi7z951bk3h9l4p1988-environments-default-scripts-theme.nu

@@ -1,1 +1,0 @@
-/nix/store/n1bjpg363s036k5z3cfcgynvslzf7lqr-environments-default-scripts-environment-activate.nu

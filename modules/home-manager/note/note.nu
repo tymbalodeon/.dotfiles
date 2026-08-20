@@ -157,7 +157,7 @@ def "note edit" [...search_terms: string] {
         (
           zk edit
             --interactive
-            --match ...(zk list ...$queries err> /dev/null) 
+            --match ...(zk list ...$queries err> /dev/null)
         )
       }
     } else {

@@ -1,1 +1,0 @@
-/nix/store/b2fy4gbbr6smrdx0j4hdvdd3wcilswjq-environments-default-scripts-find-script.nu

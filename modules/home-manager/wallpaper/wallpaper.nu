@@ -454,7 +454,7 @@ def add-arg [args: list<any> arg: any flag?: string --named-argument] {
   if ($flag | is-not-empty) {
     if ($arg | is-not-empty) and ($arg != false) {
       if $named_argument {
-        $args        
+        $args
         | append [$flag $arg]
       } else {
         $args

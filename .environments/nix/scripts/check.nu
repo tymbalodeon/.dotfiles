@@ -1,1 +1,0 @@
-/nix/store/4ryy03lywr8f4i35i53qkwsd9jys2cqa-environments-nix-scripts-check.nu

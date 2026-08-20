@@ -1,1 +1,0 @@
-/nix/store/6b8b18lyrphdhsxhpz5d4bym5779cr7x-environments-default-scripts-cd-to-root.nu

@@ -1,1 +1,0 @@
-/nix/store/zk906r8k8n5l3wfmkml4y7brncq31n7i-environments-default-scripts-replace.nu

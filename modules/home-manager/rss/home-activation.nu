@@ -54,4 +54,3 @@ def main [] {
   $config
   | save --force $config_path
 }
-

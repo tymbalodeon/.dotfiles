@@ -1,1 +1,0 @@
-/nix/store/30dcybcw09yjbg4f1xl8c8k2lz7dcb29-environments-default-scripts-environment-inputs.nu

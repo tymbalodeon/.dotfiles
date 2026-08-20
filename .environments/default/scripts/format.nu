@@ -1,1 +1,0 @@
-/nix/store/2lhbivvvyl5vdl9qhf3j51ifxja2anhf-environments-default-scripts-format.nu

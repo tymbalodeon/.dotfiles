@@ -5,6 +5,7 @@
 devenv.local.*
 .direnv
 .env
+.environments/*
 .envrc
 .helix/config.toml
 

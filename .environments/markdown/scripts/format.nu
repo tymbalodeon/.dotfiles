@@ -1,1 +1,0 @@
-/nix/store/kwapwx5rjaywaxppn8igrnz768agdram-environments-markdown-scripts-format.nu

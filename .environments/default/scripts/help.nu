@@ -1,1 +1,0 @@
-/nix/store/36zsbqylbhzg4nii76nh9dj7asmliyyl-environments-default-scripts-help.nu

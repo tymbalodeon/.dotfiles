@@ -51,4 +51,3 @@ export def "main raise" [] {
 export def "main zero" [] {
   wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%
 }
-
