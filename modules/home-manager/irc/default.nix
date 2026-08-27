@@ -4,6 +4,14 @@
   pkgs,
   ...
 }: let
+  nickname = ''
+    def nickname [] {
+      try {
+        open ${config.sops.secrets.${nicknamePath}.path}
+      }
+    }
+  '';
+
   nicknamePath = "irc/nickname";
   passwordPath = "irc/password";
 in {
@@ -19,18 +27,15 @@ in {
               | path join senpai/senpai.scfg
             }
 
-            def nickname [] {
-              try {
-                open ${config.sops.secrets.${nicknamePath}.path}
-              }
-            }
-
             def password [] {
               try {
                 open ${config.sops.secrets.${passwordPath}.path}
               }
             }
           ''
+          + "\n"
+          + nickname
+          + "\n"
           + builtins.readFile ./home-activation.nu
         );
     in
@@ -41,7 +46,12 @@ in {
     packages = [pkgs.senpai];
   };
 
-  nushell.extraScripts = [{source = ./irc.nu;}];
+  nushell.extraScripts = [
+    {
+      name = "irc";
+      text = nickname + "\n" + (builtins.readFile ./irc.nu);
+    }
+  ];
 
   imports = [
     ../shell/nushell
