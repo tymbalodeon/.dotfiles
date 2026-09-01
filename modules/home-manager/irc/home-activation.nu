@@ -8,7 +8,7 @@ def main [] {
 
   mkdir (config-path | path dirname)
 
-  $"address \"ircs+insecure://mazma\"
+$"address \"ircs+insecure://(ip-address)\"
 nickname \"(nickname)\"
 password \"(password)\"
 "

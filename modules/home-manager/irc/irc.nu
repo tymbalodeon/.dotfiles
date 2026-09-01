@@ -13,7 +13,9 @@ def "irc archive" [] {
   let logs = $"/var/lib/soju/logs/(nickname)"
   let temporary_directory = "/tmp/irc"
 
-  ssh -t mazma $"
+  let ip_address = (ip-address)
+
+  ssh -t $ip_address $"
     sudo rm --force --recursive ($temporary_directory);
     mkdir --parents ($temporary_directory);
     sudo cp --recursive ($logs) ($temporary_directory);
@@ -23,6 +25,6 @@ def "irc archive" [] {
   let archive_directory = $"($env.HOME)/irc/(date now | format date %Y-%m-%d--%I-%M-%S)"
 
   mkdir $archive_directory
-  scp -r $"mazma:($temporary_directory)/(nickname)" $archive_directory
-  ssh mazma $"sudo rm --recursive ($temporary_directory); sudo rm --recursive ($logs)"
+  scp -r $"($ip_address):($temporary_directory)/(nickname)" $archive_directory
+  ssh $ip_address $"sudo rm --recursive ($temporary_directory); sudo rm --recursive ($logs)"
 }

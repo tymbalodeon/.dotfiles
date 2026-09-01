@@ -4,6 +4,14 @@
   pkgs,
   ...
 }: let
+  ipAddress = ''
+    def ip-address [] {
+      try {
+        open ${config.sops.secrets."mazma/ip-address".path}
+      }
+    }
+  '';
+
   nickname = ''
     def nickname [] {
       try {
@@ -34,6 +42,8 @@ in {
             }
           ''
           + "\n"
+          + ipAddress
+          + "\n"
           + nickname
           + "\n"
           + builtins.readFile ./home-activation.nu
@@ -49,11 +59,12 @@ in {
   nushell.extraScripts = [
     {
       name = "irc";
-      text = nickname + "\n" + (builtins.readFile ./irc.nu);
+      text = ipAddress + "\n" + nickname + "\n" + (builtins.readFile ./irc.nu);
     }
   ];
 
   imports = [
+    ../servers/mazma.nix
     ../shell/nushell
     ../secrets
   ];
