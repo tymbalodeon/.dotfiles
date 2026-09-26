@@ -11,6 +11,7 @@ def shared-inputs [] {
     nix-index-database
     nixpkgs
     secrets
+    sops-nix
     src
     zk-graph
   ]
