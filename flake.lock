@@ -434,11 +434,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792886985,
-        "narHash": "sha256-np7UUAvRwWIKLJJDPmCjgovBYT/+JwP9P8hhS2F/q3s=",
+        "lastModified": 1792973383,
+        "narHash": "sha256-cnSBfVB6chVPrZ8Y29J4/RyWdR5o6IAiumXtRsGszuM=",
         "ref": "refs/heads/main",
-        "rev": "e0ad6fdaf3f096fd82c79fc800660fcb73c805a0",
-        "revCount": 210,
+        "rev": "c6888a62f028174c9b0503eb7cb26bf0c53e2761",
+        "revCount": 211,
         "type": "git",
         "url": "https://codeberg.org/BANanaD3V/niri-nix"
       },
