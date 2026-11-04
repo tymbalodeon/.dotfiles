@@ -40,7 +40,7 @@
         yq-go
       ];
 
-      stateVersion = "23.11";
+      stateVersion = "26.11";
     };
 
     news.display = "silent";

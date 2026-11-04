@@ -75,7 +75,7 @@
       udisks2.enable = true;
     };
 
-    system.stateVersion = "23.11";
+    system.stateVersion = "26.11";
     time.timeZone = "America/New_York";
 
     users.users.${cfg.username} = {

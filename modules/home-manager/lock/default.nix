@@ -64,7 +64,12 @@ in {
   # TODO: can these be determined programmatically?
   options.lock = let
     inherit (lib) mkOption types;
-    screenHeight = lib.toIntBase10 (builtins.getEnv "DOTFILES_SCREEN_HEIGHT");
+    screenHeight = lib.toIntBase10 (let
+      screenHeight = builtins.getEnv "DOTFILES_SCREEN_HEIGHT";
+    in
+      if screenHeight == ""
+      then "2160"
+      else screenHeight);
   in {
     dateFontSize = mkOption {
       default = 36;
