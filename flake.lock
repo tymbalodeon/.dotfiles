@@ -394,11 +394,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793193205,
-        "narHash": "sha256-X6xa6sGA7RnJQuZGbFMC+K+KToWAlBDCCjJXfTwEPsw=",
+        "lastModified": 1793757180,
+        "narHash": "sha256-gyV7AtCwLnOImcrfSETP4J3Ie96bz19DY47B7m7Y3HM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "095fef2f265c3c0da4fe315efba8f8a04495ab34",
+        "rev": "b787c48e2ec57a9d098f5c2721882a3bc1e16f97",
         "type": "github"
       },
       "original": {
@@ -671,11 +671,11 @@
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1780403381,
-        "narHash": "sha256-q7rxy5fuLrFiAt8FWqHjoFK4VSoRiei8lQP4gYKSgk0=",
+        "lastModified": 1793759929,
+        "narHash": "sha256-L58hbJaNVV67VG15FPT9Z1W23ADc2wUezsD4puwVrh8=",
         "ref": "refs/heads/trunk",
-        "rev": "7ea4b097c9dca8f43381359af6684b36cde10aeb",
-        "revCount": 178,
+        "rev": "e03f89da18459e68cbfabf03d32ad7ed4b3fcf8c",
+        "revCount": 180,
         "type": "git",
         "url": "ssh://git@codeberg.org/tymbalodeon/src.git"
       },

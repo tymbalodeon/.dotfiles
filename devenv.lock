@@ -3,11 +3,11 @@
     "devenv": {
       "locked": {
         "dir": "src/modules",
-        "lastModified": 1793199252,
-        "narHash": "sha256-LRgdAdMHL3uIX+kix/oyMzG+gMxzSYOzLrrRaoZthog=",
+        "lastModified": 1793731702,
+        "narHash": "sha256-WlVNaWXVTYaGBNey2Z+20sY1lT7BvzJEECb+VlDDdk0=",
         "owner": "cachix",
         "repo": "devenv",
-        "rev": "0d6c556e5f862c14a75a543e2ee4fdb7acc005ad",
+        "rev": "9655d320b8f9df74dbecf681f52a7334574606c3",
         "type": "github"
       },
       "original": {
@@ -21,11 +21,11 @@
       "flake": false,
       "locked": {
         "dir": "src",
-        "lastModified": 1790438797,
-        "narHash": "sha256-spv7a/jMNe3IuTcL77jk5MxYH+fa/7Qs1iHsjbVTRoU=",
+        "lastModified": 1793759622,
+        "narHash": "sha256-GP2TBOj95Qedef4dWOdhO38Niy63Mg1BapETG60Pw8o=",
         "ref": "refs/heads/trunk",
-        "rev": "93b6eefcab0b457f7c5fa4ce6e5f35778795d82d",
-        "revCount": 1747,
+        "rev": "f80a9d085710e68a2d2a536449ab0a74dc6978b9",
+        "revCount": 1750,
         "type": "git",
         "url": "ssh://git@codeberg.org/tymbalodeon/environments.git"
       },
@@ -37,11 +37,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1793645915,
-        "narHash": "sha256-yRzh4uc8uxFv5+5TROEIH1rUL2FF1/cvfc+uq5JGGHY=",
+        "lastModified": 1793706278,
+        "narHash": "sha256-CE1GD35mj//AKYuLNbQJZDelQYWzef5GBpQno9uyNP0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f9887a8a434bfba06e20dfc77bc8e0628266af84",
+        "rev": "ea9e3ef341e11c193537f674f821a99f9f436729",
         "type": "github"
       },
       "original": {
