@@ -66,6 +66,7 @@
       ./bat
       ./bottom
       ./editor
+      ./epub
       ./eza
       ./fastfetch
       ./file-manager
@@ -76,8 +77,7 @@
       ./irc
       ./jq
       ./media
-      # FIXME
-      # ./musescore
+      ./musescore
       ./networking
       ../nix
       ./nix
