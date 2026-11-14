@@ -25,7 +25,9 @@
     };
   };
 
-  home.packages = [pkgs.nautilus];
+  home.packages = with pkgs; [
+    nautilus
+  ];
 
   services.udiskie = {
     enable = true;

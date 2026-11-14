@@ -1,3 +1,6 @@
 {
-  services.gnome.sushi.enable = true;
+  services = {
+    gnome.sushi.enable = true;
+    gvfs.enable = true;
+  };
 }
