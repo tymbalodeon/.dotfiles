@@ -32,7 +32,7 @@
       };
 
       sizes = let
-        size = 10;
+        size = 11;
       in {
         applications = size;
         desktop = size;

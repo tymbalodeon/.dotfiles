@@ -285,8 +285,9 @@
 
       style = let
         font = config.stylix.fonts.sansSerif.name;
+        size = toString config.stylix.fonts.sizes.desktop;
       in
-        lib.mkAfter ''* { font-family: ${font}, "Font Awesome 7 Free"; } '';
+        lib.mkAfter ''* { font-family: ${font}, "Font Awesome 7 Free"; font-size: ${size}px; }'';
 
       systemd.enable = true;
     };
