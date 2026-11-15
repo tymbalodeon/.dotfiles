@@ -1,11 +1,14 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: {
   config = let
     cfg = config.waybar;
   in {
+    home.packages = [pkgs.moon-phases];
+
     programs.waybar = {
       enable = true;
 
@@ -69,6 +72,14 @@
           on-click-right = "playerctl stop";
           restart-interval = 1;
           return-type = "json";
+        };
+
+        "custom/moon-phase" = {
+          "exec" = "nu ${./moon-phase.nu}";
+          "format" = "{text}";
+          "interval" = 3600;
+          "return-type" = "json";
+          "tooltip" = true;
         };
 
         "custom/power" = {
@@ -166,6 +177,7 @@
           "idle_inhibitor"
           "custom/wallpaper"
           "clock"
+          "custom/moon-phase"
           "tray"
           "custom/systemd-failed-units"
         ];
