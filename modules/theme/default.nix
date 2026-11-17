@@ -22,7 +22,7 @@
       };
 
       sansSerif = {
-        name = "IBM Plex Sans";
+        name = "Atkinson Hyperlegible";
         package = google-fonts;
       };
 

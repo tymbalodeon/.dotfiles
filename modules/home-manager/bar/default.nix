@@ -285,7 +285,7 @@
 
       style = let
         font = config.stylix.fonts.sansSerif.name;
-        size = toString config.stylix.fonts.sizes.desktop;
+        size = toString (config.stylix.fonts.sizes.desktop + 4);
       in
         lib.mkAfter ''* { font-family: ${font}, "Font Awesome 7 Free"; font-size: ${size}px; }'';
 
