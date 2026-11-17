@@ -21,11 +21,11 @@
       "flake": false,
       "locked": {
         "dir": "src",
-        "lastModified": 1794405050,
-        "narHash": "sha256-YfrrXdpI1ujBeXdLNM6YazsZEWQon6+kl2fWw878SYc=",
+        "lastModified": 1794891130,
+        "narHash": "sha256-vPEuUvzdNvmZd4yWsYQylz5qExyCK9f2gs62LsUCatU=",
         "ref": "refs/heads/trunk",
-        "rev": "ed246a5685319ff0b790d663f32c309c53ffaf4b",
-        "revCount": 1752,
+        "rev": "a7d0ab85ea4f960a9673ede8ccf8870080eebd29",
+        "revCount": 1761,
         "type": "git",
         "url": "ssh://git@codeberg.org/tymbalodeon/environments.git"
       },
