@@ -50,6 +50,7 @@ in {
     ../window-manager
   ];
 
+  # TODO: move to bar module
   stylix.targets.waybar.font = "sansSerif";
 
   xdg = {
