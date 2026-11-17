@@ -117,7 +117,7 @@ export def main [
   }
 
   if ($theme | is-not-empty) {
-    $env.DOTFILES_STYLIX_THEME = (get-stylix-theme-name $theme)
+    $env.DOTFILES_THEME_NAME = (get-stylix-theme-name $theme)
   }
 
   $env.DOTFILES_SCREEN_HEIGHT = (

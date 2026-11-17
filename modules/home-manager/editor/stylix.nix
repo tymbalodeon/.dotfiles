@@ -82,7 +82,7 @@
         cfg.stylix.enable
         && !cfg.useDefaultStylixTheme
       ) {
-        settings.theme = "base16-${config.stylix.theme}";
+        settings.theme = "base16-${config.theme.name}";
       };
 
     stylix.targets.helix.enable =
