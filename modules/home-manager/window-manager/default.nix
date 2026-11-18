@@ -54,6 +54,12 @@
             "Mod+7".focus-workspace = 7;
             "Mod+8".focus-workspace = 8;
             "Mod+9".focus-workspace = 9;
+
+            "Mod+A" = {
+              _props.hotkey-overlay-title = "Toggle fullscreen (with status bar) for all windows";
+              spawn-sh = "nu ${./toggle-maximize.nu}";
+            };
+
             "Mod+BracketLeft".consume-or-expel-window-left = {};
             "Mod+BracketRight".consume-or-expel-window-right = {};
             "Mod+C".center-column = {};
