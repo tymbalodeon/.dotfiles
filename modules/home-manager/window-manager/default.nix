@@ -10,7 +10,7 @@
   in {
     home = {
       activation.niri = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        run mkdir --parents ~/Pictures/Screenshots
+        run mkdir --parents ~/screenshots
       '';
 
       packages = with pkgs;
@@ -25,6 +25,13 @@
           else []
         );
     };
+
+    nushell.extraScripts = [
+      {
+        includes = ["storage"];
+        source = ./screenshot.nu;
+      }
+    ];
 
     wayland.windowManager.niri = {
       enable = true;
@@ -241,17 +248,26 @@
 
             "Super+Alt+1" = {
               _props.hotkey-overlay-title = "Screenshot the entire screen";
-              screenshot-screen = {};
+
+              spawn-sh = ''
+                nu $(nu -c "\$nu.user-autoload-dirs | first | path join screenshot.nu") screen
+              '';
             };
 
             "Super+Alt+2" = {
               _props.hotkey-overlay-title = "Screenshot the current window";
-              screenshot-window = {};
+
+              spawn-sh = ''
+                nu $(nu -c "\$nu.user-autoload-dirs | first | path join screenshot.nu") window
+              '';
             };
 
             "Super+Alt+3" = {
-              _props.hotkey-overlay-title = "Screenshot";
-              screenshot = {};
+              _props.hotkey-overlay-title = "Open the screenshot UI";
+
+              spawn-sh = ''
+                nu $(nu -c "\$nu.user-autoload-dirs | first | path join screenshot.nu")
+              '';
             };
 
             "Super+Alt+B" = {
@@ -499,7 +515,7 @@
         };
 
         prefer-no-csd = {};
-        screenshot-path = "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
+        screenshot-path = "~/screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png";
 
         # // TODO: remove on laptop?
         spawn-at-startup = "sunsetr";

@@ -64,9 +64,9 @@ def main [] {
     } else if not $maximize and $is_maximized {
       niri msg action set-window-width --id $id 50%
     }
-
-    niri msg action focus-window --id $focused_id
   }
+
+  niri msg action focus-window --id $focused_id
 
   $maximize
   | save --force (state-file)
