@@ -8,23 +8,17 @@
   config = let
     cfg = config.niri;
   in {
-    home = {
-      activation.niri = lib.hm.dag.entryAfter ["writeBoundary"] ''
-        run mkdir --parents ~/screenshots
-      '';
-
-      packages = with pkgs;
-        [
-          gnome-keyring
-          xwayland-satellite
-        ]
-        ++ (
-          if cfg.laptop
-          # TODO: put into its own module
-          then [pkgs.brightnessctl]
-          else []
-        );
-    };
+    home.packages = with pkgs;
+      [
+        gnome-keyring
+        xwayland-satellite
+      ]
+      ++ (
+        if cfg.laptop
+        # TODO: put into its own module
+        then [pkgs.brightnessctl]
+        else []
+      );
 
     nushell.extraScripts = [
       {
