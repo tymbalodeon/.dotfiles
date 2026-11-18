@@ -99,7 +99,7 @@
         !(
           lib.strings.hasPrefix
           "catppuccin"
-          (builtins.getEnv "DOTFILES_STYLIX_THEME")
+          (builtins.getEnv "DOTFILES_THEME_NAME")
         );
 
       type = types.bool;
