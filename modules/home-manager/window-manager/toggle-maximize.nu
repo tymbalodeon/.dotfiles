@@ -1,25 +1,19 @@
-# TODO: hook me up to a keybinding!
+def focused-window-id [] {
+  niri msg --json focused-window
+  | from json
+  | get id
+}
+
+def window-ids [] {
+  niri msg --json windows
+  | from json
+  | get id
+}
 
 def main [] {
-  let focused_id = (
-    niri msg focused-window
-    | find --no-highlight "Window ID"
-    | str replace "Window ID " ""
-    | split row ":"
-    | first
-  )
+  let focused_id = (focused-window-id)
 
-  let ids = (
-    niri msg windows
-    | find --no-highlight "Window ID"
-    | each {
-      str replace "Window ID " ""
-      | split row ":"
-      | first
-    }
-  )
-
-  for id in $ids {
+  for id in (window-ids) {
     niri msg action focus-window --id $id
     niri msg action maximize-window-to-edges
     niri msg action focus-window --id $focused_id
