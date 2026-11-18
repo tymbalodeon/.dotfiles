@@ -31,7 +31,7 @@ export def get-themes [variant?: string] {
 }
 
 def available-themes [] {
-  let state_path = (xdg-state-home | path join stylix-available-themes.txt)
+  let state_path = (xdg-state-home | path join available-themes.txt)
 
   let themes = try {
     open $state_path
@@ -153,7 +153,7 @@ export def theme-preview [
   tinty info $theme
 }
 
-export def get-stylix-theme-name [theme: string] {
+export def get-theme-name [theme: string] {
   $theme
   | str replace base16- ""
 }
@@ -194,14 +194,14 @@ export def get-env-values [] {
   }
 }
 
-export def stylix-theme-path [] {
+export def theme-path [] {
   xdg-state-home
-  | path join stylix-theme
+  | path join theme
 }
 
 export def get-built-theme [] {
   try {
-    open (stylix-theme-path)
+    open (theme-path)
     | str trim
   }
 }
@@ -209,6 +209,6 @@ export def get-built-theme [] {
 export def set-built-theme [theme?: string] {
   if ($theme | is-not-empty) {
     format-theme-name $theme
-    | save --force (stylix-theme-path)
+    | save --force (theme-path)
   }
 }

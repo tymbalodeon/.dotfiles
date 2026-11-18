@@ -4,7 +4,7 @@ use switch.nu
 use theme-lib.nu get-built-theme
 use theme-lib.nu get-theme
 use theme-lib.nu get-themes
-use theme-lib.nu stylix-theme-path
+use theme-lib.nu theme-path
 use theme-lib.nu theme-preview
 
 def main [] {
@@ -12,7 +12,7 @@ def main [] {
 }
 
 def "main clear" [] {
-  rm --force (stylix-theme-path)
+  rm --force (theme-path)
 }
 
 def "main list" [] {
@@ -64,8 +64,8 @@ def "main switch" [
 
   if not $random or $force or (
     input "Are you sure you want to apply this theme? [y/N] "
-    | str downcase
+    | str lowercase
   ) in [yes y] {
-    switch --theme (get-stylix-theme-name $theme)
+    switch --theme (get-theme-name $theme)
   }
 }

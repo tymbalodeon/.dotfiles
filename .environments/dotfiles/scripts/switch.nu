@@ -8,7 +8,7 @@ use configurations.nu is-nixos
 use ../../default/scripts/print.nu print-error
 use theme-lib.nu get-built-theme
 use theme-lib.nu get-env-values
-use theme-lib.nu get-stylix-theme-name
+use theme-lib.nu get-theme-name
 use theme-lib.nu get-theme
 use theme-lib.nu set-built-theme
 use update.nu
@@ -19,14 +19,14 @@ use xdg-state-home.nu
 export def main [
   host?: string # The target host configuration (auto-detected if not specified)
   --boot # (NixOS only) Build the new configuration and make it the boot default, but don't activate it
-  --choose-theme # Choose the stylix theme interactively
+  --choose-theme # Choose the theme interactively
   --clean # Run `clean` after rebuilding
   --dark-theme # Select only dark themes
   --debug # Run and show verbose trace
-  --default-theme # Ignore $XDG_STATE_HOME/stylix-theme value and build with default theme
+  --default-theme # Ignore $XDG_STATE_HOME/theme value and build with default theme
   --light-theme # Select only light themes
-  --random-theme # Select a random stylix theme
-  --theme: string # Override the stylix theme
+  --random-theme # Select a random theme
+  --theme: string # Override the theme
   --update # Update the flake lock before rebuilding
 ] {
   let env_values = (get-env-values)
@@ -117,7 +117,7 @@ export def main [
   }
 
   if ($theme | is-not-empty) {
-    $env.DOTFILES_THEME_NAME = (get-stylix-theme-name $theme)
+    $env.DOTFILES_THEME_NAME = (get-theme-name $theme)
   }
 
   $env.DOTFILES_SCREEN_HEIGHT = (
