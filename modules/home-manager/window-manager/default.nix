@@ -76,8 +76,8 @@
             "Mod+Ctrl+C".center-visible-columns = {};
 
             "Mod+Ctrl+D" = {
-              _props.hotkey-overlay-title = "Define selected word (offline)";
-              spawn-sh = "${../dictionary/define.sh}";
+              _props.hotkey-overlay-title = "Define copied word (online)";
+              spawn-sh = "nu ${../dictionary/define.nu}";
             };
 
             "Mod+Ctrl+Down".move-window-down = {};
@@ -111,8 +111,8 @@
             };
 
             "Mod+D" = {
-              _props.hotkey-overlay-title = "Define selected word (online)";
-              spawn-sh = "nu ${../dictionary/define.nu}";
+              _props.hotkey-overlay-title = "Define copied word (offline)";
+              spawn-sh = "${../dictionary/define.sh}";
             };
 
             "Mod+Down".focus-window-down = {};
@@ -157,8 +157,8 @@
             "Mod+R".switch-preset-column-width = {};
 
             "Mod+Shift+Ctrl+D" = {
-              _props.hotkey-overlay-title = "Define selected (primary clipboard) word (offline)";
-              spawn-sh = "${../dictionary/define.sh} --primary";
+              _props.hotkey-overlay-title = "Define selected word (online)";
+              spawn-sh = "nu ${../dictionary/define.nu} --primary";
             };
 
             "Mod+Shift+Ctrl+Down".move-column-to-monitor-down = {};
@@ -177,8 +177,8 @@
             "Mod+Shift+Ctrl+Up".move-column-to-monitor-up = {};
 
             "Mod+Shift+D" = {
-              _props.hotkey-overlay-title = "Define selected (primary clipboard) word (online)";
-              spawn-sh = "nu ${../dictionary/define.nu} --primary";
+              _props.hotkey-overlay-title = "Define selected word (offline)";
+              spawn-sh = "${../dictionary/define.sh} --primary";
             };
 
             "Mod+Shift+Down".focus-monitor-down = {};

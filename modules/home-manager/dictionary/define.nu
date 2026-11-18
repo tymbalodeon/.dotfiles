@@ -17,16 +17,12 @@ def main [--primary] {
     return
   }
 
-  let definitions = (
-    curl
-      --connect-timeout 5
-      --max-time 10
-      --silent
-      $"https://api.dictionaryapi.dev/api/v2/entries/en_US/($word)"
-    | from json
-  )
-
-  if ($definitions | is-empty) or title in ($definitions | columns) {
+  let definitions = try {
+    (
+      http get
+        $"https://api.dictionaryapi.dev/api/v2/entries/en_US/($word)"
+    )
+  } catch {
     notify-send $"\n  No definition found for \"($word)\"\n"
 
     return
@@ -35,6 +31,8 @@ def main [--primary] {
   let urls = ($definitions.sourceUrls | flatten)
 
   if ($urls | is-not-empty) {
+    # TODO: focus the window after opening (use shared functions in
+    # modules/home-manager/window-manager)
     start ($urls | first)
   } else {
     print $definitions
