@@ -514,10 +514,24 @@
         # // TODO: remove on laptop?
         spawn-at-startup = "sunsetr";
 
-        window-rule = {
-          focus-ring.active-color = colors.base06;
-          open-maximized-to-edges = true;
-        };
+        window-rule = [
+          {
+            focus-ring.active-color = colors.base06;
+            open-maximized-to-edges = true;
+          }
+
+          {
+            match = {
+              _props = {
+                app-id = "org.gnome.Nautilus";
+                title = "dl.dropboxusercontent.com wants to save";
+              };
+            };
+
+            open-floating = true;
+            open-maximized-to-edges = false;
+          }
+        ];
       };
     };
   };
