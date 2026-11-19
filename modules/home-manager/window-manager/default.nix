@@ -524,7 +524,7 @@
             match = {
               _props = {
                 app-id = "org.gnome.Nautilus";
-                title = "dl.dropboxusercontent.com wants to save";
+                title = "wants to save";
               };
             };
 
