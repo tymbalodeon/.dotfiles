@@ -10,8 +10,9 @@
       enable = true;
 
       settings.bar = let
-        oneMinute = 60;
+        fiveMinutes = 300;
         oneHour = 3600;
+        oneMinute = 60;
       in {
         backlight = {
           device = "intel_backlight";
@@ -98,9 +99,9 @@
         };
 
         "custom/weather" = {
-          "exec" = "nu ${./weather.nu}";
+          "exec" = "${./weather.sh}";
           "format" = "{text}";
-          "interval" = oneHour;
+          "interval" = fiveMinutes;
           "return-type" = "json";
           "tooltip" = true;
         };
@@ -111,7 +112,7 @@
           unit = "GB";
         };
 
-        "custom/sunset" = {
+        "custom/sunsetr" = {
           exec = "nu ${../sunsetr/sunsetr.nu} get";
           interval = oneHour;
           on-click = "nu ${../sunsetr/sunsetr.nu} toggle";
@@ -146,7 +147,7 @@
 
           modules = [
             "backlight"
-            "custom/sunset"
+            "custom/sunsetr"
           ];
 
           orientation = "inherit";
@@ -223,7 +224,7 @@
             if cfg.laptop
             then ["group/brightness"]
             else [
-              "custom/sunset"
+              "custom/sunsetr"
               "custom/brightness"
             ]
           )

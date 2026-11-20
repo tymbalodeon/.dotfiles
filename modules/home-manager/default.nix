@@ -76,6 +76,7 @@
       ./gpg
       ./irc
       ./jq
+      ./location
       ./media
       ./musescore
       ./networking
