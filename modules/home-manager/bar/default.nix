@@ -1,18 +1,18 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: {
   config = let
     cfg = config.waybar;
   in {
-    home.packages = [pkgs.moon-phases];
-
     programs.waybar = {
       enable = true;
 
-      settings.bar = {
+      settings.bar = let
+        oneMinute = 60;
+        oneHour = 3600;
+      in {
         backlight = {
           device = "intel_backlight";
           format = "{icon} {percent}%";
@@ -77,7 +77,7 @@
         "custom/moon-phase" = {
           "exec" = "nu ${./moon-phase.nu}";
           "format" = "{text}";
-          "interval" = 3600;
+          "interval" = oneHour;
           "return-type" = "json";
           "tooltip" = true;
         };
@@ -97,6 +97,14 @@
           tooltip = false;
         };
 
+        "custom/weather" = {
+          "exec" = "nu ${./weather.nu}";
+          "format" = "{text}";
+          "interval" = oneHour;
+          "return-type" = "json";
+          "tooltip" = true;
+        };
+
         disk = {
           format = " {percentage_used}%";
           tooltip-format = "Used: {used}\nRemaining: {free}\nTotal: {total}";
@@ -105,7 +113,7 @@
 
         "custom/sunset" = {
           exec = "nu ${../sunsetr/sunsetr.nu} get";
-          interval = 3600;
+          interval = oneHour;
           on-click = "nu ${../sunsetr/sunsetr.nu} toggle";
           return-type = "json";
           signal = 3;
@@ -115,7 +123,7 @@
           exec = "${./systemd-failed-units.nu}";
           format = "✗ {}";
           hide-empty-text = true;
-          interval = 60;
+          interval = oneMinute;
           return-type = "json";
         };
 
@@ -125,7 +133,7 @@
           exec = "nu ${../wallpaper/wallpaper-status.nu}";
           format = " {}";
           hide-empty-text = true;
-          interval = 60;
+          interval = oneMinute;
           on-click-middle = "nu ${../wallpaper/wallpaper.nu} toggle-pause";
           on-click = "nu ${../wallpaper/wallpaper.nu} next";
           on-click-right = "nu ${../wallpaper/wallpaper.nu} previous";
@@ -178,6 +186,7 @@
           "custom/wallpaper"
           "clock"
           "custom/moon-phase"
+          "custom/weather"
           "tray"
           "custom/systemd-failed-units"
         ];
@@ -292,6 +301,8 @@
       systemd.enable = true;
     };
   };
+
+  imports = [../weather];
 
   options.waybar = with lib; {
     laptop = mkOption {

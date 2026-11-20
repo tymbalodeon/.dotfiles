@@ -95,6 +95,7 @@
       ./terminal
       ./version-control
       ./vivid
+      ./weather
       ./zellij
       ./zoxide
     ]
