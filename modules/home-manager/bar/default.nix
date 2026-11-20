@@ -9,23 +9,19 @@
     programs.waybar = {
       enable = true;
 
-      settings.bar = let
-        fiveMinutes = 300;
-        oneHour = 3600;
-        oneMinute = 60;
-      in {
+      settings = let
         backlight = {
           device = "intel_backlight";
-          format = "{icon} {percent}%";
+          format = "{icon} {percent} %";
           format-icons = ["" ""];
           tooltip = false;
         };
 
         battery = {
-          format-charging = " {capacity}%";
-          format = "{icon} {capacity}%";
+          format-charging = " {capacity} %";
+          format = "{icon} {capacity} %";
           format-icons = ["" "" "" ""];
-          format-plugged = " {capacity}%";
+          format-plugged = " {capacity} %";
         };
 
         bluetooth = {
@@ -51,11 +47,11 @@
           tooltip-format = "<tt><small>{calendar}</small></tt>";
         };
 
-        cpu.format = " {usage}%";
+        cpu.format = " {usage} %";
 
         "custom/brightness" = {
           exec = "nu ${../monitors/brightness.nu} get";
-          format = " {text}%";
+          format = " {text} %";
           interval = "once";
           on-click = "nu ${../monitors/brightness.nu} set min";
           on-click-right = "nu ${../monitors/brightness.nu} set max";
@@ -68,7 +64,7 @@
         "custom/media" = {
           escape = true;
           exec-if = "pgrep playerctld";
-          exec = "nu ${./media.nu}";
+          exec = "${./media.nu}";
           on-click = "playerctl play-pause";
           on-click-right = "playerctl stop";
           restart-interval = 1;
@@ -76,9 +72,9 @@
         };
 
         "custom/moon-phase" = {
-          "exec" = "nu ${./moon-phase.nu}";
+          "exec" = "${./moon-phase.nu}";
           "format" = "{text}";
-          "interval" = oneHour;
+          "interval" = 3600;
           "return-type" = "json";
           "tooltip" = true;
         };
@@ -107,7 +103,7 @@
         };
 
         disk = {
-          format = " {percentage_used}%";
+          format = " {percentage_used} %";
           tooltip-format = "Used: {used}\nRemaining: {free}\nTotal: {total}";
           unit = "GB";
         };
@@ -141,6 +137,8 @@
           return-type = "json";
           signal = 2;
         };
+
+        fiveMinutes = 300;
 
         "group/brightness" = {
           drawer = {};
@@ -180,67 +178,7 @@
           timeout = 720;
         };
 
-        memory.format = " {}%";
-
-        modules-center = [
-          "idle_inhibitor"
-          "custom/wallpaper"
-          "clock"
-          "custom/moon-phase"
-          "custom/weather"
-          "tray"
-          "custom/systemd-failed-units"
-        ];
-
-        modules-left = [
-          "niri/workspaces"
-          "niri/window"
-        ];
-
-        modules-right =
-          (
-            if cfg.laptop
-            then []
-            else [
-              "custom/media"
-              "mpd"
-            ]
-          )
-          ++ [
-            "network"
-            "bluetooth"
-          ]
-          ++ (
-            if cfg.laptop
-            then ["group/system"]
-            else [
-              "cpu"
-              "memory"
-              "disk"
-              "temperature"
-            ]
-          )
-          ++ (
-            if cfg.laptop
-            then ["group/brightness"]
-            else [
-              "custom/sunsetr"
-              "custom/brightness"
-            ]
-          )
-          ++ [
-            "wireplumber"
-          ]
-          ++ (
-            if cfg.laptop
-            then [
-              "battery"
-            ]
-            else []
-          )
-          ++ [
-            "custom/power"
-          ];
+        memory.format = " {} %";
 
         mpd = {
           consume-icons.on = " ";
@@ -265,7 +203,7 @@
         network = {
           format-disconnected = "⚠ Disconnected";
           format-ethernet = " {ipaddr}/{cidr}";
-          format-wifi = " {essid} ({signalStrength}%)";
+          format-wifi = " {essid} ({signalStrength} %)";
           tooltip-format = "{ifname}= {ipaddr}/{cidr}";
         };
 
@@ -276,20 +214,132 @@
           disable-click = cfg.laptop;
         };
 
-        position = "bottom";
-        spacing = 8;
+        oneHour = 3600;
+        oneMinute = 60;
 
         temperature = {
           critical-threshold = 80;
-          format = " {temperatureF}°F";
+          format = " {temperatureF} °F";
         };
 
         tray.spacing = 4;
 
         wireplumber = {
-          format = "{icon} {volume}%";
+          format = "{icon} {volume} %";
           format-icons = ["" "" ""];
           format-muted = " ";
+        };
+      in {
+        bottom = {
+          inherit
+            "custom/media"
+            "custom/moon-phase"
+            "custom/weather"
+            "mpd"
+            "tray"
+            ;
+
+          # TODO: make dynamic and linked to other bar?
+          height = 36;
+
+          modules-center = [
+            "custom/moon-phase"
+            "custom/weather"
+          ];
+
+          modules-left = (
+            if cfg.laptop
+            then []
+            else [
+              "custom/media"
+              "mpd"
+            ]
+          );
+
+          modules-right = [
+            "tray"
+          ];
+
+          position = "bottom";
+          spacing = 12;
+        };
+
+        top = {
+          inherit
+            "backlight"
+            "battery"
+            "bluetooth"
+            "clock"
+            "cpu"
+            "custom/brightness"
+            "custom/power"
+            "custom/sunsetr"
+            "custom/systemd-failed-units"
+            "custom/wallpaper"
+            "disk"
+            "group/brightness"
+            "group/system"
+            "idle_inhibitor"
+            "memory"
+            "network"
+            "niri/window"
+            "niri/workspaces"
+            "temperature"
+            "wireplumber"
+            ;
+
+          # TODO: make dynamic and linked to other bar?
+          height = 36;
+
+          modules-center = [
+            "idle_inhibitor"
+            "clock"
+            "custom/wallpaper"
+            "custom/systemd-failed-units"
+          ];
+
+          modules-left = [
+            "niri/workspaces"
+            "niri/window"
+          ];
+
+          modules-right =
+            (
+              if cfg.laptop
+              then ["group/system"]
+              else [
+                "cpu"
+                "memory"
+                "disk"
+                "temperature"
+              ]
+            )
+            ++ (
+              if cfg.laptop
+              then ["group/brightness"]
+              else [
+                "custom/sunsetr"
+                "custom/brightness"
+              ]
+            )
+            ++ [
+              "wireplumber"
+            ]
+            ++ (
+              if cfg.laptop
+              then [
+                "battery"
+              ]
+              else []
+            )
+            ++ [
+              "bluetooth"
+              "network"
+              "custom/power"
+            ];
+
+          position = "top";
+          spacing = 12;
         };
       };
 

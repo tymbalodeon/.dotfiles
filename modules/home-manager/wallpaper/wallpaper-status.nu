@@ -24,10 +24,10 @@ export def main [] {
   } else {
     match $status.status {
       running => {
-        let duration = $status.duration_left
+        let duration = ($status.duration_left | str replace "m" " min")
 
         if ($duration | str ends-with s) {
-          "<1m"
+          "<1 min"
         } else {
           $duration
         }

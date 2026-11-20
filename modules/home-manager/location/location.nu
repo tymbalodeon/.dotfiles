@@ -1,5 +1,12 @@
 def location [] {
-  http get http://ip-api.com/json
+  try {
+    http get http://ip-api.com/json
+  } catch {
+    {
+      lat: (location home latitude)
+      lon: (location home longitude)
+    }
+  }
 }
 
 def "location coordinates" [] {

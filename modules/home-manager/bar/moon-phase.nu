@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 def main [] {
   {
     text: (moon-phases --text-emoji)
