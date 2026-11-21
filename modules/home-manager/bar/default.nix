@@ -164,6 +164,9 @@
           orientation = "inherit";
         };
 
+        # TODO: make dynamic?
+        height = 36;
+
         idle_inhibitor = {
           format = "{icon}";
 
@@ -232,32 +235,30 @@
       in {
         bottom = {
           inherit
+            "custom/brightness"
             "custom/media"
             "custom/moon-phase"
+            "custom/sunsetr"
             "custom/weather"
+            height
             "mpd"
-            "tray"
+            "wireplumber"
             ;
-
-          # TODO: make dynamic and linked to other bar?
-          height = 36;
 
           modules-center = [
             "custom/moon-phase"
             "custom/weather"
           ];
 
-          modules-left = (
-            if cfg.laptop
-            then []
-            else [
-              "custom/media"
-              "mpd"
-            ]
-          );
+          modules-left = [
+            "custom/media"
+            "mpd"
+          ];
 
           modules-right = [
-            "tray"
+            "custom/sunsetr"
+            "custom/brightness"
+            "wireplumber"
           ];
 
           position = "bottom";
@@ -271,30 +272,27 @@
             "bluetooth"
             "clock"
             "cpu"
-            "custom/brightness"
             "custom/power"
-            "custom/sunsetr"
             "custom/systemd-failed-units"
             "custom/wallpaper"
             "disk"
             "group/brightness"
             "group/system"
+            height
             "idle_inhibitor"
             "memory"
             "network"
             "niri/window"
             "niri/workspaces"
             "temperature"
-            "wireplumber"
+            "tray"
             ;
-
-          # TODO: make dynamic and linked to other bar?
-          height = 36;
 
           modules-center = [
             "idle_inhibitor"
             "clock"
             "custom/wallpaper"
+            "tray"
             "custom/systemd-failed-units"
           ];
 
@@ -322,9 +320,6 @@
                 "custom/brightness"
               ]
             )
-            ++ [
-              "wireplumber"
-            ]
             ++ (
               if cfg.laptop
               then [

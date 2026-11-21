@@ -18,15 +18,15 @@ def weather [
 
   if $formatted {
     {
-      Cloudiness: $"|☁ ($weather.clouds.all) %"
-      "Feels like": $"| ($weather.main.feels_like) °F"
-      High: $"| ($weather.main.temp_max) °F"
-      Humidity: $"|🌢 ($weather.main.humidity) %"
-      Low: $"| ($weather.main.temp_min) °F"
-      Sunrise: $"| (epoch-to-human $weather.sys.sunrise)"
-      Sunset: $"| (epoch-to-human $weather.sys.sunset)"
-      Temperature: $"| ($weather.main.temp) °F"
-      Wind: $"|༄ ($weather.wind.speed) mph"
+      Cloudiness: $"☁ ($weather.clouds.all) %"
+      "Feels like": $" ($weather.main.feels_like) °F"
+      High: $" ($weather.main.temp_max) °F"
+      Humidity: $"🌢 ($weather.main.humidity) %"
+      Low: $" ($weather.main.temp_min) °F"
+      Sunrise: $" (epoch-to-human $weather.sys.sunrise)"
+      Sunset: $" (epoch-to-human $weather.sys.sunset)"
+      Temperature: $" ($weather.main.temp) °F"
+      Wind: $"༄ ($weather.wind.speed) mph"
     }
   } else {
     $weather
@@ -37,8 +37,8 @@ def "weather waybar" [] {
   let weather = (weather --formatted)
 
   {
-    text: $"($weather.Temperature | str replace "|" "")"
-    tooltip: ($weather | to text | column --table --separator "|")
+    text: $"($weather.Temperature)  ($weather.Cloudiness)  ($weather.Humidity)"
+    tooltip: ($weather | reject Cloudiness Humidity Temperature | to text --no-newline)
   }
   | to json
   | jq --compact-output --unbuffered
