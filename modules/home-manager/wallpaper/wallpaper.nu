@@ -1,3 +1,7 @@
+def waybar-height [] {
+  55
+}
+
 def wallpaper-directory-path [] {
   $"($env.HOME)/wallpaper"
 }
@@ -608,7 +612,8 @@ def "wallpaper pad" [
     let gravity = if $is_wide_image {
       "center"
     } else {
-      "north"
+      # "north"
+      "center"
     }
 
     let padded_resolution = if $is_wide_image {
