@@ -149,16 +149,16 @@
 
         fiveMinutes = 300;
 
+        groupSystemModules = [
+          "cpu"
+          "memory"
+          "disk"
+          "temperature"
+        ];
+
         "group/system" = {
           drawer = {};
-
-          modules = [
-            "cpu"
-            "memory"
-            "disk"
-            "temperature"
-          ];
-
+          modules = groupSystemModules;
           orientation = "inherit";
         };
 
@@ -308,7 +308,7 @@
             (
               if cfg.laptop
               then ["group/system"]
-              else "group/system".modules
+              else groupSystemModules
             )
             ++ [
               "bluetooth"
