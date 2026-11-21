@@ -7,5 +7,6 @@
 
   laptop = true;
   niri.input.keyboard.xkb.options = "altwin:swap_lalt_lwin";
-  wallpaper.padSize = 37;
+  # FIXME
+  # wallpaper.padSize = 37;
 }

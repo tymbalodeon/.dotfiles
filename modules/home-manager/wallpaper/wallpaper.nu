@@ -1,7 +1,3 @@
-def waybar-height [] {
-  55
-}
-
 def wallpaper-directory-path [] {
   $"($env.HOME)/wallpaper"
 }
@@ -609,13 +605,6 @@ def "wallpaper pad" [
       )
     )
 
-    let gravity = if $is_wide_image {
-      "center"
-    } else {
-      # "north"
-      "center"
-    }
-
     let padded_resolution = if $is_wide_image {
       $"($padded_resolution)+0+((waybar-height) / 2)"
     } else {
@@ -626,7 +615,7 @@ def "wallpaper pad" [
       magick
         $image
         -background (get-background-color $background_color)
-        -gravity $gravity
+        -gravity "center"
         -resize $resolution
         -extent $padded_resolution
         $output_path
