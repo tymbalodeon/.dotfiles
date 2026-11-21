@@ -58,26 +58,26 @@ def moon [] {
   }
 }
 
+def miles [kilometers: float] {
+  $kilometers * 0.62137119
+  | into int
+}
+
+def event-time [event: string] {
+  $event
+  | format date "%I:%M %p"
+}
+
 def "moon waybar" [] {
   let moon = (moon)
-
   let phase = $moon.phase.name
   let illumination = $"(($moon.phase.illumination * 100) | into int) %"
-  let age = $"($moon.phase.age_days) days old"
-
-  let rise = (
-    $moon.rise_set.rise_local
-    | format date "%I:%M %p"
-  )
-
-  let set = (
-    $moon.rise_set.set_local
-    | format date "%I:%M %p"
-  )
-
-  let interpretation = $moon.interpretation.body
+  let age = $"($moon.phase.age_days | into int) days old"
+  let rise = $"↑ (event-time $moon.rise_set.rise_local)"
+  let set = $"↓ (event-time $moon.rise_set.set_local)"
 
   let moon = {
+    Distance: $"(miles $moon.phase.distance_km) miles from Earth"
     Phase: $phase
     Illumination: $illumination
     Age: $"($moon.phase.age_days) days old"
@@ -89,8 +89,8 @@ def "moon waybar" [] {
   | to text --no-newline
 
   {
-    text: (icon $phase)
-    tooltip: $"($phase) \(($illumination)\) - ($age)"
+    text: $"(icon $phase) ($phase) \(($illumination)\)"
+    tooltip: ($moon | reject Phase Illumination | values | to text --no-newline)
   }
   | to json
   | jq --compact-output --unbuffered

@@ -72,11 +72,11 @@
         };
 
         "custom/moon-phase" = {
-          "exec" = "${./moon.sh}";
-          "format" = "{text}";
-          "interval" = 3600;
-          "return-type" = "json";
-          "tooltip" = true;
+          exec = "${./moon.sh}";
+          format = "{text}";
+          interval = 3600;
+          return-type = "json";
+          tooltip = true;
         };
 
         "custom/power" = {
@@ -95,19 +95,20 @@
         };
 
         "custom/weather" = {
-          "exec" = "${./weather.sh}";
-          "format" = "{text}";
-          "interval" = fiveMinutes;
-          "return-type" = "json";
-          "tooltip" = true;
+          exec = "${./weather.sh}";
+          format = "{text}";
+          interval = fiveMinutes;
+          return-type = "json";
+          signal = 2;
+          tooltip = true;
         };
 
         "custom/weather-temperature" = {
-          "exec" = "${./weather.sh} temperature";
-          "format" = "{text}";
-          "interval" = fiveMinutes;
-          "return-type" = "json";
-          "tooltip" = true;
+          exec = "${./weather.sh} temperature";
+          format = "{text}";
+          interval = fiveMinutes;
+          return-type = "json";
+          tooltip = true;
         };
 
         disk = {
@@ -237,6 +238,7 @@
             "custom/moon-phase"
             "custom/sunsetr"
             "custom/weather"
+            "custom/weather-temperature"
             height
             "mpd"
             "wireplumber"
@@ -254,13 +256,13 @@
           ];
 
           modules-right =
-            [
-              "custom/sunsetr"
-            ]
-            ++ (
+            (
               if cfg.laptop
               then ["backlight"]
-              else ["custom/brightness"]
+              else [
+                "custom/sunsetr"
+                "custom/brightness"
+              ]
             )
             ++ ["wireplumber"];
 

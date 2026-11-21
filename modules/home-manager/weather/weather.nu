@@ -57,10 +57,9 @@ def "weather waybar" [] {
     Humidity: $"🌢 ($weather.main.humidity) %"
     Sunrise: $" (epoch-to-human $weather.sys.sunrise)"
     Sunset: $" (epoch-to-human $weather.sys.sunset)"
-    Wind: $"༄ ($weather.wind.speed | math round --precision 1) mph"
+    Wind: $"💨\u{fe0e} ($weather.wind.speed | math round --precision 1) mph"
   }
 
-  # FIXME: why does this appear out of line with the other modules?!
   (
     waybar-json 
       $"($weather.Cloudiness) ($weather.Humidity) ($weather.Wind)"

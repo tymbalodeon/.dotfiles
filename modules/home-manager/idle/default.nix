@@ -3,7 +3,7 @@
     enable = true;
 
     settings = {
-      general.after_sleep_cmd = "systemctl --user restart waybar";
+      general.after_sleep_cmd = "pkill -RTMIN+2 waybar";
 
       listener = [
         {
