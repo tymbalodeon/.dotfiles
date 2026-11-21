@@ -140,17 +140,6 @@
 
         fiveMinutes = 300;
 
-        "group/brightness" = {
-          drawer = {};
-
-          modules = [
-            "backlight"
-            "custom/sunsetr"
-          ];
-
-          orientation = "inherit";
-        };
-
         "group/system" = {
           drawer = {};
 
@@ -235,6 +224,7 @@
       in {
         bottom = {
           inherit
+            "backlight"
             "custom/brightness"
             "custom/media"
             "custom/moon-phase"
@@ -255,11 +245,16 @@
             "mpd"
           ];
 
-          modules-right = [
-            "custom/sunsetr"
-            "custom/brightness"
-            "wireplumber"
-          ];
+          modules-right =
+            [
+              "custom/sunsetr"
+            ]
+            ++ (
+              if cfg.laptop
+              then ["backlight"]
+              else ["custom/brightness"]
+            )
+            ++ ["wireplumber"];
 
           position = "bottom";
           spacing = 12;
@@ -267,7 +262,6 @@
 
         top = {
           inherit
-            "backlight"
             "battery"
             "bluetooth"
             "clock"
@@ -276,7 +270,6 @@
             "custom/systemd-failed-units"
             "custom/wallpaper"
             "disk"
-            "group/brightness"
             "group/system"
             height
             "idle_inhibitor"
@@ -305,21 +298,12 @@
             (
               if cfg.laptop
               then ["group/system"]
-              else [
-                "cpu"
-                "memory"
-                "disk"
-                "temperature"
-              ]
+              else "group/system".modules
             )
-            ++ (
-              if cfg.laptop
-              then ["group/brightness"]
-              else [
-                "custom/sunsetr"
-                "custom/brightness"
-              ]
-            )
+            ++ [
+              "bluetooth"
+              "network"
+            ]
             ++ (
               if cfg.laptop
               then [
@@ -328,8 +312,6 @@
               else []
             )
             ++ [
-              "bluetooth"
-              "network"
               "custom/power"
             ];
 
