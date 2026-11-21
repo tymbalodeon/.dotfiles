@@ -5,5 +5,9 @@ includes="$user_autoload_dirs/openweathermap-api-key.nu"
 script="$user_autoload_dirs/weather.nu"
 
 if test -f "$includes" && test -f "$script"; then
-	nu --commands "source $includes; source $script; weather waybar"
+	if [ "$1" = "temperature" ]; then
+		nu --commands "source $includes; source $script; weather waybar temperature"
+	else
+		nu --commands "source $includes; source $script; weather waybar"
+	fi
 fi

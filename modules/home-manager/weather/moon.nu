@@ -88,7 +88,6 @@ def "moon waybar" [] {
   $moon
   | to text --no-newline
 
-
   {
     text: (icon $phase)
     tooltip: $"($phase) \(($illumination)\) - ($age)"

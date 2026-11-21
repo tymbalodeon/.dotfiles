@@ -102,6 +102,14 @@
           "tooltip" = true;
         };
 
+        "custom/weather-temperature" = {
+          "exec" = "${./weather.sh} temperature";
+          "format" = "{text}";
+          "interval" = fiveMinutes;
+          "return-type" = "json";
+          "tooltip" = true;
+        };
+
         disk = {
           format = " {percentage_used} %";
           tooltip-format = "Used: {used}\nRemaining: {free}\nTotal: {total}";
@@ -152,9 +160,6 @@
 
           orientation = "inherit";
         };
-
-        # TODO: make dynamic?
-        height = 36;
 
         idle_inhibitor = {
           format = "{icon}";
@@ -237,6 +242,7 @@
 
           modules-center = [
             "custom/moon-phase"
+            "custom/weather-temperature"
             "custom/weather"
           ];
 
@@ -280,6 +286,8 @@
             "temperature"
             "tray"
             ;
+
+          height = 40;
 
           modules-center = [
             "idle_inhibitor"

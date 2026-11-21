@@ -40,25 +40,48 @@ def epoch-to-human [timestamp: int] {
   | format date "%I:%M %p"
 }
 
+def waybar-json [text: string tooltip: string] {
+  {
+    text: ($text | str trim)
+    tooltip: ($tooltip | str trim)
+  }
+  | to json
+  | jq --compact-output --unbuffered
+}
+
 def "weather waybar" [] {
   let weather = (weather)
 
   let weather = {
     Cloudiness: $"☁ ($weather.clouds.all) %"
-    "Feels like": $" ($weather.main.feels_like) °F"
-    High: $" ($weather.main.temp_max) °F"
     Humidity: $"🌢 ($weather.main.humidity) %"
-    Low: $" ($weather.main.temp_min) °F"
     Sunrise: $" (epoch-to-human $weather.sys.sunrise)"
     Sunset: $" (epoch-to-human $weather.sys.sunset)"
-    Temperature: $" ($weather.main.temp) °F"
-    Wind: $"༄ ($weather.wind.speed) mph"
+    Wind: $"༄ ($weather.wind.speed | math round --precision 1) mph"
   }
 
-  {
-    text: $"($weather.Temperature)  ($weather.Cloudiness)  ($weather.Humidity)"
-    tooltip: ($weather | reject Cloudiness Humidity Temperature | to text --no-newline)
+  # FIXME: why does this appear out of line with the other modules?!
+  (
+    waybar-json 
+      $"($weather.Cloudiness) ($weather.Humidity) ($weather.Wind)"
+      ($weather | select Sunrise Sunset | values | to text --no-newline)
+  )
+}
+
+def "weather waybar temperature" [] {
+  let weather = (weather)
+
+  let weather = {
+    "Feels like": $" ($weather.main.feels_like | into int) °F"
+    Divider: "-------"
+    High: $" ($weather.main.temp_max | into int) °F"
+    Low: $" ($weather.main.temp_min | into int) °F"
+    Temperature: $" ($weather.main.temp | into int) °F"
   }
-  | to json
-  | jq --compact-output --unbuffered
+
+  (
+    waybar-json
+      $"($weather.Temperature)"
+      ($weather | reject Temperature | values | to text --no-newline)
+  )
 }

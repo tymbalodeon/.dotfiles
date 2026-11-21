@@ -62,6 +62,6 @@
   in
     mkOption {
       type = types.int;
-      default = 96;
+      default = 98;
     };
 }
