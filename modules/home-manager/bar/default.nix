@@ -161,6 +161,8 @@
           orientation = "inherit";
         };
 
+        height = 40;
+
         idle_inhibitor = {
           format = "{icon}";
 
@@ -286,8 +288,6 @@
             "temperature"
             "tray"
             ;
-
-          height = 40;
 
           modules-center = [
             "idle_inhibitor"
