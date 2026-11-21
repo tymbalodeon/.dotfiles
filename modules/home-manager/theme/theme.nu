@@ -1,6 +1,6 @@
 def current-theme [] {
   try {
-    open ~/.local/state/stylix-theme
+    open ~/.local/state/theme
   }
 }
 

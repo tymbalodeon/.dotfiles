@@ -228,7 +228,7 @@
         tray.spacing = 4;
 
         wireplumber = {
-          format = "{icon} {volume} %";
+          format = "{icon} {volume} % ";
           format-icons = ["" "" ""];
           format-muted = " ";
         };
