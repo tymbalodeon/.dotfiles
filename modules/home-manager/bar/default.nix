@@ -72,7 +72,7 @@
         };
 
         "custom/moon-phase" = {
-          "exec" = "${./moon-phase.nu}";
+          "exec" = "${./moon.sh}";
           "format" = "{text}";
           "interval" = 3600;
           "return-type" = "json";
