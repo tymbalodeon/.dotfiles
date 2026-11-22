@@ -124,5 +124,20 @@ def "weather waybar sign" [] {
     12 => (if $day <= 21 { "♐" } else { "♑" })
   }
 
-  waybar-json (convert-emoji $sign)
+  let name = {
+    ♑: Capricorn
+    ♒: Aquarius
+    ♓: Pisces
+    ♈: Aries
+    ♉: Taurus
+    ♊: Gemini
+    ♋: Cancer
+    ♌: Leo
+    ♍: Virgo
+    ♎: Libra
+    ♏: Scorpio
+    ♐: Sagittarius
+  } | get $sign
+
+  waybar-json (convert-emoji $sign) $name
 }
