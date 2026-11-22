@@ -12,14 +12,14 @@ def cache-file [] {
 
 def icon [phase: string] {
   let icon = {
-    "New moon": 🌑
-    "Waxing Crescent": 🌒
-    "First Quarter": 🌓
-    "Waxing Gibbous": 🌔
-    "Full Moon": 🌕
-    "Waning Gibbous": 🌖
-    "Last Quarter": 🌗
-    "Waning Crescent": 🌘
+    "New Moon": 🌕
+    "Waxing Crescent": 🌖
+    "First Quarter": 🌗
+    "Waxing Gibbous": 🌘
+    "Full Moon": 🌑
+    "Waning Gibbous": 🌒
+    "Last Quarter": 🌓
+    "Waning Crescent": 🌔
   } | get $phase
 
   $"($icon)\u{fe0e}"
@@ -68,28 +68,70 @@ def event-time [event: string] {
   | format date "%I:%M %p"
 }
 
+def days-until [days: float type: string] {
+  let pluralized = if $days > 1 {
+    "days"
+  } else {
+    "day"
+  }
+
+  let icon = {
+    Full: (icon "Full Moon")
+    New: (icon "New Moon")
+  } | get $type
+
+  $"($icon) in ($days | into int) ($pluralized)"
+}
+
 def "moon waybar" [] {
   let moon = (moon)
   let phase = $moon.phase.name
   let illumination = $"(($moon.phase.illumination * 100) | into int) %"
-  let age = $"($moon.phase.age_days | into int) days old"
   let rise = $"↑ (event-time $moon.rise_set.rise_local)"
   let set = $"↓ (event-time $moon.rise_set.set_local)"
 
-  let moon = {
-    Distance: $"(miles $moon.phase.distance_km) miles from Earth"
-    Phase: $phase
-    Illumination: $illumination
-    Age: $"($moon.phase.age_days) days old"
-    Rise: $rise
-    Set: $set
+  let eclipse = if $moon.eclipse.is_blood_moon {
+    "Blood Moon "
+  } else if $moon.eclipse.is_eclipse {
+    "Eclipse "
+  } else {
+    ""
   }
 
-  $moon
-  | to text --no-newline
+  let special_moon = if $moon.special_moon.is_supermoon {
+    " Super Moon "
+  } else if $moon.special_moon.is_micromoon {
+    " Micro Moon "
+  } else if $moon.special_moon.is_blue_moon {
+    " Blue Moon "
+  } else if $moon.special_moon.is_black_moon {
+    " Black Moon "
+  } else if $moon.special_moon.is_harvest_moon {
+    " Harvest Moon "
+  } else if $moon.special_moon.is_hunter_moon {
+    " Hunter Moon "
+  } else {
+    ""
+  }
+
+  let name = if $moon.traditional_moon.is_current_full_moon {
+    $moon.traditional_moon.name
+  } else {
+    $phase
+  }
+
+  # TODO: add next specials and elipses
+  let moon = {
+    Rise: $rise
+    Set: $set
+    next_new_moon: $"(days-until $moon.forecast.days_until_new_moon "New")"
+    next_full_moon: $"(days-until $moon.forecast.days_until_full_moon "Full")"
+    Phase: $phase
+    Illumination: $illumination
+  }
 
   {
-    text: $"(icon $phase) ($phase) \(($illumination)\)"
+    text: $"($eclipse)($special_moon)(icon $phase) ($name) \(($illumination)\)"
     tooltip: ($moon | reject Phase Illumination | values | to text --no-newline)
   }
   | to json

@@ -20,7 +20,7 @@ def weather [] {
 
   # TODO: link time to waybar module dynamically
   if not ($cache_file | path exists) or (
-    ((date now) - 5min) > (ls $cache_file | first).modified
+    ((date now) - 15min) > (ls $cache_file | first).modified
   ) {
     let weather = (
       http get $"($base)?appid=($api_key)&lat=($lat)&lon=($lon)&units=imperial"
@@ -53,34 +53,47 @@ def "weather waybar" [] {
   let weather = (weather)
 
   let weather = {
+    "Feels like": $" ($weather.main.feels_like | into int) °F"
+    Temperature: $" ($weather.main.temp | into int) °F"
+    High: $" ($weather.main.temp_max | into int) °F"
+    Low: $" ($weather.main.temp_min | into int) °F"
     Cloudiness: $"☁ ($weather.clouds.all) %"
     Humidity: $"🌢 ($weather.main.humidity) %"
-    Sunrise: $" (epoch-to-human $weather.sys.sunrise)"
-    Sunset: $" (epoch-to-human $weather.sys.sunset)"
     Wind: $"💨\u{fe0e} ($weather.wind.speed | math round --precision 1) mph"
+    # Sunrise: $" (epoch-to-human $weather.sys.sunrise)"
+    # Sunset: $" (epoch-to-human $weather.sys.sunset)"
   }
 
   (
     waybar-json 
-      $"($weather.Cloudiness) ($weather.Humidity) ($weather.Wind)"
-      ($weather | select Sunrise Sunset | values | to text --no-newline)
+      $"($weather."Feels like")"
+      ($weather | reject "Feels like" | values | to text --no-newline)
   )
 }
 
-def "weather waybar temperature" [] {
+def "weather sun" [] {
   let weather = (weather)
-
+  
   let weather = {
-    "Feels like": $" ($weather.main.feels_like | into int) °F"
-    Divider: "-------"
-    High: $" ($weather.main.temp_max | into int) °F"
-    Low: $" ($weather.main.temp_min | into int) °F"
-    Temperature: $" ($weather.main.temp | into int) °F"
+    Sunrise: $" (epoch-to-human $weather.sys.sunrise)"
+    Sunset: $" (epoch-to-human $weather.sys.sunset)"
+  }
+
+  let text = if ($weather.sys.sunrise) {
+    $weather.Sunrise
+  } else {
+    $weather.Sunset
+  }
+
+  let tooltip = if ($weather.sys.sunrise) {
+    $weather.Sunrise
+  } else {
+    $weather.Sunset
   }
 
   (
-    waybar-json
-      $"($weather.Temperature)"
-      ($weather | reject Temperature | values | to text --no-newline)
+    waybar-json 
+      $text
+      $tooltip
   )
 }

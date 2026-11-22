@@ -71,9 +71,10 @@
           return-type = "json";
         };
 
-        "custom/moon-phase" = {
+        "custom/moon" = {
           exec = "${./moon.sh}";
-          format = "{text}";
+          # TODO: replace spaces with CSS
+          format = "  {text}  ";
           interval = 3600;
           return-type = "json";
           tooltip = true;
@@ -100,14 +101,6 @@
           interval = fiveMinutes;
           return-type = "json";
           signal = 2;
-          tooltip = true;
-        };
-
-        "custom/weather-temperature" = {
-          exec = "${./weather.sh} temperature";
-          format = "{text}";
-          interval = fiveMinutes;
-          return-type = "json";
           tooltip = true;
         };
 
@@ -235,18 +228,16 @@
             "backlight"
             "custom/brightness"
             "custom/media"
-            "custom/moon-phase"
+            "custom/moon"
             "custom/sunsetr"
             "custom/weather"
-            "custom/weather-temperature"
             height
             "mpd"
             "wireplumber"
             ;
 
           modules-center = [
-            "custom/moon-phase"
-            "custom/weather-temperature"
+            "custom/moon"
             "custom/weather"
           ];
 
@@ -334,7 +325,12 @@
         font = config.stylix.fonts.sansSerif.name;
         size = toString (config.stylix.fonts.sizes.desktop + 4);
       in
-        lib.mkAfter ''* { font-family: ${font}, "Font Awesome 7 Free"; font-size: ${size}px; }'';
+        lib.mkAfter ''
+          * {
+            font-family: "${font}", "Font Awesome 7 Free";
+            font-size: ${size}px;
+          }
+        '';
 
       systemd.enable = true;
     };
