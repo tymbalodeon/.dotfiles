@@ -25,7 +25,9 @@ def icon [phase: string] {
   $"($icon)\u{fe0e}"
 }
 
-def moon [] {
+def moon [
+  --force # Ignore cache and fetch new data
+] {
   let base = "https://api.freeastroapi.com/api/v1/moon/phase"
   let location = (location)
   let lat = $location.lat
@@ -40,7 +42,7 @@ def moon [] {
   let api_key = (freeastroapi-api-key)
   let cache_file = (cache-file)
 
-  if not ($cache_file | path exists) or (
+  if not $force and not ($cache_file | path exists) or (
     (date now) - (
       open $cache_file
       | get timestamp

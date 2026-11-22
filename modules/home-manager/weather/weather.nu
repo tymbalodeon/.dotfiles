@@ -16,7 +16,9 @@ def get-timestamp [value: any] {
 }
 
 # Fetch weather data for the current IP address
-def weather [] {
+def weather [
+  --force # Ignore cache and fetch new data
+] {
   let base = "api.openweathermap.org/data/2.5/weather"
   let api_key = (openweathermap-api-key)
   let lat = (location latitude)
@@ -24,7 +26,7 @@ def weather [] {
   let cache_file = (cache-file)
 
   # TODO: link time to waybar module dynamically
-  if not ($cache_file | path exists) or (
+  if not $force and not ($cache_file | path exists) or (
     (date now) - (get-timestamp (open $cache_file | get dt)) > 15min
   ) {
     let weather = (
@@ -84,9 +86,9 @@ def "weather waybar sun" [] {
   }
 
   let icon = if $is_sunrise {
-    "↑"
+    " at"
   } else {
-    "↓"
+    " at "
   }
 
   waybar-json  $"($icon)($timestamp | format date "%I:%M %p")"
