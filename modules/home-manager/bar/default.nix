@@ -102,6 +102,13 @@
           tooltip = true;
         };
 
+        "custom/sign" = {
+          exec = "${./weather.sh} sign";
+          format = "{text}";
+          return-type = "json";
+          tooltip = true;
+        };
+
         "custom/sun" = {
           exec = "${./weather.sh} sun";
           format = "{text}";
@@ -232,6 +239,7 @@
             "custom/brightness"
             "custom/media"
             "custom/moon"
+            "custom/sign"
             "custom/sun"
             "custom/sunsetr"
             "custom/weather"
@@ -244,6 +252,7 @@
             "custom/weather"
             "custom/sun"
             "custom/moon"
+            "custom/sign"
           ];
 
           modules-left = [
