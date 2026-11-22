@@ -10,6 +10,11 @@ def cache-file [] {
   | path join "weather/weather.json"
 }
 
+def get-timestamp [value: any] {
+  ^date --date $"@($value)" --rfc-3339 seconds
+  | date from-human
+}
+
 # Fetch weather data for the current IP address
 def weather [] {
   let base = "api.openweathermap.org/data/2.5/weather"
@@ -20,7 +25,7 @@ def weather [] {
 
   # TODO: link time to waybar module dynamically
   if not ($cache_file | path exists) or (
-    ((date now) - 15min) > (ls $cache_file | first).modified
+    (date now) - (get-timestamp (open $cache_file | get dt)) > 15min
   ) {
     let weather = (
       http get $"($base)?appid=($api_key)&lat=($lat)&lon=($lon)&units=imperial"
@@ -29,18 +34,15 @@ def weather [] {
     $weather
     | save --force (cache-file)
 
+    pkill -RTMIN+5 waybar
+
     $weather
   } else {
     open $cache_file
   }
 }
 
-def epoch-to-human [timestamp: int] {
-  ^date --date $"@($timestamp)" --rfc-email
-  | format date "%I:%M %p"
-}
-
-def waybar-json [text: string tooltip: string] {
+def waybar-json [text: string tooltip: string = ""] {
   {
     text: ($text | str trim)
     tooltip: ($tooltip | str trim)
@@ -60,40 +62,32 @@ def "weather waybar" [] {
     Cloudiness: $"☁ ($weather.clouds.all) %"
     Humidity: $"🌢 ($weather.main.humidity) %"
     Wind: $"💨\u{fe0e} ($weather.wind.speed | math round --precision 1) mph"
-    # Sunrise: $" (epoch-to-human $weather.sys.sunrise)"
-    # Sunset: $" (epoch-to-human $weather.sys.sunset)"
   }
 
   (
     waybar-json 
-      $"($weather."Feels like")"
-      ($weather | reject "Feels like" | values | to text --no-newline)
+      $"($weather.Temperature)"
+      ($weather | reject Temperature | to text --no-newline)
   )
 }
 
-def "weather sun" [] {
+def "weather waybar sun" [] {
   let weather = (weather)
-  
-  let weather = {
-    Sunrise: $" (epoch-to-human $weather.sys.sunrise)"
-    Sunset: $" (epoch-to-human $weather.sys.sunset)"
-  }
+  let sunrise_timestamp = (get-timestamp $weather.sys.sunrise)
+  mut is_sunrise = true
 
-  let text = if ($weather.sys.sunrise) {
-    $weather.Sunrise
+  let timestamp = if ($sunrise_timestamp - (date now) | into int) > 0 {
+    $sunrise_timestamp
   } else {
-    $weather.Sunset
+    $is_sunrise = false
+    (get-timestamp $weather.sys.sunset)
   }
 
-  let tooltip = if ($weather.sys.sunrise) {
-    $weather.Sunrise
+  let icon = if $is_sunrise {
+    "↑"
   } else {
-    $weather.Sunset
+    "↓"
   }
 
-  (
-    waybar-json 
-      $text
-      $tooltip
-  )
+  waybar-json  $"($icon)($timestamp | format date "%I:%M %p")"
 }

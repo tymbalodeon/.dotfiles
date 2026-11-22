@@ -40,9 +40,13 @@ def moon [] {
   let api_key = (freeastroapi-api-key)
   let cache_file = (cache-file)
 
-  # TODO: link time to waybar module dynamically
   if not ($cache_file | path exists) or (
-    ((date now) - 1day) > (ls $cache_file | first).modified
+    (date now) - (
+      open $cache_file
+      | get timestamp
+      | into datetime
+    # TODO: link time to waybar module dynamically
+    ) > 6hr
   ) {
    let data = (
     http get $"($base)?lat=($lat)&lon=($lon)&include_eclipse=($include_eclipse)&include_forecast=($include_forecast)&include_interpretation=($include_interpretation)&include_rise_set=($include_rise_set)&include_special=($include_special)&include_traditional_moon=($include_traditional_moon)&include_zodiac=($include_zodiac)"
@@ -52,15 +56,12 @@ def moon [] {
     $data
     | save --force (cache-file)
 
+    pkill -RTMIN+4 waybar
+
     $data
   } else {
     open $cache_file
   }
-}
-
-def miles [kilometers: float] {
-  $kilometers * 0.62137119
-  | into int
 }
 
 def event-time [event: string] {
@@ -90,7 +91,7 @@ def "moon waybar" [] {
   let rise = $"↑ (event-time $moon.rise_set.rise_local)"
   let set = $"↓ (event-time $moon.rise_set.set_local)"
 
-  let eclipse = if $moon.eclipse.is_blood_moon {
+ let eclipse = if $moon.eclipse.is_blood_moon {
     "Blood Moon "
   } else if $moon.eclipse.is_eclipse {
     "Eclipse "

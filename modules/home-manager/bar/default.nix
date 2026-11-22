@@ -73,10 +73,9 @@
 
         "custom/moon" = {
           exec = "${./moon.sh}";
-          # TODO: replace spaces with CSS
-          format = "  {text}  ";
-          interval = 3600;
+          format = "{text}";
           return-type = "json";
+          signal = 4;
           tooltip = true;
         };
 
@@ -98,16 +97,16 @@
         "custom/weather" = {
           exec = "${./weather.sh}";
           format = "{text}";
-          interval = fiveMinutes;
           return-type = "json";
-          signal = 2;
+          signal = 5;
           tooltip = true;
         };
 
-        disk = {
-          format = " {percentage_used} %";
-          tooltip-format = "Used: {used}\nRemaining: {free}\nTotal: {total}";
-          unit = "GB";
+        "custom/sun" = {
+          exec = "${./weather.sh} sun";
+          format = "{text}";
+          return-type = "json";
+          tooltip = true;
         };
 
         "custom/sunsetr" = {
@@ -140,7 +139,11 @@
           signal = 2;
         };
 
-        fiveMinutes = 300;
+        disk = {
+          format = " {percentage_used} %";
+          tooltip-format = "Used: {used}\nRemaining: {free}\nTotal: {total}";
+          unit = "GB";
+        };
 
         groupSystemModules = [
           "cpu"
@@ -229,6 +232,7 @@
             "custom/brightness"
             "custom/media"
             "custom/moon"
+            "custom/sun"
             "custom/sunsetr"
             "custom/weather"
             height
@@ -237,8 +241,9 @@
             ;
 
           modules-center = [
-            "custom/moon"
             "custom/weather"
+            "custom/sun"
+            "custom/moon"
           ];
 
           modules-left = [
