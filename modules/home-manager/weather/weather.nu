@@ -100,44 +100,40 @@ def "weather waybar sun" [] {
   waybar-json $"($icon)($timestamp | format date "%I:%M %p")"
 }
 
-def convert-emoji [emoji: string] {
-  $"($emoji)\u{fe0e}"
-}
-
 def "weather waybar sign" [] {
   let date = (date now)
   let month = ($date | format date %m | into int)
   let day = ($date | format date %d | into int)
 
   let sign = match $month {
-    1 => (if $day <= 19 { "♑" } else { "♒" })
-    2 => (if $day <= 18 { "♒" } else { "♓" })
-    3 => (if $day <= 20 { "♓" } else { "♈" })
-    4 => (if $day <= 19 { "♈" } else { "♉" })
-    5 => (if $day <= 20 { "♉" } else { "♊" })
-    6 => (if $day <= 21 { "♊" } else { "♋" })
-    7 => (if $day <= 22 { "♋" } else { "♌" })
-    8 => (if $day <= 22 { "♌" } else { "♍" })
-    9 => (if $day <= 22 { "♍" } else { "♎" })
-    10 => (if $day <= 23 { "♎" } else { "♏" })
-    11 => (if $day <= 21 { "♏" } else { "♐" })
-    12 => (if $day <= 21 { "♐" } else { "♑" })
+    1 => (if $day <= 19 { "♑︎" } else { "♒︎" })
+    2 => (if $day <= 18 { "♒︎" } else { "♓︎" })
+    3 => (if $day <= 20 { "♓︎" } else { "♈︎" })
+    4 => (if $day <= 19 { "♈︎" } else { "♉︎" })
+    5 => (if $day <= 20 { "♉︎" } else { "♊︎" })
+    6 => (if $day <= 21 { "♊︎" } else { "♋︎" })
+    7 => (if $day <= 22 { "♋︎" } else { "♌︎" })
+    8 => (if $day <= 22 { "♌︎" } else { "♍︎" })
+    9 => (if $day <= 22 { "♍︎" } else { "♎︎" })
+    10 => (if $day <= 23 { "♎︎" } else { "♏︎" })
+    11 => (if $day <= 21 { "♏︎" } else { "♐︎" })
+    12 => (if $day <= 21 { "♐︎" } else { "♑︎" })
   }
 
   let name = {
-    ♑: Capricorn
-    ♒: Aquarius
-    ♓: Pisces
-    ♈: Aries
-    ♉: Taurus
-    ♊: Gemini
-    ♋: Cancer
-    ♌: Leo
-    ♍: Virgo
-    ♎: Libra
-    ♏: Scorpio
-    ♐: Sagittarius
+    ♑︎: Capricorn
+    ♒︎: Aquarius
+    ♓︎: Pisces
+    ♈︎: Aries
+    ♉︎: Taurus
+    ♊︎: Gemini
+    ♋︎: Cancer
+    ♌︎: Leo
+    ♍︎: Virgo
+    ♎︎: Libra
+    ♏︎: Scorpio
+    ♐︎: Sagittarius
   } | get $sign
 
-  waybar-json (convert-emoji $sign) $name
+  waybar-json $sign $name
 }
