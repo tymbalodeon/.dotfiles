@@ -72,6 +72,8 @@ def event-time [event: string] {
 }
 
 def days-until [days: float type: string] {
+  let days = ($days | into int)
+
   let pluralized = if $days > 1 {
     "days"
   } else {
@@ -83,7 +85,7 @@ def days-until [days: float type: string] {
     New: (icon "New Moon")
   } | get $type
 
-  $"($icon) in ($days | into int) ($pluralized)"
+  $"($icon) in ($days) ($pluralized)"
 }
 
 def "moon waybar" [] {

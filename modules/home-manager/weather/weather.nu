@@ -29,16 +29,22 @@ def weather [
   if not $force and not ($cache_file | path exists) or (
     (date now) - (get-timestamp (open $cache_file | get dt)) > 15min
   ) {
-    let weather = (
-      http get $"($base)?appid=($api_key)&lat=($lat)&lon=($lon)&units=imperial"
-    )
+    try {
+      let weather = (
+        http get $"($base)?appid=($api_key)&lat=($lat)&lon=($lon)&units=imperial"
+      )
 
-    $weather
-    | save --force (cache-file)
+      $weather
+      | save --force (cache-file)
 
-    pkill -RTMIN+5 waybar
+      pkill -RTMIN+5 waybar
 
-    $weather
+      $weather
+    } catch {
+      if ($cache_file | path exists) {
+        open $cache_file
+      }
+    }
   } else {
     open $cache_file
   }
@@ -63,7 +69,7 @@ def "weather waybar" [] {
     Low: $" ($weather.main.temp_min | into int) °F"
     Cloudiness: $"☁ ($weather.clouds.all) %"
     Humidity: $"🌢 ($weather.main.humidity) %"
-    Wind: $"💨\u{fe0e} ($weather.wind.speed | math round --precision 1) mph"
+    Wind: $"💨\u{fe0e} ($weather.wind.speed | into int) mph"
   }
 
   (
