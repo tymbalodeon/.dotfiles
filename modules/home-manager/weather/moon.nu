@@ -135,10 +135,29 @@ def "moon waybar" [] {
     Illumination: $illumination
   }
 
+  # TODO: calculate the month number (starting from the first new moon after the
+  # winter solstice) and add symbol:
+  # let major_arcana = {
+  #   1: 🃯
+  #   2: 🃱
+  #   3: 🃲
+  #   4: 🃤
+  #   5: 🃥
+  #   6: 🃦
+  #   7: 🃧
+  #   8: 🃨
+  #   9: 🃩
+  #   10: 🃫
+  #   11: 🃭
+  #   12: 🃮
+  #   13: 🃠
+  # } | get $month
+
   {
     text: $"($eclipse)($special_moon)(icon $phase) ($name) \(($illumination)\)"
     tooltip: ($moon | reject Phase Illumination | values | to text --no-newline)
   }
   | to json
   | jq --compact-output --unbuffered
+
 }
