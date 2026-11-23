@@ -103,14 +103,14 @@
         };
 
         "custom/sign" = {
-          exec = "${./weather.sh} sign";
+          exec = "${./sign.sh}";
           format = "{text}";
           return-type = "json";
           tooltip = true;
         };
 
         "custom/sun" = {
-          exec = "${./weather.sh} sun";
+          exec = "${./sun.sh}";
           format = "{text}";
           return-type = "json";
           tooltip = true;

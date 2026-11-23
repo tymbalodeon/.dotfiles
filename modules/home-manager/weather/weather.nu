@@ -50,15 +50,6 @@ def weather [
   }
 }
 
-def waybar-json [text: string tooltip: string = ""] {
-  {
-    text: ($text | str trim)
-    tooltip: ($tooltip | str trim)
-  }
-  | to json
-  | jq --compact-output --unbuffered
-}
-
 def "weather waybar" [] {
   let weather = (weather)
 
@@ -72,68 +63,10 @@ def "weather waybar" [] {
     Wind: $"💨\u{fe0e} ($weather.wind.speed | into int) mph"
   }
 
-  (
-    waybar-json 
-      $"($weather.Temperature)"
-      ($weather | reject Temperature | to text --no-newline)
-  )
-}
-
-def "weather waybar sun" [] {
-  let weather = (weather)
-  let sunrise_timestamp = (get-timestamp $weather.sys.sunrise)
-  mut is_sunrise = true
-
-  let timestamp = if ($sunrise_timestamp - (date now) | into int) > 0 {
-    $sunrise_timestamp
-  } else {
-    $is_sunrise = false
-    (get-timestamp $weather.sys.sunset)
+  {
+    text: $"($weather.Temperature)"
+    tooltip: ($weather | reject Temperature | to text --no-newline)
   }
-
-  let icon = if $is_sunrise {
-    " at"
-  } else {
-    " at "
-  }
-
-  waybar-json $"($icon)($timestamp | format date "%I:%M %p")"
-}
-
-def "weather waybar sign" [] {
-  let date = (date now)
-  let month = ($date | format date %m | into int)
-  let day = ($date | format date %d | into int)
-
-  let sign = match $month {
-    1 => (if $day <= 19 { "♑︎" } else { "♒︎" })
-    2 => (if $day <= 18 { "♒︎" } else { "♓︎" })
-    3 => (if $day <= 20 { "♓︎" } else { "♈︎" })
-    4 => (if $day <= 19 { "♈︎" } else { "♉︎" })
-    5 => (if $day <= 20 { "♉︎" } else { "♊︎" })
-    6 => (if $day <= 21 { "♊︎" } else { "♋︎" })
-    7 => (if $day <= 22 { "♋︎" } else { "♌︎" })
-    8 => (if $day <= 22 { "♌︎" } else { "♍︎" })
-    9 => (if $day <= 22 { "♍︎" } else { "♎︎" })
-    10 => (if $day <= 23 { "♎︎" } else { "♏︎" })
-    11 => (if $day <= 21 { "♏︎" } else { "♐︎" })
-    12 => (if $day <= 21 { "♐︎" } else { "♑︎" })
-  }
-
-  let name = {
-    ♑︎: Capricorn
-    ♒︎: Aquarius
-    ♓︎: Pisces
-    ♈︎: Aries
-    ♉︎: Taurus
-    ♊︎: Gemini
-    ♋︎: Cancer
-    ♌︎: Leo
-    ♍︎: Virgo
-    ♎︎: Libra
-    ♏︎: Scorpio
-    ♐︎: Sagittarius
-  } | get $sign
-
-  waybar-json $sign $name
+  | to json
+  | jq --compact-output --unbuffered
 }
