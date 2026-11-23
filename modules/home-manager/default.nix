@@ -63,6 +63,7 @@
 
   imports =
     [
+      ./astro
       ./bat
       ./bottom
       ./editor

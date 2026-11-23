@@ -29,11 +29,6 @@
       includes = ["location"];
       source = ./weather.nu;
     }
-
-    {
-      includes = ["location"];
-      source = ./moon.nu;
-    }
   ];
 
   sops.secrets."openweathermap/api-key" = {};
