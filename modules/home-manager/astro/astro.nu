@@ -193,8 +193,23 @@ def days-from-now [event: datetime] {
 def "astro moon next" [
   --format # Display formatted version of the data
 ] {
-  let new = (astro | get today.moon.next_new_moon | into datetime)
-  let full = (astro | get today.moon.next_full_moon | into datetime)
+  let today_new = (astro | get today.moon.next_new_moon | into datetime)
+  let today_full = (astro | get today.moon.next_full_moon | into datetime)
+  let tomorrow_new = (astro | get tomorrow.moon.next_new_moon | into datetime)
+  let tomorrow_full = (astro | get tomorrow.moon.next_full_moon | into datetime)
+  let now = (date now)
+
+  let new = if $today_new < $now {
+    $tomorrow_new + 1day
+  } else {
+    $today_new
+  }
+
+  let full = if $today_full < $now {
+    $tomorrow_full + 1day
+  } else {
+    $today_full
+  }
 
   if $format {
     let next = [
