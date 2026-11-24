@@ -674,10 +674,30 @@ def "wallpaper resume" [] {
 def "wallpaper tarot" [] {
   # TODO: add ability to select deck
   # TODO: exclude backs of cards and extras
+  # TODO: add flag for --no-reverse
   
   # select 3 random cards, all different
   # randomly choose whether or not to reverse each card, and -flip -flop them if so
   # use montage command to combine them (-background base00) -geometry +40+40 (waybar height) $output
+
+  let base = "wallpaper/Tarot/Rider-Waite-Smith"
+
+  let selections = (
+    storage list remote $base
+    | lines
+    | where {"Back" not-in $in}
+    | shuffle
+    | take 3
+    | each {prepend $base | path join}
+  )
+
+  let temporary_directory = (mktemp --directory)
+
+  for card in $selections {
+    storage download $card --to $temporary_directory
+  }
+
+  rm --force --recursive $temporary_directory
 }
 
 # Toggle pausing/resuming automatic cycling of wallpaper
