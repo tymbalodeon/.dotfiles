@@ -73,6 +73,7 @@ def create-blank-wallpaper [color: string] {
 }
 
 def set-wallpaper [image: string --timer-on] {
+  restart-wallpaper
   wpaperctl set $image
 
   if $timer_on {
@@ -545,13 +546,16 @@ def "wallpaper pad" [
     return
   }
 
-  let remote_wallpapers = (rclone lsf --recursive dropbox:wallpaper)
+  let remote_wallpapers = if $no_download {
+    []
+  } else {
+    rclone lsf --recursive dropbox:wallpaper
+  }
 
   for image in $images {
-    if not $no_download and ($image | path dirname | path expand) == (
-      "~/wallpaper"
-      | path expand
-    ) {
+    let image = ($image | prepend (wallpaper-directory) | path join)
+
+    if not $no_download {
       let remote_image = (
         $remote_wallpapers
         | rg (
@@ -661,9 +665,19 @@ def "wallpaper remove" [] {
 
 alias "wallpaper rm" = wallpaper remove
 
-# Resum automatic cycling of wallpaper
+# Resume automatic cycling of wallpaper
 def "wallpaper resume" [] {
   wpaperctl-wrapper resume-wallpaper
+}
+
+# Generate 3-card tarot spread as wallpaper
+def "wallpaper tarot" [] {
+  # TODO: add ability to select deck
+  # TODO: exclude backs of cards and extras
+  
+  # select 3 random cards, all different
+  # randomly choose whether or not to reverse each card, and -flip -flop them if so
+  # use montage command to combine them (-background base00) -geometry +40+40 (waybar height) $output
 }
 
 # Toggle pausing/resuming automatic cycling of wallpaper
