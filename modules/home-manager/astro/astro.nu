@@ -72,6 +72,7 @@ def astro [
 ] {
   let cache_file = (cache-file)
 
+  # TODO: force a refresh if the current location doesn't match the cached one?!
   if $force or not ($cache_file | path exists) or (
     try {
       (date now) - (
@@ -101,6 +102,10 @@ def astro [
   } else {
     open $cache_file
   }
+}
+
+def "astro moon" [] {
+  help astro moon
 }
 
 # Get info about the current moon phase
@@ -271,6 +276,10 @@ def "astro moon waybar" [] {
 #   13: 🃠
 # } | get $month
 
+def "astro sun" [] {
+  help astro sun
+}
+
 # Get current data about the sun
 def "astro sun rise-set" [
   --format # Display formatted version of the data
@@ -285,7 +294,7 @@ def "astro sun waybar" [] {
 }
 
 # Get the current sun sign
-def "astro sun sign" [] {
+def "astro sign" [] {
   let date = (date now)
   let month = ($date | format date %m | into int)
   let day = ($date | format date %d | into int)
@@ -307,7 +316,7 @@ def "astro sun sign" [] {
 }
 
 def "astro sign waybar" [] {
-  let sign = (astro sun sign)
+  let sign = (astro sign)
 
   let name = {
     ♑︎: Capricorn

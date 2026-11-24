@@ -54,6 +54,7 @@ def "weather waybar" [] {
   let weather = (weather)
 
   let weather = {
+    Location: $weather.name
     "Feels like": $" ($weather.main.feels_like | into int) °F"
     Temperature: $" ($weather.main.temp | into int) °F"
     High: $" ($weather.main.temp_max | into int) °F"
