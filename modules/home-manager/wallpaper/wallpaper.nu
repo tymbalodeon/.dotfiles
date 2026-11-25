@@ -85,20 +85,8 @@ def get-service-state [] {
 }
 
 def set-wallpaper [image: string --timer-on] {
-  restart-wallpaper
-
-  mut attempts = 0
-
-  while (get-service-state) != active {
-    if $attempts > 10 {
-      break
-    }
-
-    sleep 1sec    
-    $attempts += 1
-  }
-
-  wpaperctl set $image
+  wpaperctl set ($image | path expand)
+  wpaperctl reload
 
   if $timer_on {
     wpaperctl resume
@@ -222,7 +210,7 @@ def --wrapped wpaperctl-wrapper [...args: string] {
 
   if (systemctl --user list-units | find wpaperd | is-empty) {
     $required_restart = true
-    restart-wallpaper
+    wallpaper restart
     sleep 500ms
   }
 
@@ -275,7 +263,8 @@ def is-image []: string -> bool {
   }
 }
 
-def restart-wallpaper [] {
+# Restart wallpaper service
+def "wallpaper restart" [] {
   rm --force /run/user/1000/wpaperd.sock
   systemctl --user restart wpaperd
 }
@@ -473,7 +462,7 @@ def --wrapped load-wallpaper [...args: string] {
     rm --force --recursive $temporary_directory
   }
 
-  restart-wallpaper
+  wallpaper restart
 }
 
 def add-arg [args: list<any> arg: any flag?: string --named-argument] {

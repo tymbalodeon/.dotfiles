@@ -83,24 +83,32 @@ def astro [
       ) > 6hr
     } catch { true }
   ) {
-    let current_date = (date now)
-    let today = (get-data ($current_date))
-    let tomorrow = (get-data ($current_date + 1day))
+    try {
+      let current_date = (date now)
+      let today = (get-data ($current_date))
+      let tomorrow = (get-data ($current_date + 1day))
 
-    let data = {
-      timestamp: $current_date
-      today: $today.data
-      tomorrow: $tomorrow.data
+      let data = {
+        timestamp: $current_date
+        today: $today.data
+        tomorrow: $tomorrow.data
+      }
+
+      $data
+      | save --force (cache-file)
+
+      pkill -RTMIN+4 waybar
+
+      $data
+    } catch {
+      {}
     }
-
-    $data
-    | save --force (cache-file)
-
-    pkill -RTMIN+4 waybar
-
-    $data
   } else {
-    open $cache_file
+    if ($cache_file | path type) == file {
+      open $cache_file
+    } else {
+      {}
+    }
   }
 }
 
@@ -112,7 +120,13 @@ def "astro moon" [] {
 def "astro moon phase" [
   --format # Display formatted version of the data
 ] {
-  let moon_phase = (astro | get today.moon.phase)
+  let astro = (astro)
+
+  if ($astro | is-empty) {
+    return
+  }
+
+  let moon_phase = ($astro | get today.moon.phase)
   let name = $moon_phase.name
   let icon = (icon $name)
 
@@ -147,8 +161,14 @@ def get-future-event [type: string today: any tomorrow: any] {
 }
 
 def get-rise-set [type: string format: bool] {
-  let today = (astro | get today | get $type | get rise_set)
-  let tomorrow = (astro | get tomorrow | get $type | get rise_set)
+  let astro = (astro)
+
+  if ($astro | is-empty) {
+    return
+  }
+
+  let today = ($astro | get today | get $type | get rise_set)
+  let tomorrow = ($astro | get tomorrow | get $type | get rise_set)
   let rise = (get-future-event rise $today $tomorrow)
   let set = (get-future-event set $today $tomorrow)
 
@@ -198,10 +218,22 @@ def days-from-now [event: datetime] {
 def "astro moon next" [
   --format # Display formatted version of the data
 ] {
-  let today_new = (astro | get today.moon.next_new_moon | into datetime)
-  let today_full = (astro | get today.moon.next_full_moon | into datetime)
-  let tomorrow_new = (astro | get tomorrow.moon.next_new_moon | into datetime)
-  let tomorrow_full = (astro | get tomorrow.moon.next_full_moon | into datetime)
+  let astro = (astro)
+
+  if ($astro | is-empty) {
+    return
+  }
+
+  let today_new = ($astro | get today.moon.next_new_moon | into datetime)
+  let today_full = ($astro | get today.moon.next_full_moon | into datetime)
+  let tomorrow_new = ($astro | get tomorrow.moon.next_new_moon | into datetime)
+
+  let tomorrow_full = (
+    $astro
+    | get tomorrow.moon.next_full_moon
+    | into datetime
+  )
+
   let now = (date now)
 
   let new = if $today_new < $now {
