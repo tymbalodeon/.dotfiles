@@ -691,10 +691,6 @@ def "wallpaper tarot" [
   --deck = "Rider-Waite-Smith (Alternate)" # The name of the deck to use
   --no-reverse # Don't randomly reverse cards
 ] {
-  if $clear {
-    wallpaper clear
-  }
-
   let base = $"wallpaper/Tarot/($deck)"
 
   let selections = (
@@ -729,6 +725,10 @@ def "wallpaper tarot" [
   } else {
     theme colors
     | get base00
+  }
+
+  if $clear {
+    wallpaper clear
   }
 
   let output_file = $"(wallpaper-directory)/tarot-spread-($now).png"
