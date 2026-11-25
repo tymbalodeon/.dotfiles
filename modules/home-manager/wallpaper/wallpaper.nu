@@ -85,7 +85,12 @@ def get-service-state [] {
 }
 
 def set-wallpaper [image: string --timer-on] {
-  wpaperctl set ($image | path expand)
+  try {
+    wpaperctl set ($image | path expand) err> /dev/null
+  } catch {
+    wallpaper restart
+  }
+
   wpaperctl reload
 
   if $timer_on {
@@ -686,8 +691,9 @@ def "wallpaper resume" [] {
 
 # Generate 3-card tarot spread as wallpaper
 def "wallpaper tarot" [
-  --clear # Clear existing wallpapers before loading spread
+  # TODO: allow selecting random theme color as the background
   color?: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
+  --clear # Clear existing wallpapers before loading spread
   --deck = "Rider-Waite-Smith (Alternate)" # The name of the deck to use
   --no-reverse # Don't randomly reverse cards
 ] {
@@ -696,7 +702,7 @@ def "wallpaper tarot" [
   let selections = (
     storage list remote $base
     | lines
-    | where {"Back" not-in $in}
+    | where {"Back" not-in $in and "magusex" not-in $in}
     | shuffle
     | take 3
     | each {prepend $base | path join}
