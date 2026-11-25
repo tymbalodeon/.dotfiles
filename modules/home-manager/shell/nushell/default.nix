@@ -98,10 +98,7 @@
       plugins = with pkgs.nushellPlugins; [
         formats
         gstat
-
-        # FIXME: last working nixpkgs revision = 241313f4e8e508cb9b13278c2b0fa25b9ca2716
-        # polars
-
+        polars
         query
       ];
 
