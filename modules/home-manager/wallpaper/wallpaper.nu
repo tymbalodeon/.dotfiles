@@ -686,9 +686,15 @@ def "wallpaper resume" [] {
 
 # Generate 3-card tarot spread as wallpaper
 def "wallpaper tarot" [
+  --clear # Clear existing wallpapers before loading spread
+  color?: string # The hex color value (or "black"/"white") or base16-colors name to use as the background color (default: "base01")
   --deck = "Rider-Waite-Smith (Alternate)" # The name of the deck to use
   --no-reverse # Don't randomly reverse cards
 ] {
+  if $clear {
+    wallpaper clear
+  }
+
   let base = $"wallpaper/Tarot/($deck)"
 
   let selections = (
@@ -712,7 +718,19 @@ def "wallpaper tarot" [
 
   let now = (date now | format date "%Y-%m-%d %I:%M %p")
   let cards = (ls $temporary_directory | get name)
-  let background = (theme colors | get base00)
+
+  let background = if ($color | is-not-empty) {
+    if ($color | str starts-with base) {
+      theme colors
+      | get $color
+    } else {
+      $color
+    }
+  } else {
+    theme colors
+    | get base00
+  }
+
   let output_file = $"(wallpaper-directory)/tarot-spread-($now).png"
 
   (
