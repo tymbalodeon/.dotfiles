@@ -72,7 +72,32 @@ def create-blank-wallpaper [color: string] {
   $image_file
 }
 
+def get-service-state [] {
+  systemctl show --user --no-pager wpaperd
+  | lines
+  | each {
+    let data = (parse "{key}={value}")
+    {key: $data.key.0 value: $data.value.0}
+  }
+  | where key == ActiveState
+  | first
+  | get value
+}
+
 def set-wallpaper [image: string --timer-on] {
+  restart-wallpaper
+
+  mut attempts = 0
+
+  while (get-service-state) != active {
+    if $attempts > 10 {
+      break
+    }
+
+    sleep 1sec    
+    $attempts += 1
+  }
+
   wpaperctl set $image
 
   if $timer_on {
@@ -251,6 +276,7 @@ def is-image []: string -> bool {
 }
 
 def restart-wallpaper [] {
+  rm --force /run/user/1000/wpaperd.sock
   systemctl --user restart wpaperd
 }
 
@@ -670,16 +696,11 @@ def "wallpaper resume" [] {
 }
 
 # Generate 3-card tarot spread as wallpaper
-def "wallpaper tarot" [] {
-  # TODO: add ability to select deck
-  # TODO: exclude backs of cards and extras
-  # TODO: add flag for --no-reverse
-  
-  # select 3 random cards, all different
-  # randomly choose whether or not to reverse each card, and -flip -flop them if so
-  # use montage command to combine them (-background base00) -geometry +40+40 (waybar height) $output
-
-  let base = "wallpaper/Tarot/Rider-Waite-Smith (Alternate)"
+def "wallpaper tarot" [
+  --deck = "Rider-Waite-Smith (Alternate)" # The name of the deck to use
+  --no-reverse # Don't randomly reverse cards
+] {
+  let base = $"wallpaper/Tarot/($deck)"
 
   let selections = (
     storage list remote $base
@@ -695,7 +716,7 @@ def "wallpaper tarot" [] {
   for card in $selections {
     let file = (storage download $card --pipe --to $temporary_directory)
 
-    if (random bool) {
+    if not $no_reverse and (random bool) {
       magick $file -flip -flop $file
     }
   }
@@ -715,6 +736,14 @@ def "wallpaper tarot" [] {
 
   rm --force --recursive $temporary_directory
   set-wallpaper $output_file
+}
+
+# List available Tarot decks
+def "wallpaper tarot deck list" [] {
+  rclone lsjson dropbox:wallpaper/tarot
+  | from json
+  | get Path
+  | to text --no-newline
 }
 
 # Toggle pausing/resuming automatic cycling of wallpaper
