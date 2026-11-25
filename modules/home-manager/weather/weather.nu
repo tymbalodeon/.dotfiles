@@ -50,19 +50,33 @@ def weather [
   }
 }
 
-def "weather waybar" [] {
-  let weather = (weather)
+def mm-to-inches [mm: float] {
+  $mm * 0.0393700787
+  | math round --precision 2
+}
 
-  let weather = {
-    Location: $weather.name
-    "Feels like": $" ($weather.main.feels_like | into int) °F"
-    Temperature: $" ($weather.main.temp | into int) °F"
-    High: $" ($weather.main.temp_max | into int) °F"
-    Low: $" ($weather.main.temp_min | into int) °F"
-    Cloudiness: $"☁ ($weather.clouds.all) %"
-    Humidity: $"🌢 ($weather.main.humidity) %"
-    Wind: $"💨\u{fe0e} ($weather.wind.speed | into int) mph"
+def "weather waybar" [] {
+  let data = (weather)
+
+  mut weather = {
+    Location: $data.name
+    "Feels like": $" ($data.main.feels_like | into int) °F"
+    Temperature: $" ($data.main.temp | into int) °F"
+    High: $" ($data.main.temp_max | into int) °F"
+    Low: $" ($data.main.temp_min | into int) °F"
+    Cloudiness: $"☁ ($data.clouds.all) %"
+    Humidity: $"🌢 ($data.main.humidity) %"
+    Wind: $"💨\u{fe0e} ($data.wind.speed | into int) mph"
   }
+
+  if ("rain" in ($data | columns)) {
+    $weather = (
+      $weather
+      | insert Rain $"⛆ (mm-to-inches $data.rain.1h) in/hr"
+    )
+  }
+
+  # TODO: add snow
 
   {
     text: $"($weather.Temperature)"
