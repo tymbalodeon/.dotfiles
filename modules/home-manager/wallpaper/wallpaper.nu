@@ -73,7 +73,6 @@ def create-blank-wallpaper [color: string] {
 }
 
 def set-wallpaper [image: string --timer-on] {
-  restart-wallpaper
   wpaperctl set $image
 
   if $timer_on {
@@ -680,7 +679,7 @@ def "wallpaper tarot" [] {
   # randomly choose whether or not to reverse each card, and -flip -flop them if so
   # use montage command to combine them (-background base00) -geometry +40+40 (waybar height) $output
 
-  let base = "wallpaper/Tarot/Rider-Waite-Smith"
+  let base = "wallpaper/Tarot/Rider-Waite-Smith (Alternate)"
 
   let selections = (
     storage list remote $base
@@ -694,10 +693,28 @@ def "wallpaper tarot" [] {
   let temporary_directory = (mktemp --directory)
 
   for card in $selections {
-    storage download $card --to $temporary_directory
+    let file = (storage download $card --pipe --to $temporary_directory)
+
+    if (random bool) {
+      magick $file -flip -flop $file
+    }
   }
 
+  let now = (date now | format date "%Y-%m-%d %I:%M %p")
+  let cards = (ls $temporary_directory | get name)
+  let background = (theme colors | get base00)
+  let output_file = $"(wallpaper-directory)/tarot-spread-($now).png"
+
+  (
+    montage
+      ...$cards
+      -background $background
+      -geometry +40+40
+      $output_file
+  )
+
   rm --force --recursive $temporary_directory
+  set-wallpaper $output_file
 }
 
 # Toggle pausing/resuming automatic cycling of wallpaper
