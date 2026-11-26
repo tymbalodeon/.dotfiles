@@ -323,23 +323,43 @@ def "astro moon waybar" [] {
   waybar-json $text $tooltip
 }
 
-# TODO: calculate the month number (starting from the first new moon after the
-# winter solstice) and add symbol:
-# let major_arcana = {
-#   1: 🃯
-#   2: 🃱
-#   3: 🃲
-#   4: 🃤
-#   5: 🃥
-#   6: 🃦
-#   7: 🃧
-#   8: 🃨
-#   9: 🃩
-#   10: 🃫
-#   11: 🃭
-#   12: 🃮
-#   13: 🃠
-# } | get $month
+def "astro lunar-month" [] {
+  let astro = (astro)
+
+  if ($astro | is-empty) {
+    return
+  }
+
+  let current_december_solstice = (
+    $astro.seasons.current.december_solstice
+    | into datetime
+  )
+
+  let december_solstice = if (date now) < $current_december_solstice {
+    $astro.seasons.previous.december_solstice
+    | into datetime
+  } else {
+    $current_december_solstice
+  }
+
+  # TODO: get all new moon dates!
+
+  # {
+  #   1: 🃯
+  #   2: 🃱
+  #   3: 🃲
+  #   4: 🃤
+  #   5: 🃥
+  #   6: 🃦
+  #   7: 🃧
+  #   8: 🃨
+  #   9: 🃩
+  #   10: 🃫
+  #   11: 🃭
+  #   12: 🃮
+  #   13: 🃠
+  # } | get $month
+}
 
 def "astro sun" [] {
   help astro sun
