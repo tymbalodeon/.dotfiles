@@ -26,7 +26,7 @@ def weather [
   let cache_file = (cache-file)
 
   # TODO: link time to waybar module dynamically
-  if not $force and not ($cache_file | path exists) or (
+  if $force or not ($cache_file | path exists) or (
     (date now) - (get-timestamp (open $cache_file | get dt)) > 15min
   ) {
     try {
