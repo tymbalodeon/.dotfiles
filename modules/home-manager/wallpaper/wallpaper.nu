@@ -712,6 +712,7 @@ def "wallpaper tarot" [
     let file = (storage download $card --pipe --to $temporary_directory)
 
     if not $no_reverse and (random bool) {
+      print $"Reversing ($file | path basename)..."
       magick $file -flip -flop $file
     }
   }
