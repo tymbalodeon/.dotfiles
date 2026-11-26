@@ -91,8 +91,6 @@ def set-wallpaper [image: string --timer-on] {
     wallpaper restart
   }
 
-  wpaperctl reload
-
   if $timer_on {
     wpaperctl resume
   }
@@ -743,7 +741,7 @@ def "wallpaper tarot" [
     montage
       ...$cards
       -background $background
-      -geometry +40+40
+      -geometry +48+40
       $output_file
   )
 

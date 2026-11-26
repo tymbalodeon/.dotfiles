@@ -285,6 +285,18 @@ def "astro moon waybar" [] {
     | to text --no-newline
   )
 
+  let text = if ($text | is-empty) {
+    ""
+  } else {
+    $text
+  }
+
+  let tooltip = if ($tooltip | is-empty) {
+    ""
+  } else {
+    $tooltip
+  }
+
   waybar-json $text $tooltip
 }
 

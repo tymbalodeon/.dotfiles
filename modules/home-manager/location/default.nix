@@ -9,6 +9,10 @@
         (builtins.readFile ./location.nu)
         + ''
 
+          def "geocode-maps-co-api-key" [] {
+            open "${config.sops.secrets."geocode.maps.co/api-key".path}"
+          }
+
           def "location home coordinates" [] {
             $"(location home latitude),(location home longitude)"
           }
@@ -24,6 +28,7 @@
     }
   ];
 
+  sops.secrets."geocode.maps.co/api-key" = {};
   sops.secrets."location/latitude" = {};
   sops.secrets."location/longitude" = {};
 }
