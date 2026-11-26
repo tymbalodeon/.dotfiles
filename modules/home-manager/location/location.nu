@@ -83,6 +83,7 @@ def "location set" [
   )
 
   {
+    display: $location.display_name
     lat: $location.lat
     lon: $location.lon
   }
