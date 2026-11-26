@@ -26,6 +26,12 @@
           }
         '';
     }
+
+    {
+      includes = ["astro" "weather"];
+      name = "update-location-data";
+      source = ./update-location-data.nu;
+    }
   ];
 
   sops.secrets."geocode.maps.co/api-key" = {};

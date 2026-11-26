@@ -48,6 +48,7 @@ def days-until [days: float type: string] {
   $"($icon) in ($days) ($pluralized)"
 }
 
+# TODO: use a shared function
 def waybar-json [text: string tooltip: string = ""] {
   {
    text: ($text | str trim)
@@ -299,8 +300,6 @@ def "astro moon waybar" [] {
 
   waybar-json $text $tooltip
 }
-
-# Add special moon and eclipse info from freeastroapi
 
 # TODO: calculate the month number (starting from the first new moon after the
 # winter solstice) and add symbol:

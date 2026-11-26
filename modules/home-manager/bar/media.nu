@@ -1,5 +1,6 @@
 #!/usr/bin/env nu
 
+# TODO: use a shared function
 def print-module [text: string = "" tooltip: string = ""] {
   print (
     {
@@ -23,7 +24,7 @@ def main [] {
             "position": "{{ duration(position) }}",
             "status": "{{ status }}"
             "title": "{{ title }}",
-          }'
+          }' err> /dev/null
         | from json
       )
 

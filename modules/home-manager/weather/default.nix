@@ -26,7 +26,7 @@
     }
 
     {
-      includes = ["location"];
+      includes = ["location" "openweathermap-api-key"];
       source = ./weather.nu;
     }
   ];

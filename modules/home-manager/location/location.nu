@@ -5,6 +5,11 @@ def location-path [] {
   | path expand
 }
 
+def current-location-data [] {
+  open (location-path)
+  | from json
+}
+
 def "location home" [] {
   {
     lat: (location home latitude)
@@ -16,7 +21,7 @@ def location [] {
   let location_path = (location-path)
 
   if ($location_path | path type) == file {
-    let location = (open $location_path | from json)
+    let location = (current-location-data)
 
     try {
       let columns = ($location | columns)
@@ -38,8 +43,29 @@ def location [] {
   }
 }
 
+def update-location-data [] {
+  let script = (
+    $nu.user-autoload-dirs
+    | path join update-location-data.nu
+  )
+
+  if ($script | path exists) {
+    nu $script
+  }
+}
+
 def "location clear" [] {
+  let location_path = (location-path)
+
+  if not ($location_path | path exists) or (
+    current-location-data
+  | is-empty
+) {
+    return
+  }
+
   rm --force (location-path)
+  update-location-data
 }
 
 def "location coordinates" [] {
@@ -64,29 +90,63 @@ def "location set" [
   postal_code?: string
   country = "US"
 ] {
-  let base = "https://geocode.maps.co/search"
-  let city = $"city=($city)"
-  let state = $"state=($state)"
+  let location_path = (location-path)
 
-  let postal_code = if ($postal_code | is-not-empty) {
+  if ($location_path | path exists) {
+    let current_location = (current-location-data)
+
+    if (
+      [
+        ($city == $current_location.city?)
+        ($state == $current_location.state?)
+        ($postal_code == $current_location.postal_code?)
+        ($country == $current_location.country?)
+      ]
+      | all {$in == true}
+    ) {
+      return
+    }
+  }
+
+  let base = "https://geocode.maps.co/search"
+  let city_param = $"city=($city)"
+  let state_param = $"state=($state)"
+
+  let postal_code_param = if ($postal_code | is-not-empty) {
     $"&postalcode=($postal_code)"
   } else {
     ""
   }
 
-  let country = $"country=($country)"
+  let country_param = $"country=($country)"
   let api_key = $"api_key=(geocode-maps-co-api-key)"
 
   let location = (
-    http get $"($base)?($city)&($state)($postal_code)&($country)&($api_key)"
+    http get $"(
+      $base
+    )?(
+      $city_param
+    )&(
+      $state_param
+    )(
+      $postal_code_param
+    )&(
+      $country
+    )&($api_key)"
     | first
   )
 
   {
+    city: $city
+    country: $country
     display: $location.display_name
     lat: $location.lat
     lon: $location.lon
+    postal_code: $postal_code
+    state: $state
   }
   | to json
-  | save --force (location-path)
+  | save --force $location_path
+
+  update-location-data
 }
