@@ -98,6 +98,17 @@ def --env "storage cd" [
   cd $directory
 }
 
+def "storage clear" [
+  --force (-f) # Remove without confirmation
+  --remote: string # The name of the remote service
+] {
+  if not $force and not (confirm-remove $remote) {
+    return
+  }
+
+  rm --force --recursive ((get-storage-directory $remote))
+}
+
 def select-all-value [] {
   "--- SELECT ALL ---"
 }
@@ -545,22 +556,15 @@ def confirm-remove [remote?: string] {
 
 # Remove local files
 def "storage remove local" [
-  path?: string # A path relative to <remote>:
+  ...paths: string # Paths relative to <remote>:
   --force (-f) # Remove without confirmation
   --interactive (-i) # Interactively select the subdirectory whose contents to list
   --remote: string # The name of the remote service
 ] {
   let remote = (get-remote $remote)
-
-  if not $force and not $interactive and ($path | is-empty) and not (
-    confirm-remove $remote
-  ) {
-    return
-  }
-
   let storage_directory = (get-storage-directory $remote)
 
-  let paths = if $interactive {
+  let paths = if $interactive or ($paths | is-empty) {
     let files = (fd "" $storage_directory)
 
     if ($files | is-empty) {
@@ -571,51 +575,56 @@ def "storage remove local" [
     | fzf --multi
     | lines
   } else {
-    let parsed_path = if ($path | is-not-empty) {
-      $storage_directory
-      | path join $path
-    } else {
-      $storage_directory
-    }
+    $paths
+    | each {
+      |path|
 
-    if ($path | is-not-empty) and not ($parsed_path | path exists) {
-      print --stderr $"(
-        ansi yellow_bold
-      )warning(ansi reset)(ansi default_bold):(
-        ansi reset
-      ) no files or directories matching \"(
-        $path
-      )\" found in remote \"($remote)\""
-
-      let potential_files = try {
-        (
-          fd
-            --type file
-            ($parsed_path | path basename)
-            ($parsed_path | path dirname)
-            err> /dev/null
-        )
-        | lines
-      } catch {
-        return
-      }
-
-      let paths = if ($potential_files | length) == 0 {
-        return
-      } else if ($potential_files | length) == 1 {
-        $potential_files
+      let parsed_path = if ($path | is-not-empty) {
+        $storage_directory
+        | path join $path
       } else {
-        $potential_files
-        | to text
-        | fzf --multi
+        $storage_directory
       }
 
-      print --stderr "Did you mean one of the following?"
-      print --stderr ($paths | each {$"  - ($in)"} | to text --no-newline)
+      if ($path | is-not-empty) and not ($parsed_path | path exists) {
+        print --stderr $"(
+          ansi yellow_bold
+        )warning(ansi reset)(ansi default_bold):(
+          ansi reset
+        ) no files or directories matching \"(
+          $path
+        )\" found in remote \"($remote)\""
 
-      return
-    } else {
-      [$parsed_path]
+        let potential_files = try {
+          (
+            fd
+              --type file
+              ($parsed_path | path basename)
+              ($parsed_path | path dirname)
+              err> /dev/null
+          )
+          | lines
+        } catch {
+          return
+        }
+
+        let paths = if ($potential_files | length) == 0 {
+          return
+        } else if ($potential_files | length) == 1 {
+          $potential_files
+        } else {
+          $potential_files
+          | to text
+          | fzf --multi
+        }
+
+        print --stderr "Did you mean one of the following?"
+        print --stderr ($paths | each {$"  - ($in)"} | to text --no-newline)
+
+        return
+      } else {
+        $parsed_path
+      }
     }
   }
 
@@ -672,7 +681,7 @@ alias "storage rm remote" = storage remove remote
 alias "storage rm r" = storage remove remote
 
 # Remove files from local and remote
-def "storage remove" [
+def "storage remove all" [
   path?: string # A path relative to <remote>:
   --force (-f) # Remove without confirmation
   --remote: string # The name of the remote service
@@ -690,6 +699,7 @@ def "storage remove" [
   }
 }
 
+alias "storage remove" = storage remove local
 alias "storage rm" = storage remove
 
 # Setup remotes
