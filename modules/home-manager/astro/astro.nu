@@ -67,6 +67,27 @@ def get-data [at: datetime] {
   http get $"($base)/today?&at=($at)&lat=($lat)&lon=($lon)&tz=US/Eastern&include=sun,moon,events,night"
 }
 
+def get-seasons [year: string] {
+  (
+    http get
+      $"api.apiverve.com/v1/weatherseasons?year=($year)"
+      --headers [{x-api-key: (apiverve-api-key)}]
+    | get data
+    | reject year timezone
+  )
+}
+
+def get-season-data [] {
+  let now = (date now)
+  let current_year = ($now | format date "%Y")
+  let previous_year = ((($current_year | into int) - 1) | into string)
+
+  {
+    current: (get-seasons $current_year)
+    previous: (get-seasons $previous_year)
+  }
+}
+
 # Get current astro-(nomical/logical) data
 def astro [
   --force # Ignore cache and fetch new data
@@ -93,6 +114,7 @@ def astro [
         timestamp: $current_date
         today: $today.data
         tomorrow: $tomorrow.data
+        seasons: (get-season-data)
       }
 
       $data
@@ -377,4 +399,8 @@ def "astro sign waybar" [] {
   } | get $sign
 
   waybar-json $sign $name
+}
+
+def "astro solstice" [] {
+  http get api.apiverve.com/v1/weatherseasons
 }

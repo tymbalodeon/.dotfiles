@@ -394,11 +394,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1795618997,
-        "narHash": "sha256-d9Osol//t6hqeo1xlspsYMbhTJK507h6t0EmPyF5Db0=",
+        "lastModified": 1795713076,
+        "narHash": "sha256-GUY/RHSSnAJKKI3xk7xrSXrsXFgIOgFrRJOD4uub5J8=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "6a13737c0ed27c7c285f59e3be423ed972aa605f",
+        "rev": "361da94fb55c67094ec47322d2757d6616a0de92",
         "type": "github"
       },
       "original": {
@@ -626,10 +626,10 @@
       "flake": false,
       "locked": {
         "dir": "secrets",
-        "lastModified": 1795663267,
-        "narHash": "sha256-0vE4Ei/FCpTNTM3A05GYHY3yAInmKC95aOym11Jkrjw=",
+        "lastModified": 1795719725,
+        "narHash": "sha256-ZqzZ88m10x7ebD8CN/BiC1OHfmJzBda3i2B3qt1Bn8o=",
         "ref": "refs/heads/trunk",
-        "rev": "93be9fce128b306b8857a59aed8945082ffb1093",
+        "rev": "8fcb9e900fc0d37217f89ffa51d6125fcc7bc6b5",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/tymbalodeon/secrets.git"
