@@ -79,6 +79,13 @@
           tooltip = true;
         };
 
+        "custom/month" = {
+          exec = "${./month.sh}";
+          format = "{text}";
+          on-click = "${./month.sh} info";
+          signal = 4;
+        };
+
         "custom/power" = {
           format = "⏻  ";
 
@@ -238,6 +245,7 @@
             "backlight"
             "custom/brightness"
             "custom/media"
+            "custom/month"
             "custom/moon"
             "custom/sign"
             "custom/sun"
@@ -252,6 +260,7 @@
             "custom/weather"
             "custom/sun"
             "custom/moon"
+            "custom/month"
             "custom/sign"
           ];
 

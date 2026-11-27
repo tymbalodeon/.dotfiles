@@ -67,25 +67,72 @@ def get-data [at: datetime] {
   http get $"($base)/today?&at=($at)&lat=($lat)&lon=($lon)&tz=US/Eastern&include=sun,moon,events,night"
 }
 
-def get-seasons [year: string] {
-  (
-    http get
-      $"api.apiverve.com/v1/weatherseasons?year=($year)"
-      --headers [{x-api-key: (apiverve-api-key)}]
-    | get data
-    | reject year timezone
+def get-new-moon-data [] {
+  let now = (date now)
+
+  let solstices = (
+    astro
+    | get seasons
+    | where name =~ December
+    | get datetime
+    | each {
+      |solstice|
+
+      let datetime = ($solstice | into datetime)
+
+      {
+        datetime: $datetime
+        is-past: ($datetime < $now)
+      }
+    }
   )
+
+  let most_recent_solstice_date = (
+    $solstices
+    | where is-past
+    | last
+    | get datetime
+  )
+
+  let next_solstice_date = (
+    $solstices
+    | where {not $in.is-past}
+    | first
+    | get datetime
+  )
+
+  mut new_moon = ($most_recent_solstice_date + 1day)
+  mut new_moons = []
+
+  while $new_moon < $next_solstice_date {
+    let at_param = (
+      $new_moon + 1day
+      | format date "%Y-%m-%d"
+    )
+
+    $new_moon = (
+      http get $"https://www.cyclecalcs.com/v2/moon?at=($at_param)"
+      | get data.next_phases
+      | where code == new_moon
+      | first
+      | get instant
+      | into datetime
+      | date to-timezone local
+    )
+
+    if ($new_moon < $next_solstice_date) {
+      $new_moons = ($new_moons | append $new_moon)
+    }
+  }
+
+  $new_moons
 }
 
 def get-season-data [] {
-  let now = (date now)
-  let current_year = ($now | format date "%Y")
-  let previous_year = ((($current_year | into int) - 1) | into string)
-
-  {
-    current: (get-seasons $current_year)
-    previous: (get-seasons $previous_year)
-  }
+  http get https://www.cyclecalcs.com/v2/seasons
+  | get data.seasons
+  | select name_neutral start
+  | rename name datetime
 }
 
 # Get current astro-(nomical/logical) data
@@ -111,10 +158,11 @@ def astro [
       let tomorrow = (get-data ($current_date + 1day))
 
       let data = {
+        new-moons: (get-new-moon-data)
+        seasons: (get-season-data)
         timestamp: $current_date
         today: $today.data
         tomorrow: $tomorrow.data
-        seasons: (get-season-data)
       }
 
       $data
@@ -323,6 +371,24 @@ def "astro moon waybar" [] {
   waybar-json $text $tooltip
 }
 
+def get-lunar-months [] {
+  {
+    1: {name: "The Devil" numeral: "XV"}
+    2: {name: "The Star" numeral: "XVII"}
+    3: {name: "The Moon" numeral: "XVIII"}
+    4: {name: "The Emperor" numeral: "IV"}
+    5: {name: "The Hierophant" numeral: "V"}
+    6: {name: "The Lovers" numeral: "VI"}
+    7: {name: "The Chariot" numeral: "VII"}
+    8: {name: "Strength" numeral: "VIII"}
+    9: {name: "The Hermit" numeral: "IX"}
+    10: {name: "Justice" numeral: "XI"}
+    11: {name: "Death" numeral: "XIII"}
+    12: {name: "Temperance" numeral: "XIV"}
+    13: {name: "The Fool" numeral: "0"}
+  }
+}
+
 def "astro lunar-month" [] {
   let astro = (astro)
 
@@ -330,35 +396,43 @@ def "astro lunar-month" [] {
     return
   }
 
-  let current_december_solstice = (
-    $astro.seasons.current.december_solstice
-    | into datetime
+  let now = (date now)
+
+  $astro
+  | get new-moons
+  | each {into datetime}
+  | where {$now > $in}
+  | length
+}
+
+def "astro lunar-month info" [month?: int] {
+  let month = (
+    if ($month | is-empty) {
+      astro lunar-month
+    } else {
+      $month
+    }
+    | into string
   )
 
-  let december_solstice = if (date now) < $current_december_solstice {
-    $astro.seasons.previous.december_solstice
-    | into datetime
-  } else {
-    $current_december_solstice
-  }
+  start (
+    get-lunar-months
+    | get $month
+    | get name
+    | str replace --all " " "_"
+    | append "_(tarot_card)"
+    | prepend https://en.wikipedia.org/wiki/
+    | str join
+  )
+}
 
-  # TODO: get all new moon dates!
+def "astro lunar-month waybar" [] {
+  let month = (
+    get-lunar-months
+    | get (astro lunar-month | into string)
+  )
 
-  # {
-  #   1: 🃯
-  #   2: 🃱
-  #   3: 🃲
-  #   4: 🃤
-  #   5: 🃥
-  #   6: 🃦
-  #   7: 🃧
-  #   8: 🃨
-  #   9: 🃩
-  #   10: 🃫
-  #   11: 🃭
-  #   12: 🃮
-  #   13: 🃠
-  # } | get $month
+  $"($month.numeral) - ($month.name)"
 }
 
 def "astro sun" [] {
@@ -419,8 +493,4 @@ def "astro sign waybar" [] {
   } | get $sign
 
   waybar-json $sign $name
-}
-
-def "astro solstice" [] {
-  http get api.apiverve.com/v1/weatherseasons
 }
