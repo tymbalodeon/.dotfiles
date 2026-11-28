@@ -67,12 +67,13 @@ def get-data [at: datetime] {
   http get $"($base)/today?&at=($at)&lat=($lat)&lon=($lon)&tz=US/Eastern&include=sun,moon,events,night"
 }
 
-def get-new-moon-data [] {
+def get-new-moon-data [
+  seasons: table<name: string, datetime: string>
+] {
   let now = (date now)
 
   let solstices = (
-    astro
-    | get seasons
+    $seasons
     | where name =~ December
     | get datetime
     | each {
@@ -101,12 +102,12 @@ def get-new-moon-data [] {
     | get datetime
   )
 
-  mut new_moon = ($most_recent_solstice_date + 1day)
+  mut new_moon = $most_recent_solstice_date
   mut new_moons = []
 
   while $new_moon < $next_solstice_date {
     let at_param = (
-      $new_moon + 1day
+      $new_moon + 2day
       | format date "%Y-%m-%d"
     )
 
@@ -156,10 +157,11 @@ def astro [
       let current_date = (date now)
       let today = (get-data ($current_date))
       let tomorrow = (get-data ($current_date + 1day))
+      let seasons = (get-season-data)
 
       let data = {
-        new-moons: (get-new-moon-data)
-        seasons: (get-season-data)
+        new-moons: (get-new-moon-data $seasons)
+        seasons: $seasons
         timestamp: $current_date
         today: $today.data
         tomorrow: $tomorrow.data
@@ -427,9 +429,15 @@ def "astro lunar-month info" [month?: int] {
 }
 
 def "astro lunar-month waybar" [] {
+  let lunar_month = (astro lunar-month)
+
+  if ($lunar_month | is-empty) {
+    return
+  }
+  
   let month = (
     get-lunar-months
-    | get (astro lunar-month | into string)
+    | get ($lunar_month | into string)
   )
 
   $"($month.numeral) - ($month.name)"
@@ -448,6 +456,10 @@ def "astro sun rise-set" [
 
 def "astro sun waybar" [] {
   let rise_set = (astro sun rise-set --format | lines)
+
+  if ($rise_set | is-empty) {
+    return
+  }
 
   waybar-json ($rise_set | first) ($rise_set | last)
 }
